@@ -12,9 +12,5 @@
     "@nuxt/devtools": "latest",
     "@types/node": "^18",
     "nuxt": "^3.6.1"
-  },
-  "dependencies": {
-    "@babel/types": "^7.22.5",
-    "babel": "^6.23.0"
   }
 }

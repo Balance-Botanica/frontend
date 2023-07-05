@@ -3,7 +3,6 @@ FROM node:20
 
 # Set the working directory
 WORKDIR /
-
 # Copy the package.json and package-lock.json
 COPY package*.json ./
 
@@ -17,4 +16,4 @@ COPY . .
 EXPOSE 3000
 
 # Start your app
-CMD [ "npm", "run", "dev" ]
+CMD [ "nuxt", "dev" ]
