@@ -7,6 +7,7 @@ WORKDIR /
 COPY package*.json ./
 
 # Install dependencies
+RUN npm install nuxt -g 
 RUN npm install
 
 # Copy the rest of your app's source code
