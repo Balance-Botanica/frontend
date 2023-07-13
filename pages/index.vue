@@ -44,13 +44,15 @@
         </div>
 
         <div class="grid grid-cols-2 gap-12 md:grid-cols-4">
-          <product-teaser
+          <ProductTeaser
             class="col-span-1"
             v-for="product in products.data"
             :key="product.id"
             :product="product"
           />
         </div>
+
+        <div>{{ JSON.stringify(products.data[0]) }}</div>
 
         <div class="flex justify-center mt-10">
           <Btn theme="secondary">View all the sick wicks</Btn>
@@ -62,9 +64,11 @@
 
 <script setup>
 import HeaderBg from "assets/images/header-bg.jpg";
+
 const config = useRuntimeConfig();
+
 const { data: products } = await useFetch(
-  `${config.API_URL}/api/products?pagination[start]=0&pagination[limit]=4&populate=*`
+  `${config.public.API_URL}/api/products?populate=*`
 );
 </script>
 

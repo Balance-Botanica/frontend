@@ -9,7 +9,7 @@
           product.data.attributes.Title
         }}</Heading>
         <p class="mb-6 text-2xl text-brand-grey-600">
-          £{{ product.data.attributes.Price }}
+          ${{ product.data.attributes.Price }}
         </p>
         <p class="pr-12 mb-6 text-brand-grey-400">
           {{ product.data.attributes.Description }}
@@ -57,17 +57,17 @@ const route = useRoute();
 const config = useRuntimeConfig();
 const quantity = ref(1);
 const { data: products } = await useFetch(
-  `${config.API_URL}/api/products?populate=*`
+  `${config.public.API_URL}/api/products?populate=*`
 );
 const { data: product } = await useFetch(
-  `${config.API_URL}/api/products/${route.params.id}?populate=*`
+  `${config.public.API_URL}/api/products/${route.params.id}?populate=*`
 );
 const imageUrl = computed(() => {
-  if (!product.value.data) {
+  if (!product.data) {
     return null;
   }
 
-  return `${config.API_URL}${product.value.data.attributes.Image.data.attributes.url}`;
+  return `${config.public.API_URL}${product.data.attributes.Image.data.attributes.url}`;
 });
 </script>
 
