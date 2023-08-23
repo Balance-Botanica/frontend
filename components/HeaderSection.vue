@@ -10,6 +10,7 @@
         <NavBar class="hidden md:block" />
       </div>
       <div class="flex items-center justify-end col-span-3">
+        <LangSwitcher />
         <CartInfo />
 
         <button title="Menu" class="p-1 ml-4" @click="mobileMenuOpen = true">

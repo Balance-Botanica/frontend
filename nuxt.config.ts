@@ -2,7 +2,34 @@
 export default defineNuxtConfig({
   devtools: { enabled: true },
   ssr: true,
-  modules: ["@nuxtjs/tailwindcss"],
+  modules: ["@nuxtjs/tailwindcss", "@nuxtjs/i18n", "@pinia/nuxt"],
+  i18n: {
+    lazy: true,
+    langDir: "locales",
+    strategy: "no_prefix",
+    locales: [
+      {
+        code: "en-US",
+        iso: "en-US",
+        name: "English(US)",
+        file: "en-US.json",
+      },
+      {
+        code: "uk-UA",
+        iso: "uk-UA",
+        name: "Українська",
+        file: "uk-UA.json",
+      },
+    ],
+    defaultLocale: "uk-UA",
+  },
+  pinia: {
+    autoImports: [
+      // automatically imports `defineStore`
+      "defineStore", // import { defineStore } from 'pinia'
+      ["defineStore", "definePiniaStore"], // import { defineStore as definePiniaStore } from 'pinia'
+    ],
+  },
   css: ["tailwindcss/tailwind.css"],
   postcss: require("./postcss.config.js"),
   app: {
@@ -41,7 +68,7 @@ export default defineNuxtConfig({
     // apiSecret: "", // can be overridden by NUXT_API_SECRET environment variable
     public: {
       // apiBase: process.env.API_URL,
-      API_URL: process.env.API_URL, // can be overridden by NUXT_PUBLIC_API_BASE environment variable
+      API_URL: process.env.API_URL,
     },
   },
 });

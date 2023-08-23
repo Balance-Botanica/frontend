@@ -1,6 +1,8 @@
 <template>
-  <Title>Pick a Sick Wick - Candle Shop</Title>
-  <NuxtPage />
+  <NuxtLayout>
+    <Title>Balance Botanica - CBD Gummies made in Ukraine</Title>
+    <NuxtPage
+  /></NuxtLayout>
 </template>
 
 <style>

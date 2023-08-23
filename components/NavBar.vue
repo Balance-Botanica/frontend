@@ -6,17 +6,17 @@
       <li
         class="text-xl font-bold tracking-tighter transition-colors text-brand-grey-800 font-heading hover:text-brand-orange"
       >
-        <nuxt-link to="/">Home</nuxt-link>
+        <nuxt-link to="/">{{ $t("navbar_home") }}</nuxt-link>
       </li>
       <li
         class="text-xl font-bold tracking-tighter transition-colors text-brand-grey-800 font-heading hover:text-brand-orange"
       >
-        <nuxt-link to="/shop">Shop</nuxt-link>
+        <nuxt-link to="/shop">{{ $t("navbar_shop") }}</nuxt-link>
       </li>
       <li
         class="text-xl font-bold tracking-tighter transition-colors text-brand-grey-800 font-heading hover:text-brand-orange"
       >
-        <nuxt-link to="/contact">Contact</nuxt-link>
+        <nuxt-link to="/contact">{{ $t("navbar_contact") }}</nuxt-link>
       </li>
     </ul>
   </nav>

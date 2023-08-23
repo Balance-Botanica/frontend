@@ -14,17 +14,20 @@
       <div class="relative z-20 h-full header-content">
         <div class="absolute flex flex-col justify-center p-8 mx-auto hero-box">
           <div class="relative px-6 py-8 bg-white rounded-lg drop-shadow-2xl">
-            <Heading tag="h3" font-style="h3">Smelly candles</Heading>
-            <Heading tag="h2" font-style="h2">Only the sickest wicks</Heading>
+            <Heading tag="h3" font-style="h3">{{
+              $t("action_subtitle")
+            }}</Heading>
+            <Heading tag="h2" font-style="h2">
+              {{ $t("action_title") }}</Heading
+            >
             <p class="pb-4 pr-4 text-brand-gray font-body">
-              If you’re like us and can’t get enough of burning things in your
-              own home, pick a sick wick and
-              <span class="font-bold"
-                >feed your burning habbit safely with added benifit of smelling
-                delicious.</span
-              >
+              {{ $t("action_description") }}
             </p>
-            <Btn class="absolute md:-right-3 md:-bottom-3">Shop Now</Btn>
+            <nuxt-link to="/shop">
+              <Btn class="absolute md:-right-3 md:-bottom-3">{{
+                $t("action_shop_now")
+              }}</Btn></nuxt-link
+            >
           </div>
         </div>
       </div>
@@ -32,30 +35,31 @@
 
     <section class="mb-28">
       <Container>
-        <div class="w-full mx-auto mb-12 text-center md:w-2/3 lg:w-1/3">
-          <Heading tag="h2" font-style="h3">Our Candles</Heading>
-          <Heading tag="h3" font-style="h2" class="mb-2"
-            >Show me the sick wicks</Heading
-          >
+        <div class="w-full mx-auto mb-12 text-center md:w-2/3 lg:w-2/3">
+          <Heading tag="h2" font-style="h3">{{
+            $t("all_products_subtitle")
+          }}</Heading>
+          <Heading tag="h3" font-style="h2" class="mb-2">{{
+            $t("all_products_title")
+          }}</Heading>
           <p>
-            All our candles our hand made and 100% verified to satisfy any
-            pyromaniac’s itch to burn things in a safe way.
+            {{ $t("all_products_description") }}
           </p>
         </div>
 
-        <div class="grid grid-cols-2 gap-12 md:grid-cols-4">
+        <div class="grid grid-cols-2 gap-12 md:grid-cols-4 asdasd">
           <ProductTeaser
             class="col-span-1"
-            v-for="product in products.data"
+            v-for="product in displayedProducts"
             :key="product.id"
             :product="product"
           />
         </div>
 
-        <div>{{ JSON.stringify(products.data[0]) }}</div>
+        <!-- <div>{{ JSON.stringify(displayedProducts) }}</div> -->
 
         <div class="flex justify-center mt-10">
-          <Btn theme="secondary">View all the sick wicks</Btn>
+          <Btn theme="secondary">{{ $t("all_products_view_all") }}</Btn>
         </div>
       </Container>
     </section>
@@ -63,13 +67,34 @@
 </template>
 
 <script setup>
+import { computed, watchEffect } from "vue";
+import { useI18n } from "vue-i18n";
+import { useProductsStore } from "~/store/products";
 import HeaderBg from "assets/images/header-bg.jpg";
 
 const config = useRuntimeConfig();
 
-const { data: products } = await useFetch(
-  `${config.public.API_URL}/api/products?populate=*`
-);
+const { locale } = useI18n();
+const productsStore = useProductsStore();
+
+// Fetch products when the component is mounted
+onMounted(async () => {
+  await productsStore.fetchProducts();
+  console.log(productsStore.productsEN, productsStore.productsUA);
+  console.log("Current Locale:", locale.value);
+});
+
+// Determine which products to display based on the current locale
+const displayedProducts = computed(() => {
+  return locale.value.startsWith("en")
+    ? productsStore.productsEN
+    : productsStore.productsUA;
+});
+
+// Refetch products when the locale changes
+// watchEffect(async () => {
+//   await productsStore.fetchProducts();
+// });
 </script>
 
 <style scoped>

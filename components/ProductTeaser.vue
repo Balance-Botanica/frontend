@@ -6,10 +6,10 @@
         class="mb-6 transition-transform transform shadow-xl group-hover:scale-105"
       />
       <Heading tag="h3" font-style="h4">
-        {{ props.product.attributes.Title }}
+        {{ props.product?.attributes?.Title || "Default Title" }}
       </Heading>
       <p class="text-lg text-brand-grey-400">
-        ${{ props.product.attributes.Price }}
+        ${{ props.product?.attributes?.Price || 0 }}
       </p>
     </nuxt-link>
   </article>

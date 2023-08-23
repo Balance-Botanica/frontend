@@ -1,34 +1,38 @@
 <template>
   <div>
+    <!-- <div>asdasd</div>
+    <div>{{ JSON.stringify(product) }}</div>
+    <div>asdasd !!!!!!!!!!!!!!!!!!!!!</div> -->
     <Container class="grid grid-cols-12 gap-2 pt-32 pb-24 md:gap-12">
       <div class="col-span-12 md:col-span-6 lg:col-span-5">
-        <ProductImage :product="product.data" />
+        <ProductImage :product="product" />
       </div>
       <div class="col-span-12 md:col-span-6 lg:col-span-7">
         <Heading tag="h2" font-style="h1">{{
-          product.data.attributes.Title
+          product?.attributes?.Title || "Default title"
         }}</Heading>
         <p class="mb-6 text-2xl text-brand-grey-600">
-          ${{ product.data.attributes.Price }}
+          ${{ product?.attributes?.Price || 0 }}
         </p>
         <p class="pr-12 mb-6 text-brand-grey-400">
-          {{ product.data.attributes.Description }}
+          {{ product?.attributes?.Description || "Description" }}
         </p>
 
         <div class="flex items-center">
           <input-field type="number" class="mr-4" min="1" v-model="quantity" />
-          <Btn
+          <!-- <Btn
             class="snipcart-add-item"
-            :data-item-id="product.data.id"
-            :data-item-price="product.data.attributes.Price"
-            :data-item-description="product.data.attributes.Description"
-            :data-item-name="product.data.attributes.Title"
+            :data-item-id="product.attributes?.id"
+            :data-item-price="product.attributes?.Price"
+            :data-item-description="product.attributes?.Description"
+            :data-item-name="product.attributes.Title"
             :data-item-image="imageUrl"
             :data-item-quantity="quantity"
             :modelValue="pageTitle"
             @update:modelValue="pageTitle = $event"
             >Add to basket</Btn
-          >
+          > -->
+          <Btn class="">Add to basket</Btn>
         </div>
       </div>
     </Container>
@@ -38,9 +42,9 @@
         <Heading tag="h2" font-style="h2">Other sick wicks</Heading>
       </div>
       <div class="grid grid-cols-2 gap-12 md:grid-cols-4">
-        <product-teaser
+        <ProductTeaser
           class="col-span-1"
-          v-for="product in products.data"
+          v-for="product in displayedProducts"
           :key="product.id"
           :product="product"
         />
@@ -53,21 +57,38 @@
 </template>
 
 <script setup>
+import { computed } from "vue";
+import { useI18n } from "vue-i18n";
+import { useProductsStore } from "~/store/products";
+import { useRoute } from "vue-router";
+
+const { locale } = useI18n();
+const productsStore = useProductsStore();
 const route = useRoute();
-const config = useRuntimeConfig();
-const quantity = ref(1);
-const { data: products } = await useFetch(
-  `${config.public.API_URL}/api/products?populate=*`
-);
-const { data: product } = await useFetch(
-  `${config.public.API_URL}/api/products/${route.params.id}?populate=*`
-);
-const imageUrl = computed(() => {
-  if (!product.data) {
-    return null;
+
+const displayedProducts = computed(() => {
+  return locale.value.startsWith("en")
+    ? productsStore.productsEN
+    : productsStore.productsUA;
+});
+
+const product = computed(() => {
+  if (!productsStore.productsEN.length && !productsStore.productsUA.length) {
+    return null; // Return null if products data is not ready yet.
   }
 
-  return `${config.public.API_URL}${product.data.attributes.Image.data.attributes.url}`;
+  const productId = parseInt(route.params.id, 10);
+  console.log("Searching for product with ID:", productId);
+
+  let foundProduct = null;
+  if (locale.value.startsWith("en")) {
+    foundProduct = productsStore.productsEN.find((p) => p.id === productId);
+  } else {
+    foundProduct = productsStore.productsUA.find((p) => p.id === productId);
+  }
+
+  console.log("Found product:", foundProduct);
+  return foundProduct;
 });
 </script>
 
