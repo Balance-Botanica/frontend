@@ -6,12 +6,16 @@ export const useProductsStore = defineStore({
   state: () => ({
     productsEN: [],
     productsUA: [],
+    currentProduct: null,
   }),
   getters: {
     allProducts: (state) => state.products,
     // currentProduct: (state) => state.product,
   },
   actions: {
+    selectProduct(product) {
+      this.currentProduct = product; // Store the entire product, not just the ID
+    },
     async fetchProducts() {
       const config = useRuntimeConfig();
 
@@ -69,20 +73,5 @@ export const useProductsStore = defineStore({
         console.error("Error fetching products:", error);
       }
     },
-
-    // async fetchProductById(id) {
-    //   console.log("actions: fetchProductById()");
-    //   const config = useRuntimeConfig();
-    //   const { locale } = useI18n();
-
-    //   let formattedLocale = locale.startsWith("en-") ? "en" : locale;
-
-    //   const { data: localedProduct } = await useLazyFetch(
-    //     `${config.public.API_URL}/api/products/${id}?populate=*&locale=${formattedLocale}`
-    //   );
-
-    //   console.log("Fetched product by ID:", localedProduct);
-    //   this.product = localedProduct.data;
-    // },
   },
 });

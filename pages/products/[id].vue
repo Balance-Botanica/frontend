@@ -1,38 +1,24 @@
 <template>
   <div>
-    <!-- <div>asdasd</div>
-    <div>{{ JSON.stringify(product) }}</div>
-    <div>asdasd !!!!!!!!!!!!!!!!!!!!!</div> -->
+    <!-- ... other parts of your template ... -->
     <Container class="grid grid-cols-12 gap-2 pt-32 pb-24 md:gap-12">
       <div class="col-span-12 md:col-span-6 lg:col-span-5">
         <ProductImage :product="product" />
       </div>
       <div class="col-span-12 md:col-span-6 lg:col-span-7">
         <Heading tag="h2" font-style="h1">{{
-          product?.attributes?.Title || "Default title"
+          product?.attributes?.Title || ""
         }}</Heading>
         <p class="mb-6 text-2xl text-brand-grey-600">
-          ${{ product?.attributes?.Price || 0 }}
+          {{ product?.attributes?.Price || "" }}
         </p>
         <p class="pr-12 mb-6 text-brand-grey-400">
-          {{ product?.attributes?.Description || "Description" }}
+          {{ product?.attributes?.Description || "" }}
         </p>
 
         <div class="flex items-center">
           <input-field type="number" class="mr-4" min="1" v-model="quantity" />
-          <!-- <Btn
-            class="snipcart-add-item"
-            :data-item-id="product.attributes?.id"
-            :data-item-price="product.attributes?.Price"
-            :data-item-description="product.attributes?.Description"
-            :data-item-name="product.attributes.Title"
-            :data-item-image="imageUrl"
-            :data-item-quantity="quantity"
-            :modelValue="pageTitle"
-            @update:modelValue="pageTitle = $event"
-            >Add to basket</Btn
-          > -->
-          <Btn class="">Add to basket</Btn>
+          <Btn @click="addToCart">Add to basket</Btn>
         </div>
       </div>
     </Container>
@@ -57,14 +43,43 @@
 </template>
 
 <script setup>
-import { computed } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { useI18n } from "vue-i18n";
 import { useProductsStore } from "~/store/products";
+import { useCartStore } from "~/store/cart";
 import { useRoute } from "vue-router";
 
 const { locale } = useI18n();
 const productsStore = useProductsStore();
+const cartStore = useCartStore();
 const route = useRoute();
+const quantity = ref(1);
+
+// ... other parts of your script setup ...
+
+onMounted(async () => {
+  // If products aren't available in the store, fetch them
+  if (!productsStore.productsEN.length && !productsStore.productsUA.length) {
+    await productsStore.fetchProducts();
+  }
+});
+
+const product = computed(() => {
+  console.log(
+    "Selected Product ID in ID page:",
+    productsStore.selectedProductId
+  );
+  // If the product is already stored in the state, use it
+  if (productsStore.currentProduct) {
+    return productsStore.currentProduct;
+  }
+
+  // Otherwise, fetch the product using the route ID
+  const productId = parseInt(route.params.id, 10);
+  return locale.value.startsWith("en")
+    ? productsStore.productsEN.find((p) => p.id === productId)
+    : productsStore.productsUA.find((p) => p.id === productId);
+});
 
 const displayedProducts = computed(() => {
   return locale.value.startsWith("en")
@@ -72,24 +87,18 @@ const displayedProducts = computed(() => {
     : productsStore.productsUA;
 });
 
-const product = computed(() => {
-  if (!productsStore.productsEN.length && !productsStore.productsUA.length) {
-    return null; // Return null if products data is not ready yet.
-  }
+const addToCart = () => {
+  const productToAdd = {
+    id: product.value.id,
+    title: product.value.attributes.Title,
+    price: product.value.attributes.Price,
+    quantity: quantity.value,
+  };
+  console.log("Adding product to cart:", productToAdd);
+  cartStore.addToCart(productToAdd);
+};
 
-  const productId = parseInt(route.params.id, 10);
-  console.log("Searching for product with ID:", productId);
-
-  let foundProduct = null;
-  if (locale.value.startsWith("en")) {
-    foundProduct = productsStore.productsEN.find((p) => p.id === productId);
-  } else {
-    foundProduct = productsStore.productsUA.find((p) => p.id === productId);
-  }
-
-  console.log("Found product:", foundProduct);
-  return foundProduct;
-});
+console.log("Selected Product ID in ID page:", productsStore.selectedProductId);
 </script>
 
 <style scoped>

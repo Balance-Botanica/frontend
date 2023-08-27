@@ -1,5 +1,5 @@
 <template>
-  <article>
+  <article @click="handleProductClick(props.product)">
     <nuxt-link :to="`/products/${props.product.id}`" class="group">
       <ProductImage
         :product="props.product"
@@ -16,7 +16,14 @@
 </template>
 
 <script setup>
+import { useProductsStore } from "~/store/products";
+
 const props = defineProps({
   product: Object,
 });
+const productsStore = useProductsStore();
+
+function handleProductClick(product) {
+  productsStore.selectProduct(product);
+}
 </script>

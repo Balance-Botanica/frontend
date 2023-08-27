@@ -80,8 +80,6 @@ const productsStore = useProductsStore();
 // Fetch products when the component is mounted
 onMounted(async () => {
   await productsStore.fetchProducts();
-  console.log(productsStore.productsEN, productsStore.productsUA);
-  console.log("Current Locale:", locale.value);
 });
 
 // Determine which products to display based on the current locale
@@ -91,10 +89,11 @@ const displayedProducts = computed(() => {
     : productsStore.productsUA;
 });
 
-// Refetch products when the locale changes
-// watchEffect(async () => {
-//   await productsStore.fetchProducts();
-// });
+console.log(
+  "Products fetched in Index:",
+  productsStore.productsEN,
+  productsStore.productsUA
+);
 </script>
 
 <style scoped>
