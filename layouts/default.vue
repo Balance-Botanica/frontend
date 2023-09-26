@@ -1,7 +1,7 @@
 <template>
   <div class="relative font-body">
     <HeaderSection />
-    <div class="pt-24 bg-brand-beige-300">
+    <div class="pt-24 bg-brand-beige-300 min-h-[600px]">
       <slot />
       <!-- <div
         hidden

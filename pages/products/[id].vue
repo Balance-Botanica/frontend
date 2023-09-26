@@ -87,6 +87,14 @@ const displayedProducts = computed(() => {
     : productsStore.productsUA;
 });
 
+watch(locale, (newLocale) => {
+  // When the locale changes, update the product information
+  const productId = parseInt(route.params.id, 10);
+  productsStore.currentProduct = newLocale.startsWith("en")
+    ? productsStore.productsEN.find((p) => p.id === productId)
+    : productsStore.productsUA.find((p) => p.id === productId);
+});
+
 const addToCart = () => {
   const productToAdd = {
     id: product.value.id,
