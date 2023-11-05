@@ -20,6 +20,6 @@ const imageUrl = computed(() => {
   if (!props.product) {
     return null;
   }
-  return `${config.public.API_URL}${props?.product?.attributes?.Images?.data[0]?.attributes?.url}`;
+  return `${config.public.strapiApiUrl}${props?.product?.attributes?.Images?.data[0]?.attributes?.url}`;
 });
 </script>

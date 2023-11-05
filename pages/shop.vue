@@ -26,7 +26,7 @@
 <script setup>
 const config = useRuntimeConfig();
 const { data: products } = await useFetch(
-  `${config.public.API_URL}/api/products?populate=*`
+  `${config.public.strapiApiUrl}/api/products?populate=*`
 );
 </script>
 

@@ -21,7 +21,7 @@ export const useProductsStore = defineStore({
 
       try {
         const response = await fetch(
-          `${config.public.API_URL}/api/products?populate=*`
+          `${config.public.strapiApiUrl}/api/products?populate=*`
         );
 
         if (!response.ok) {
@@ -69,6 +69,12 @@ export const useProductsStore = defineStore({
 
         this.productsEN = productsEN;
         this.productsUA = productsUA;
+
+        console.log(
+          "Products fetched in products store:",
+          this.productsEN,
+          this.productsUA
+        );
       } catch (error) {
         console.error("Error fetching products:", error);
       }

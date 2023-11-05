@@ -67,20 +67,36 @@
 </template>
 
 <script setup>
+import { useNuxtApp } from "#app";
 import { computed, watchEffect } from "vue";
 import { useI18n } from "vue-i18n";
 import { useProductsStore } from "~/store/products";
+import { useNovaPoshtaStore } from "~/store/nova-poshta";
 import HeaderBg from "assets/images/header-bg.jpg";
+import { logEvent } from "firebase/analytics";
 
 const config = useRuntimeConfig();
+const nuxtApp = useNuxtApp();
 
 const { locale } = useI18n();
 const productsStore = useProductsStore();
+const novaPoshtaStore = useNovaPoshtaStore();
+
+const analytics = nuxtApp.$analytics;
+const firebaseApp = nuxtApp.$firebaseApp;
 
 // Fetch products when the component is mounted
 onMounted(async () => {
   await productsStore.fetchProducts();
+
+  if (process.client) {
+    logEvent(analytics, "index page opened");
+  }
+
+  // await novaPoshtaStore.fetchWarehouses();
 });
+
+// console.log("novaPoshtaStore.allCargoTypes:", novaPoshtaStore.allCargoTypes);
 
 // Determine which products to display based on the current locale
 const displayedProducts = computed(() => {
@@ -89,11 +105,11 @@ const displayedProducts = computed(() => {
     : productsStore.productsUA;
 });
 
-console.log(
-  "Products fetched in Index:",
-  productsStore.productsEN,
-  productsStore.productsUA
-);
+// console.log(
+//   "Products fetched in Index:",
+//   productsStore.productsEN,
+//   productsStore.productsUA
+// );
 </script>
 
 <style scoped>

@@ -21,7 +21,7 @@ const language = computed({
   get: () => locale.value,
   set: async (value) => {
     // const { data: products } = await useFetch(
-    //   `${config.public.API_URL}/api/products?populate=*&locale=${locale.value}`
+    //   `${config.public.strapiApiUrl}/api/products?populate=*&locale=${locale.value}`
     // );
 
     // console.log("yo, after locale change!");
