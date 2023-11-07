@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { useI18n } from "vue-i18n";
+import { collection, getDocs } from "firebase/firestore";
 
 export const useProductsStore = defineStore({
   id: "products-store",
@@ -70,13 +70,63 @@ export const useProductsStore = defineStore({
         this.productsEN = productsEN;
         this.productsUA = productsUA;
 
+        console.log("Products in store:", this.productsEN, this.productsUA);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    },
+    async fetchFirebaseProducts() {
+      const nuxtApp = useNuxtApp();
+      const db = nuxtApp.$db;
+
+      function capitalizeAttributes(obj) {
+        const capitalizedObj = {};
+        Object.keys(obj).forEach((key) => {
+          // For each key, except for 'images', capitalize the first letter
+          if (key !== "images") {
+            capitalizedObj[key.charAt(0).toUpperCase() + key.slice(1)] =
+              obj[key];
+          }
+        });
+        // Separately handle the 'images' key if it exists
+        if (obj.images && Array.isArray(obj.images)) {
+          capitalizedObj.Images = {
+            data: obj.images.map((imageUrl) => ({
+              attributes: { url: imageUrl }, // Set the URL here
+            })),
+          };
+        }
+        return capitalizedObj;
+      }
+
+      try {
+        // Fetch English products
+        const productsENCollectionRef = collection(db, "products-us");
+        const enQuerySnapshot = await getDocs(productsENCollectionRef);
+        const productsEN = enQuerySnapshot.docs.map((doc) => ({
+          id: +doc.id,
+          attributes: capitalizeAttributes(doc.data()), // Using the helper function
+        }));
+
+        // Fetch Ukrainian products
+        const productsUACollectionRef = collection(db, "products-uk");
+        const uaQuerySnapshot = await getDocs(productsUACollectionRef);
+        const productsUA = uaQuerySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          attributes: capitalizeAttributes(doc.data()), // Using the helper function
+        }));
+
+        // Update the state with fetched products
+        this.productsEN = productsEN;
+        this.productsUA = productsUA;
+
         console.log(
-          "Products fetched in products store:",
+          "Firebase products in store:",
           this.productsEN,
           this.productsUA
         );
       } catch (error) {
-        console.error("Error fetching products:", error);
+        console.error("Error fetching Firebase products:", error);
       }
     },
   },

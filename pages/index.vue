@@ -87,7 +87,9 @@ const firebaseApp = nuxtApp.$firebaseApp;
 
 // Fetch products when the component is mounted
 onMounted(async () => {
-  await productsStore.fetchProducts();
+  // await productsStore.fetchProducts();
+
+  await productsStore.fetchFirebaseProducts();
 
   if (process.client) {
     logEvent(analytics, "index page opened");
