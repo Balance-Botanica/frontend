@@ -2,6 +2,7 @@
 export default defineNuxtConfig({
   devtools: { enabled: true },
   ssr: true,
+  buildDir: "dist",
   plugins: ["~/plugins/firebase.client.js"],
   modules: ["@nuxtjs/tailwindcss", "@nuxtjs/i18n", "@pinia/nuxt"],
   i18n: {
