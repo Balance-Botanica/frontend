@@ -13,9 +13,9 @@
       </p>
     </div>
     <div class="grid grid-cols-2 gap-12 px-4 mb-24 md:grid-cols-4">
-      <product-teaser
+      <ProductTeaser
         class="col-span-1"
-        v-for="product in products.data"
+        v-for="product in displayedProducts"
         :key="product.id"
         :product="product"
       />
@@ -24,10 +24,26 @@
 </template>
 
 <script setup>
+import { useProductsStore } from "~/store/products";
+import { useI18n } from "vue-i18n";
+
+const { locale } = useI18n();
 const config = useRuntimeConfig();
-const { data: products } = await useFetch(
-  `${config.public.strapiApiUrl}/api/products?populate=*`
-);
+const productsStore = useProductsStore();
+
+// const { data: products } = await useFetch(
+//   `${config.public.strapiApiUrl}/api/products?populate=*`
+// );
+
+onMounted(async () => {
+  await productsStore.fetchFirebaseProducts();
+});
+
+const displayedProducts = computed(() => {
+  return locale.value.startsWith("en")
+    ? productsStore.productsEN
+    : productsStore.productsUA;
+});
 </script>
 
 <style scoped>
