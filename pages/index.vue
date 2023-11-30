@@ -72,6 +72,7 @@ import { computed, watchEffect } from "vue";
 import { useI18n } from "vue-i18n";
 import { useProductsStore } from "~/store/products";
 import { useNovaPoshtaStore } from "~/store/nova-poshta";
+import { useCartStore } from "~/store/cart";
 import HeaderBg from "assets/images/header-bg.jpg";
 import { logEvent } from "firebase/analytics";
 
@@ -81,19 +82,35 @@ const nuxtApp = useNuxtApp();
 const { locale } = useI18n();
 const productsStore = useProductsStore();
 const novaPoshtaStore = useNovaPoshtaStore();
+const cartStore = useCartStore();
 
 const analytics = nuxtApp.$analytics;
 const firebaseApp = nuxtApp.$firebaseApp;
 
+function clearCartAndStorage() {
+  cartStore.clearCart();
+  localStorage.removeItem("cart");
+}
+
 // Fetch products when the component is mounted
 onMounted(async () => {
   // await productsStore.fetchProducts();
+  // clearCartAndStorage();
 
   await productsStore.fetchFirebaseProducts();
 
-  if (process.client) {
-    logEvent(analytics, "index page opened");
-  }
+  // if (process.client) {
+  //   logEvent(analytics, "index page opened");
+  // }
+
+  console.log("localStorage.getItem(cart)", localStorage.getItem("cart"));
+
+  cartStore.$patch((state) => {
+    const storedCart = JSON.parse(localStorage.getItem("cart"));
+    if (storedCart) {
+      state.items = storedCart.items;
+    }
+  });
 
   // await novaPoshtaStore.fetchWarehouses();
 });

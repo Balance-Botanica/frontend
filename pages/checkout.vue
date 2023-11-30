@@ -82,10 +82,10 @@
                 @input="handleWarehouseInputChange"
               />
               <div
-                v-if="novaPoshtaStore.allWarehouses.length > 0"
+                v-if="novaPoshtaStore.allWarehouses.length <= 0"
                 class="border border-t-0 rounded-b p-2 text-left"
               >
-                Нічого не знайдено
+                Нічого не знайдено ({{ novaPoshtaStore.allWarehouses.length }})
               </div>
               <div v-else class="overflow-y-scroll max-h-[300px] min-h-[300px]">
                 <div

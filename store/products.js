@@ -119,15 +119,12 @@ export const useProductsStore = defineStore({
         // Update the state with fetched products
         this.productsEN = productsEN;
         this.productsUA = productsUA;
-
-        console.log(
-          "Firebase products in store:",
-          this.productsEN,
-          this.productsUA
-        );
       } catch (error) {
         console.error("Error fetching Firebase products:", error);
       }
     },
+  },
+  persist: {
+    storage: persistedState.localStorage,
   },
 });

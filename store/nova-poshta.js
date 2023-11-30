@@ -150,4 +150,7 @@ export const useNovaPoshtaStore = defineStore({
       }
     },
   },
+  // persist: {
+  //   storage: persistedState.localStorage,
+  // },
 });

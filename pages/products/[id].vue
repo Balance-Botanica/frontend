@@ -62,13 +62,11 @@ onMounted(async () => {
   if (!productsStore.productsEN.length && !productsStore.productsUA.length) {
     await productsStore.fetchProducts();
   }
+
+  console.log("Selected Product:", productsStore.currentProduct);
 });
 
 const product = computed(() => {
-  console.log(
-    "Selected Product ID in ID page:",
-    productsStore.selectedProductId
-  );
   // If the product is already stored in the state, use it
   if (productsStore.currentProduct) {
     return productsStore.currentProduct;
@@ -96,11 +94,15 @@ watch(locale, (newLocale) => {
 });
 
 const addToCart = () => {
+  const imageUrl =
+    product.value.attributes.Images?.data[0]?.attributes?.url || "";
+
   const productToAdd = {
     id: product.value.id,
     title: product.value.attributes.Title,
     price: product.value.attributes.Price,
     quantity: quantity.value,
+    image: imageUrl,
   };
   console.log("Adding product to cart:", productToAdd);
   cartStore.addToCart(productToAdd);

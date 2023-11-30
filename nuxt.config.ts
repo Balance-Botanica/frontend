@@ -1,10 +1,16 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   devtools: { enabled: true },
+  // builder: 'webpack',
   ssr: true,
   // buildDir: "dist",
   plugins: ["~/plugins/firebase.client.js"],
-  modules: ["@nuxtjs/tailwindcss", "@nuxtjs/i18n", "@pinia/nuxt"],
+  modules: [
+    "@nuxtjs/tailwindcss",
+    "@nuxtjs/i18n",
+    "@pinia/nuxt",
+    "@pinia-plugin-persistedstate/nuxt",
+  ],
   i18n: {
     lazy: true,
     langDir: "locales",
@@ -26,11 +32,11 @@ export default defineNuxtConfig({
     defaultLocale: "uk-UA",
   },
   pinia: {
-    autoImports: [
-      // automatically imports `defineStore`
-      "defineStore", // import { defineStore } from 'pinia'
-      ["defineStore", "definePiniaStore"], // import { defineStore as definePiniaStore } from 'pinia'
-    ],
+    // autoImports: [
+    //   // automatically imports `defineStore`
+    //   "defineStore", // import { defineStore } from 'pinia'
+    //   ["defineStore", "definePiniaStore"], // import { defineStore as definePiniaStore } from 'pinia'
+    // ],
   },
   css: ["tailwindcss/tailwind.css"],
   postcss: require("./postcss.config.js"),
