@@ -10,29 +10,19 @@ export const useCartStore = defineStore("cart", {
       return state.items.reduce((count, item) => count + item.quantity, 0);
     },
     totalPrice(state) {
-      return state.items.reduce(
-        (total, item) => total + item.price * item.quantity,
-        0
-      );
+      return state.items
+        .reduce((total, item) => total + item.price * item.quantity, 0)
+        .toFixed(2);
     },
   },
   actions: {
     addToCart(product) {
-      console.log("addToCart a product: ", product);
       const existingItem = this.items.find((item) => item.id === product.id);
       if (existingItem) {
         existingItem.quantity += product.quantity;
       } else {
         this.items.push(product);
       }
-      console.log(
-        "totalItems: ",
-        this.totalItems,
-        "totalPrice: ",
-        this.totalPrice,
-        "items in the cart: ",
-        this.items
-      );
     },
     removeFromCart(productId) {
       this.items = this.items.filter((item) => item.id !== productId);
