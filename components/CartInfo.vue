@@ -5,7 +5,7 @@
         <IconsCart class="w-10 pr-2 ml-3" />
         <!-- Badge for the cart item count -->
         <span
-          class="cart-badge absolute top-0 right-3 rounded-full bg-brand-orange text-white px-2 py-1 text-xs"
+          class="cart-badge absolute top-0 right-3 rounded-full bg-secondary-green text-white px-2 py-1 text-xs"
         >
           {{ totalItems }}
         </span>

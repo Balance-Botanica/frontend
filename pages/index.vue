@@ -33,6 +33,80 @@
       </div>
     </section>
 
+    <!-- "feature_no_sugar": "No added sugar",
+    "feature_no_sugar_description": "a type of jelly that is made without the addition of extra sugars during its manufacturing process. This feature is particularly appealing to health-conscious consumers who are looking to reduce their sugar intake. These jellies rely on the natural sweetness of the fruits used in their making, or they may use alternative sweeteners that are lower in calories compared to regular sugar. This approach helps in offering a healthier option while still delivering the enjoyable, fruity taste that jelly lovers expect. It's an ideal choice for those managing diabetes, following a weight-loss diet, or simply seeking a healthier lifestyle without compromising on taste.",
+    "feature_vegan": "Vegan!",
+    "feature_vegan_description": "",
+    "feature_no_restricted": "",
+    "feature_no_restricted_description": "",
+    "feature_effective_dosage": "",
+    "feature_effective_dosage_description": "",
+    "feature_made_in_Ukraine": "",
+    "feature_made_in_Ukraine_description": "", -->
+
+    <section
+      class="relative mb-20 border-b-4 md:mb-10 header border-primary-beige h-auto"
+    >
+      <div class="features-background h-auto">
+        <FeaturesBackground class="absolute top-0 bottom-0 left-0 right-0" />
+      </div>
+      <Container class="relative pt-[115px] sm:pt-[50px]">
+        <div class="w-full mx-auto mb-12 text-center md:w-2/3 lg:w-2/3">
+          <FeaturesHeading tag="h1" font-style="h1">
+            {{ $t("features_subtitle") }}
+          </FeaturesHeading>
+          <FeaturesHeading tag="h1" font-style="h1" class="mb-2">
+            {{ $t("features_title") }}
+          </FeaturesHeading>
+          <p>
+            {{ $t("features_description") }}
+          </p>
+        </div>
+
+        <div class="feature-list">
+          <!-- Feature 1: No added sugar -->
+          <div class="feature">
+            <FeaturesHeading tag="h2" font-style="h2">{{
+              $t("feature_no_sugar")
+            }}</FeaturesHeading>
+            <p>{{ $t("feature_no_sugar_description") }}</p>
+          </div>
+
+          <!-- Feature 2: Vegan -->
+          <div class="feature">
+            <FeaturesHeading tag="h2" font-style="h2">{{
+              $t("feature_vegan")
+            }}</FeaturesHeading>
+            <p>{{ $t("feature_vegan_description") }}</p>
+          </div>
+
+          <!-- Feature 3: No restricted ingredients -->
+          <div class="feature">
+            <FeaturesHeading tag="h2" font-style="h2">{{
+              $t("feature_no_restricted")
+            }}</FeaturesHeading>
+            <p>{{ $t("feature_no_restricted_description") }}</p>
+          </div>
+
+          <!-- Feature 4: Effective dosage -->
+          <div class="feature">
+            <FeaturesHeading tag="h2" font-style="h2">{{
+              $t("feature_effective_dosage")
+            }}</FeaturesHeading>
+            <p>{{ $t("feature_effective_dosage_description") }}</p>
+          </div>
+
+          <!-- Feature 5: Made in Ukraine -->
+          <div class="feature">
+            <FeaturesHeading tag="h2" font-style="h2">{{
+              $t("feature_made_in_Ukraine")
+            }}</FeaturesHeading>
+            <p>{{ $t("feature_made_in_Ukraine_description") }}</p>
+          </div>
+        </div>
+      </Container>
+    </section>
+
     <section class="mb-28">
       <Container>
         <div class="w-full mx-auto mb-12 text-center md:w-2/3 lg:w-2/3">
@@ -68,7 +142,7 @@
 
 <script setup>
 import { useNuxtApp } from "#app";
-import { computed, watchEffect } from "vue";
+import { computed, watchEffect, onMounted } from "vue";
 import { useI18n } from "vue-i18n";
 import { useProductsStore } from "~/store/products";
 import { useNovaPoshtaStore } from "~/store/nova-poshta";
@@ -112,6 +186,9 @@ onMounted(async () => {
     }
   });
 
+  this.adjustSvgHeight();
+  window.onresize = this.adjustSvgHeight;
+
   // await novaPoshtaStore.fetchWarehouses();
 });
 
@@ -129,12 +206,32 @@ const displayedProducts = computed(() => {
 //   productsStore.productsEN,
 //   productsStore.productsUA
 // );
+
+function adjustSvgHeight() {
+  const featureList = document.querySelector(".feature-list"); // Replace with your text block's selector
+  const svgElement = document.querySelector(".features-background");
+  if (featureList && svgElement) {
+    const textHeight = featureList.offsetHeight;
+    svgElement.setAttribute("height", textHeight + "px");
+  }
+}
+
+// window.onload = adjustSvgHeight;
+// window.onresize = adjustSvgHeight;
 </script>
 
 <style scoped>
 .header {
   height: 600px;
   /* margin-top: -106px;   */
+}
+
+.features-background {
+  width: 100vw; /* Full viewport width */
+  height: auto; /* Keep aspect ratio */
+}
+
+.feature-list {
 }
 
 @screen md {

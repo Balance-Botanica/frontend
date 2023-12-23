@@ -7,7 +7,7 @@
 
 <style>
 body {
-  @apply text-brand-grey bg-brand-beige-300;
+  @apply text-brand-grey bg-primary-beige;
 }
 
 .snipcart-modal__container {

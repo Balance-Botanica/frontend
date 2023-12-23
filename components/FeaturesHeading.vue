@@ -18,7 +18,7 @@ const props = defineProps({
   color: {
     type: String,
     required: false,
-    default: "text-primary-green",
+    default: "text-primary-beige",
   },
 });
 

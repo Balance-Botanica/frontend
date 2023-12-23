@@ -26,8 +26,10 @@ module.exports = {
           300: "#EAE5E0",
           DEFAULT: "#E9BA9E",
         },
-        "brand-brown-500": "#4E3924",
-        "brand-orange": "#FF6721",
+        "brand-brown-500": "#EB7D0F",
+        "secondary-green": "#5F9EA0",
+        "primary-green": "#005C46",
+        "primary-beige": "#ffebd8",
       },
       fontFamily: {
         heading: ["Playfair Display", "serif"],

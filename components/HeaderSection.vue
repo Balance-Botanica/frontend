@@ -1,6 +1,6 @@
 <template>
-  <header class="fixed z-50 w-full py-2">
-    <div class="grid items-center w-full grid-cols-12 px-4 mx-auto">
+  <header class="fixed z-50 w-full px-40px py-2">
+    <div class="grid items-center w-full grid-cols-12 px-[400px] mx-auto">
       <div class="col-span-3">
         <nuxt-link to="/">
           <IconsLogo class="h-20 py-2" />
@@ -43,7 +43,7 @@ const mobileMenuOpen = ref(false);
 
 <style scoped>
 header {
-  background: rgba(227, 217, 205, 0.8);
+  background: rgba(255, 235, 216, 1);
 }
 
 .menu-enter-active,
