@@ -44,23 +44,20 @@
     "feature_made_in_Ukraine": "",
     "feature_made_in_Ukraine_description": "", -->
 
-    <section
-      class="relative mb-20 border-b-4 md:mb-10 header border-primary-beige h-auto"
-    >
-      <div class="features-background h-auto">
-        <FeaturesBackground class="absolute top-0 bottom-0 left-0 right-0" />
+    <section class="relative mb-20 md:mb-10 border-primary-beige h-auto">
+      <div class="features-background h-auto absolute left-0 right-0">
+        <FeaturesBackground class="w-full sm:scale-y-[350%] top-[500px]" />
       </div>
-      <Container class="relative pt-[115px] sm:pt-[50px]">
-        <div class="w-full mx-auto mb-12 text-center md:w-2/3 lg:w-2/3">
+      <!-- <img
+        :src="featuresBackgroundTop"
+        class="object-cover w-full h-full absolute"
+        alt="Pick a sick wick"
+      /> -->
+      <Container class="relative pt-[100px]">
+        <div class="w-full mb-12 text-left">
           <FeaturesHeading tag="h1" font-style="h1">
-            {{ $t("features_subtitle") }}
-          </FeaturesHeading>
-          <FeaturesHeading tag="h1" font-style="h1" class="mb-2">
             {{ $t("features_title") }}
           </FeaturesHeading>
-          <p>
-            {{ $t("features_description") }}
-          </p>
         </div>
 
         <div class="feature-list">
@@ -105,9 +102,14 @@
           </div>
         </div>
       </Container>
+      <!-- <img
+        :src="featuresBackgroundBottom"
+        class="object-cover w-full h-full absolute"
+        alt="Pick a sick wick"
+      /> -->
     </section>
 
-    <section class="mb-28">
+    <section class="mb-28 mt-[200px]">
       <Container>
         <div class="w-full mx-auto mb-12 text-center md:w-2/3 lg:w-2/3">
           <Heading tag="h2" font-style="h3">{{
@@ -148,6 +150,8 @@ import { useProductsStore } from "~/store/products";
 import { useNovaPoshtaStore } from "~/store/nova-poshta";
 import { useCartStore } from "~/store/cart";
 import HeaderBg from "assets/images/header-bg.jpg";
+import featuresBackgroundTop from "assets/features/background-top.png";
+import featuresBackgroundBottom from "assets/features/background-bottom.png";
 import { logEvent } from "firebase/analytics";
 
 const config = useRuntimeConfig();
