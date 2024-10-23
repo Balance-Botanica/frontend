@@ -1,16 +1,20 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   devtools: { enabled: true },
+
   // builder: 'webpack',
   ssr: true,
+
   // buildDir: "dist",
   plugins: ["~/plugins/firebase.client.js"],
+
   modules: [
     "@nuxtjs/tailwindcss",
     "@nuxtjs/i18n",
     "@pinia/nuxt",
     "@pinia-plugin-persistedstate/nuxt",
   ],
+
   i18n: {
     lazy: true,
     langDir: "locales",
@@ -31,6 +35,7 @@ export default defineNuxtConfig({
     ],
     defaultLocale: "uk-UA",
   },
+
   pinia: {
     // autoImports: [
     //   // automatically imports `defineStore`
@@ -38,8 +43,15 @@ export default defineNuxtConfig({
     //   ["defineStore", "definePiniaStore"], // import { defineStore as definePiniaStore } from 'pinia'
     // ],
   },
+
   css: ["tailwindcss/tailwind.css"],
-  postcss: require("./postcss.config.js"),
+  postcss: {
+    plugins: {
+      tailwindcss: {},
+      autoprefixer: {},
+    },
+  },
+
   app: {
     head: {
       meta: [
@@ -72,6 +84,7 @@ export default defineNuxtConfig({
       ],
     },
   },
+
   runtimeConfig: {
     // apiSecret: "", // can be overridden by NUXT_API_SECRET environment variable
     public: {
@@ -88,4 +101,6 @@ export default defineNuxtConfig({
       firebaseMeasurementId: process.env.FIREBASE_MEASUREMENT_ID,
     },
   },
+
+  compatibilityDate: "2024-10-23",
 });
