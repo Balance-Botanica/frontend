@@ -4,19 +4,24 @@
       class="flex flex-col items-center justify-center gap-6 text-center md:flex-row"
     >
       <li
-        class="text-xl font-bold tracking-tighter transition-colors text-primary-green font-heading hover:text-secondary-green"
-      >
-        <nuxt-link to="/">{{ $t("navbar_home") }}</nuxt-link>
-      </li>
-      <li
-        class="text-xl font-bold tracking-tighter transition-colors text-primary-green font-heading hover:text-secondary-green"
+        class="text-[18px] tracking-tighter transition-colors hover:text-secondary-green"
       >
         <nuxt-link to="/shop">{{ $t("navbar_shop") }}</nuxt-link>
       </li>
       <li
-        class="text-xl font-bold tracking-tighter transition-colors text-primary-green font-heading hover:text-secondary-green"
+        class="text-[18px] tracking-tighter transition-colors hover:text-secondary-green"
+      >
+        <nuxt-link to="/about">{{ $t("navbar_about") }}</nuxt-link>
+      </li>
+      <li
+        class="text-[18px] tracking-tighter transition-colors hover:text-secondary-green"
       >
         <nuxt-link to="/contact">{{ $t("navbar_contact") }}</nuxt-link>
+      </li>
+      <li
+        class="text-[18px] tracking-tighter transition-colors hover:text-secondary-green"
+      >
+        <nuxt-link to="">{{ $t("navbar_blog") }}</nuxt-link>
       </li>
     </ul>
   </nav>

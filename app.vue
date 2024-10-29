@@ -1,13 +1,14 @@
 <template>
   <NuxtLayout>
-    <Title>Balance Botanica - CBD Gummies made in Ukraine</Title>
+    <Title> {{ $t("title") }}</Title>
     <NuxtPage
   /></NuxtLayout>
 </template>
 
 <style>
 body {
-  @apply text-brand-grey bg-primary-beige;
+  @apply font-body
+  /* @apply text-brand-grey bg-primary-beige; */;
 }
 
 .snipcart-modal__container {

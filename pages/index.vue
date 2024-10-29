@@ -1,5 +1,8 @@
 <template>
-  <div>
+  <MainTitleSection />
+  <AboutUsSection />
+  <FeaturesSection />
+  <!-- <div>
     <section
       class="relative mb-20 -mt-24 border-b-4 md:mb-10 header border-brand-beige"
     >
@@ -20,7 +23,7 @@
             <Heading tag="h2" font-style="h2">
               {{ $t("action_title") }}</Heading
             >
-            <p class="pb-4 pr-4 text-brand-gray font-body">
+            <p class="pb-4 pr-4 text-brand-gray">
               {{ $t("action_description") }}
             </p>
             <nuxt-link to="/shop">
@@ -33,26 +36,12 @@
       </div>
     </section>
 
-    <!-- "feature_no_sugar": "No added sugar",
-    "feature_no_sugar_description": "a type of jelly that is made without the addition of extra sugars during its manufacturing process. This feature is particularly appealing to health-conscious consumers who are looking to reduce their sugar intake. These jellies rely on the natural sweetness of the fruits used in their making, or they may use alternative sweeteners that are lower in calories compared to regular sugar. This approach helps in offering a healthier option while still delivering the enjoyable, fruity taste that jelly lovers expect. It's an ideal choice for those managing diabetes, following a weight-loss diet, or simply seeking a healthier lifestyle without compromising on taste.",
-    "feature_vegan": "Vegan!",
-    "feature_vegan_description": "",
-    "feature_no_restricted": "",
-    "feature_no_restricted_description": "",
-    "feature_effective_dosage": "",
-    "feature_effective_dosage_description": "",
-    "feature_made_in_Ukraine": "",
-    "feature_made_in_Ukraine_description": "", -->
-
+   
     <section class="relative mb-20 md:mb-10 border-primary-beige h-auto">
       <div class="features-background h-auto absolute left-0 right-0">
         <FeaturesBackground class="w-full sm:scale-y-[350%] top-[500px]" />
       </div>
-      <!-- <img
-        :src="featuresBackgroundTop"
-        class="object-cover w-full h-full absolute"
-        alt="Pick a sick wick"
-      /> -->
+     
       <Container class="relative pt-[100px]">
         <div class="w-full mb-12 text-left">
           <FeaturesHeading tag="h1" font-style="h1">
@@ -61,7 +50,7 @@
         </div>
 
         <div class="feature-list">
-          <!-- Feature 1: No added sugar -->
+          
           <div class="feature">
             <FeaturesHeading tag="h2" font-style="h2">{{
               $t("feature_no_sugar")
@@ -69,7 +58,7 @@
             <p>{{ $t("feature_no_sugar_description") }}</p>
           </div>
 
-          <!-- Feature 2: Vegan -->
+        
           <div class="feature">
             <FeaturesHeading tag="h2" font-style="h2">{{
               $t("feature_vegan")
@@ -77,7 +66,7 @@
             <p>{{ $t("feature_vegan_description") }}</p>
           </div>
 
-          <!-- Feature 3: No restricted ingredients -->
+         
           <div class="feature">
             <FeaturesHeading tag="h2" font-style="h2">{{
               $t("feature_no_restricted")
@@ -85,7 +74,7 @@
             <p>{{ $t("feature_no_restricted_description") }}</p>
           </div>
 
-          <!-- Feature 4: Effective dosage -->
+        
           <div class="feature">
             <FeaturesHeading tag="h2" font-style="h2">{{
               $t("feature_effective_dosage")
@@ -93,7 +82,6 @@
             <p>{{ $t("feature_effective_dosage_description") }}</p>
           </div>
 
-          <!-- Feature 5: Made in Ukraine -->
           <div class="feature">
             <FeaturesHeading tag="h2" font-style="h2">{{
               $t("feature_made_in_Ukraine")
@@ -102,11 +90,11 @@
           </div>
         </div>
       </Container>
-      <!-- <img
+     
         :src="featuresBackgroundBottom"
         class="object-cover w-full h-full absolute"
         alt="Pick a sick wick"
-      /> -->
+      /> 
     </section>
 
     <section class="mb-28 mt-[200px]">
@@ -132,14 +120,14 @@
           />
         </div>
 
-        <!-- <div>{{ JSON.stringify(displayedProducts) }}</div> -->
+     
 
         <div class="flex justify-center mt-10">
           <Btn theme="secondary">{{ $t("all_products_view_all") }}</Btn>
         </div>
       </Container>
     </section>
-  </div>
+  </div> -->
 </template>
 
 <script setup>
@@ -149,10 +137,7 @@ import { useI18n } from "vue-i18n";
 import { useProductsStore } from "~/store/products";
 import { useNovaPoshtaStore } from "~/store/nova-poshta";
 import { useCartStore } from "~/store/cart";
-import HeaderBg from "assets/images/header-bg.jpg";
-import featuresBackgroundTop from "assets/features/background-top.png";
-import featuresBackgroundBottom from "assets/features/background-bottom.png";
-import { logEvent } from "firebase/analytics";
+import MainTitleSection from "~/components/MainTitleSection.vue";
 
 const config = useRuntimeConfig();
 const nuxtApp = useNuxtApp();

@@ -19,9 +19,9 @@ const props = defineProps({
 const classes = computed(() => {
   const themeClasses = {
     primary:
-      "px-6 py-4 text-2xl font-bold text-white shadow-xl bg-primary-green font-heading rounded-none",
+      "px-6 py-4 text-2xl font-bold text-white shadow-xl bg-primary-green rounded-none",
     secondary:
-      "px-6 py-4 text-2xl font-bold text-primary-green border border-3 border-primary-green font-heading rounded-none",
+      "px-6 py-4 text-2xl font-bold text-primary-green border border-3 border-primary-green rounded-none",
   };
   return themeClasses[props.theme];
 });

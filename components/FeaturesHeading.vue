@@ -24,10 +24,10 @@ const props = defineProps({
 
 const classes = computed(() => {
   const styleClasses = {
-    h1: "pb-2 text-5xl font-bold tracking-tighter font-heading leading-none",
-    h2: "pb-2 text-4xl font-bold tracking-tighter font-heading leading-none",
+    h1: "pb-2 text-5xl font-bold tracking-tighter leading-none",
+    h2: "pb-2 text-4xl font-bold tracking-tighter leading-none",
     h3: "text-xl leading-none font-extralight",
-    h4: "pb-2 text-3xl font-bold tracking-tighter font-heading leading-none",
+    h4: "pb-2 text-3xl font-bold tracking-tighter leading-none",
   };
   return ` ${styleClasses[props.fontStyle]} ${props.color}`;
 });

@@ -1,7 +1,5 @@
 <template>
-  <nav
-    class="fixed inset-0 z-50 flex items-center justify-center bg-primary-beige"
-  >
+  <nav class="fixed inset-0 z-50 flex items-center justify-center">
     <button
       class="absolute p-1 right-4 top-8 text-brand-grey-800"
       title="Close"

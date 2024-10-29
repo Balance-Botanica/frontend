@@ -1,6 +1,11 @@
 <template>
-  <header class="fixed z-50 w-full px-40px py-2">
-    <div class="grid items-center w-full grid-cols-12 px-[400px] mx-auto">
+  <header class="z-50 w-full">
+    <div
+      class="w-full flex items-center justify-center border-b border-[#E0E0E0] text-center text-[16px, #000000] leading-[24px] py-[12px]"
+    >
+      {{ $t("delivery_header_info") }}
+    </div>
+    <div class="grid items-center w-full grid-cols-12 px-[150px] mx-auto">
       <div class="col-span-3">
         <nuxt-link to="/">
           <IconsLogo class="h-20 py-2" />
@@ -43,7 +48,6 @@ const mobileMenuOpen = ref(false);
 
 <style scoped>
 header {
-  background: rgba(255, 235, 216, 1);
 }
 
 .menu-enter-active,

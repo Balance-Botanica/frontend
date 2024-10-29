@@ -32,8 +32,12 @@ module.exports = {
         "primary-beige": "#ffebd8",
       },
       fontFamily: {
-        heading: ["Playfair Display", "serif"],
-        body: ["Source Sans Pro"],
+        heading: ["Poppins", "sans-serif"],
+        body: ["Poppins", "sans-serif"],
+        action: ["Poppins", "sans-serif"],
+      },
+      borderRadius: {
+        "action-btn": "100px",
       },
     },
   },
