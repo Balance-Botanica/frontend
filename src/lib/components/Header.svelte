@@ -2,19 +2,12 @@
   import { colors } from '../colors';
   import { typography } from '../typography';
   import { m } from '$lib/paraglide/messages.js';
+  import LanguageSwitcher from './LanguageSwitcher.svelte';
   
   // Import logo and icons
   import logoText from '../assets/icons/logo-text.svg';
   import personIcon from '../assets/icons/person.svg';
   import cartIcon from '../assets/icons/cart.svg';
-  
-  // Language switcher state
-  let currentLanguage = 'uk';
-  
-  const languages = [
-    { code: 'uk', name: m['header.language.uk'](), flag: '🇺🇦' },
-    { code: 'en', name: m['header.language.en'](), flag: '🇬🇧' }
-  ];
   
   const navigationLinks = [
     { href: '/shop', label: m['header.navigation.shop']() },
@@ -22,12 +15,6 @@
     { href: '/contacts', label: m['header.navigation.contacts']() },
     { href: '/blog', label: m['header.navigation.blog']() }
   ];
-  
-  function handleLanguageChange(langCode: string) {
-    currentLanguage = langCode;
-    // TODO: Implement actual language switching logic
-    console.log('Language changed to:', langCode);
-  }
   
   function handlePersonClick() {
     // TODO: Navigate to account/login page
@@ -77,23 +64,7 @@
     <!-- Right Side Actions -->
     <div class="flex items-center space-x-4">
       <!-- Language Switcher -->
-      <div class="relative">
-        <button
-          class="flex items-center space-x-2 px-3 py-2 rounded-lg hover:bg-gray-50 hover:border hover:border-stroke transition-all duration-200 hover:scale-105 hover:shadow-sm cursor-pointer"
-          on:click={() => handleLanguageChange(currentLanguage === 'uk' ? 'en' : 'uk')}
-          aria-label={m['header.accessibility.change_language']()}
-        >
-          <span class="text-lg">
-            {languages.find(lang => lang.code === currentLanguage)?.flag}
-          </span>
-          <span 
-            class="text-sm font-medium"
-            style="color: {colors.heading}; font-size: {typography.sizes.sm}; font-weight: {typography.weights.medium};"
-          >
-            {languages.find(lang => lang.code === currentLanguage)?.name}
-          </span>
-        </button>
-      </div>
+      <LanguageSwitcher />
       
       <!-- Action Icons -->
       <div class="flex items-center space-x-2">
