@@ -79,7 +79,7 @@
       <!-- Language Switcher -->
       <div class="relative">
         <button
-          class="flex items-center space-x-2 px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors duration-200"
+          class="flex items-center space-x-2 px-3 py-2 rounded-lg hover:bg-gray-50 transition-all duration-200 hover:scale-105 hover:shadow-sm"
           on:click={() => handleLanguageChange(currentLanguage === 'uk' ? 'en' : 'uk')}
           aria-label={m['header.accessibility.change_language']()}
         >
@@ -93,7 +93,7 @@
             {languages.find(lang => lang.code === currentLanguage)?.name}
           </span>
           <svg 
-            class="w-4 h-4 ml-1" 
+            class="w-4 h-4 ml-1 transition-transform duration-200 group-hover:rotate-180" 
             fill="none" 
             stroke="currentColor" 
             viewBox="0 0 24 24"
@@ -108,27 +108,27 @@
       <div class="flex items-center space-x-2">
         <!-- Person/Account Icon -->
         <button
-          class="w-12 h-12 rounded-full bg-main flex items-center justify-center hover:bg-main-additional transition-colors duration-200"
+          class="w-12 h-12 rounded-full bg-main flex items-center justify-center hover:bg-main-additional transition-all duration-200 hover:scale-110 hover:shadow-lg cursor-pointer"
           on:click={handlePersonClick}
           aria-label={m['header.accessibility.account']()}
         >
           <img 
             src={personIcon} 
             alt="Account" 
-            class="w-6 h-6"
+            class="w-6 h-6 transition-transform duration-200 hover:scale-110"
           />
         </button>
         
         <!-- Cart Icon -->
         <button
-          class="w-12 h-12 rounded-full bg-main flex items-center justify-center hover:bg-main-additional transition-colors duration-200"
+          class="w-12 h-12 rounded-full bg-main flex items-center justify-center hover:bg-main-additional transition-all duration-200 hover:scale-110 hover:shadow-lg cursor-pointer"
           on:click={handleCartClick}
           aria-label={m['header.accessibility.shopping_cart']()}
         >
           <img 
             src={cartIcon} 
             alt="Cart" 
-            class="w-6 h-6"
+            class="w-6 h-6 transition-transform duration-200 hover:scale-110"
           />
         </button>
       </div>
