@@ -4,4 +4,19 @@
 
 @theme {
   --font-sans: "Poppins", ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  
+  /* Balance Botanica Color Palette from Figma */
+  --color-main: #4B766E;
+  --color-main-additional: #1F1F1F;
+  --color-heading: #000000;
+  --color-text: #474747;
+  --color-primary: #9A9A9A;
+  --color-secondary: #B6B6B6;
+  --color-tertiary: #C5C5C5;
+  --color-tertiary-additional: #F7F7F7;
+  --color-optional: #FFFFFF;
+  --color-destructive: #FF3B30;
+  --color-stroke: #E0E0E0;
+  --color-background: #F8F7F6;
+  --color-foreground-popup: #00000080;
 }
