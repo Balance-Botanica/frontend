@@ -1,6 +1,7 @@
 <script lang="ts">
   import { colors } from '../colors';
   import { typography } from '../typography';
+  import { m } from '$lib/paraglide/messages.js';
   
   // Import logo and icons
   import logoText from '../assets/icons/logo-text.svg';
@@ -11,15 +12,15 @@
   let currentLanguage = 'uk';
   
   const languages = [
-    { code: 'uk', name: 'Укр', flag: '🇺🇦' },
-    { code: 'en', name: 'En', flag: '🇬🇧' }
+    { code: 'uk', name: m['header.language.uk'](), flag: '\u{1F1FA}\u{1F1E6}' },
+    { code: 'en', name: m['header.language.en'](), flag: '\u{1F1EC}\u{1F1E7}' }
   ];
   
   const navigationLinks = [
-    { href: '/shop', label: 'Магазин' },
-    { href: '/about', label: 'Про компанію' },
-    { href: '/contacts', label: 'Контакти' },
-    { href: '/blog', label: 'Блог' }
+    { href: '/shop', label: m['header.navigation.shop']() },
+    { href: '/about', label: m['header.navigation.about']() },
+    { href: '/contacts', label: m['header.navigation.contacts']() },
+    { href: '/blog', label: m['header.navigation.blog']() }
   ];
   
   function handleLanguageChange(langCode: string) {
@@ -80,7 +81,7 @@
         <button
           class="flex items-center space-x-2 px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors duration-200"
           on:click={() => handleLanguageChange(currentLanguage === 'uk' ? 'en' : 'uk')}
-          aria-label="Change language"
+          aria-label={m['header.accessibility.change_language']()}
         >
           <span class="text-lg">
             {languages.find(lang => lang.code === currentLanguage)?.flag}
@@ -109,7 +110,7 @@
         <button
           class="w-12 h-12 rounded-full bg-main flex items-center justify-center hover:bg-main-additional transition-colors duration-200"
           on:click={handlePersonClick}
-          aria-label="Account"
+          aria-label={m['header.accessibility.account']()}
         >
           <img 
             src={personIcon} 
@@ -122,7 +123,7 @@
         <button
           class="w-12 h-12 rounded-full bg-main flex items-center justify-center hover:bg-main-additional transition-colors duration-200"
           on:click={handleCartClick}
-          aria-label="Shopping cart"
+          aria-label={m['header.accessibility.shopping_cart']()}
         >
           <img 
             src={cartIcon} 

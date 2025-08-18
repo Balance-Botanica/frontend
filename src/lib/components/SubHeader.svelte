@@ -1,8 +1,7 @@
 <script lang="ts">
   import { colors } from '../colors';
   import { typography } from '../typography';
-  
-  export let message: string = 'Замовлення від 1000 UAH доставляются безкоштовно 📦';
+  import { m } from '$lib/paraglide/messages.js';
 </script>
 
 <div 
@@ -15,5 +14,5 @@
     line-height: {typography.styles.linkButtonMedium.lineHeight};
   "
 >
-  {message}
+  {m['subheader.delivery_message']()}
 </div>

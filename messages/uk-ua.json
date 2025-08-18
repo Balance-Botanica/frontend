@@ -1,4 +1,55 @@
 {
 	"$schema": "https://inlang.com/schema/inlang-message-format",
-	"hello_world": "Hello, {name} from uk-ua!"
+	"hello_world": "Hello, {name} from uk-ua!",
+	
+	"header": {
+		"navigation": {
+			"shop": "Магазин",
+			"about": "Про компанію",
+			"contacts": "Контакти",
+			"blog": "Блог"
+		},
+		"language": {
+			"uk": "Укр",
+			"en": "En"
+		},
+		"accessibility": {
+			"change_language": "Змінити мову",
+			"account": "Обліковий запис",
+			"shopping_cart": "Кошик покупок"
+		}
+	},
+	
+	"subheader": {
+		"delivery_message": "Замовлення від 1000 UAH доставляются безкоштовно 📦"
+	},
+	
+	"footer": {
+		"navigation": {
+			"shop": "Магазин",
+			"about": "Про компанію",
+			"terms": "Оферта",
+			"contacts": "Контакти",
+			"blog": "Блог"
+		},
+		"newsletter": {
+			"title": "Підписка на розсилку",
+			"placeholder": "Електронна пошта",
+			"button": "Підписатись"
+		},
+		"company": {
+			"description": "Balance Botanica – одна з перших в Україні компаній, що виробляє продукцію з канабідіолом (КБД). Заснована у 2023 році. Пропонуємо високоякісну продукцію за доступною ціною, яка конкурує із західними аналогами."
+		},
+		"legal": {
+			"copyright": "© 2024. All Rights Reserved.",
+			"terms_privacy": "Terms of Service | Privacy Policy"
+		},
+		"social": {
+			"facebook": "Facebook",
+			"instagram": "Instagram",
+			"tiktok": "TikTok",
+			"telegram": "Telegram",
+			"whatsapp": "WhatsApp"
+		}
+	}
 }

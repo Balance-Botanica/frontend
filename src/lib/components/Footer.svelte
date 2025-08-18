@@ -3,6 +3,7 @@
   import { typography } from '../typography';
   import Input from './Input.svelte';
   import Button from './Button.svelte';
+  import { m } from '$lib/paraglide/messages.js';
   
   // Import the actual SVG icons
   import waIcon from '../assets/icons/wa.svg';
@@ -12,24 +13,23 @@
   import fbIcon from '../assets/icons/fb.svg';
   
   export let companyName: string = 'Balance Botanica';
-  export let companyDescription: string = 'Balance Botanica – одна з перших в Україні компаній, що виробляє продукцію з канабідіолом (КБД). Заснована у 2023 році. Пропонуємо високоякісну продукцію за доступною ціною, яка конкурує із західними аналогами.';
   
   let emailValue = '';
   
   const navigationLinks = [
-    { href: '/shop', label: 'Магазин' },
-    { href: '/about', label: 'Про компанію' },
-    { href: '/terms', label: 'Оферта' },
-    { href: '/contacts', label: 'Контакти' },
-    { href: '/blog', label: 'Блог' }
+    { href: '/shop', label: m['footer.navigation.shop']() },
+    { href: '/about', label: m['footer.navigation.about']() },
+    { href: '/terms', label: m['footer.navigation.terms']() },
+    { href: '/contacts', label: m['footer.navigation.contacts']() },
+    { href: '/blog', label: m['footer.navigation.blog']() }
   ];
   
   const socialLinks = [
-    { href: '#', icon: fbIcon, label: 'Facebook' },
-    { href: '#', icon: igIcon, label: 'Instagram' },
-    { href: '#', icon: ttIcon, label: 'TikTok' },
-    { href: '#', icon: tgIcon, label: 'Telegram' },
-    { href: '#', icon: waIcon, label: 'WhatsApp' }
+    { href: '#', icon: fbIcon, label: m['footer.social.facebook']() },
+    { href: '#', icon: igIcon, label: m['footer.social.instagram']() },
+    { href: '#', icon: ttIcon, label: m['footer.social.tiktok']() },
+    { href: '#', icon: tgIcon, label: m['footer.social.telegram']() },
+    { href: '#', icon: waIcon, label: m['footer.social.whatsapp']() }
   ];
   
   function handleEmailChange(value: string) {
@@ -81,7 +81,7 @@
             line-height: {typography.styles.p2.lineHeight};
           "
         >
-          {companyDescription}
+          {m['footer.company.description']()}
         </p>
       </div>
       
@@ -95,13 +95,13 @@
             line-height: {typography.styles.h5.lineHeight};
           "
         >
-          Підписка на розсилку
+          {m['footer.newsletter.title']()}
         </h3>
         
         <div class="flex flex-col sm:flex-row gap-3">
           <Input
             type="email"
-            placeholder="Електронна пошта"
+            placeholder={m['footer.newsletter.placeholder']()}
             value={emailValue}
             onChange={handleEmailChange}
           />
@@ -110,7 +110,7 @@
             size="md"
             onClick={handleSubscribe}
           >
-            Підписатись
+            {m['footer.newsletter.button']()}
           </Button>
         </div>
       </div>
@@ -128,7 +128,7 @@
               font-weight: {typography.weights.regular};
             "
           >
-            © 2024. All Rights Reserved.
+            {m['footer.legal.copyright']()}
           </p>
           <p 
             class="text-white/50"
@@ -137,7 +137,7 @@
               font-weight: {typography.weights.regular};
             "
           >
-            Terms of Service | Privacy Policy
+            {m['footer.legal.terms_privacy']()}
           </p>
         </div>
         
