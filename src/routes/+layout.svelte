@@ -10,10 +10,7 @@
 
 	const excludeFooterRoutes = [
 		'/design-system',
-		'/components',
-		'/footer-demo',
-		'/subheader-demo',
-		'/header-demo'
+		'/components'
 	];
 
 	const showFooter = $derived(!excludeFooterRoutes.includes($page.url.pathname));
@@ -24,8 +21,8 @@
 </svelte:head>
 
 <div class="flex flex-col min-h-screen">
-	<Header />
 	<SubHeader />
+	<Header />
 	<main class="flex-grow">
 		{@render children?.()}
 	</main>
