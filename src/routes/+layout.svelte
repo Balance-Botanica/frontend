@@ -1,20 +1,32 @@
 <script lang="ts">
 	import '../app.css';
 	import favicon from '$lib/assets/favicon.svg';
-	import Footer from '$lib/components/Footer.svelte';
 	import { page } from '$app/stores';
+	import SubHeader from '$lib/components/SubHeader.svelte';
+	import Footer from '$lib/components/Footer.svelte';
 	
 	let { children } = $props();
 
-	const hiddenFooterPrefixes = ['/design-system', '/components', '/footer-demo'];
+	const excludeFooterRoutes = [
+		'/design-system',
+		'/components',
+		'/footer-demo',
+		'/subheader-demo'
+	];
+
+	const showFooter = $derived(!excludeFooterRoutes.includes($page.url.pathname));
 </script>
 
 <svelte:head>
 	<link rel="icon" href={favicon} />
 </svelte:head>
 
-{@render children?.()}
-
-{#if !hiddenFooterPrefixes.some((p) => $page.url.pathname.startsWith(p))}
-	<Footer />
-{/if}
+<div class="flex flex-col min-h-screen">
+	<SubHeader />
+	<main class="flex-grow">
+		{@render children?.()}
+	</main>
+	{#if showFooter}
+		<Footer />
+	{/if}
+</div>
