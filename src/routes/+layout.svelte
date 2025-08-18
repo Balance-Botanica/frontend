@@ -2,6 +2,7 @@
 	import '../app.css';
 	import favicon from '$lib/assets/favicon.svg';
 	import { page } from '$app/stores';
+	import Header from '$lib/components/Header.svelte';
 	import SubHeader from '$lib/components/SubHeader.svelte';
 	import Footer from '$lib/components/Footer.svelte';
 	
@@ -11,7 +12,8 @@
 		'/design-system',
 		'/components',
 		'/footer-demo',
-		'/subheader-demo'
+		'/subheader-demo',
+		'/header-demo'
 	];
 
 	const showFooter = $derived(!excludeFooterRoutes.includes($page.url.pathname));
@@ -22,6 +24,7 @@
 </svelte:head>
 
 <div class="flex flex-col min-h-screen">
+	<Header />
 	<SubHeader />
 	<main class="flex-grow">
 		{@render children?.()}

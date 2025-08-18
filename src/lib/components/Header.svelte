@@ -1,0 +1,136 @@
+<script lang="ts">
+  import { colors } from '../colors';
+  import { typography } from '../typography';
+  
+  // Import logo and icons
+  import logoText from '../assets/icons/logo-text.svg';
+  import personIcon from '../assets/icons/person.svg';
+  import cartIcon from '../assets/icons/cart.svg';
+  
+  // Language switcher state
+  let currentLanguage = 'uk';
+  
+  const languages = [
+    { code: 'uk', name: 'Укр', flag: '🇺🇦' },
+    { code: 'en', name: 'En', flag: '🇬🇧' }
+  ];
+  
+  const navigationLinks = [
+    { href: '/shop', label: 'Магазин' },
+    { href: '/about', label: 'Про компанію' },
+    { href: '/contacts', label: 'Контакти' },
+    { href: '/blog', label: 'Блог' }
+  ];
+  
+  function handleLanguageChange(langCode: string) {
+    currentLanguage = langCode;
+    // TODO: Implement actual language switching logic
+    console.log('Language changed to:', langCode);
+  }
+  
+  function handlePersonClick() {
+    // TODO: Navigate to account/login page
+    console.log('Person icon clicked');
+  }
+  
+  function handleCartClick() {
+    // TODO: Navigate to cart page
+    console.log('Cart icon clicked');
+  }
+</script>
+
+<header 
+  class="w-full bg-white border-b border-stroke"
+  style="height: 80px;"
+>
+  <div class="max-w-7xl mx-auto px-6 h-full flex items-center justify-between">
+    <!-- Logo -->
+    <div class="flex items-center">
+      <a href="/" class="flex items-center">
+        <img 
+          src={logoText} 
+          alt="Balance Botanica" 
+          class="h-12 w-auto"
+        />
+      </a>
+    </div>
+    
+    <!-- Navigation Menu -->
+    <nav class="hidden md:flex items-center space-x-8">
+      {#each navigationLinks as link}
+        <a 
+          href={link.href}
+          class="text-base font-medium transition-colors duration-200 hover:text-main"
+          style="
+            color: {colors.heading};
+            font-size: {typography.sizes.base};
+            font-weight: {typography.weights.medium};
+            line-height: {typography.styles.linkButtonMedium.lineHeight};
+          "
+        >
+          {link.label}
+        </a>
+      {/each}
+    </nav>
+    
+    <!-- Right Side Actions -->
+    <div class="flex items-center space-x-4">
+      <!-- Language Switcher -->
+      <div class="relative">
+        <button
+          class="flex items-center space-x-2 px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors duration-200"
+          on:click={() => handleLanguageChange(currentLanguage === 'uk' ? 'en' : 'uk')}
+          aria-label="Change language"
+        >
+          <span class="text-lg">
+            {languages.find(lang => lang.code === currentLanguage)?.flag}
+          </span>
+          <span 
+            class="text-sm font-medium"
+            style="color: {colors.heading}; font-size: {typography.sizes.sm}; font-weight: {typography.weights.medium};"
+          >
+            {languages.find(lang => lang.code === currentLanguage)?.name}
+          </span>
+          <svg 
+            class="w-4 h-4 ml-1" 
+            fill="none" 
+            stroke="currentColor" 
+            viewBox="0 0 24 24"
+            style="color: {colors.heading};"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          </svg>
+        </button>
+      </div>
+      
+      <!-- Action Icons -->
+      <div class="flex items-center space-x-2">
+        <!-- Person/Account Icon -->
+        <button
+          class="w-12 h-12 rounded-full bg-main flex items-center justify-center hover:bg-main-additional transition-colors duration-200"
+          on:click={handlePersonClick}
+          aria-label="Account"
+        >
+          <img 
+            src={personIcon} 
+            alt="Account" 
+            class="w-6 h-6"
+          />
+        </button>
+        
+        <!-- Cart Icon -->
+        <button
+          class="w-12 h-12 rounded-full bg-main flex items-center justify-center hover:bg-main-additional transition-colors duration-200"
+          on:click={handleCartClick}
+          aria-label="Shopping cart"
+        >
+          <img 
+            src={cartIcon} 
+            alt="Cart" 
+            class="w-6 h-6"
+          />
+        </button>
+      </div>
+    </div>
+  </div>
+</header>

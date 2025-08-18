@@ -6,7 +6,7 @@
 </script>
 
 <div 
-  class="w-full py-3 text-center"
+  class="w-full py-3 text-center sticky top-0 z-50"
   style="
     background-color: {colors.main};
     color: {colors.optional};
