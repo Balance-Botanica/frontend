@@ -4,6 +4,13 @@
   import Input from './Input.svelte';
   import Button from './Button.svelte';
   
+  // Import the actual SVG icons
+  import waIcon from '../assets/icons/wa.svg';
+  import tgIcon from '../assets/icons/tg.svg';
+  import ttIcon from '../assets/icons/tt.svg';
+  import igIcon from '../assets/icons/ig.svg';
+  import fbIcon from '../assets/icons/fb.svg';
+  
   export let companyName: string = 'Balance Botanica';
   export let companyDescription: string = 'Balance Botanica – одна з перших в Україні компаній, що виробляє продукцію з канабідіолом (КБД). Заснована у 2023 році. Пропонуємо високоякісну продукцію за доступною ціною, яка конкурує із західними аналогами.';
   
@@ -18,11 +25,11 @@
   ];
   
   const socialLinks = [
-    { href: '#', icon: '📱', label: 'Social Media' },
-    { href: '#', icon: '📷', label: 'Instagram' },
-    { href: '#', icon: '🐦', label: 'Twitter' },
-    { href: '#', icon: '📬', label: 'Telegram' },
-    { href: '#', icon: '💬', label: 'Viber' }
+    { href: '#', icon: fbIcon, label: 'Facebook' },
+    { href: '#', icon: igIcon, label: 'Instagram' },
+    { href: '#', icon: ttIcon, label: 'TikTok' },
+    { href: '#', icon: tgIcon, label: 'Telegram' },
+    { href: '#', icon: waIcon, label: 'WhatsApp' }
   ];
   
   function handleEmailChange(value: string) {
@@ -142,7 +149,11 @@
               class="w-6 h-6 flex items-center justify-center text-white hover:opacity-80 transition-opacity"
               aria-label={social.label}
             >
-              <span class="text-lg">{social.icon}</span>
+              <img 
+                src={social.icon} 
+                alt={social.label}
+                class="w-6 h-6"
+              />
             </a>
           {/each}
         </div>
