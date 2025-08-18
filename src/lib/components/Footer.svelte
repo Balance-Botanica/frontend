@@ -35,73 +35,71 @@
 	}
 </script>
 
-<footer class="bg-white border-t border-stroke">
+<footer class="bg-main text-white">
 	<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-		<!-- Logo Section -->
-		<div class="flex justify-center mb-8">
-			<img src={logoText} alt="Balance Botanica" class="h-8" />
-		</div>
+		<!-- Main Footer Content - 2 Column Layout -->
+		<div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+			<!-- Left Column: Logo, Navigation, Company Info -->
+			<div class="space-y-6">
+				<!-- Logo - Left Aligned -->
+				<div class="flex justify-start">
+					<img src={logoText} alt="Balance Botanica" class="h-8 brightness-0 invert" />
+				</div>
 
-		<!-- Main Footer Content -->
-		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
-			<!-- Company Info -->
-			<div class="lg:col-span-2">
-				<p class="text-text text-sm leading-relaxed max-w-md">
+				<!-- Navigation Links - Horizontal -->
+				<nav class="flex flex-wrap gap-6">
+					<a href="#" class="text-white/80 text-sm hover:text-white transition-colors">{m['footer.navigation.shop']()}</a>
+					<a href="#" class="text-white/80 text-sm hover:text-white transition-colors">{m['footer.navigation.about']()}</a>
+					<a href="#" class="text-white/80 text-sm hover:text-white transition-colors">{m['footer.navigation.contacts']()}</a>
+					<a href="#" class="text-white/80 text-sm hover:text-white transition-colors">{m['footer.navigation.blog']()}</a>
+				</nav>
+
+				<!-- Company Description -->
+				<p class="text-white/80 text-sm leading-relaxed max-w-md">
 					{m['footer.company.description']()}
 				</p>
 			</div>
 
-			<!-- Navigation -->
+			<!-- Right Column: Newsletter Only -->
 			<div>
-				<h3 class="text-heading font-semibold text-sm mb-4">Navigation</h3>
-				<ul class="space-y-2">
-					<li><a href="#" class="text-text text-sm hover:text-main transition-colors">{m['footer.navigation.shop']()}</a></li>
-					<li><a href="#" class="text-text text-sm hover:text-main transition-colors">{m['footer.navigation.about']()}</a></li>
-					<li><a href="#" class="text-text text-sm hover:text-main transition-colors">{m['footer.navigation.contacts']()}</a></li>
-					<li><a href="#" class="text-text text-sm hover:text-main transition-colors">{m['footer.navigation.blog']()}</a></li>
-				</ul>
+				<!-- Newsletter Section -->
+				<div>
+					<h3 class="text-white font-semibold text-sm mb-3">{m['footer.newsletter.title']()}</h3>
+					<form class="flex gap-2">
+						<Input
+							type="email"
+							placeholder={m['footer.newsletter.placeholder']()}
+							required
+						/>
+						<Button variant="secondary" size="sm">
+							{m['footer.newsletter.button']()}
+						</Button>
+					</form>
+				</div>
 			</div>
+		</div>
 
-			<!-- Social Links -->
-			<div>
-				<h3 class="text-heading font-semibold text-sm mb-4">Follow Us</h3>
-				<div class="flex space-x-3">
+		<!-- Bottom Section - After Divider -->
+		<div class="border-t border-white/20 pt-6">
+			<div class="flex flex-col sm:flex-row justify-between items-center">
+				<!-- Left Side: Copyright and Terms -->
+				<div class="text-xs text-white/60">
+					<span>{m['footer.legal.copyright']()}</span>
+					<span class="mx-2">|</span>
+					<a href="#" class="hover:text-white transition-colors">{m['footer.legal.terms_privacy']()}</a>
+				</div>
+
+				<!-- Right Side: Social Icons Only (No "Follow Us" text) -->
+				<div class="flex space-x-3 mt-2 sm:mt-0">
 					{#each socialLinks as link}
 						<a
 							href={link.href}
-							class="text-text hover:text-main transition-colors"
+							class="text-white/80 hover:text-white transition-colors"
 							aria-label={link.label}
 						>
 							<img src={getSocialIcon(link.platform)} alt={link.label} class="w-5 h-5" />
 						</a>
 					{/each}
-				</div>
-			</div>
-		</div>
-
-		<!-- Newsletter Section -->
-		<div class="border-t border-stroke pt-8 mb-8">
-			<div class="max-w-md">
-				<h3 class="text-heading font-semibold text-sm mb-3">{m['footer.newsletter.title']()}</h3>
-				<form class="flex gap-2">
-					<Input
-						type="email"
-						placeholder={m['footer.newsletter.placeholder']()}
-						required
-					/>
-					<Button variant="primary" size="sm">
-						{m['footer.newsletter.button']()}
-					</Button>
-				</form>
-			</div>
-		</div>
-
-		<!-- Legal Section -->
-		<div class="border-t border-stroke pt-6">
-			<div class="flex flex-col sm:flex-row justify-between items-center text-xs text-text">
-				<p>{m['footer.legal.copyright']()}</p>
-				<div class="mt-2 sm:mt-0">
-					<a href="#" class="hover:text-main transition-colors">{m['footer.legal.terms_privacy']()}</a>
 				</div>
 			</div>
 		</div>
