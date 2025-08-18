@@ -12,8 +12,8 @@
   let currentLanguage = 'uk';
   
   const languages = [
-    { code: 'uk', name: m['header.language.uk'](), flag: '\u{1F1FA}\u{1F1E6}' },
-    { code: 'en', name: m['header.language.en'](), flag: '\u{1F1EC}\u{1F1E7}' }
+    { code: 'uk', name: m['header.language.uk'](), flag: '🇺🇦' },
+    { code: 'en', name: m['header.language.en'](), flag: '🇬🇧' }
   ];
   
   const navigationLinks = [
