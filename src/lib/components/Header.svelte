@@ -79,7 +79,7 @@
       <!-- Language Switcher -->
       <div class="relative">
         <button
-          class="flex items-center space-x-2 px-3 py-2 rounded-lg hover:bg-gray-50 transition-all duration-200 hover:scale-105 hover:shadow-sm"
+          class="flex items-center space-x-2 px-3 py-2 rounded-lg hover:bg-gray-50 hover:border hover:border-stroke transition-all duration-200 hover:scale-105 hover:shadow-sm cursor-pointer"
           on:click={() => handleLanguageChange(currentLanguage === 'uk' ? 'en' : 'uk')}
           aria-label={m['header.accessibility.change_language']()}
         >
@@ -92,15 +92,6 @@
           >
             {languages.find(lang => lang.code === currentLanguage)?.name}
           </span>
-          <svg 
-            class="w-4 h-4 ml-1 transition-transform duration-200 group-hover:rotate-180" 
-            fill="none" 
-            stroke="currentColor" 
-            viewBox="0 0 24 24"
-            style="color: {colors.heading};"
-          >
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-          </svg>
         </button>
       </div>
       
