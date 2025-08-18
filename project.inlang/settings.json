@@ -11,5 +11,11 @@
 	"locales": [
 		"en",
 		"uk-ua"
-	]
+	],
+	"@inlang/plugin-message-format": {
+		"strategy": ["localStorage", "baseLocale"]
+	},
+	"@inlang/plugin-m-function-matcher": {
+		"strategy": ["localStorage", "baseLocale"]
+	}
 }
