@@ -1,17 +1,17 @@
 import { writable } from 'svelte/store';
 import { browser } from '$app/environment';
-import { setLanguageTag } from '$lib/paraglide/runtime.js';
+import { setLocale } from '$lib/paraglide/runtime.js';
 
 // Supported languages
 export const SUPPORTED_LANGUAGES = [
-	{ code: 'uk', name: 'Українська', flag: '🇺🇦', locale: 'uk-UA' },
+	{ code: 'uk-ua', name: 'Українська', flag: '🇺🇦', locale: 'uk-UA' },
 	{ code: 'en', name: 'English', flag: '🇬🇧', locale: 'en-GB' }
 ] as const;
 
 export type LanguageCode = (typeof SUPPORTED_LANGUAGES)[number]['code'];
 
 // Default language (Ukrainian)
-const DEFAULT_LANGUAGE: LanguageCode = 'uk';
+const DEFAULT_LANGUAGE: LanguageCode = 'uk-ua';
 
 // Get initial language from localStorage or browser preference
 function getInitialLanguage(): LanguageCode {
@@ -25,7 +25,7 @@ function getInitialLanguage(): LanguageCode {
 
 	// Fallback to browser language
 	const browserLang = navigator.language.split('-')[0];
-	if (browserLang === 'uk') return 'uk';
+	if (browserLang === 'uk') return 'uk-ua';
 	if (browserLang === 'en') return 'en';
 
 	return DEFAULT_LANGUAGE;
@@ -37,7 +37,7 @@ function createLocaleStore() {
 
 	// Initialize Paraglide with the current language
 	let currentLanguage = getInitialLanguage();
-	setLanguageTag(currentLanguage);
+	setLocale(currentLanguage);
 
 	return {
 		subscribe,
@@ -50,14 +50,14 @@ function createLocaleStore() {
 			}
 
 			currentLanguage = language;
-			setLanguageTag(language);
+			setLocale(language);
 
 			if (browser) {
 				localStorage.setItem('balance-botanica-locale', language);
 				// Update document lang attribute for accessibility
-				document.documentElement.lang = language;
+				document.documentElement.lang = language.split('-')[0];
 				// Update document title language if needed
-				document.documentElement.setAttribute('xml:lang', language);
+				document.documentElement.setAttribute('xml:lang', language.split('-')[0]);
 			}
 
 			set(language);
@@ -65,7 +65,7 @@ function createLocaleStore() {
 
 		// Toggle between languages
 		toggle: () => {
-			const newLang = currentLanguage === 'uk' ? 'en' : 'uk';
+			const newLang = currentLanguage === 'uk-ua' ? 'en' : 'uk-ua';
 			return this.set(newLang);
 		},
 
@@ -94,6 +94,6 @@ export const localeStore = createLocaleStore();
 // Subscribe to store changes to update Paraglide
 if (browser) {
 	localeStore.subscribe((language) => {
-		setLanguageTag(language);
+		setLocale(language);
 	});
 }
