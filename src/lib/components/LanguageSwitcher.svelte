@@ -20,7 +20,7 @@
   }
 </script>
 
-<div class="relative flex flex-col items-center space-y-3">
+<div class="relative flex flex-col items-center">
   <!-- Current Language Display -->
   <div class="text-center">
     <div 
@@ -29,26 +29,5 @@
     >
       {getLanguageDisplay(currentLanguage)} {getLanguageFullName(currentLanguage)}
     </div>
-  </div>
-  
-  <!-- Language Selection Buttons -->
-  <div class="flex space-x-2">
-    {#each localeStore.getSupportedLanguages() as language}
-      <button
-        class="px-4 py-2 rounded-lg transition-all duration-200 hover:scale-105 {localeStore.isActive(language.code) 
-          ? 'bg-main text-white shadow-md' 
-          : 'bg-gray-100 text-gray-600 hover:bg-gray-200 hover:shadow-sm'}"
-        on:click={() => handleLanguageChange(language.code)}
-        aria-label={`Switch to ${language.name}`}
-        title={`Switch to ${language.name}`}
-        style="
-          font-size: var(--font-size-base);
-          font-weight: var(--font-weight-medium);
-          min-width: 48px;
-        "
-      >
-        {getLanguageDisplay(language.code)}
-      </button>
-    {/each}
   </div>
 </div>
