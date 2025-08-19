@@ -17,6 +17,11 @@
 	let dragOver = false;
 	let fileInput: HTMLInputElement;
 	let errorMessage = '';
+	
+	// Sync external previewUrl with internal state
+	$: if (previewUrl !== undefined) {
+		// This will update when the external previewUrl changes
+	}
 
 	function handleDragOver(event: DragEvent) {
 		event.preventDefault();
@@ -71,6 +76,10 @@
 					return;
 				}
 				
+				// Set preview immediately for better UX
+				previewUrl = e.target?.result as string;
+				console.log('Preview set:', previewUrl);
+				
 				// File is valid, dispatch upload event
 				dispatch('upload', { file, preview: e.target?.result as string });
 			};
@@ -96,7 +105,7 @@
 			<img 
 				src={previewUrl} 
 				alt="Product preview" 
-				class="w-full h-48 object-cover rounded-lg border border-stroke"
+				class="w-full h-48 object-cover rounded-lg border border-gray-300"
 			/>
 			<button
 				type="button"

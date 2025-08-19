@@ -10,8 +10,11 @@
 	let isSubmitting = false;
 
 	function handleImageUpload(event: CustomEvent<{ file: File; preview: string }>) {
+		console.log('Image upload event received:', event.detail);
 		selectedImage = event.detail.file;
 		imagePreview = event.detail.preview;
+		console.log('Selected image:', selectedImage);
+		console.log('Image preview:', imagePreview);
 	}
 
 	function handleImageRemove() {
