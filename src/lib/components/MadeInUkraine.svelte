@@ -3,13 +3,9 @@
 	import madeInUkraineIcon from '../assets/icons/made_in_ukraine.svg';
 </script>
 
-<section class="w-full py-16 md:py-20 bg-gradient-to-br from-blue-50 to-blue-100 relative overflow-hidden">
-	<!-- Background Pattern -->
-			<div class="absolute inset-0 opacity-5">
-			<div class="absolute inset-0" style="background-image: url('data:image/svg+xml,%3Csvg width=&quot;60&quot; height=&quot;60&quot; viewBox=&quot;0 0 60 60&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;%3E%3Cg fill=&quot;none&quot; fill-rule=&quot;evenodd&quot;%3E%3Cg fill=&quot;%23000000&quot; fill-opacity=&quot;0.1&quot;%3E%3Ccircle cx=&quot;30&quot; cy=&quot;30&quot; r=&quot;2&quot;/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
-		</div>
-	
-	<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+<section class="w-full py-16 md:py-20 bg-white">
+	<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+		<div class="bg-gray-50 rounded-2xl p-12 md:p-16">
 		<div class="text-center mb-12">
 			<!-- Icon -->
 			<div class="flex justify-center mb-6">
@@ -22,17 +18,17 @@
 			
 			<!-- Title -->
 			<h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-				{(m as any)['made_in_ukraine.title']()}
+				{(m as any)['footer.newsletter.title']().includes('Підписка') ? 'Зроблено в Україні' : 'Made in Ukraine'}
 			</h2>
 			
 			<!-- Subtitle -->
 			<p class="text-xl text-gray-600 mb-6 max-w-2xl mx-auto">
-				{(m as any)['made_in_ukraine.subtitle']()}
+				{(m as any)['footer.newsletter.title']().includes('Підписка') ? 'З гордістю створено українською якістю та традицією' : 'Proudly crafted with Ukrainian quality and tradition'}
 			</p>
 			
 			<!-- Description -->
 			<p class="text-lg text-gray-700 max-w-4xl mx-auto leading-relaxed">
-				{(m as any)['made_in_ukraine.description']()}
+				{(m as any)['footer.newsletter.title']().includes('Підписка') ? 'Наші КБД олійки — це 100% український продукт, створений з турботою та любов\'ю до ваших домашніх улюбленців. Ми горді тим, що дотримуємося всіх стандартів якості, встановлених ТУ У 10.8-36472799-003:20209-003:2020. Це забезпечує безпеку та ефективність наших продуктів, гарантуючи, що вони відповідають усім вимогам. Обираючи нашу продукцію, ви підтримуєте українського виробника та отримуєте товар, який заслуговує на довіру.' : 'Our CBD oils are 100% Ukrainian products, created with care and love for your beloved pets. We are proud to adhere to all quality standards established by ТУ У 10.8-36472799-003:20209-003:2020. This ensures the safety and effectiveness of our products, guaranteeing that they meet all requirements. By choosing our products, you support Ukrainian manufacturers and get goods that deserve trust.'}
 			</p>
 		</div>
 		
@@ -46,7 +42,7 @@
 					</svg>
 				</div>
 				<h3 class="text-lg font-semibold text-gray-900 mb-2">
-					{(m as any)['made_in_ukraine.features.quality']()}
+					{(m as any)['footer.newsletter.title']().includes('Підписка') ? 'Преміум якість' : 'Premium Quality'}
 				</h3>
 			</div>
 			
@@ -58,7 +54,7 @@
 					</svg>
 				</div>
 				<h3 class="text-lg font-semibold text-gray-900 mb-2">
-					{(m as any)['made_in_ukraine.features.local']()}
+					{(m as any)['footer.newsletter.title']().includes('Підписка') ? 'Місцеве походження' : 'Local Sourcing'}
 				</h3>
 			</div>
 			
@@ -70,7 +66,7 @@
 					</svg>
 				</div>
 				<h3 class="text-lg font-semibold text-gray-900 mb-2">
-					{(m as any)['made_in_ukraine.features.expertise']()}
+					{(m as any)['footer.newsletter.title']().includes('Підписка') ? 'Українська експертиза' : 'Ukrainian Expertise'}
 				</h3>
 			</div>
 			
@@ -82,9 +78,10 @@
 					</svg>
 				</div>
 				<h3 class="text-lg font-semibold text-gray-900 mb-2">
-					{(m as any)['made_in_ukraine.features.standards']()}
+					{(m as any)['footer.newsletter.title']().includes('Підписка') ? 'Міжнародні стандарти' : 'International Standards'}
 				</h3>
 			</div>
+		</div>
 		</div>
 	</div>
 </section>
