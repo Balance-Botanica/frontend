@@ -51,5 +51,50 @@
 			"telegram": "Telegram",
 			"whatsapp": "WhatsApp"
 		}
+	},
+	
+	"faq": {
+		"title": "Frequently Asked Questions",
+		"subtitle": "Get answers to common questions about our CBD products and wellness solutions",
+		"benefits": {
+			"question": "What are the benefits of CBD products?",
+			"answer": "CBD products offer numerous wellness benefits including stress relief, improved sleep quality, pain management, and natural anti-inflammatory properties. Our premium CBD extracts are carefully formulated to provide the most effective therapeutic benefits while maintaining the highest quality standards."
+		},
+		"choosing": {
+			"question": "How do I choose the right CBD product for me?",
+			"answer": "Choosing the right CBD product depends on your specific needs and preferences. Consider factors like dosage strength, delivery method (oils, capsules, topicals), and your wellness goals. Our team is always available to provide personalized recommendations based on your individual requirements."
+		},
+		"testing": {
+			"question": "Are your CBD products third-party tested?",
+			"answer": "Yes, all our CBD products undergo rigorous third-party testing to ensure purity, potency, and safety. We provide detailed lab reports for every batch, so you can verify the quality and cannabinoid content of your products. Transparency and quality assurance are our top priorities."
+		},
+		"spectrum": {
+			"question": "What is the difference between full-spectrum and isolate CBD?",
+			"answer": "Full-spectrum CBD contains all naturally occurring cannabinoids, terpenes, and compounds from the hemp plant, creating an 'entourage effect' that enhances therapeutic benefits. CBD isolate is pure CBD without other compounds. Full-spectrum products typically offer more comprehensive wellness support."
+		},
+		"effects": {
+			"question": "How long does it take to feel the effects of CBD?",
+			"answer": "The onset time varies depending on the delivery method and individual factors. Sublingual oils typically work within 15-45 minutes, while topicals may take 30-60 minutes. Capsules usually take 1-2 hours. Effects can last 4-8 hours depending on dosage and metabolism."
+		},
+		"cta": {
+			"text": "Still have questions? We're here to help!",
+			"button": "Contact Our Team"
+		}
+	},
+	
+	"calculator": {
+		"title": "Pet CBD Dosage Calculator",
+		"subtitle": "Get personalized CBD dosage recommendations for your pets based on weight, condition, and specific needs",
+		"benefits": {
+			"title": "Why Use Our Calculator?",
+			"precise": "Precise dosage calculations based on your pet's weight and specific condition",
+			"safe": "Safe dosing guidelines that follow veterinary recommendations",
+			"personalized": "Personalized recommendations for dogs and cats with different health needs"
+		},
+		"disclaimer": {
+			"title": "Important Disclaimer",
+			"text": "This calculator provides general guidance only. Always consult with your veterinarian before starting any CBD treatment for your pet. Individual responses may vary, and professional veterinary advice is essential for your pet's health and safety."
+		},
+		"additional_info": "Results are estimates and should be used as a starting point for discussion with your veterinarian"
 	}
 }

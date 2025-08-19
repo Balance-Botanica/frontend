@@ -1,8 +1,27 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import type { ActionData } from './$types';
+	import ImageUpload from '$lib/components/ImageUpload.svelte';
 	
 	let { form }: { form: ActionData } = $props();
+	
+	let selectedImage: File | null = null;
+	let imagePreview: string | null = null;
+	let isSubmitting = false;
+
+	function handleImageUpload(event: CustomEvent<{ file: File; preview: string }>) {
+		selectedImage = event.detail.file;
+		imagePreview = event.detail.preview;
+	}
+
+	function handleImageRemove() {
+		selectedImage = null;
+		imagePreview = null;
+	}
+
+	function handleSubmit() {
+		isSubmitting = true;
+	}
 </script>
 
 <svelte:head>
@@ -39,7 +58,7 @@
 		</div>
 	{/if}
 
-	<form method="post" action="?/addProduct" use:enhance class="space-y-6">
+	<form method="post" action="?/addProduct" enctype="multipart/form-data" use:enhance={handleSubmit} class="space-y-6">
 		<div>
 			<label for="name" class="block text-sm font-medium text-gray-700 mb-2">
 				Product Name *
@@ -71,11 +90,11 @@
 		<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 			<div>
 				<label for="price" class="block text-sm font-medium text-gray-700 mb-2">
-					Price (USD) *
+					Price (UAH) *
 				</label>
 				<div class="relative">
 					<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-						<span class="text-gray-500 sm:text-sm">$</span>
+						<span class="text-gray-500 sm:text-sm">₴</span>
 					</div>
 					<input
 						type="number"
@@ -118,38 +137,44 @@
 			>
 				<option value="">Select a category</option>
 				<option value="cbd-oils">CBD Oils</option>
-				<option value="topicals">Topicals</option>
-				<option value="edibles">Edibles</option>
-				<option value="vapes">Vapes</option>
+				<option value="cbd-topicals">CBD Topicals</option>
+				<option value="cbd-edibles">CBD Edibles</option>
+				<option value="cbd-cosmetics">CBD Cosmetics</option>
 				<option value="accessories">Accessories</option>
+				<option value="other">Other</option>
 			</select>
 		</div>
 
+		<!-- Image Upload Field -->
 		<div>
-			<label for="imageUrl" class="block text-sm font-medium text-gray-700 mb-2">
-				Image URL
+			<label class="block text-sm font-medium text-gray-700 mb-2">
+				Product Image
 			</label>
-			<input
-				type="url"
-				id="imageUrl"
-				name="imageUrl"
-				class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-				placeholder="https://example.com/image.jpg"
+			<ImageUpload
+				on:upload={handleImageUpload}
+				on:remove={handleImageRemove}
+				previewUrl={imagePreview}
+				disabled={isSubmitting}
 			/>
+			<!-- Hidden input to include image file in form submission -->
+			{#if selectedImage}
+				<input type="hidden" name="image" value={selectedImage} />
+			{/if}
 		</div>
 
-		<div class="flex justify-end space-x-4">
+		<div class="flex justify-end space-x-3">
 			<a
 				href="/demo/products"
-				class="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
+				class="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
 			>
 				Cancel
 			</a>
 			<button
 				type="submit"
-				class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+				disabled={isSubmitting}
+				class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
 			>
-				Add Product
+				{isSubmitting ? 'Creating...' : 'Create Product'}
 			</button>
 		</div>
 	</form>

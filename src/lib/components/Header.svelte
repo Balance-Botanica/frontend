@@ -3,9 +3,9 @@
   import { typography } from '../typography';
   import { m } from '$lib/paraglide/messages.js';
   import LanguageSwitcher from './LanguageSwitcher.svelte';
+  import Logo from './Logo.svelte';
   
-  // Import logo and icons
-  import logoText from '../assets/icons/logo-text.svg';
+  // Import icons
   import personIcon from '../assets/icons/person.svg';
   import cartIcon from '../assets/icons/cart.svg';
   
@@ -35,11 +35,7 @@
     <!-- Logo -->
     <div class="flex items-center">
       <a href="/" class="flex items-center">
-        <img 
-          src={logoText} 
-          alt="Balance Botanica" 
-          class="h-12 w-auto"
-        />
+        <Logo size="default" />
       </a>
     </div>
     

@@ -5,6 +5,8 @@
 	import Header from '$lib/components/Header.svelte';
 	import SubHeader from '$lib/components/SubHeader.svelte';
 	import Footer from '$lib/components/Footer.svelte';
+	import EmailSubscription from '$lib/components/EmailSubscription.svelte';
+	import FAQ from '$lib/components/FAQ.svelte';
 	
 	let { children } = $props();
 
@@ -14,6 +16,7 @@
 	];
 
 	const showFooter = $derived(!excludeFooterRoutes.includes($page.url.pathname));
+	const isHome = $derived($page.url.pathname === '/');
 </script>
 
 <svelte:head>
@@ -27,6 +30,10 @@
 		{@render children?.()}
 	</main>
 	{#if showFooter}
+		{#if isHome}
+			<FAQ />
+		{/if}
+		<EmailSubscription compact={!isHome} />
 		<Footer />
 	{/if}
 </div>

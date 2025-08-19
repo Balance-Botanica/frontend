@@ -65,7 +65,9 @@
 						<h3 class="text-lg font-semibold text-gray-900 mb-2">{product.name}</h3>
 						<p class="text-gray-600 text-sm mb-3">{product.description || 'No description available'}</p>
 						<div class="flex justify-between items-center">
-							<span class="text-lg font-bold text-green-600">${(product.price / 100).toFixed(2)}</span>
+							<div class="text-2xl font-bold text-gray-900">
+								₴{(product.price / 100).toFixed(2)}
+							</div>
 							<span class="text-sm text-gray-500">Stock: {product.stock}</span>
 						</div>
 						<div class="mt-2">

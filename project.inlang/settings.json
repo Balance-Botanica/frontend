@@ -7,10 +7,10 @@
 	"plugin.inlang.messageFormat": {
 		"pathPattern": "./messages/{locale}.json"
 	},
-	"baseLocale": "en",
+	"baseLocale": "uk-ua",
 	"locales": [
-		"en",
-		"uk-ua"
+		"uk-ua",
+		"en"
 	],
 	"@inlang/plugin-message-format": {
 		"strategy": ["localStorage", "baseLocale"]

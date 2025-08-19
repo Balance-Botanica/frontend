@@ -1,0 +1,20 @@
+<svg width="300" height="300" viewBox="0 0 300 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Main paw pad -->
+  <ellipse cx="150" cy="150" rx="50" ry="35" fill="#385334" fill-opacity="0.15"/>
+  
+  <!-- Toe pads - more pointed for cats -->
+  <ellipse cx="125" cy="95" rx="22" ry="18" fill="#385334" fill-opacity="0.12"/>
+  <ellipse cx="175" cy="95" rx="22" ry="18" fill="#385334" fill-opacity="0.12"/>
+  <ellipse cx="115" cy="125" rx="18" ry="15" fill="#385334" fill-opacity="0.12"/>
+  <ellipse cx="185" cy="125" rx="18" ry="15" fill="#385334" fill-opacity="0.12"/>
+  
+  <!-- Cat claw marks - more defined -->
+  <path d="M120 80 L130 90 M130 80 L120 90" stroke="#385334" stroke-opacity="0.15" stroke-width="2.5"/>
+  <path d="M170 80 L180 90 M180 80 L170 90" stroke="#385334" stroke-opacity="0.15" stroke-width="2.5"/>
+  <path d="M110 110 L120 120 M120 110 L110 120" stroke="#385334" stroke-opacity="0.15" stroke-width="2.5"/>
+  <path d="M180 110 L190 120 M190 110 L180 120" stroke="#385334" stroke-opacity="0.15" stroke-width="2.5"/>
+  
+  <!-- Additional detail lines -->
+  <path d="M140 160 L160 160" stroke="#385334" stroke-opacity="0.08" stroke-width="1"/>
+  <path d="M150 140 L150 160" stroke="#385334" stroke-opacity="0.08" stroke-width="1"/>
+</svg>

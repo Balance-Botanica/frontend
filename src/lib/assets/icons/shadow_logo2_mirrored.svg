@@ -1,0 +1,33 @@
+<svg width="600" height="300" viewBox="0 0 600 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Left half - mirrored version -->
+  <g transform="translate(0, 0)">
+    <!-- Simple elegant leaf shape - slightly different -->
+    <path d="M150 70 C150 70 125 95 125 150 C125 205 150 230 150 230 C150 230 175 205 175 150 C175 95 150 70 150 70 Z" fill="#385334" fill-opacity="0.08"/>
+    
+    <!-- Simple center line -->
+    <path d="M150 70 L150 230" stroke="#385334" stroke-opacity="0.06" stroke-width="1"/>
+    
+    <!-- Simple side details -->
+    <ellipse cx="135" cy="110" rx="5" ry="4" fill="#385334" fill-opacity="0.05"/>
+    <ellipse cx="165" cy="110" rx="5" ry="4" fill="#385334" fill-opacity="0.05"/>
+    <ellipse cx="140" cy="140" rx="4" ry="3" fill="#385334" fill-opacity="0.05"/>
+    <ellipse cx="160" cy="140" rx="4" ry="3" fill="#385334" fill-opacity="0.05"/>
+  </g>
+  
+  <!-- Gap between halves -->
+  
+  <!-- Right half - original version -->
+  <g transform="translate(305, 0)">
+    <!-- Simple elegant leaf shape - slightly different -->
+    <path d="M150 70 C150 70 125 95 125 150 C125 205 150 230 150 230 C150 230 175 205 175 150 C175 95 150 70 150 70 Z" fill="#385334" fill-opacity="0.08"/>
+    
+    <!-- Simple center line -->
+    <path d="M150 70 L150 230" stroke="#385334" stroke-opacity="0.06" stroke-width="1"/>
+    
+    <!-- Simple side details -->
+    <ellipse cx="135" cy="110" rx="5" ry="4" fill="#385334" fill-opacity="0.05"/>
+    <ellipse cx="165" cy="110" rx="5" ry="4" fill="#385334" fill-opacity="0.05"/>
+    <ellipse cx="140" cy="140" rx="4" ry="3" fill="#385334" fill-opacity="0.05"/>
+    <ellipse cx="160" cy="140" rx="4" ry="3" fill="#385334" fill-opacity="0.05"/>
+  </g>
+</svg>

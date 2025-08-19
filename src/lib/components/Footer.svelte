@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { m } from '$lib/paraglide/messages.js';
-	import logoText from '../assets/icons/logo-text.svg';
+	import Logo from './Logo.svelte';
 	import waIcon from '../assets/icons/wa.svg';
 	import tgIcon from '../assets/icons/tg.svg';
 	import ttIcon from '../assets/icons/tt.svg';
@@ -43,7 +43,7 @@
 			<div class="space-y-6">
 				<!-- Logo - Left Aligned -->
 				<div class="flex justify-start">
-					<img src={logoText} alt="Balance Botanica" class="h-8 brightness-0 invert" />
+					<Logo size="small" className="brightness-0 invert" />
 				</div>
 
 				<!-- Navigation Links - Horizontal -->
