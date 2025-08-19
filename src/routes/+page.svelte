@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import CalculatorSection from '$lib/components/CalculatorSection.svelte';
+	import FAQ from '$lib/components/FAQ.svelte';
 	
 	let isScrolled = false;
 	
@@ -121,4 +123,10 @@
 			</a>
 		</div>
 	</section>
+	
+	<!-- Calculator Section -->
+	<CalculatorSection />
+	
+	<!-- FAQ Section -->
+	<FAQ />
 </main> 
