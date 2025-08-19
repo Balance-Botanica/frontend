@@ -19,8 +19,40 @@
 		imagePreview = null;
 	}
 
-	function handleSubmit() {
+	async function handleSubmit(event: SubmitEvent) {
 		isSubmitting = true;
+		
+		try {
+			const form = event.target as HTMLFormElement;
+			const formData = new FormData(form);
+			
+			// If there's a selected image, add it to the form data
+			if (selectedImage) {
+				formData.delete('image'); // Remove any existing image data
+				formData.append('image', selectedImage);
+			}
+			
+			// Submit the form
+			const response = await fetch(form.action, {
+				method: 'POST',
+				body: formData
+			});
+			
+			if (response.redirected) {
+				window.location.href = response.url;
+			} else if (response.ok) {
+				// Handle successful submission
+				window.location.href = '/demo/products';
+			} else {
+				// Handle error
+				const errorData = await response.json();
+				console.error('Form submission error:', errorData);
+				isSubmitting = false;
+			}
+		} catch (error) {
+			console.error('Form submission error:', error);
+			isSubmitting = false;
+		}
 	}
 </script>
 
@@ -58,7 +90,7 @@
 		</div>
 	{/if}
 
-	<form method="post" action="?/addProduct" enctype="multipart/form-data" use:enhance={handleSubmit} class="space-y-6">
+	<form method="post" action="?/addProduct" enctype="multipart/form-data" class="space-y-6" on:submit|preventDefault={handleSubmit}>
 		<div>
 			<label for="name" class="block text-sm font-medium text-gray-700 mb-2">
 				Product Name *
@@ -156,10 +188,6 @@
 				previewUrl={imagePreview}
 				disabled={isSubmitting}
 			/>
-			<!-- Hidden input to include image file in form submission -->
-			{#if selectedImage}
-				<input type="hidden" name="image" value={selectedImage} />
-			{/if}
 		</div>
 
 		<div class="flex justify-end space-x-3">

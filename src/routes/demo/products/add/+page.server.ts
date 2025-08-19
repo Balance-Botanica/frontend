@@ -1,6 +1,6 @@
 import { fail, redirect } from '@sveltejs/kit';
 import type { Actions } from './$types';
-import { drizzle } from 'drizzle-orm/d1';
+import { db } from '$lib/server/db/index.js';
 import { products } from '$lib/server/db/schema.js';
 import { uploadImage } from '$lib/server/cloudinary/config.js';
 import { stringifyImageUrls } from '$lib/server/cloudinary/image-manager.js';
@@ -53,7 +53,6 @@ export const actions: Actions = {
 			}
 
 			// Create product in database
-			const db = drizzle(locals.DB);
 			const newProduct = await db
 				.insert(products)
 				.values({
