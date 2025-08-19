@@ -18,6 +18,10 @@
 		recommendation?: string;
 	}>();
 	
+	// Initialize local variables to ensure they're reactive
+	let localDosage = dosage;
+	let localRecommendation = recommendation;
+	
 	// Dosage calculation logic using config file
 	function calculateDosage() {
 		if (!weight || parseFloat(weight) <= 0) return;
@@ -25,7 +29,7 @@
 		const weightKg = parseFloat(weight);
 		const baseDosage = getDosageCoefficient(animalType, condition);
 		
-		dosage = Math.round((weightKg * baseDosage) * 10) / 10;
+		localDosage = Math.round((weightKg * baseDosage) * 10) / 10;
 		showResults = true;
 		
 		// Generate recommendation after dosage is set
@@ -37,9 +41,9 @@
 		const { frequency, duration } = getWeightRecommendation(animalType, weightNum);
 		
 		// Ensure dosage is available before generating recommendation
-		if (dosage > 0) {
-			recommendation = (m as any)['calculator.results.administer_text']()
-				.replace('{dosage}', dosage.toString())
+		if (localDosage > 0) {
+			localRecommendation = (m as any)['calculator.results.administer_text']()
+				.replace('{dosage}', localDosage.toString())
 				.replace('{frequency}', frequency)
 				.replace('{duration}', duration);
 		}
@@ -49,8 +53,8 @@
 		weight = '';
 		condition = 'wellbeing';
 		showResults = false;
-		dosage = 0;
-		recommendation = '';
+		localDosage = 0;
+		localRecommendation = '';
 	}
 	
 	// Get animal type display name from messages
@@ -183,7 +187,7 @@
 			<!-- Dosage Result -->
 			<div class="bg-gradient-to-br from-green-50 to-green-100 border-2 border-green-200 rounded-2xl p-8">
 				<div class="text-4xl font-bold text-green-600 mb-3">
-					{dosage} mg
+					{localDosage} mg
 				</div>
 				<div class="text-green-700 font-semibold text-lg">
 					{(m as any)['calculator.results.title']()}
@@ -199,7 +203,7 @@
 			<div class="text-left bg-gray-50 rounded-xl p-6 border border-gray-200">
 				<h4 class="font-semibold text-gray-900 mb-3 text-lg">{(m as any)['calculator.results.usage_recommendation']()}</h4>
 				<p class="text-gray-700 leading-relaxed">
-					{recommendation}
+					{localRecommendation}
 				</p>
 			</div>
 			

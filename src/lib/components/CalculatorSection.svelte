@@ -12,7 +12,7 @@
 			class="w-full h-full object-cover"
 		/>
 		<!-- Green overlay for semi-transparent effect -->
-		<div class="absolute inset-0 bg-green-600/70"></div>
+		<div class="absolute inset-0 bg-main/70"></div>
 	</div>
 	
 	<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
