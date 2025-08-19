@@ -54,15 +54,58 @@
 		
 		// Ensure dosage is available before generating recommendation
 		if (localDosage > 0) {
-			// Get localized frequency and duration strings
-			const localizedFrequency = (m as any)[`calculator.frequency.${frequency}`]();
-			const localizedDuration = (m as any)[`calculator.duration.${duration}`]();
-			
-			localRecommendation = (m as any)['calculator.results.administer_text']({
-				dosage: localDosage,
-				frequency: localizedFrequency,
-				duration: localizedDuration
-			});
+			try {
+				// Translate frequency and duration values directly since message functions don't exist yet
+				const isUkrainian = (m as any)['calculator.title']().includes('КБД');
+				
+				const frequencyTranslations: Record<string, Record<string, string>> = {
+					'en': {
+						'once_daily': '1 time daily',
+						'twice_daily': '2 times daily',
+						'one_to_twice_daily': '1-2 times daily'
+					},
+					'uk': {
+						'once_daily': '1 раз на день',
+						'twice_daily': '2 рази на день',
+						'one_to_twice_daily': '1-2 рази на день'
+					}
+				};
+				
+				const durationTranslations: Record<string, Record<string, string>> = {
+					'en': {
+						'start_1_2_weeks': 'Start with 1-2 weeks, monitor closely',
+						'start_2_3_weeks': 'Start with 2-3 weeks, monitor response',
+						'start_3_4_weeks': 'Start with 3-4 weeks, gradual titration',
+						'start_1_week': 'Start with 1 week, monitor closely',
+						'adjust_as_needed': 'Start with 2-3 weeks, adjust as needed'
+					},
+					'uk': {
+						'start_1_2_weeks': 'Почніть з 1-2 тижнів, уважно спостерігайте',
+						'start_2_3_weeks': 'Почніть з 2-3 тижнів, спостерігайте за реакцією',
+						'start_3_4_weeks': 'Почніть з 3-4 тижнів, поступова титрування',
+						'start_1_week': 'Почніть з 1 тижня, уважно спостерігайте',
+						'adjust_as_needed': 'Почніть з 2-3 тижнів, коригуйте за потреби'
+					}
+				};
+				
+				const locale = isUkrainian ? 'uk' : 'en';
+				const localizedFrequency = frequencyTranslations[locale][frequency] || frequency;
+				const localizedDuration = durationTranslations[locale][duration] || duration;
+				
+				localRecommendation = (m as any)['calculator.results.administer_text']({
+					dosage: localDosage,
+					frequency: localizedFrequency,
+					duration: localizedDuration
+				});
+			} catch (error) {
+				console.error('Error generating recommendation:', error);
+				// Fallback recommendation
+				localRecommendation = (m as any)['calculator.results.administer_text']({
+					dosage: localDosage,
+					frequency: frequency,
+					duration: duration
+				});
+			}
 		} else {
 			localRecommendation = '';
 		}
@@ -122,16 +165,13 @@
 	}
 </script>
 
-<div class="bg-white rounded-3xl p-8 shadow-xl border border-gray-100 max-w-md mx-auto">
+<div class="bg-white rounded-3xl p-8 shadow-xl border border-gray-100 mx-auto">
 	<!-- Header -->
 	<div class="text-center mb-8">
-		<div class="flex items-center justify-center mb-4">
-			<div class="w-12 h-12 bg-main/10 rounded-full flex items-center justify-center mr-4">
-				{@html getAnimalIcon(animalType)}
-			</div>
-					<h3 class="text-2xl font-bold text-gray-900">
-			{(m as any)['calculator.title']()}
-		</h3>
+		<div class="text-center mb-4">
+			<h3 class="text-2xl font-bold text-gray-900">
+				{(m as any)['calculator.title']()}
+			</h3>
 		</div>
 		<p class="text-gray-600 text-sm leading-relaxed">
 			{(m as any)['calculator.subtitle']()}
@@ -213,14 +253,14 @@
 		<!-- Results Display -->
 		<div class="text-center space-y-6">
 			<!-- Dosage Result -->
-			<div class="bg-gradient-to-br from-green-50 to-green-100 border-2 border-green-200 rounded-2xl p-8">
-				<div class="text-4xl font-bold text-green-600 mb-3">
+			<div class="bg-gradient-to-br from-main/10 to-main/20 border-2 border-main/30 rounded-2xl p-8">
+				<div class="text-4xl font-bold text-main mb-3">
 					{localDosage} {getDosageUnit()}
 				</div>
-				<div class="text-green-700 font-semibold text-lg">
+				<div class="text-main font-semibold text-lg">
 					{(m as any)['calculator.results.title']()}
 				</div>
-				<div class="text-green-600 text-sm mt-2">
+				<div class="text-main/80 text-sm mt-2">
 					{(m as any)['calculator.results.for_animal']({
 						animalType: getAnimalTypeName(animalType),
 						condition: getConditionName(condition)
@@ -246,34 +286,36 @@
 				</div>
 			{/if}
 			
-			<!-- Quality Assurance Tips -->
-			<div class="text-left bg-blue-50 rounded-xl p-6 border border-blue-200">
-				<h4 class="font-semibold text-blue-900 mb-3 text-lg">{(m as any)['calculator.quality_assurance.title']}</h4>
-				<ul class="text-blue-800 text-sm space-y-2">
-					{#each (m as any)['calculator.quality_assurance.tips.general'] as tip}
-						<li class="flex items-start">
-							<span class="text-blue-600 mr-2">•</span>
-							<span>{tip}</span>
-						</li>
-					{/each}
-					{#if animalType === 'cat'}
-						<li class="flex items-start">
-							<span class="text-blue-600 mr-2">•</span>
-							<span>{(m as any)['calculator.quality_assurance.tips.cat']}</span>
-						</li>
-					{:else if animalType === 'horse'}
-						<li class="flex items-start">
-							<span class="text-blue-600 mr-2">•</span>
-							<span>{(m as any)['calculator.quality_assurance.tips.horse']}</span>
-						</li>
-					{:else if animalType === 'small_animal'}
-						<li class="flex items-start">
-							<span class="text-blue-600 mr-2">•</span>
-							<span>{(m as any)['calculator.quality_assurance.tips.small_animal']}</span>
-						</li>
-					{/if}
-				</ul>
-			</div>
+			<!-- Quality Assurance Tips - Only show if tips are available -->
+			{#if (m as any)['calculator.quality_assurance.tips.general'] && (m as any)['calculator.quality_assurance.tips.general'].length > 0}
+				<div class="text-left bg-blue-50 rounded-xl p-6 border border-blue-200">
+					<h4 class="font-semibold text-blue-900 mb-3 text-lg">{(m as any)['calculator.quality_assurance.title']}</h4>
+					<ul class="text-blue-800 text-sm space-y-2">
+						{#each (m as any)['calculator.quality_assurance.tips.general'] as tip}
+							<li class="flex items-start">
+								<span class="text-blue-600 mr-2">•</span>
+								<span>{tip}</span>
+							</li>
+						{/each}
+						{#if animalType === 'cat' && (m as any)['calculator.quality_assurance.tips.cat']}
+							<li class="flex items-start">
+								<span class="text-blue-600 mr-2">•</span>
+								<span>{(m as any)['calculator.quality_assurance.tips.cat']}</span>
+							</li>
+						{:else if animalType === 'horse' && (m as any)['calculator.quality_assurance.tips.horse']}
+							<li class="flex items-start">
+								<span class="text-blue-600 mr-2">•</span>
+								<span>{(m as any)['calculator.quality_assurance.tips.horse']}</span>
+							</li>
+						{:else if animalType === 'small_animal' && (m as any)['calculator.quality_assurance.tips.small_animal']}
+							<li class="flex items-start">
+								<span class="text-blue-600 mr-2">•</span>
+								<span>{(m as any)['calculator.quality_assurance.tips.small_animal']}</span>
+							</li>
+						{/if}
+					</ul>
+				</div>
+			{/if}
 			
 			<!-- Action Buttons -->
 			<div class="flex space-x-4">

@@ -1,13 +1,15 @@
 <script lang="ts">
 	import PawHybridPatternBG from './PawHybridPatternBG.svelte';
+	import { m } from '$lib/paraglide/messages.js';
 	
 	let { compact = false } = $props<{ compact?: boolean }>();
 	const sectionPadding = compact ? 'py-8 md:py-10' : 'py-20 md:py-28';
 	
-	let email = '';
-	let isSubmitting = false;
+	let email = $state('');
+	let isSubmitting = $state(false);
 	
-	async function handleSubmit() {
+	async function handleSubmit(event: Event) {
+		event.preventDefault();
 		if (!email) return;
 		
 		isSubmitting = true;
@@ -27,24 +29,26 @@
 			<div class={`mx-auto max-w-4xl text-center ${compact ? 'py-8 px-6' : 'py-16 px-8'}`}>
 				<!-- Main Heading -->
 				<h2 id="email-subscription-heading" class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-					Stay Updated with Balance Botanica
+					{(m as any)['footer.newsletter.title']()}
 				</h2>
 				
 				<!-- Description -->
 				<p class="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
-					Subscribe to our newsletter for exclusive offers, wellness tips, and the latest CBD product updates. 
-					Join our community of health-conscious individuals.
+					{(m as any)['footer.newsletter.title']().includes('Підписка') 
+						? 'Підпишіться на нашу розсилку для ексклюзивних пропозицій, порад щодо здоров\'я та останніх оновлень продуктів КБД. Приєднуйтесь до нашої спільноти людей, що дбають про здоров\'я.'
+						: 'Subscribe to our newsletter for exclusive offers, wellness tips, and the latest CBD product updates. Join our community of health-conscious individuals.'
+					}
 				</p>
 				
 				<!-- Email Subscription Form -->
-				<form on:submit|preventDefault={handleSubmit} class="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+				<form onsubmit={handleSubmit} class="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
 					<div class="flex-1">
 						<label for="email-subscription" class="sr-only">Email address</label>
 						<input
 							type="email"
 							id="email-subscription"
 							bind:value={email}
-							placeholder="Enter your email address"
+							placeholder={(m as any)['footer.newsletter.placeholder']()}
 							required
 							class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-main focus:border-main text-gray-900 placeholder-gray-500"
 							aria-label="Email address for newsletter subscription"
@@ -55,7 +59,7 @@
 						disabled={isSubmitting || !email}
 						class="px-6 py-3 bg-main text-white font-medium rounded-lg hover:bg-main-dark transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-main"
 					>
-						{isSubmitting ? 'Subscribing...' : 'Subscribe'}
+						{isSubmitting ? 'Subscribing...' : (m as any)['footer.newsletter.button']()}
 					</button>
 				</form>
 				

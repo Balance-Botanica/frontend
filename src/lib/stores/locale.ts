@@ -39,7 +39,11 @@ function createLocaleStore() {
 			set(lang);
 			if (browser) {
 				localStorage.setItem('PARAGLIDE_LOCALE', lang);
-				// Reload page to apply new locale
+				// Set cookie for Paraglide
+				document.cookie = `PARAGLIDE_LOCALE=${lang}; path=/; max-age=${60 * 60 * 24 * 30}`; // 30 days
+				
+				// Force a page refresh to apply the new locale
+				// This is necessary because Paraglide needs to reload to pick up the new locale
 				window.location.reload();
 			}
 		},
@@ -49,7 +53,11 @@ function createLocaleStore() {
 			set(newLang);
 			if (browser) {
 				localStorage.setItem('PARAGLIDE_LOCALE', newLang);
-				// Reload page to apply new locale
+				// Set cookie for Paraglide
+				document.cookie = `PARAGLIDE_LOCALE=${newLang}; path=/; max-age=${60 * 60 * 24 * 30}`; // 30 days
+				
+				// Force a page refresh to apply the new locale
+				// This is necessary because Paraglide needs to reload to pick up the new locale
 				window.location.reload();
 			}
 		}

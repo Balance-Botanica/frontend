@@ -34,6 +34,7 @@
 		},
 		"newsletter": {
 			"title": "Newsletter Subscription",
+			"description": "Subscribe to our newsletter for exclusive offers, wellness tips, and the latest CBD product updates. Join our community of health-conscious individuals.",
 			"placeholder": "Email Address",
 			"button": "Subscribe"
 		},
@@ -79,6 +80,18 @@
 		"cta": {
 			"text": "Still have questions? We're here to help!",
 			"button": "Contact Our Team"
+		}
+	},
+	
+	"made_in_ukraine": {
+		"title": "Made in Ukraine",
+		"subtitle": "Proudly crafted with Ukrainian quality and tradition",
+		"description": "Our CBD products are carefully manufactured in Ukraine, combining local expertise with international quality standards. We source the finest hemp from Ukrainian fields and process it using advanced technology to create premium wellness solutions.",
+		"features": {
+			"quality": "Premium Quality",
+			"local": "Local Sourcing",
+			"expertise": "Ukrainian Expertise",
+			"standards": "International Standards"
 		}
 	},
 	
@@ -159,5 +172,20 @@
 			"start_with_safe": "Consider starting with {maxSafeDosage}mg and gradually increasing under veterinary supervision",
 			"consult_vet": "Consult with your veterinarian for appropriate dosing"
 		}
+	},
+	
+	"email_subscription": {
+		"title": "Stay Updated with Balance Botanica",
+		"description": "Subscribe to our newsletter for exclusive offers, wellness tips, and the latest CBD product updates. Join our community of health-conscious individuals.",
+		"email_placeholder": "Enter your email address",
+		"subscribe_button": "Subscribe",
+		"subscribing_button": "Subscribing...",
+		"benefits": {
+			"exclusive_offers": "Exclusive offers & discounts",
+			"wellness_tips": "Wellness tips & insights",
+			"new_products": "New product announcements"
+		},
+		"privacy_notice": "We respect your privacy. Unsubscribe at any time.",
+		"privacy_policy": "Privacy Policy"
 	}
 }

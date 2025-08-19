@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import MadeInUkraine from '$lib/components/MadeInUkraine.svelte';
 	import CalculatorSection from '$lib/components/CalculatorSection.svelte';
 	import FAQ from '$lib/components/FAQ.svelte';
 	
@@ -123,6 +124,9 @@
 			</a>
 		</div>
 	</section>
+	
+	<!-- Made in Ukraine Section -->
+	<MadeInUkraine />
 	
 	<!-- Calculator Section -->
 	<CalculatorSection />
