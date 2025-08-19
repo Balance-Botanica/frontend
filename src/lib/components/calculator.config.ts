@@ -28,14 +28,14 @@ export const CALCULATOR_CONFIG: Record<string, AnimalConfig> = {
 			{
 				min: 0,
 				max: 300,
-				frequency: '1-2 times daily',
-				duration: 'Start with 2-3 weeks, monitor response'
+				frequency: 'one_to_twice_daily',
+				duration: 'start_2_3_weeks'
 			},
 			{
 				min: 300,
 				max: Infinity,
-				frequency: '1 time daily',
-				duration: 'Start with 3-4 weeks, gradual titration'
+				frequency: 'once_daily',
+				duration: 'start_3_4_weeks'
 			}
 		]
 	},
@@ -50,20 +50,20 @@ export const CALCULATOR_CONFIG: Record<string, AnimalConfig> = {
 			{
 				min: 0,
 				max: 5,
-				frequency: '2 times daily',
-				duration: 'Start with 1-2 weeks, monitor closely'
+				frequency: 'twice_daily',
+				duration: 'start_1_2_weeks'
 			},
 			{
 				min: 5,
 				max: 20,
-				frequency: '1-2 times daily',
-				duration: 'Start with 2-3 weeks, adjust as needed'
+				frequency: 'one_to_twice_daily',
+				duration: 'adjust_as_needed'
 			},
 			{
 				min: 20,
 				max: Infinity,
-				frequency: '1 time daily',
-				duration: 'Start with 3-4 weeks, gradual titration'
+				frequency: 'once_daily',
+				duration: 'start_3_4_weeks'
 			}
 		]
 	},
@@ -78,14 +78,14 @@ export const CALCULATOR_CONFIG: Record<string, AnimalConfig> = {
 			{
 				min: 0,
 				max: 3,
-				frequency: '2 times daily',
-				duration: 'Start with 1-2 weeks, monitor response'
+				frequency: 'twice_daily',
+				duration: 'start_1_2_weeks'
 			},
 			{
 				min: 3,
 				max: Infinity,
-				frequency: '1-2 times daily',
-				duration: 'Start with 2-3 weeks, gradual titration'
+				frequency: 'one_to_twice_daily',
+				duration: 'start_2_3_weeks'
 			}
 		]
 	},
@@ -100,14 +100,14 @@ export const CALCULATOR_CONFIG: Record<string, AnimalConfig> = {
 			{
 				min: 0,
 				max: 1,
-				frequency: '1-2 times daily',
-				duration: 'Start with 1 week, monitor closely'
+				frequency: 'one_to_twice_daily',
+				duration: 'start_1_week'
 			},
 			{
 				min: 1,
 				max: Infinity,
-				frequency: '1-2 times daily',
-				duration: 'Start with 1-2 weeks, gradual titration'
+				frequency: 'one_to_twice_daily',
+				duration: 'start_1_2_weeks'
 			}
 		]
 	}
@@ -136,7 +136,7 @@ export function getWeightRecommendation(
 ): { frequency: string; duration: string } {
 	const config = CALCULATOR_CONFIG[animalType];
 	if (!config) {
-		return { frequency: '1 time daily', duration: 'Start with 2-3 weeks' };
+		return { frequency: 'once_daily', duration: 'start_2_3_weeks' };
 	}
 
 	for (const threshold of config.weightThresholds) {
@@ -180,8 +180,9 @@ export function validateDosage(
 	calculatedDosage: number
 ): {
 	isValid: boolean;
-	warning?: string;
-	recommendation?: string;
+	warningKey?: string;
+	recommendationKey?: string;
+	maxSafeDosage?: number;
 } {
 	const maxSafeDosage = Math.min(
 		SAFETY_LIMITS.MAX_DOSAGE_MG,
@@ -191,16 +192,17 @@ export function validateDosage(
 	if (calculatedDosage > maxSafeDosage) {
 		return {
 			isValid: false,
-			warning: 'Calculated dosage exceeds recommended safety limits',
-			recommendation: `Consider starting with ${maxSafeDosage}mg and gradually increasing under veterinary supervision`
+			warningKey: 'calculator.validation.dosage_too_high',
+			recommendationKey: 'calculator.validation.start_with_safe',
+			maxSafeDosage: maxSafeDosage
 		};
 	}
 
 	if (calculatedDosage < 0.1) {
 		return {
 			isValid: false,
-			warning: 'Calculated dosage is very low',
-			recommendation: 'Consult with your veterinarian for appropriate dosing'
+			warningKey: 'calculator.validation.dosage_too_low',
+			recommendationKey: 'calculator.validation.consult_vet'
 		};
 	}
 

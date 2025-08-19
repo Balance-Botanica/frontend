@@ -124,6 +124,18 @@
 			"calculate_again": "Calculate Again",
 			"modify_inputs": "Modify Inputs"
 		},
+		"frequency": {
+			"once_daily": "1 time daily",
+			"twice_daily": "2 times daily",
+			"one_to_twice_daily": "1-2 times daily"
+		},
+		"duration": {
+			"start_1_2_weeks": "Start with 1-2 weeks, monitor closely",
+			"start_2_3_weeks": "Start with 2-3 weeks, monitor response",
+			"start_3_4_weeks": "Start with 3-4 weeks, gradual titration",
+			"start_1_week": "Start with 1 week, monitor closely",
+			"adjust_as_needed": "Start with 2-3 weeks, adjust as needed"
+		},
 		"quality_assurance": {
 			"title": "Quality Assurance Tips",
 			"tips": {
@@ -140,6 +152,12 @@
 				"horse": "Large animals require careful titration and monitoring",
 				"small_animal": "Small animals need very precise dosing - use calibrated droppers"
 			}
+		},
+		"validation": {
+			"dosage_too_high": "Calculated dosage exceeds recommended safety limits",
+			"dosage_too_low": "Calculated dosage is very low",
+			"start_with_safe": "Consider starting with {maxSafeDosage}mg and gradually increasing under veterinary supervision",
+			"consult_vet": "Consult with your veterinarian for appropriate dosing"
 		}
 	}
 }

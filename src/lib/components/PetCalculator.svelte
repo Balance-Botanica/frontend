@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { m } from '$lib/paraglide/messages.js';
-	import { getDosageCoefficient, getWeightRecommendation, validateDosage, getQualityAssuranceTips } from './calculator.config.js';
+	import { getDosageCoefficient, getWeightRecommendation, validateDosage } from './calculator.config.js';
 	
 	let { 
 		animalType = 'dog',
@@ -21,6 +21,7 @@
 	// Initialize local variables to ensure they're reactive
 	let localDosage = 0;
 	let localRecommendation = '';
+	let validation: any = null;
 	
 	// Dosage calculation logic using config file with safety validation
 	function calculateDosage() {
@@ -33,10 +34,11 @@
 		localDosage = Math.round((weightKg * baseDosage) * 10) / 10;
 		
 		// Validate dosage for safety
-		const validation = validateDosage(animalType, weightKg, localDosage);
+		validation = validateDosage(animalType, weightKg, localDosage);
 		if (!validation.isValid) {
 			// Show warning but still display results
-			console.warn(validation.warning);
+			const warningMessage = validation.warningKey ? (m as any)[validation.warningKey]() : '';
+			console.warn(warningMessage);
 		}
 		
 		// Generate recommendation after dosage is set
@@ -52,10 +54,14 @@
 		
 		// Ensure dosage is available before generating recommendation
 		if (localDosage > 0) {
+			// Get localized frequency and duration strings
+			const localizedFrequency = (m as any)[`calculator.frequency.${frequency}`]();
+			const localizedDuration = (m as any)[`calculator.duration.${duration}`]();
+			
 			localRecommendation = (m as any)['calculator.results.administer_text']({
 				dosage: localDosage,
-				frequency: frequency,
-				duration: duration
+				frequency: localizedFrequency,
+				duration: localizedDuration
 			});
 		} else {
 			localRecommendation = '';
@@ -68,6 +74,7 @@
 		showResults = false;
 		localDosage = 0;
 		localRecommendation = '';
+		validation = null;
 	}
 	
 	// Get animal type display name from messages
@@ -78,6 +85,14 @@
 	// Get condition display name from messages
 	function getConditionName(cond: string): string {
 		return (m as any)[`calculator.conditions.${cond}`]();
+	}
+	
+	// Get proper unit based on locale
+	function getDosageUnit(): string {
+		// Check if we're in Ukrainian locale by looking at the messages
+		const title = (m as any)['calculator.title']();
+		const isUkrainian = title && title.includes('КБД');
+		return isUkrainian ? 'мг' : 'mg';
 	}
 	
 	// Get animal icon
@@ -114,9 +129,9 @@
 			<div class="w-12 h-12 bg-main/10 rounded-full flex items-center justify-center mr-4">
 				{@html getAnimalIcon(animalType)}
 			</div>
-			<h3 class="text-2xl font-bold text-gray-900">
-				Animal CBD Calculator
-			</h3>
+					<h3 class="text-2xl font-bold text-gray-900">
+			{(m as any)['calculator.title']()}
+		</h3>
 		</div>
 		<p class="text-gray-600 text-sm leading-relaxed">
 			{(m as any)['calculator.subtitle']()}
@@ -200,7 +215,7 @@
 			<!-- Dosage Result -->
 			<div class="bg-gradient-to-br from-green-50 to-green-100 border-2 border-green-200 rounded-2xl p-8">
 				<div class="text-4xl font-bold text-green-600 mb-3">
-					{localDosage} mg
+					{localDosage} {getDosageUnit()}
 				</div>
 				<div class="text-green-700 font-semibold text-lg">
 					{(m as any)['calculator.results.title']()}
@@ -221,16 +236,42 @@
 				</p>
 			</div>
 			
+			<!-- Validation Warning (if any) -->
+			{#if validation && !validation.isValid}
+				<div class="text-left bg-yellow-50 rounded-xl p-6 border border-yellow-200">
+					<h4 class="font-semibold text-yellow-900 mb-3 text-lg">⚠️ {(m as any)[validation.warningKey]()}</h4>
+					<p class="text-yellow-800 leading-relaxed">
+						{validation.recommendationKey ? (m as any)[validation.recommendationKey]() : ''}
+					</p>
+				</div>
+			{/if}
+			
 			<!-- Quality Assurance Tips -->
 			<div class="text-left bg-blue-50 rounded-xl p-6 border border-blue-200">
 				<h4 class="font-semibold text-blue-900 mb-3 text-lg">{(m as any)['calculator.quality_assurance.title']}</h4>
 				<ul class="text-blue-800 text-sm space-y-2">
-					{#each getQualityAssuranceTips(animalType) as tip}
+					{#each (m as any)['calculator.quality_assurance.tips.general'] as tip}
 						<li class="flex items-start">
 							<span class="text-blue-600 mr-2">•</span>
 							<span>{tip}</span>
 						</li>
 					{/each}
+					{#if animalType === 'cat'}
+						<li class="flex items-start">
+							<span class="text-blue-600 mr-2">•</span>
+							<span>{(m as any)['calculator.quality_assurance.tips.cat']}</span>
+						</li>
+					{:else if animalType === 'horse'}
+						<li class="flex items-start">
+							<span class="text-blue-600 mr-2">•</span>
+							<span>{(m as any)['calculator.quality_assurance.tips.horse']}</span>
+						</li>
+					{:else if animalType === 'small_animal'}
+						<li class="flex items-start">
+							<span class="text-blue-600 mr-2">•</span>
+							<span>{(m as any)['calculator.quality_assurance.tips.small_animal']}</span>
+						</li>
+					{/if}
 				</ul>
 			</div>
 			
