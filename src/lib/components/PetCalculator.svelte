@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { m } from '$lib/paraglide/messages.js';
-	import { getDosageCoefficient, getWeightRecommendation } from './calculator.config.js';
+	import { getDosageCoefficient, getWeightRecommendation, validateDosage, getQualityAssuranceTips } from './calculator.config.js';
 	
 	let { 
 		animalType = 'dog',
@@ -22,7 +22,7 @@
 	let localDosage = dosage;
 	let localRecommendation = recommendation;
 	
-	// Dosage calculation logic using config file
+	// Dosage calculation logic using config file with safety validation
 	function calculateDosage() {
 		if (!weight || parseFloat(weight) <= 0) return;
 		
@@ -30,6 +30,14 @@
 		const baseDosage = getDosageCoefficient(animalType, condition);
 		
 		localDosage = Math.round((weightKg * baseDosage) * 10) / 10;
+		
+		// Validate dosage for safety
+		const validation = validateDosage(animalType, weightKg, localDosage);
+		if (!validation.isValid) {
+			// Show warning but still display results
+			console.warn(validation.warning);
+		}
+		
 		showResults = true;
 		
 		// Generate recommendation after dosage is set
@@ -205,6 +213,35 @@
 				<p class="text-gray-700 leading-relaxed">
 					{localRecommendation}
 				</p>
+			</div>
+			
+			<!-- Quality Assurance Tips -->
+			<div class="text-left bg-blue-50 rounded-xl p-6 border border-blue-200">
+				<h4 class="font-semibold text-blue-900 mb-3 text-lg">{(m as any)['calculator.quality_assurance.title']()}</h4>
+				<ul class="text-blue-800 text-sm space-y-2">
+					{#each (m as any)['calculator.quality_assurance.tips.general']() as tip}
+						<li class="flex items-start">
+							<span class="text-blue-600 mr-2">•</span>
+							<span>{tip}</span>
+						</li>
+					{/each}
+					{#if animalType === 'cat'}
+						<li class="flex items-start">
+							<span class="text-blue-600 mr-2">•</span>
+							<span>{(m as any)['calculator.quality_assurance.tips.cat']()}</span>
+						</li>
+					{:else if animalType === 'horse'}
+						<li class="flex items-start">
+							<span class="text-blue-600 mr-2">•</span>
+							<span>{(m as any)['calculator.quality_assurance.tips.horse']()}</span>
+						</li>
+					{:else if animalType === 'small_animal'}
+						<li class="flex items-start">
+							<span class="text-blue-600 mr-2">•</span>
+							<span>{(m as any)['calculator.quality_assurance.tips.small_animal']()}</span>
+						</li>
+					{/if}
+				</ul>
 			</div>
 			
 			<!-- Action Buttons -->

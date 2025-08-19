@@ -123,6 +123,23 @@
 		"actions": {
 			"calculate_again": "Calculate Again",
 			"modify_inputs": "Modify Inputs"
+		},
+		"quality_assurance": {
+			"title": "Quality Assurance Tips",
+			"tips": {
+				"general": [
+					"Choose CBD products specifically formulated for animals",
+					"Ensure products are third-party tested for purity and potency",
+					"Verify THC content is below 0.3% (hemp-derived)",
+					"Look for products with Certificate of Analysis (COA)",
+					"Start with lower doses and gradually increase",
+					"Monitor your animal's response and adjust accordingly",
+					"Consult with your veterinarian before starting CBD treatment"
+				],
+				"cat": "Cats may be more sensitive to CBD - start with conservative doses",
+				"horse": "Large animals require careful titration and monitoring",
+				"small_animal": "Small animals need very precise dosing - use calibrated droppers"
+			}
 		}
 	}
 }
