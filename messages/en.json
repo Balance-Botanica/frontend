@@ -83,17 +83,17 @@
 	},
 	
 	"calculator": {
-		"title": "Pet CBD Dosage Calculator",
-		"subtitle": "Get personalized CBD dosage recommendations for your pets based on weight, condition, and specific needs",
+		"title": "Animal CBD Dosage Calculator",
+		"subtitle": "Get personalized CBD dosage recommendations for horses, dogs, cats, and small animals based on weight and condition",
 		"benefits": {
 			"title": "Why Use Our Calculator?",
-			"precise": "Precise dosage calculations based on your pet's weight and specific condition",
+			"precise": "Precise dosage calculations based on your animal's weight and specific condition",
 			"safe": "Safe dosing guidelines that follow veterinary recommendations",
-			"personalized": "Personalized recommendations for dogs and cats with different health needs"
+			"personalized": "Personalized recommendations for different animal types with appropriate coefficients"
 		},
 		"disclaimer": {
 			"title": "Important Disclaimer",
-			"text": "This calculator provides general guidance only. Always consult with your veterinarian before starting any CBD treatment for your pet. Individual responses may vary, and professional veterinary advice is essential for your pet's health and safety."
+			"text": "This calculator provides general guidance only. Always consult with your veterinarian before starting any CBD treatment for your animal. Individual responses may vary, and professional veterinary advice is essential for your animal's health and safety."
 		},
 		"additional_info": "Results are estimates and should be used as a starting point for discussion with your veterinarian"
 	}

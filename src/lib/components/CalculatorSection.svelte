@@ -69,10 +69,9 @@
 				</div>
 			</div>
 			
-			<!-- Calculator Widgets -->
-			<div class="space-y-6">
-				<PetCalculator petType="dog" />
-				<PetCalculator petType="cat" />
+			<!-- Calculator Widget -->
+			<div class="flex justify-center">
+				<PetCalculator />
 			</div>
 		</div>
 		
