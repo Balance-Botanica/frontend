@@ -52,10 +52,11 @@
 		
 		// Ensure dosage is available before generating recommendation
 		if (localDosage > 0) {
-			localRecommendation = (m as any)['calculator.results.administer_text']()
-				.replace('{dosage}', localDosage.toString())
-				.replace('{frequency}', frequency)
-				.replace('{duration}', duration);
+			localRecommendation = (m as any)['calculator.results.administer_text']({
+				dosage: localDosage,
+				frequency: frequency,
+				duration: duration
+			});
 		} else {
 			localRecommendation = '';
 		}
@@ -205,9 +206,10 @@
 					{(m as any)['calculator.results.title']()}
 				</div>
 				<div class="text-green-600 text-sm mt-2">
-					{(m as any)['calculator.results.for_animal']()
-						.replace('{animalType}', getAnimalTypeName(animalType))
-						.replace('{condition}', getConditionName(condition))}
+					{(m as any)['calculator.results.for_animal']({
+						animalType: getAnimalTypeName(animalType),
+						condition: getConditionName(condition)
+					})}
 				</div>
 			</div>
 			
