@@ -95,6 +95,34 @@
 			"title": "Important Disclaimer",
 			"text": "This calculator provides general guidance only. Always consult with your veterinarian before starting any CBD treatment for your animal. Individual responses may vary, and professional veterinary advice is essential for your animal's health and safety."
 		},
-		"additional_info": "Results are estimates and should be used as a starting point for discussion with your veterinarian"
+		"additional_info": "Results are estimates and should be used as a starting point for discussion with your veterinarian",
+		"form": {
+			"animal_type": "Animal Type",
+			"weight": "Weight (kg)",
+			"condition": "Condition to be Treated",
+			"calculate_button": "Calculate CBD Dosage",
+			"weight_placeholder": "Enter weight in kg"
+		},
+		"animal_types": {
+			"horse": "Horse",
+			"dog": "Dog",
+			"cat": "Cat",
+			"small_animal": "Small Animal (Rabbit, Guinea Pig, etc.)"
+		},
+		"conditions": {
+			"wellbeing": "General Wellbeing",
+			"anxiety": "Anxiety & Stress",
+			"hard_anxiety": "Hard Anxiety & Severe Stress"
+		},
+		"results": {
+			"title": "Recommended Daily CBD Dosage",
+			"for_animal": "For {animalType} - {condition}",
+			"usage_recommendation": "Usage Recommendation:",
+			"administer_text": "Administer {dosage}mg {frequency}. {duration} and monitor your animal's response. Consult with your veterinarian for long-term use."
+		},
+		"actions": {
+			"calculate_again": "Calculate Again",
+			"modify_inputs": "Modify Inputs"
+		}
 	}
 }

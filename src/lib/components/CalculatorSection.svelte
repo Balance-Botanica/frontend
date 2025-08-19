@@ -3,10 +3,16 @@
 	import PetCalculator from './PetCalculator.svelte';
 </script>
 
-<section class="w-full py-20 md:py-28 bg-green-600 relative overflow-hidden">
-	<!-- Background Pattern -->
-	<div class="absolute inset-0 opacity-10">
-		<div class="absolute inset-0" style="background-image: radial-gradient(circle at 25% 25%, rgba(255,255,255,0.1) 2px, transparent 2px), radial-gradient(circle at 75% 75%, rgba(255,255,255,0.1) 2px, transparent 2px); background-size: 40px 40px;"></div>
+<section class="w-full py-20 md:py-28 relative overflow-hidden">
+	<!-- Background Image with Green Overlay -->
+	<div class="absolute inset-0">
+		<img 
+			src="/images/calculator-bg-1.jpg" 
+			alt="Calculator background" 
+			class="w-full h-full object-cover"
+		/>
+		<!-- Green overlay for semi-transparent effect -->
+		<div class="absolute inset-0 bg-green-600/70"></div>
 	</div>
 	
 	<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { m } from '$lib/paraglide/messages.js';
+	import { getDosageCoefficient, getWeightRecommendation } from './calculator.config.js';
 	
 	let { 
 		animalType = 'dog',
@@ -17,114 +18,31 @@
 		recommendation?: string;
 	}>();
 	
-	// Dosage calculation logic with appropriate coefficients for each animal type
+	// Dosage calculation logic using config file
 	function calculateDosage() {
 		if (!weight || parseFloat(weight) <= 0) return;
 		
 		const weightKg = parseFloat(weight);
-		let baseDosage = 0;
-		
-		// Base dosage per kg based on animal type and condition
-		switch (animalType) {
-			case 'horse':
-				switch (condition) {
-					case 'wellbeing':
-						baseDosage = 0.1;
-						break;
-					case 'anxiety':
-						baseDosage = 0.15;
-						break;
-					case 'hard_anxiety':
-						baseDosage = 0.25;
-						break;
-				}
-				break;
-			case 'dog':
-				switch (condition) {
-					case 'wellbeing':
-						baseDosage = 0.5;
-						break;
-					case 'anxiety':
-						baseDosage = 0.8;
-						break;
-					case 'hard_anxiety':
-						baseDosage = 1.2;
-						break;
-				}
-				break;
-			case 'cat':
-				switch (condition) {
-					case 'wellbeing':
-						baseDosage = 0.3;
-						break;
-					case 'anxiety':
-						baseDosage = 0.5;
-						break;
-					case 'hard_anxiety':
-						baseDosage = 0.8;
-						break;
-				}
-				break;
-			case 'small_animal':
-				switch (condition) {
-					case 'wellbeing':
-						baseDosage = 0.2;
-						break;
-					case 'anxiety':
-						baseDosage = 0.3;
-						break;
-					case 'hard_anxiety':
-						baseDosage = 0.5;
-						break;
-				}
-				break;
-		}
+		const baseDosage = getDosageCoefficient(animalType, condition);
 		
 		dosage = Math.round((weightKg * baseDosage) * 10) / 10;
 		showResults = true;
 		
-		// Generate recommendation
+		// Generate recommendation after dosage is set
 		generateRecommendation();
 	}
 	
 	function generateRecommendation() {
 		const weightNum = parseFloat(weight);
-		let frequency = '';
-		let duration = '';
+		const { frequency, duration } = getWeightRecommendation(animalType, weightNum);
 		
-		if (animalType === 'horse') {
-			if (weightNum < 300) {
-				frequency = '1-2 times daily';
-				duration = 'Start with 2-3 weeks';
-			} else {
-				frequency = '1 time daily';
-				duration = 'Start with 3-4 weeks';
-			}
-		} else if (animalType === 'dog') {
-			if (weightNum < 5) {
-				frequency = '2-3 times daily';
-				duration = 'Start with 1-2 weeks';
-			} else if (weightNum < 20) {
-				frequency = '2 times daily';
-				duration = 'Start with 2-3 weeks';
-			} else {
-				frequency = '1-2 times daily';
-				duration = 'Start with 3-4 weeks';
-			}
-		} else if (animalType === 'cat') {
-			if (weightNum < 3) {
-				frequency = '2 times daily';
-				duration = 'Start with 1-2 weeks';
-			} else {
-				frequency = '1-2 times daily';
-				duration = 'Start with 2-3 weeks';
-			}
-		} else { // small animal
-			frequency = '1-2 times daily';
-			duration = 'Start with 1-2 weeks';
+		// Ensure dosage is available before generating recommendation
+		if (dosage > 0) {
+			recommendation = (m as any)['calculator.results.administer_text']()
+				.replace('{dosage}', dosage.toString())
+				.replace('{frequency}', frequency)
+				.replace('{duration}', duration);
 		}
-		
-		recommendation = `Administer ${dosage}mg ${frequency}. ${duration} and monitor your animal's response. Consult with your veterinarian for long-term use.`;
 	}
 	
 	function resetCalculator() {
@@ -135,15 +53,14 @@
 		recommendation = '';
 	}
 	
-	// Get animal type display name
+	// Get animal type display name from messages
 	function getAnimalTypeName(type: string): string {
-		switch (type) {
-			case 'horse': return 'Horse';
-			case 'dog': return 'Dog';
-			case 'cat': return 'Cat';
-			case 'small_animal': return 'Small Animal';
-			default: return 'Animal';
-		}
+		return (m as any)[`calculator.animal_types.${type}`]();
+	}
+	
+	// Get condition display name from messages
+	function getConditionName(cond: string): string {
+		return (m as any)[`calculator.conditions.${cond}`]();
 	}
 	
 	// Get animal icon
@@ -185,7 +102,7 @@
 			</h3>
 		</div>
 		<p class="text-gray-600 text-sm leading-relaxed">
-			Calculate the optimal CBD dosage for your animal based on type, weight, and condition
+			{(m as any)['calculator.subtitle']()}
 		</p>
 	</div>
 	
@@ -195,16 +112,16 @@
 			<!-- Animal Type Selection -->
 			<div>
 				<label class="block text-sm font-semibold text-gray-700 mb-3">
-					Animal Type
+					{(m as any)['calculator.form.animal_type']()}
 				</label>
 				<select
 					bind:value={animalType}
 					class="w-full px-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-main focus:border-main transition-all duration-200 text-lg appearance-none bg-white cursor-pointer"
 				>
-					<option value="horse">Horse</option>
-					<option value="dog">Dog</option>
-					<option value="cat">Cat</option>
-					<option value="small_animal">Small Animal (Rabbit, Guinea Pig, etc.)</option>
+					<option value="horse">{(m as any)['calculator.animal_types.horse']()}</option>
+					<option value="dog">{(m as any)['calculator.animal_types.dog']()}</option>
+					<option value="cat">{(m as any)['calculator.animal_types.cat']()}</option>
+					<option value="small_animal">{(m as any)['calculator.animal_types.small_animal']()}</option>
 				</select>
 				<!-- Custom dropdown arrow -->
 				<div class="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
@@ -217,13 +134,13 @@
 			<!-- Weight Input -->
 			<div>
 				<label for="weight" class="block text-sm font-semibold text-gray-700 mb-3">
-					Weight (kg)
+					{(m as any)['calculator.form.weight']()}
 				</label>
 				<input
 					id="weight"
 					type="number"
 					bind:value={weight}
-					placeholder="Enter weight in kg"
+					placeholder={(m as any)['calculator.form.weight_placeholder']()}
 					class="w-full px-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-main focus:border-main transition-all duration-200 text-lg"
 					step="0.1"
 					min="0.1"
@@ -233,15 +150,15 @@
 			<!-- Condition Selection -->
 			<div>
 				<label class="block text-sm font-semibold text-gray-700 mb-3">
-					Condition to be Treated
+					{(m as any)['calculator.form.condition']()}
 				</label>
 				<select
 					bind:value={condition}
 					class="w-full px-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-main focus:border-main transition-all duration-200 text-lg appearance-none bg-white cursor-pointer"
 				>
-					<option value="wellbeing">General Wellbeing</option>
-					<option value="anxiety">Anxiety & Stress</option>
-					<option value="hard_anxiety">Hard Anxiety & Severe Stress</option>
+					<option value="wellbeing">{(m as any)['calculator.conditions.wellbeing']()}</option>
+					<option value="anxiety">{(m as any)['calculator.conditions.anxiety']()}</option>
+					<option value="hard_anxiety">{(m as any)['calculator.conditions.hard_anxiety']()}</option>
 				</select>
 				<!-- Custom dropdown arrow -->
 				<div class="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
@@ -257,7 +174,7 @@
 				disabled={!weight || parseFloat(weight) <= 0}
 				class="w-full bg-main text-white py-4 px-6 rounded-xl font-semibold text-lg hover:bg-main-dark transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
 			>
-				Calculate CBD Dosage
+				{(m as any)['calculator.form.calculate_button']()}
 			</button>
 		</div>
 	{:else}
@@ -269,16 +186,18 @@
 					{dosage} mg
 				</div>
 				<div class="text-green-700 font-semibold text-lg">
-					Recommended Daily CBD Dosage
+					{(m as any)['calculator.results.title']()}
 				</div>
 				<div class="text-green-600 text-sm mt-2">
-					For {getAnimalTypeName(animalType)} - {condition === 'wellbeing' ? 'General Wellbeing' : condition === 'anxiety' ? 'Anxiety & Stress' : 'Hard Anxiety & Severe Stress'}
+					{(m as any)['calculator.results.for_animal']()
+						.replace('{animalType}', getAnimalTypeName(animalType))
+						.replace('{condition}', getConditionName(condition))}
 				</div>
 			</div>
 			
 			<!-- Recommendation -->
 			<div class="text-left bg-gray-50 rounded-xl p-6 border border-gray-200">
-				<h4 class="font-semibold text-gray-900 mb-3 text-lg">Usage Recommendation:</h4>
+				<h4 class="font-semibold text-gray-900 mb-3 text-lg">{(m as any)['calculator.results.usage_recommendation']()}</h4>
 				<p class="text-gray-700 leading-relaxed">
 					{recommendation}
 				</p>
@@ -290,13 +209,13 @@
 					on:click={resetCalculator}
 					class="flex-1 bg-gray-200 text-gray-700 py-3 px-6 rounded-xl font-medium hover:bg-gray-300 transition-all duration-200"
 				>
-					Calculate Again
+					{(m as any)['calculator.actions.calculate_again']()}
 				</button>
 				<button
 					on:click={() => showResults = false}
 					class="flex-1 bg-main text-white py-3 px-6 rounded-xl font-medium hover:bg-main-dark transition-all duration-200"
 				>
-					Modify Inputs
+					{(m as any)['calculator.actions.modify_inputs']()}
 				</button>
 			</div>
 		</div>
