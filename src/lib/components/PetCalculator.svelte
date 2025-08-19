@@ -223,7 +223,7 @@
 			
 			<!-- Quality Assurance Tips -->
 			<div class="text-left bg-blue-50 rounded-xl p-6 border border-blue-200">
-				<h4 class="font-semibold text-blue-900 mb-3 text-lg">{(m as any)['calculator.quality_assurance.title']()}</h4>
+				<h4 class="font-semibold text-blue-900 mb-3 text-lg">{(m as any)['calculator.quality_assurance.title']}</h4>
 				<ul class="text-blue-800 text-sm space-y-2">
 					{#each getQualityAssuranceTips(animalType) as tip}
 						<li class="flex items-start">
