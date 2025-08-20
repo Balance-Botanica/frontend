@@ -1,6 +1,6 @@
 import { eq, like, desc, lte } from 'drizzle-orm';
 import { db } from '../../db/index';
-import { product } from '../../db/schema';
+import { products } from '../../db/schema';
 import type {
 	ProductRepository,
 	Product,
@@ -12,7 +12,7 @@ import type {
 export class DrizzleProductRepository implements ProductRepository {
 	async getAll(): Promise<Product[]> {
 		try {
-			const results = await db.select().from(product).orderBy(desc(product.createdAt));
+			const results = await db.select().from(products).orderBy(desc(products.createdAt));
 
 			return results.map(this.mapToDomain);
 		} catch (error) {
@@ -23,7 +23,7 @@ export class DrizzleProductRepository implements ProductRepository {
 
 	async getById(id: string): Promise<Product | null> {
 		try {
-			const results = await db.select().from(product).where(eq(product.id, id)).limit(1);
+			const results = await db.select().from(products).where(eq(products.id, id)).limit(1);
 
 			return results[0] ? this.mapToDomain(results[0]) : null;
 		} catch (error) {
@@ -36,9 +36,9 @@ export class DrizzleProductRepository implements ProductRepository {
 		try {
 			const results = await db
 				.select()
-				.from(product)
-				.where(eq(product.category, category))
-				.orderBy(desc(product.createdAt));
+				.from(products)
+				.where(eq(products.category, category))
+				.orderBy(desc(products.createdAt));
 
 			return results.map(this.mapToDomain);
 		} catch (error) {
@@ -51,9 +51,9 @@ export class DrizzleProductRepository implements ProductRepository {
 		try {
 			const results = await db
 				.select()
-				.from(product)
-				.where(like(product.name, `%${query}%`) || like(product.description, `%${query}%`))
-				.orderBy(desc(product.createdAt));
+				.from(products)
+				.where(like(products.name, `%${query}%`) || like(products.description, `%${query}%`))
+				.orderBy(desc(products.createdAt));
 
 			return results.map(this.mapToDomain);
 		} catch (error) {
@@ -68,7 +68,7 @@ export class DrizzleProductRepository implements ProductRepository {
 			const now = new Date();
 
 			const newProduct = await db
-				.insert(product)
+				.insert(products)
 				.values({
 					...data,
 					id,
@@ -87,12 +87,12 @@ export class DrizzleProductRepository implements ProductRepository {
 	async update(id: string, data: UpdateProductData): Promise<Product | null> {
 		try {
 			const updatedProduct = await db
-				.update(product)
+				.update(products)
 				.set({
 					...data,
 					updatedAt: new Date()
 				})
-				.where(eq(product.id, id))
+				.where(eq(products.id, id))
 				.returning();
 
 			return updatedProduct[0] ? this.mapToDomain(updatedProduct[0]) : null;
@@ -104,7 +104,7 @@ export class DrizzleProductRepository implements ProductRepository {
 
 	async delete(id: string): Promise<boolean> {
 		try {
-			await db.delete(product).where(eq(product.id, id));
+			await db.delete(products).where(eq(products.id, id));
 			return true;
 		} catch (error) {
 			console.error('Error deleting product from Drizzle:', error);
@@ -116,9 +116,9 @@ export class DrizzleProductRepository implements ProductRepository {
 		try {
 			const results = await db
 				.select()
-				.from(product)
-				.where(lte(product.stock, threshold))
-				.orderBy(desc(product.createdAt));
+				.from(products)
+				.where(lte(products.stock, threshold))
+				.orderBy(desc(products.createdAt));
 
 			return results.map(this.mapToDomain);
 		} catch (error) {

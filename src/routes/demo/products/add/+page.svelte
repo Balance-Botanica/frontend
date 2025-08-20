@@ -7,7 +7,7 @@
 	
 	let selectedImage: File | null = null;
 	let imagePreview: string | null = null;
-	let isSubmitting = false;
+	let isSubmitting = $state(false);
 
 	function handleImageUpload(event: CustomEvent<{ file: File; preview: string }>) {
 		console.log('Image upload event received:', event.detail);
@@ -22,41 +22,7 @@
 		imagePreview = null;
 	}
 
-	async function handleSubmit(event: SubmitEvent) {
-		isSubmitting = true;
-		
-		try {
-			const form = event.target as HTMLFormElement;
-			const formData = new FormData(form);
-			
-			// If there's a selected image, add it to the form data
-			if (selectedImage) {
-				formData.delete('image'); // Remove any existing image data
-				formData.append('image', selectedImage);
-			}
-			
-			// Submit the form
-			const response = await fetch(form.action, {
-				method: 'POST',
-				body: formData
-			});
-			
-			if (response.redirected) {
-				window.location.href = response.url;
-			} else if (response.ok) {
-				// Handle successful submission
-				window.location.href = '/demo/products';
-			} else {
-				// Handle error
-				const errorData = await response.json();
-				console.error('Form submission error:', errorData);
-				isSubmitting = false;
-			}
-		} catch (error) {
-			console.error('Form submission error:', error);
-			isSubmitting = false;
-		}
-	}
+
 </script>
 
 <svelte:head>
@@ -93,7 +59,17 @@
 		</div>
 	{/if}
 
-	<form method="post" action="?/addProduct" enctype="multipart/form-data" class="space-y-6" on:submit|preventDefault={handleSubmit}>
+	<form method="post" action="?/addProduct" enctype="multipart/form-data" class="space-y-6" use:enhance={() => {
+		return async ({ formData }) => {
+			isSubmitting = true;
+			
+			// If there's a selected image, add it to the form data
+			if (selectedImage) {
+				formData.delete('image'); // Remove any existing image data
+				formData.append('image', selectedImage);
+			}
+		};
+	}}>
 		<div>
 			<label for="name" class="block text-sm font-medium text-gray-700 mb-2">
 				Product Name *
@@ -182,10 +158,11 @@
 
 		<!-- Image Upload Field -->
 		<div>
-			<label class="block text-sm font-medium text-gray-700 mb-2">
+			<label for="image-upload" class="block text-sm font-medium text-gray-700 mb-2">
 				Product Image
 			</label>
 			<ImageUpload
+				id="image-upload"
 				on:upload={handleImageUpload}
 				on:remove={handleImageRemove}
 				previewUrl={imagePreview}

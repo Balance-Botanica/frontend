@@ -13,6 +13,7 @@
 	export let maxHeight = 2000;
 	export let previewUrl: string | null = null;
 	export let disabled = false;
+	export let id: string | undefined = undefined;
 
 	let dragOver = false;
 	let fileInput: HTMLInputElement;
