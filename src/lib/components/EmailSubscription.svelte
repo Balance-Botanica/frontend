@@ -1,6 +1,6 @@
 <script lang="ts">
 	import PawHybridPatternBG from './PawHybridPatternBG.svelte';
-	import { m } from '$lib/paraglide/messages.js';
+	import { t } from '../i18n';
 	
 	let { compact = false } = $props<{ compact?: boolean }>();
 	const sectionPadding = compact ? 'py-8 md:py-10' : 'py-20 md:py-28';
@@ -29,15 +29,12 @@
 			<div class={`mx-auto max-w-4xl text-center ${compact ? 'py-8 px-6' : 'py-16 px-8'}`}>
 				<!-- Main Heading -->
 				<h2 id="email-subscription-heading" class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-					{(m as any)['footer.newsletter.title']()}
+					{t('footer.newsletter.title')}
 				</h2>
 				
 				<!-- Description -->
 				<p class="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
-					{(m as any)['footer.newsletter.title']().includes('Підписка') 
-						? 'Підпишіться на нашу розсилку для ексклюзивних пропозицій, порад щодо здоров\'я та останніх оновлень продуктів КБД. Приєднуйтесь до нашої спільноти людей, що дбають про здоров\'я.'
-						: 'Subscribe to our newsletter for exclusive offers, wellness tips, and the latest CBD product updates. Join our community of health-conscious individuals.'
-					}
+					{t('footer.newsletter.description')}
 				</p>
 				
 				<!-- Email Subscription Form -->
@@ -48,7 +45,7 @@
 							type="email"
 							id="email-subscription"
 							bind:value={email}
-							placeholder={(m as any)['footer.newsletter.placeholder']()}
+							placeholder={t('footer.newsletter.placeholder')}
 							required
 							class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-main focus:border-main text-gray-900 placeholder-gray-500"
 							aria-label="Email address for newsletter subscription"
@@ -59,7 +56,7 @@
 						disabled={isSubmitting || !email}
 						class="px-6 py-3 bg-main text-white font-medium rounded-lg hover:bg-main-dark transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-main"
 					>
-						{isSubmitting ? 'Subscribing...' : (m as any)['footer.newsletter.button']()}
+						{isSubmitting ? t('email_subscription.subscribing_button') : t('footer.newsletter.button')}
 					</button>
 				</form>
 				
@@ -69,26 +66,26 @@
 						<svg class="w-5 h-5 mr-2 text-main" fill="currentColor" viewBox="0 0 20 20">
 							<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
 						</svg>
-						<span>Exclusive offers & discounts</span>
+						<span>{t('email_subscription.benefits.exclusive_offers')}</span>
 					</div>
 					<div class="flex items-center justify-center">
 						<svg class="w-5 h-5 mr-2 text-main" fill="currentColor" viewBox="0 0 20 20">
 							<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
 						</svg>
-						<span>Wellness tips & insights</span>
+						<span>{t('email_subscription.benefits.wellness_tips')}</span>
 					</div>
 					<div class="flex items-center justify-center">
 						<svg class="w-5 h-5 mr-2 text-main" fill="currentColor" viewBox="0 0 20 20">
 							<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
 						</svg>
-						<span>New product announcements</span>
+						<span>{t('email_subscription.benefits.new_products')}</span>
 					</div>
 				</div>
 				
 				<!-- Privacy Notice -->
 				<p class="mt-6 text-xs text-gray-400">
-					We respect your privacy. Unsubscribe at any time. 
-					<a href="/privacy" class="text-main hover:underline">Privacy Policy</a>
+					{t('email_subscription.privacy_notice')} 
+					<a href="/privacy" class="text-main hover:underline">{t('email_subscription.privacy_policy')}</a>
 				</p>
 			</div>
 		</div>

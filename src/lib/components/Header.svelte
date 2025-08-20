@@ -1,7 +1,7 @@
 <script lang="ts">
   import { colors } from '../colors';
   import { typography } from '../typography';
-  import { m } from '$lib/paraglide/messages.js';
+  import { createPageTranslations } from '$lib/i18n/store';
   import LanguageSwitcher from './LanguageSwitcher.svelte';
   import Logo from './Logo.svelte';
   
@@ -9,12 +9,15 @@
   import personIcon from '../assets/icons/person.svg';
   import cartIcon from '../assets/icons/cart.svg';
   
-  const navigationLinks = [
-    { href: '/shop', label: m['header.navigation.shop']() },
-    { href: '/about', label: m['header.navigation.about']() },
-    { href: '/contacts', label: m['header.navigation.contacts']() },
-    { href: '/blog', label: m['header.navigation.blog']() }
-  ];
+  // Создаем переводы для страницы
+  const pageTranslations = createPageTranslations();
+  
+  $: navigationLinks = $pageTranslations ? [
+    { href: '/shop', label: $pageTranslations.t('header.navigation.shop') },
+    { href: '/about', label: $pageTranslations.t('header.navigation.about') },
+    { href: '/contacts', label: $pageTranslations.t('header.navigation.contacts') },
+    { href: '/blog', label: $pageTranslations.t('header.navigation.blog') }
+  ] : [];
   
   function handlePersonClick() {
     // TODO: Navigate to account/login page
@@ -27,6 +30,7 @@
   }
 </script>
 
+{#if $pageTranslations}
 <header 
   class="w-full bg-white border-b border-stroke"
   style="height: 80px;"
@@ -68,7 +72,7 @@
         <button
           class="w-12 h-12 rounded-full bg-main flex items-center justify-center hover:bg-main-additional transition-all duration-200 hover:scale-110 hover:shadow-lg cursor-pointer"
           on:click={handlePersonClick}
-          aria-label={m['header.accessibility.account']()}
+          aria-label={$pageTranslations?.t('header.accessibility.account') || 'Account'}
         >
           <img 
             src={personIcon} 
@@ -81,7 +85,7 @@
         <button
           class="w-12 h-12 rounded-full bg-main flex items-center justify-center hover:bg-main-additional transition-all duration-200 hover:scale-110 hover:shadow-lg cursor-pointer"
           on:click={handleCartClick}
-          aria-label={m['header.accessibility.shopping_cart']()}
+          aria-label={$pageTranslations?.t('header.accessibility.shopping_cart') || 'Shopping cart'}
         >
           <img 
             src={cartIcon} 
@@ -93,3 +97,4 @@
     </div>
   </div>
 </header>
+{/if}

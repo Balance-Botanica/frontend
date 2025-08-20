@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { localeStore, SUPPORTED_LANGUAGES } from '$lib/stores/locale.js';
-  import { m } from '$lib/paraglide/messages.js';
+  import { localeStore, type Language } from '$lib/stores/locale.js';
+  import { t } from '$lib/i18n';
   import { 
     Header, 
     SubHeader, 
@@ -11,7 +11,20 @@
   } from '$lib/components/index.js';
   
   $: currentLanguage = $localeStore;
-  $: currentLanguageInfo = localeStore.getCurrentLanguageInfo();
+  
+  // Define supported languages
+  const SUPPORTED_LANGUAGES: Array<{ code: Language; name: string; flag: string }> = [
+    { code: 'uk-ua', name: 'Українська', flag: '🇺🇦' },
+    { code: 'en', name: 'English', flag: '🇺🇸' }
+  ];
+  
+  function getCurrentLanguageInfo() {
+    return SUPPORTED_LANGUAGES.find(lang => lang.code === currentLanguage);
+  }
+  
+  function isActive(code: Language) {
+    return currentLanguage === code;
+  }
 </script>
 
 <svelte:head>
@@ -40,9 +53,9 @@
       </h2>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div class="text-center p-4 bg-gray-50 rounded-lg">
-          <div class="text-4xl mb-2">{currentLanguageInfo?.flag}</div>
+          <div class="text-4xl mb-2">{getCurrentLanguageInfo()?.flag}</div>
           <div class="text-lg font-medium" style="color: var(--color-heading);">
-            {currentLanguageInfo?.name}
+            {getCurrentLanguageInfo()?.name}
           </div>
           <div class="text-sm" style="color: var(--color-text);">
             Code: {currentLanguage}
@@ -56,7 +69,7 @@
           <div class="flex justify-center space-x-2">
             {#each SUPPORTED_LANGUAGES as language}
               <button
-                class="px-3 py-2 rounded-lg transition-all duration-200 hover:scale-110 {localeStore.isActive(language.code) ? 'bg-main text-white shadow-lg' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}"
+                class="px-3 py-2 rounded-lg transition-all duration-200 hover:scale-110 {isActive(language.code) ? 'bg-main text-white shadow-lg' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}"
                 on:click={() => localeStore.set(language.code)}
                 title={`Switch to ${language.name}`}
               >
@@ -93,7 +106,7 @@
             <div class="flex space-x-2">
               {#each SUPPORTED_LANGUAGES as language}
                 <button
-                  class="px-4 py-2 rounded-lg transition-all duration-200 hover:scale-105 {localeStore.isActive(language.code) ? 'bg-main text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}"
+                  class="px-4 py-2 rounded-lg transition-all duration-200 hover:scale-105 {isActive(language.code) ? 'bg-main text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}"
                   on:click={() => localeStore.set(language.code)}
                 >
                   {language.flag}

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { m } from '$lib/paraglide/messages.js';
+	import { t } from '../i18n';
 	import Logo from './Logo.svelte';
 	import waIcon from '../assets/icons/wa.svg';
 	import tgIcon from '../assets/icons/tg.svg';
@@ -9,12 +9,12 @@
 	import Button from './Button.svelte';
 	import Input from './Input.svelte';
 
-	const socialLinks: Array<{ href: string; platform: 'facebook' | 'instagram' | 'tiktok' | 'telegram' | 'whatsapp'; label: string }> = [
-		{ href: '#', platform: 'facebook', label: m['footer.social.facebook']() },
-		{ href: '#', platform: 'instagram', label: m['footer.social.instagram']() },
-		{ href: '#', platform: 'tiktok', label: m['footer.social.tiktok']() },
-		{ href: '#', platform: 'telegram', label: m['footer.social.telegram']() },
-		{ href: '#', platform: 'whatsapp', label: m['footer.social.whatsapp']() }
+	const platforms: Array<'facebook' | 'instagram' | 'tiktok' | 'telegram' | 'whatsapp'> = [
+		'facebook',
+		'instagram',
+		'tiktok',
+		'telegram',
+		'whatsapp'
 	];
 
 	function getSocialIcon(platform: string) {
@@ -48,15 +48,15 @@
 
 				<!-- Navigation Links - Horizontal -->
 				<nav class="flex flex-wrap gap-6">
-					<a href="#" class="text-white/80 text-sm hover:text-white transition-colors">{m['footer.navigation.shop']()}</a>
-					<a href="#" class="text-white/80 text-sm hover:text-white transition-colors">{m['footer.navigation.about']()}</a>
-					<a href="#" class="text-white/80 text-sm hover:text-white transition-colors">{m['footer.navigation.contacts']()}</a>
-					<a href="#" class="text-white/80 text-sm hover:text-white transition-colors">{m['footer.navigation.blog']()}</a>
+					<a href="#" class="text-white/80 text-sm hover:text-white transition-colors">{t('footer.navigation.shop')}</a>
+					<a href="#" class="text-white/80 text-sm hover:text-white transition-colors">{t('footer.navigation.about')}</a>
+					<a href="#" class="text-white/80 text-sm hover:text-white transition-colors">{t('footer.navigation.contacts')}</a>
+					<a href="#" class="text-white/80 text-sm hover:text-white transition-colors">{t('footer.navigation.blog')}</a>
 				</nav>
 
 				<!-- Company Description -->
 				<p class="text-white/80 text-sm leading-relaxed max-w-md">
-					{m['footer.company.description']()}
+					{t('footer.company.description')}
 				</p>
 			</div>
 
@@ -64,15 +64,15 @@
 			<div>
 				<!-- Newsletter Section -->
 				<div>
-					<h3 class="text-white font-semibold text-sm mb-3">{m['footer.newsletter.title']()}</h3>
+					<h3 class="text-white font-semibold text-sm mb-3">{t('footer.newsletter.title')}</h3>
 					<form class="flex gap-2">
 						<Input
 							type="email"
-							placeholder={m['footer.newsletter.placeholder']()}
+							placeholder={t('footer.newsletter.placeholder')}
 							required
 						/>
 						<Button variant="secondary" size="sm">
-							{m['footer.newsletter.button']()}
+							{t('footer.newsletter.button')}
 						</Button>
 					</form>
 				</div>
@@ -84,20 +84,20 @@
 			<div class="flex flex-col sm:flex-row justify-between items-center">
 				<!-- Left Side: Copyright and Terms -->
 				<div class="text-xs text-white/60">
-					<span>{m['footer.legal.copyright']()}</span>
+					<span>{t('footer.legal.copyright')}</span>
 					<span class="mx-2">|</span>
-					<a href="#" class="hover:text-white transition-colors">{m['footer.legal.terms_privacy']()}</a>
+					<a href="#" class="hover:text-white transition-colors">{t('footer.legal.terms_privacy')}</a>
 				</div>
 
 				<!-- Right Side: Social Icons Only (No "Follow Us" text) -->
 				<div class="flex space-x-3 mt-2 sm:mt-0">
-					{#each socialLinks as link}
+					{#each platforms as platform}
 						<a
-							href={link.href}
+							href="#"
 							class="text-white/80 hover:text-white transition-colors"
-							aria-label={link.label}
+							aria-label={t(`footer.social.${platform}`)}
 						>
-							<img src={getSocialIcon(link.platform)} alt={link.label} class="w-5 h-5" />
+							<img src={getSocialIcon(platform)} alt={t(`footer.social.${platform}`)} class="w-5 h-5" />
 						</a>
 					{/each}
 				</div>

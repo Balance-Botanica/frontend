@@ -51,14 +51,16 @@
 		"vitest": "^3.2.4"
 	},
 	"dependencies": {
-		"@inlang/paraglide-js": "^2.0.0",
 		"@node-rs/argon2": "^2.0.2",
 		"@oslojs/crypto": "^1.0.1",
 		"@oslojs/encoding": "^1.1.0",
 		"better-sqlite3": "^11.8.0",
 		"cloudinary": "^2.7.0",
+		"dotenv": "^17.2.1",
 		"drizzle-orm": "^0.40.0",
 		"firebase": "^12.1.0",
+		"i18next": "^25.3.6",
+		"i18next-browser-languagedetector": "^8.2.0",
 		"multer": "^2.0.2",
 		"pocketbase": "^0.26.2"
 	}

@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { m } from '$lib/paraglide/messages.js';
+	import { t } from '../i18n';
 	import PetCalculator from './PetCalculator.svelte';
 </script>
 
-<section class="w-full py-20 md:py-28 relative overflow-hidden">
+<section id="calculator" class="w-full py-20 md:py-28 relative overflow-hidden">
 	<!-- Background Image with Green Overlay -->
 	<div class="absolute inset-0">
 		<img 
@@ -19,10 +19,10 @@
 		<!-- Section Header -->
 		<div class="text-center mb-16">
 			<h2 class="text-3xl md:text-4xl font-bold text-white mb-4">
-				{(m as any)['calculator.title']()}
+				{t('calculator.title')}
 			</h2>
 			<p class="text-lg text-green-100 max-w-3xl mx-auto">
-				{(m as any)['calculator.subtitle']()}
+				{t('calculator.subtitle')}
 			</p>
 		</div>
 		
@@ -30,7 +30,7 @@
 		<div class="grid lg:grid-cols-2 gap-12 items-center mb-16">
 			<div class="text-white">
 				<h3 class="text-2xl font-bold mb-6">
-					{(m as any)['calculator.benefits.title']()}
+					{t('calculator.benefits.title')}
 				</h3>
 				<div class="space-y-4">
 					<div class="flex items-start">
@@ -40,7 +40,7 @@
 							</svg>
 						</div>
 						<p class="text-green-100">
-							{(m as any)['calculator.benefits.precise']()}
+							{t('calculator.benefits.precise')}
 						</p>
 					</div>
 					<div class="flex items-start">
@@ -50,7 +50,7 @@
 							</svg>
 						</div>
 						<p class="text-green-100">
-							{(m as any)['calculator.benefits.safe']()}
+							{t('calculator.benefits.safe')}
 						</p>
 					</div>
 					<div class="flex items-start">
@@ -60,17 +60,17 @@
 							</svg>
 						</div>
 						<p class="text-green-100">
-							{(m as any)['calculator.benefits.personalized']()}
+							{t('calculator.benefits.personalized')}
 						</p>
 					</div>
 				</div>
 				
 				<div class="mt-8 p-6 bg-green-700 rounded-xl border border-green-500">
 					<h4 class="text-lg font-semibold text-white mb-3">
-						{(m as any)['calculator.disclaimer.title']()}
+						{t('calculator.disclaimer.title')}
 					</h4>
 					<p class="text-green-100 text-sm leading-relaxed">
-						{(m as any)['calculator.disclaimer.text']()}
+						{t('calculator.disclaimer.text')}
 					</p>
 				</div>
 			</div>
@@ -88,9 +88,8 @@
 					<path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
 				</svg>
 				<span class="text-sm">
-					{(m as any)['calculator.additional_info']()}
+					{t('calculator.additional_info')}
 				</span>
 			</div>
 		</div>
-	</div>
-</section>
+	</section>

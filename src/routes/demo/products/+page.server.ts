@@ -7,11 +7,13 @@ export const load: PageServerLoad = async () => {
 		const productService = new ProductService(ProductRepositoryFactory.create('drizzle'));
 
 		// Get all products
+		console.log('🔍 Loading products...');
 		const products = await productService.getAllProducts();
+		console.log('📦 Products loaded:', products.length, products);
 
-		// Get products by category
-		const cbdOils = await productService.getProductsByCategory('cbd-oils');
-		const topicals = await productService.getProductsByCategory('topicals');
+		// Get products by category (using actual categories from our database)
+		const pastes = await productService.getProductsByCategory('Пасти');
+		const oils = await productService.getProductsByCategory('Олія');
 
 		// Get low stock products
 		const lowStock = await productService.getLowStockProducts(10);
@@ -19,8 +21,8 @@ export const load: PageServerLoad = async () => {
 		return {
 			products,
 			categories: {
-				'cbd-oils': cbdOils,
-				topicals: topicals
+				pastes: pastes,
+				oils: oils
 			},
 			lowStock,
 			dataSource: 'drizzle',

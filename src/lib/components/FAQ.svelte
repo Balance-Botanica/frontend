@@ -1,127 +1,112 @@
 <script lang="ts">
-	import { createEventDispatcher } from 'svelte';
-	import { m } from '$lib/paraglide/messages.js';
-	
-	const dispatch = createEventDispatcher();
-	
-	// FAQ data with translation keys - first one expanded by default
-	let faqItems = [
+	import { t } from '../i18n';
+	import { colors } from '../colors';
+	import { typography } from '../typography';
+	import Button from './Button.svelte';
+
+	interface FAQItem {
+		question: string;
+		answer: string;
+	}
+
+	const faqItems: FAQItem[] = [
 		{
-			id: 1,
-			questionKey: 'faq.benefits.question',
-			answerKey: 'faq.benefits.answer',
-			isExpanded: true // First one expanded by default
+			question: t('faq.benefits.question'),
+			answer: t('faq.benefits.answer')
 		},
 		{
-			id: 2,
-			questionKey: 'faq.choosing.question',
-			answerKey: 'faq.choosing.answer',
-			isExpanded: false
+			question: t('faq.choosing.question'),
+			answer: t('faq.choosing.answer')
 		},
 		{
-			id: 3,
-			questionKey: 'faq.testing.question',
-			answerKey: 'faq.testing.answer',
-			isExpanded: false
+			question: t('faq.testing.question'),
+			answer: t('faq.testing.answer')
 		},
 		{
-			id: 4,
-			questionKey: 'faq.spectrum.question',
-			answerKey: 'faq.spectrum.answer',
-			isExpanded: false
+			question: t('faq.spectrum.question'),
+			answer: t('faq.spectrum.answer')
 		},
 		{
-			id: 5,
-			questionKey: 'faq.effects.question',
-			answerKey: 'faq.effects.answer',
-			isExpanded: false
+			question: t('faq.effects.question'),
+			answer: t('faq.effects.answer')
 		}
 	];
-	
-	function toggleFAQ(id: number) {
-		faqItems = faqItems.map(item => ({
-			...item,
-			isExpanded: item.id === id ? !item.isExpanded : false
-		}));
-		
-		// Dispatch event for analytics or other purposes
-		const toggledItem = faqItems.find(item => item.id === id);
-		dispatch('faqToggle', { id, isExpanded: toggledItem?.isExpanded });
+
+	let openIndex: number | null = null;
+
+	function toggleFAQ(index: number) {
+		openIndex = openIndex === index ? null : index;
+	}
+
+	function handleKeyDown(event: KeyboardEvent, index: number) {
+		if (event.key === 'Enter' || event.key === ' ') {
+			event.preventDefault();
+			toggleFAQ(index);
+		}
 	}
 </script>
 
-<section aria-labelledby="faq-heading" class="w-full py-20 md:py-28 bg-white relative overflow-hidden">
+<section class="py-16 bg-gray-50">
 	<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
 		<!-- Section Header -->
-		<div class="text-center mb-16">
-			<h2 id="faq-heading" class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-				{(m as any)['faq.title']()}
+		<div class="text-center mb-12">
+			<h2 class="text-3xl font-bold text-gray-900 mb-4" style="color: {colors.main}">
+				{t('faq.title')}
 			</h2>
-			<p class="text-lg text-gray-600 max-w-2xl mx-auto">
-				{(m as any)['faq.subtitle']()}
+			<p class="text-lg text-gray-600 max-w-2xl mx-auto" style="font-size: {typography.sizes.base}">
+				{t('faq.subtitle')}
 			</p>
 		</div>
-		
+
 		<!-- FAQ Items -->
 		<div class="space-y-4">
-			{#each faqItems as item (item.id)}
-				<div class="bg-gray-50 rounded-xl border border-gray-200 overflow-hidden">
-					<div
-						class="w-full px-6 py-5 text-left flex items-center justify-between cursor-pointer"
-						on:click={() => toggleFAQ(item.id)}
-						aria-expanded={item.isExpanded}
-						aria-controls={`faq-answer-${item.id}`}
+			{#each faqItems as item, index}
+				<div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+					<button
+						class="w-full px-6 py-4 text-left focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset"
+						onclick={() => toggleFAQ(index)}
+						onkeydown={(e) => handleKeyDown(e, index)}
+						aria-expanded={openIndex === index}
+						aria-controls="faq-answer-{index}"
 					>
-						<h3 class="text-lg font-semibold text-gray-900 pr-4">
-							{(m as any)[item.questionKey]()}
-						</h3>
-						<div class="flex-shrink-0">
-							<svg 
-								class="w-6 h-6 text-main transition-transform duration-200 {item.isExpanded ? 'rotate-180' : ''}" 
-								fill="none" 
-								viewBox="0 0 24 24" 
-								stroke="currentColor"
-								aria-hidden="true"
-							>
-								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-							</svg>
+						<div class="flex items-center justify-between">
+							<h3 class="text-lg font-medium text-gray-900 pr-4" style="font-size: {typography.sizes.base}">
+								{item.question}
+							</h3>
+							<span class="flex-shrink-0 ml-2">
+								<svg
+									class="w-5 h-5 text-gray-500 transform transition-transform duration-200 {openIndex === index ? 'rotate-180' : ''}"
+									fill="none"
+									stroke="currentColor"
+									viewBox="0 0 24 24"
+								>
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+								</svg>
+							</span>
 						</div>
-					</div>
-					
-					<!-- Animated content with smooth growing animation -->
-					<div 
-						class="overflow-hidden transition-all duration-300 ease-out"
-						style="max-height: {item.isExpanded ? '500px' : '0px'}; opacity: {item.isExpanded ? '1' : '0'};"
-					>
-						<div 
-							id="faq-answer-{item.id}"
-							class="px-6 pb-5"
-							role="region"
-							aria-labelledby="faq-question-{item.id}"
+					</button>
+
+					{#if openIndex === index}
+						<div
+							id="faq-answer-{index}"
+							class="px-6 pb-4"
+							style="font-size: {typography.sizes.base}"
 						>
-							<p class="text-gray-600 leading-relaxed">
-								{(m as any)[item.answerKey]()}
-							</p>
+							<p class="text-gray-600 leading-relaxed">{item.answer}</p>
 						</div>
-					</div>
+					{/if}
 				</div>
 			{/each}
 		</div>
-		
-		<!-- Call to Action -->
+
+		<!-- CTA Section -->
 		<div class="text-center mt-12">
-			<p class="text-gray-600 mb-4">
-				{(m as any)['faq.cta.text']()}
+			<p class="text-lg text-gray-600 mb-6" style="font-size: {typography.sizes.base}">
+				{t('faq.cta.text')}
 			</p>
-			<a 
-				href="/contacts" 
-				class="inline-flex items-center px-6 py-3 bg-main text-white font-medium rounded-lg hover:bg-main-dark transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-main"
-			>
-				{(m as any)['faq.cta.button']()}
-				<svg class="ml-2 w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-				</svg>
-			</a>
+			<Button variant="primary" size="lg">
+				{t('faq.cta.button')}
+			</Button>
 		</div>
 	</div>
 </section>

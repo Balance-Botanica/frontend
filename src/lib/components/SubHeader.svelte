@@ -1,7 +1,7 @@
 <script lang="ts">
   import { colors } from '../colors';
   import { typography } from '../typography';
-  import { m } from '$lib/paraglide/messages.js';
+  import { t } from '../i18n';
 </script>
 
 <div 
@@ -14,5 +14,5 @@
     line-height: {typography.styles.linkButtonMedium.lineHeight};
   "
 >
-  {m['subheader.delivery_message']()}
+  {t('subheader.delivery_message')}
 </div>

@@ -2,6 +2,65 @@
 	"$schema": "https://inlang.com/schema/inlang-message-format",
 	"hello_world": "Hello, {name} from en!",
 	
+	"benefits": {
+		"title": "Benefits of Our Products",
+		"golden_paste": {
+			"title": "Balance Botanica Golden Paste CBD",
+			"turmeric": {
+				"title": "Turmeric",
+				"description": "Powerful natural antioxidant, reduces inflammation and supports joint health. Curcumin activates the immune system."
+			},
+			"ginger": {
+				"title": "Ginger",
+				"description": "Improves digestion, reduces nausea and pain. Natural soothing agent for stomach and intestines."
+			},
+			"coconut_oil": {
+				"title": "Coconut Oil",
+				"description": "Rich in medium-chain triglycerides (MCT), provides quick absorption and energy for active dogs."
+			},
+			"cbd_for_dogs": {
+				"title": "CBD for Dogs",
+				"description": "Reduces anxiety, pain and inflammation. Perfect for dogs with arthritis, stressful situations and digestive problems."
+			}
+		},
+		"cbd_oil": {
+			"title": "Balance Botanica CBD Oil",
+			"mct_base": {
+				"title": "MCT Oil Base",
+				"description": "Coconut MCT oil beneficial for stomach, ensures quick CBD absorption and supports healthy digestion."
+			},
+			"two_flavors": {
+				"title": "Two Flavors",
+				"description": "Bacon and fish - natural flavor additives that four-legged friends love. Easy to add to food."
+			},
+			"convenient_dropper": {
+				"title": "Convenient Dropper-Pipette",
+				"description": "Precise dosing with graduated pipette. Easy to control quantity and add to food or water."
+			},
+			"fast_action": {
+				"title": "Fast Action",
+				"description": "MCT oil ensures fast CBD absorption. Results are noticeable within 15-30 minutes after intake."
+			}
+		},
+		"recommendation": {
+			"text": "Both products can be given to both dogs and cats. To properly choose a product and dosage, {calculator_link} and consult with your veterinarian.",
+			"calculator_link": "use our calculator"
+		},
+		"products": {
+			"homepage_title": "Our Products"
+		},
+		"hero": {
+			"title": "Balance Botanica",
+			"subtitle": "Premium CBD products for natural wellness and relaxation. Discover the power of nature's healing properties.",
+			"shop_button": "Shop Products",
+			"learn_button": "Learn More"
+		},
+		"meta": {
+			"title": "Balance Botanica - Premium CBD Products",
+			"description": "Discover premium CBD products for wellness and relaxation"
+		}
+	},
+	
 	"header": {
 		"navigation": {
 			"shop": "Shop",

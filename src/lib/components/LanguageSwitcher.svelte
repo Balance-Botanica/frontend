@@ -1,36 +1,32 @@
 <script lang="ts">
-	import { localeStore } from '$lib/stores/locale.js';
+	import { currentLocale, availableLocales, switchLocale } from '$lib/i18n/store';
+	import type { SupportedLocale } from '$lib/i18n/types';
 	
-	let currentLanguage: string;
+	// Props
+	export let className: string = '';
+	export let showFlags: boolean = true;
+	export let showNames: boolean = true;
 	
-	localeStore.subscribe(value => {
-		currentLanguage = value;
-	});
-
-	function handleLanguageToggle(event: MouseEvent | KeyboardEvent) {
-		event.preventDefault();
-		event.stopPropagation();
-		localeStore.toggle();
-	}
-
-	function handleKeyDown(event: KeyboardEvent) {
-		if (event.key === 'Enter' || event.key === ' ') {
-			handleLanguageToggle(event);
-		}
+	// Обработчик переключения языка
+	async function handleLanguageSwitch(locale: SupportedLocale) {
+		await switchLocale(locale);
 	}
 </script>
 
-<div
-	role="button"
-	tabindex="0"
-	on:click={handleLanguageToggle}
-	on:keydown={handleKeyDown}
-	class="flex items-center gap-2 px-3 py-2 rounded-lg cursor-pointer hover:opacity-80 transition-opacity duration-200"
->
-	<span class="text-base font-medium">
-		{currentLanguage === 'uk-ua' ? '🇺🇦' : '🇬🇧'}
-	</span>
-	<span class="text-base font-medium">
-		{currentLanguage === 'uk-ua' ? 'UA' : 'EN'}
-	</span>
+<div class="flex items-center gap-2 {className}">
+	{#each $availableLocales as locale}
+		<button
+			onclick={() => handleLanguageSwitch(locale.code)}
+			class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors"
+			aria-label="Switch to {locale.nativeName}"
+			title="Switch to {locale.nativeName}"
+		>
+			{#if showFlags}
+				<span class="text-lg">{locale.flag}</span>
+			{/if}
+			{#if showNames}
+				<span class="text-sm font-medium">{locale.nativeName}</span>
+			{/if}
+		</button>
+	{/each}
 </div>
