@@ -2,7 +2,7 @@
 	import shadowLogo1Mirrored from '$lib/assets/icons/shadow_logo_mirrored.svg';
 	import shadowLogo2Mirrored from '$lib/assets/icons/shadow_logo2_mirrored.svg';
 
-	let {
+	const {
 		leafCount = 8,
 		opacity = 0.3,
 		className = ''
@@ -35,7 +35,7 @@
 </script>
 
 <div class={`pointer-events-none absolute inset-0 overflow-hidden select-none ${className}`}>
-	{#each leaves as leaf, _index}
+	{#each leaves as leaf, _index (leaf.left + leaf.top)}
 		<div
 			class="absolute transition-all duration-1000 ease-out"
 			style="

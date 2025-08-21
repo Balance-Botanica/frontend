@@ -1,7 +1,7 @@
 <script lang="ts">
 	import hybridLogo from '$lib/assets/icons/hybrid-logo.svg';
 
-	let { size = 'default', className = '' } = $props<{
+	const { size = 'default', className = '' } = $props<{
 		size?: 'small' | 'default' | 'large' | 'custom';
 		className?: string;
 	}>();

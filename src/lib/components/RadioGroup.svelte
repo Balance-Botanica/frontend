@@ -13,7 +13,7 @@
 </script>
 
 <div class="space-y-3">
-	{#each options as option, _index}
+	{#each options as option, _index (option.value)}
 		<Radio
 			{name}
 			value={option.value}

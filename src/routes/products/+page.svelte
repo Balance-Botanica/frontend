@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { PageData } from './$types';
 
-	let { data }: { data: PageData } = $props();
+	const { data }: { data: PageData } = $props();
 </script>
 
 <svelte:head>
@@ -53,7 +53,7 @@
 		{:else if data.products && data.products.length > 0}
 			<!-- Products Grid -->
 			<div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-				{#each data.products as product}
+				{#each data.products as product (product.id)}
 					<div
 						class="overflow-hidden rounded-lg bg-white shadow-md transition-shadow hover:shadow-lg"
 					>

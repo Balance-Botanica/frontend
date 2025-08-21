@@ -2,7 +2,7 @@
 	import PawHybridPatternBG from './PawHybridPatternBG.svelte';
 	import { t } from '../i18n';
 
-	let { compact = false } = $props<{ compact?: boolean }>();
+	const { compact = false } = $props<{ compact?: boolean }>();
 	const sectionPadding = compact ? 'py-8 md:py-10' : 'py-20 md:py-28';
 
 	let email = $state('');

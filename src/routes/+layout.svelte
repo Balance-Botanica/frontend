@@ -9,7 +9,7 @@
 	import Footer from '$lib/components/Footer.svelte';
 	import EmailSubscription from '$lib/components/EmailSubscription.svelte';
 
-	let { children } = $props();
+	const { children } = $props();
 
 	const excludeFooterRoutes = ['/design-system', '/components'];
 
