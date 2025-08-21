@@ -63,17 +63,24 @@
 		</section>
 
 		<!-- Benefits Section - Split into Two Products -->
-		<section class="benefits-section">
+		<section class="benefits-section" aria-labelledby="benefits-heading">
 			<div class="benefits-content">
-				<h2 class="mb-12 text-center text-3xl font-bold text-white md:text-4xl">
-					{$pageTranslations.t('benefits.title')}
-				</h2>
+				<header>
+					<h2
+						id="benefits-heading"
+						class="mb-12 text-center text-3xl font-bold text-white md:text-4xl"
+					>
+						{$pageTranslations.t('benefits.title')}
+					</h2>
+				</header>
 				<div class="grid gap-16 text-white md:grid-cols-2">
 					<!-- Left Column - Golden Paste CBD -->
-					<div class="space-y-6">
-						<h3 class="mb-8 text-center text-2xl font-bold">
-							{$pageTranslations.t('benefits.golden_paste.title')}
-						</h3>
+					<article class="space-y-6" aria-labelledby="golden-paste-heading">
+						<header>
+							<h3 id="golden-paste-heading" class="mb-8 text-center text-2xl font-bold">
+								{$pageTranslations.t('benefits.golden_paste.title')}
+							</h3>
+						</header>
 
 						<!-- Куркума -->
 						<div class="flex items-start gap-4">
@@ -126,13 +133,15 @@
 								</p>
 							</div>
 						</div>
-					</div>
+					</article>
 
 					<!-- Right Column - CBD Oil -->
-					<div class="space-y-6">
-						<h3 class="mb-8 text-center text-2xl font-bold">
-							{$pageTranslations.t('benefits.cbd_oil.title')}
-						</h3>
+					<article class="space-y-6" aria-labelledby="cbd-oil-heading">
+						<header>
+							<h3 id="cbd-oil-heading" class="mb-8 text-center text-2xl font-bold">
+								{$pageTranslations.t('benefits.cbd_oil.title')}
+							</h3>
+						</header>
 
 						<!-- MCT Oil основа -->
 						<div class="flex items-start gap-4">
@@ -185,17 +194,17 @@
 								</p>
 							</div>
 						</div>
-					</div>
+					</article>
 				</div>
 
 				<!-- Bottom recommendation text -->
-				<div class="mt-12 border-t border-white/20 pt-8 text-center">
+				<footer class="mt-12 border-t border-white/20 pt-8 text-center">
 					<p class="mx-auto max-w-3xl text-sm text-white/70">
 						{@html $pageTranslations.locale === 'uk-ua'
 							? 'Обидва продукти можна давати як собакам, так і котам. Щоб правильно обрати продукт та дозування, <a href="#calculator" class="text-green-400 hover:text-green-300 underline font-medium transition-colors">використайте наш калькулятор</a> та проконсультуватися з ветеринаром.'
 							: 'Both products can be given to both dogs and cats. To properly choose a product and dosage, <a href="#calculator" class="text-green-400 hover:text-green-300 underline font-medium transition-colors">use our calculator</a> and consult with your veterinarian.'}
 					</p>
-				</div>
+				</footer>
 			</div>
 		</section>
 
