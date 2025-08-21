@@ -144,7 +144,7 @@
 
 						<!-- MCT Oil основа -->
 						<div class="flex items-start gap-4">
-							<BenefitIcon emoji="💧" />
+							<BenefitIcon emoji="🥥" />
 							<div>
 								<h4 class="mb-1 text-lg font-semibold">
 									{$pageTranslations.t('benefits.cbd_oil.mct_base.title')}
