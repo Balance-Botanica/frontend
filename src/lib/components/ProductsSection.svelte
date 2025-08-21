@@ -42,7 +42,7 @@
 
 		{#if displayProducts.length > 0}
 			<div class="products-grid">
-				{#each displayProducts as product, _index (product.id)}
+				{#each displayProducts as product (product.id)}
 					<ProductCard
 						{product}
 						{showRating}

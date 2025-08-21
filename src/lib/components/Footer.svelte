@@ -97,7 +97,7 @@
 
 				<!-- Right Side: Social Icons Only (No "Follow Us" text) -->
 				<div class="mt-2 flex space-x-3 sm:mt-0">
-					{#each platforms as platform, _index (platform)}
+					{#each platforms as platform (platform)}
 						<a
 							href="#"
 							class="text-white/80 transition-colors hover:text-white"

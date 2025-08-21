@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { colors } from '../colors';
-	import { typography } from '../typography';
 
 	export let variant: 'primary' | 'secondary' | 'outline' | 'ghost' = 'primary';
 	export let size: 'sm' | 'md' | 'lg' = 'md';

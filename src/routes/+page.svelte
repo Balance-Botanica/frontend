@@ -12,8 +12,6 @@
 
 	export let data: PageData;
 
-	let isScrolled = false;
-
 	// Создаем переводы для страницы
 	const pageTranslations = createPageTranslations();
 

@@ -55,7 +55,7 @@
 </script>
 
 <div class={`pointer-events-none absolute inset-0 overflow-hidden select-none ${className}`}>
-	{#each patterns as pattern, _index (pattern.left + pattern.top)}
+	{#each patterns as pattern (pattern.left + pattern.top)}
 		<div
 			class="absolute transition-all duration-1000 ease-out"
 			style="

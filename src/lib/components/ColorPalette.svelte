@@ -44,13 +44,13 @@
 	</h2>
 
 	<div class="grid gap-8 md:grid-cols-2">
-		{#each colorGroups as group, _groupIndex (group.title)}
+		{#each colorGroups as group (group.title)}
 			<div>
 				<h3 class="mb-4 text-lg font-medium" style="color: {colors.main}">
 					{group.title}
 				</h3>
 				<div class="space-y-3">
-					{#each group.colors as color, _colorIndex (color.name)}
+					{#each group.colors as color (color.name)}
 						<div class="flex items-center space-x-3">
 							<div
 								class="h-12 w-12 rounded-lg border border-gray-200 shadow-sm"

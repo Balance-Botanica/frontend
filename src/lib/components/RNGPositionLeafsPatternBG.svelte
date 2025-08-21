@@ -35,7 +35,7 @@
 </script>
 
 <div class={`pointer-events-none absolute inset-0 overflow-hidden select-none ${className}`}>
-	{#each leaves as leaf, _index (leaf.left + leaf.top)}
+	{#each leaves as leaf (leaf.left + leaf.top)}
 		<div
 			class="absolute transition-all duration-1000 ease-out"
 			style="

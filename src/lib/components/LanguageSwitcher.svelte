@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { currentLocale, availableLocales, switchLocale } from '$lib/i18n/store';
+	import { availableLocales, switchLocale } from '$lib/i18n/store';
 	import type { SupportedLocale } from '$lib/i18n/types';
 
 	// Props
@@ -14,7 +14,7 @@
 </script>
 
 <div class="flex items-center gap-2 {className}">
-	{#each $availableLocales as locale, _index (locale.code)}
+	{#each $availableLocales as locale (locale.code)}
 		<button
 			onclick={() => handleLanguageSwitch(locale.code)}
 			class="flex items-center gap-2 rounded-lg px-3 py-2 transition-colors hover:bg-gray-100"

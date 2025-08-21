@@ -44,7 +44,7 @@
 
 			<!-- Navigation Menu -->
 			<nav class="hidden items-center space-x-8 md:flex">
-				{#each navigationLinks as link, _index (link.href)}
+				{#each navigationLinks as link (link.href)}
 					<a
 						href={link.href}
 						class="text-base font-medium transition-colors duration-200 hover:text-main"

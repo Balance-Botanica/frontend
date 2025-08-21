@@ -52,7 +52,7 @@
 		<div>
 			<h3 class="mb-4 text-lg font-medium" style="color: {colors.main}">Headings</h3>
 			<div class="space-y-4">
-				{#each headingStyles as item, _index (item.name)}
+				{#each headingStyles as item (item.name)}
 					<div class="border-l-4 pl-4" style="border-left-color: {colors.main}">
 						<div class="mb-2">
 							<div class="text-sm font-medium" style="color: {colors.text}">
@@ -81,7 +81,7 @@
 		<div>
 			<h3 class="mb-4 text-lg font-medium" style="color: {colors.main}">Body Text</h3>
 			<div class="space-y-4">
-				{#each bodyStyles as item, _index (item.name)}
+				{#each bodyStyles as item (item.name)}
 					<div class="border-l-4 pl-4" style="border-left-color: {colors.secondary}">
 						<div class="mb-2">
 							<div class="text-sm font-medium" style="color: {colors.text}">
@@ -111,7 +111,7 @@
 		<div>
 			<h3 class="mb-4 text-lg font-medium" style="color: {colors.main}">Interactive Elements</h3>
 			<div class="space-y-4">
-				{#each interactiveStyles as item, _index (item.name)}
+				{#each interactiveStyles as item (item.name)}
 					<div class="border-l-4 pl-4" style="border-left-color: {colors.tertiary}">
 						<div class="mb-2">
 							<div class="text-sm font-medium" style="color: {colors.text}">
