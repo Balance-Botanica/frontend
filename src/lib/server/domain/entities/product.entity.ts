@@ -64,22 +64,54 @@ export class Product {
 	}
 
 	// Getters (immutable access)
-	get id(): string { return this._id; }
-	get name(): string { return this._name; }
-	get description(): string | undefined { return this._description; }
-	get price(): number { return this._price; }
-	get stock(): number { return this._stock; }
-	get size(): string { return this._size; }
-	get flavor(): string { return this._flavor; }
-	get categories(): string[] { return [...this._categories]; } // Return copy
-	get imageUrls(): string[] { return [...this._imageUrls]; } // Return copy
-	get createdAt(): Date { return new Date(this._createdAt); }
-	get updatedAt(): Date { return new Date(this._updatedAt); }
-	get nameEn(): string | undefined { return this._nameEn; }
-	get descriptionEn(): string | undefined { return this._descriptionEn; }
-	get sizeEn(): string | undefined { return this._sizeEn; }
-	get flavorEn(): string | undefined { return this._flavorEn; }
-	get labelColor(): string | undefined { return this._labelColor; }
+	get id(): string {
+		return this._id;
+	}
+	get name(): string {
+		return this._name;
+	}
+	get description(): string | undefined {
+		return this._description;
+	}
+	get price(): number {
+		return this._price;
+	}
+	get stock(): number {
+		return this._stock;
+	}
+	get size(): string {
+		return this._size;
+	}
+	get flavor(): string {
+		return this._flavor;
+	}
+	get categories(): string[] {
+		return [...this._categories];
+	} // Return copy
+	get imageUrls(): string[] {
+		return [...this._imageUrls];
+	} // Return copy
+	get createdAt(): Date {
+		return new Date(this._createdAt);
+	}
+	get updatedAt(): Date {
+		return new Date(this._updatedAt);
+	}
+	get nameEn(): string | undefined {
+		return this._nameEn;
+	}
+	get descriptionEn(): string | undefined {
+		return this._descriptionEn;
+	}
+	get sizeEn(): string | undefined {
+		return this._sizeEn;
+	}
+	get flavorEn(): string | undefined {
+		return this._flavorEn;
+	}
+	get labelColor(): string | undefined {
+		return this._labelColor;
+	}
 
 	// Factory method for creating from DTO
 	static fromDTO(dto: any): Product {

@@ -66,17 +66,20 @@ npm install firebase
 ## Features
 
 ### Phone Authentication
+
 - **SMS Verification**: Users receive a 6-digit code via SMS
 - **reCAPTCHA Protection**: Prevents abuse and bot attacks
 - **Phone Number Formatting**: Automatic E.164 formatting
 - **Error Handling**: Comprehensive error messages and validation
 
 ### Security Features
+
 - **Rate Limiting**: Firebase handles SMS rate limiting
 - **Phone Verification**: Only verified phone numbers can sign in
 - **Session Management**: Secure session handling with Firebase Auth
 
 ### Cost Information
+
 - **Free Tier**: 10,000 SMS verifications/month
 - **Paid Tier**: ~$0.01 per SMS after free tier
 - **No Setup Fees**: Pay only for what you use

@@ -14,7 +14,7 @@
 			console.log('✅ Successfully parsed as JSON:', parsed);
 
 			if (Array.isArray(parsed)) {
-				return parsed.filter(url => typeof url === 'string' && url.trim() !== '');
+				return parsed.filter((url) => typeof url === 'string' && url.trim() !== '');
 			} else {
 				console.warn('⚠️ Parsed result is not an array:', parsed);
 				return [];
@@ -24,7 +24,10 @@
 
 			// If JSON fails, try comma-separated string
 			try {
-				const urls = imageUrlsString.split(',').map(url => url.trim()).filter(url => url !== '');
+				const urls = imageUrlsString
+					.split(',')
+					.map((url) => url.trim())
+					.filter((url) => url !== '');
 				console.log('✅ Successfully parsed as comma-separated:', urls);
 				return urls;
 			} catch (splitError) {
@@ -41,7 +44,7 @@
 		try {
 			const parsed = JSON.parse(categoriesString);
 			if (Array.isArray(parsed)) {
-				return parsed.filter(cat => typeof cat === 'string' && cat.trim() !== '');
+				return parsed.filter((cat) => typeof cat === 'string' && cat.trim() !== '');
 			}
 		} catch (error) {
 			console.error('❌ Error parsing categories:', error);
@@ -84,7 +87,7 @@
 		imageClick: { productId: string; imageUrl: string; index: number };
 	}>();
 
-			// Parse image URLs and categories
+	// Parse image URLs and categories
 	$: {
 		console.log('🔍 Product data:', {
 			imageUrls: product.imageUrls,
@@ -196,42 +199,48 @@
 	}
 </script>
 
-<div class="bg-white rounded-[20px] shadow-sm border border-gray-100 overflow-hidden {className}" style="min-width: 300px; height: 628px;">
-	<div class="p-6 space-y-6 flex flex-col h-full">
+<div
+	class="overflow-hidden rounded-[20px] border border-gray-100 bg-white shadow-sm {className}"
+	style="min-width: 300px; height: 628px;"
+>
+	<div class="flex h-full flex-col space-y-6 p-6">
 		<!-- Top Section: Rating + Bestseller Badge -->
 		{#if showRating || showBestsellerBadge}
-			<div class="flex justify-between items-start">
+			<div class="flex items-start justify-between">
 				<!-- Rating and Reviews -->
 				{#if showRating}
 					<div class="flex items-center space-x-2">
 						<div class="flex space-x-1">
 							{#each Array(5) as _, i}
-								<svg class="w-4 h-4 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
-									<path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+								<svg class="h-4 w-4 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+									<path
+										d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
+									/>
 								</svg>
 							{/each}
 						</div>
-						<span class="text-[14px] font-normal text-[#474747] leading-[19.6px]">100 Відгуків</span>
+						<span class="text-[14px] leading-[19.6px] font-normal text-[#474747]">100 Відгуків</span
+						>
 					</div>
 				{/if}
 
 				<!-- Bestseller Badge -->
 				{#if showBestsellerBadge}
-					<div class="bg-[#1f1f1f] rounded-[38px] px-3 py-1.5">
-						<span class="text-[14px] font-normal text-white leading-[19.6px]">Бестселер</span>
+					<div class="rounded-[38px] bg-[#1f1f1f] px-3 py-1.5">
+						<span class="text-[14px] leading-[19.6px] font-normal text-white">Бестселер</span>
 					</div>
 				{/if}
 			</div>
 		{/if}
 
 		<!-- Product Image Section -->
-		<div class="relative bg-white rounded-xl overflow-hidden w-full" style="height: 200px;">
+		<div class="relative w-full overflow-hidden rounded-xl bg-white" style="height: 200px;">
 			<!-- Main Image -->
 			{#if imageUrls.length > 0}
 				<img
 					src={imageUrls[currentImageIndex]}
-					alt="{product.name}"
-					class="w-full h-full object-cover cursor-pointer"
+					alt={product.name}
+					class="h-full w-full cursor-pointer object-cover"
 					data-product-image
 					bind:this={imgRef}
 					on:click={handleImageClick}
@@ -261,8 +270,8 @@
 				<!-- Fallback Image -->
 				<img
 					src="/images/animal1.jpg"
-					alt="{product.name}"
-					class="w-full h-full object-cover cursor-pointer"
+					alt={product.name}
+					class="h-full w-full cursor-pointer object-cover"
 					on:click={handleImageClick}
 					on:load={() => {
 						console.log('Fallback image loaded');
@@ -274,8 +283,12 @@
 
 			<!-- Loading State -->
 			{#if isImageLoading && imageUrls.length > 0}
-				<div class="absolute inset-0 bg-gray-100/60 flex items-center justify-center pointer-events-none" aria-live="polite" aria-label="Loading image">
-					<div class="animate-spin rounded-full h-8 w-8 border-b-2 border-[#4b766e]"></div>
+				<div
+					class="pointer-events-none absolute inset-0 flex items-center justify-center bg-gray-100/60"
+					aria-live="polite"
+					aria-label="Loading image"
+				>
+					<div class="h-8 w-8 animate-spin rounded-full border-b-2 border-[#4b766e]"></div>
 				</div>
 			{/if}
 
@@ -283,31 +296,43 @@
 			{#if imageUrls.length > 1}
 				<!-- Previous Button -->
 				<button
-					class="absolute left-2 top-1/2 transform -translate-y-1/2 w-8 h-8 bg-black/30 hover:bg-black/50 text-white rounded-full flex items-center justify-center transition-all duration-200 backdrop-blur-sm"
+					class="absolute top-1/2 left-2 flex h-8 w-8 -translate-y-1/2 transform items-center justify-center rounded-full bg-black/30 text-white backdrop-blur-sm transition-all duration-200 hover:bg-black/50"
 					on:click={prevImage}
 					aria-label="Previous image"
 				>
-					<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+					<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M15 19l-7-7 7-7"
+						/>
 					</svg>
 				</button>
 
 				<!-- Next Button -->
 				<button
-					class="absolute right-2 top-1/2 transform -translate-y-1/2 w-8 h-8 bg-black/30 hover:bg-black/50 text-white rounded-full flex items-center justify-center transition-all duration-200 backdrop-blur-sm"
+					class="absolute top-1/2 right-2 flex h-8 w-8 -translate-y-1/2 transform items-center justify-center rounded-full bg-black/30 text-white backdrop-blur-sm transition-all duration-200 hover:bg-black/50"
 					on:click={nextImage}
 					aria-label="Next image"
 				>
-					<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+					<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M9 5l7 7-7 7"
+						/>
 					</svg>
 				</button>
 
 				<!-- Image Indicators -->
-				<div class="absolute bottom-2 left-1/2 transform -translate-x-1/2 flex space-x-1">
+				<div class="absolute bottom-2 left-1/2 flex -translate-x-1/2 transform space-x-1">
 					{#each imageUrls as _, index}
 						<button
-							class="w-2 h-2 rounded-full transition-all duration-200 {index === currentImageIndex ? 'bg-white' : 'bg-white/50'}"
+							class="h-2 w-2 rounded-full transition-all duration-200 {index === currentImageIndex
+								? 'bg-white'
+								: 'bg-white/50'}"
 							on:click={() => goToImage(index)}
 							aria-label={`Go to image ${index + 1}`}
 						></button>
@@ -320,18 +345,23 @@
 		{#if showCategoryTags}
 			<div class="flex flex-wrap gap-2">
 				<!-- Size Tag -->
-				<div class="bg-[#f0f0f0] rounded-[38px] px-3 py-1.5">
-					<span class="text-[14px] font-normal text-[#474747] leading-[19.6px]">{product.size || 'N/A'}</span>
+				<div class="rounded-[38px] bg-[#f0f0f0] px-3 py-1.5">
+					<span class="text-[14px] leading-[19.6px] font-normal text-[#474747]"
+						>{product.size || 'N/A'}</span
+					>
 				</div>
 				<!-- Flavor Tag with Label Color -->
-				<div class="rounded-[38px] px-3 py-1.5 bg-blue-500">
-					<span class="text-[14px] font-normal text-white leading-[19.6px]">{product.flavor || 'N/A'}</span>
+				<div class="rounded-[38px] bg-blue-500 px-3 py-1.5">
+					<span class="text-[14px] leading-[19.6px] font-normal text-white"
+						>{product.flavor || 'N/A'}</span
+					>
 				</div>
 				<!-- Category Tags -->
 				{#if categories.length > 0}
-					{#each categories as category}
-						<div class="bg-[#e5dcd3] rounded-[38px] px-3 py-1.5">
-							<span class="text-[14px] font-normal text-[#474747] leading-[19.6px]">{category}</span>
+					{#each categories as category, index}
+						<div class="rounded-[38px] bg-[#e5dcd3] px-3 py-1.5">
+							<span class="text-[14px] leading-[19.6px] font-normal text-[#474747]">{category}</span
+							>
 						</div>
 					{/each}
 				{/if}
@@ -341,20 +371,22 @@
 		<!-- Product Information -->
 		<div class="space-y-2">
 			<!-- Product Name -->
-			<h3 class="text-[18px] font-semibold text-black leading-[25.2px] font-poppins">
+			<h3 class="font-poppins text-[18px] leading-[25.2px] font-semibold text-black">
 				{product.name}
 			</h3>
 
 			<!-- Product Description -->
 			{#if showDescription && product.description}
-				<p class="text-[14px] font-normal text-[#474747] leading-[19.6px] font-poppins line-clamp-2">
+				<p
+					class="font-poppins line-clamp-2 text-[14px] leading-[19.6px] font-normal text-[#474747]"
+				>
 					{product.description}
 				</p>
 			{/if}
 		</div>
 
 		<!-- Price -->
-		<div class="text-[22px] font-semibold text-black leading-[30.8px] font-poppins">
+		<div class="font-poppins text-[22px] leading-[30.8px] font-semibold text-black">
 			{formattedPrice} грн
 		</div>
 
@@ -363,13 +395,13 @@
 			<!-- Add to Cart Button -->
 			{#if showAddToCart}
 				<button
-					class="w-full bg-[#4b766e] hover:bg-[#3d5f58] text-white font-medium text-[14px] leading-[19.6px] py-3 px-4 rounded-xl transition-colors duration-200 font-poppins"
+					class="font-poppins w-full rounded-xl bg-[#4b766e] px-4 py-3 text-[14px] leading-[19.6px] font-medium text-white transition-colors duration-200 hover:bg-[#3d5f58]"
 					on:click={handleAddToCart}
 				>
 					До кошика
 				</button>
 			{/if}
-			
+
 			<!-- Future Subscribe Button Placeholder -->
 			<!-- <button class="w-full bg-[#1f1f1f] hover:bg-[#333] text-white font-medium text-[14px] leading-[19.6px] py-3 px-4 rounded-xl transition-colors duration-200 font-poppins">
 				Підписатися

@@ -17,6 +17,7 @@ npm run db:migrate-images
 ```
 
 This script will:
+
 - Add `image_urls` column to products table
 - Migrate existing `imageUrl` data to `imageUrls` array
 - Create index for performance
@@ -25,15 +26,17 @@ This script will:
 ### 2. Update Your Code
 
 #### Product Creation
+
 ```typescript
 // Old way
-imageUrl: 'https://example.com/image.jpg'
+imageUrl: 'https://example.com/image.jpg';
 
 // New way
-imageUrls: stringifyImageUrls(['https://example.com/image1.jpg', 'https://example.com/image2.jpg'])
+imageUrls: stringifyImageUrls(['https://example.com/image1.jpg', 'https://example.com/image2.jpg']);
 ```
 
 #### Product Display
+
 ```typescript
 // Old way
 <img src={product.imageUrl} alt={product.name} />
@@ -45,12 +48,13 @@ imageUrls: stringifyImageUrls(['https://example.com/image1.jpg', 'https://exampl
 ```
 
 #### Image Management
+
 ```typescript
-import { 
-  addImageToProduct, 
-  deleteImageByIndex, 
-  deleteImageByUrl,
-  getProductImages 
+import {
+	addImageToProduct,
+	deleteImageByIndex,
+	deleteImageByUrl,
+	getProductImages
 } from '$lib/server/cloudinary/image-manager.js';
 
 // Add new image
@@ -69,12 +73,14 @@ const images = getProductImages(product.imageUrls);
 ## Database Schema
 
 ### SQLite (Current)
+
 ```sql
 ALTER TABLE products ADD COLUMN image_urls TEXT DEFAULT '[]';
 CREATE INDEX idx_products_image_urls ON products(image_urls);
 ```
 
 ### PostgreSQL (Future)
+
 ```sql
 ALTER TABLE products ADD COLUMN imageUrls TEXT[] DEFAULT '{}';
 CREATE INDEX idx_products_image_urls ON products USING GIN (imageUrls);
@@ -83,21 +89,27 @@ CREATE INDEX idx_products_image_urls ON products USING GIN (imageUrls);
 ## Utility Functions
 
 ### `parseImageUrls(imageUrlsJson: string | null): string[]`
+
 Converts JSON string to array, handles null/empty cases.
 
 ### `stringifyImageUrls(imageUrls: string[]): string`
+
 Converts array to JSON string for storage.
 
 ### `addImageToProduct(db, productId, imageUrl)`
+
 Adds new image URL to product's imageUrls array.
 
 ### `deleteImageByIndex(db, productId, index)`
+
 Deletes image at specific index (recommended method).
 
 ### `deleteImageByUrl(db, productId, imageUrl)`
+
 Deletes image by URL matching.
 
 ### `getProductImages(imageUrlsJson)`
+
 Returns array of `ImageInfo` objects with URL, publicId, and index.
 
 ## Best Practices
@@ -113,15 +125,16 @@ Returns array of `ImageInfo` objects with URL, publicId, and index.
 ```typescript
 // Product with multiple images
 const product = {
-  id: '123',
-  name: 'CBD Oil',
-  imageUrls: '["https://res.cloudinary.com/.../image1.jpg", "https://res.cloudinary.com/.../image2.jpg"]'
+	id: '123',
+	name: 'CBD Oil',
+	imageUrls:
+		'["https://res.cloudinary.com/.../image1.jpg", "https://res.cloudinary.com/.../image2.jpg"]'
 };
 
 // Parse and display
 const images = parseImageUrls(product.imageUrls);
 images.forEach((url, index) => {
-  console.log(`Image ${index}: ${url}`);
+	console.log(`Image ${index}: ${url}`);
 });
 
 // Add new image
@@ -134,16 +147,19 @@ await deleteImageByIndex(db, product.id, 0);
 ## Troubleshooting
 
 ### Migration Fails
+
 - Check database permissions
 - Ensure products table exists
 - Verify SQLite version supports ALTER TABLE
 
 ### Images Not Displaying
+
 - Check JSON parsing in `parseImageUrls`
 - Verify `imageUrls` field is not null
 - Ensure URLs are valid Cloudinary URLs
 
 ### Performance Issues
+
 - Ensure index is created: `CREATE INDEX idx_products_image_urls ON products(image_urls)`
 - Consider pagination for products with many images
 - Use lazy loading for image galleries

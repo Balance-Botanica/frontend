@@ -8,7 +8,7 @@ export class GetAllProductsUseCase {
 	async execute(): Promise<Product[]> {
 		try {
 			const productDTOs = await this.productRepository.getAll();
-			return productDTOs.map(productDTO => Product.fromDTO(productDTO));
+			return productDTOs.map((productDTO) => Product.fromDTO(productDTO));
 		} catch (error) {
 			console.error('Error in GetAllProductsUseCase:', error);
 			throw new Error('Failed to retrieve products');

@@ -46,14 +46,14 @@
 	}
 </script>
 
-<section class="py-16 bg-gray-50">
-	<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+<section class="bg-gray-50 py-16">
+	<div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
 		<!-- Section Header -->
-		<div class="text-center mb-12">
-			<h2 class="text-3xl font-bold text-gray-900 mb-4" style="color: {colors.main}">
+		<div class="mb-12 text-center">
+			<h2 class="mb-4 text-3xl font-bold text-gray-900" style="color: {colors.main}">
 				{t('faq.title')}
 			</h2>
-			<p class="text-lg text-gray-600 max-w-2xl mx-auto" style="font-size: {typography.sizes.base}">
+			<p class="mx-auto max-w-2xl text-lg text-gray-600" style="font-size: {typography.sizes.base}">
 				{t('faq.subtitle')}
 			</p>
 		</div>
@@ -61,26 +61,37 @@
 		<!-- FAQ Items -->
 		<div class="space-y-4">
 			{#each faqItems as item, index}
-				<div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+				<div class="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
 					<button
-						class="w-full px-6 py-4 text-left focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset"
+						class="w-full px-6 py-4 text-left focus:ring-2 focus:ring-blue-500 focus:outline-none focus:ring-inset"
 						onclick={() => toggleFAQ(index)}
 						onkeydown={(e) => handleKeyDown(e, index)}
 						aria-expanded={openIndex === index}
 						aria-controls="faq-answer-{index}"
 					>
 						<div class="flex items-center justify-between">
-							<h3 class="text-lg font-medium text-gray-900 pr-4" style="font-size: {typography.sizes.base}">
+							<h3
+								class="pr-4 text-lg font-medium text-gray-900"
+								style="font-size: {typography.sizes.base}"
+							>
 								{item.question}
 							</h3>
-							<span class="flex-shrink-0 ml-2">
+							<span class="ml-2 flex-shrink-0">
 								<svg
-									class="w-5 h-5 text-gray-500 transform transition-transform duration-200 {openIndex === index ? 'rotate-180' : ''}"
+									class="h-5 w-5 transform text-gray-500 transition-transform duration-200 {openIndex ===
+									index
+										? 'rotate-180'
+										: ''}"
 									fill="none"
 									stroke="currentColor"
 									viewBox="0 0 24 24"
 								>
-									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="2"
+										d="M19 9l-7 7-7-7"
+									/>
 								</svg>
 							</span>
 						</div>
@@ -92,7 +103,7 @@
 							class="px-6 pb-4"
 							style="font-size: {typography.sizes.base}"
 						>
-							<p class="text-gray-600 leading-relaxed">{item.answer}</p>
+							<p class="leading-relaxed text-gray-600">{item.answer}</p>
 						</div>
 					{/if}
 				</div>
@@ -100,8 +111,8 @@
 		</div>
 
 		<!-- CTA Section -->
-		<div class="text-center mt-12">
-			<p class="text-lg text-gray-600 mb-6" style="font-size: {typography.sizes.base}">
+		<div class="mt-12 text-center">
+			<p class="mb-6 text-lg text-gray-600" style="font-size: {typography.sizes.base}">
 				{t('faq.cta.text')}
 			</p>
 			<Button variant="primary" size="lg">

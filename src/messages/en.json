@@ -1,7 +1,7 @@
 {
 	"$schema": "https://inlang.com/schema/inlang-message-format",
 	"hello_world": "Hello, {name} from en!",
-	
+
 	"benefits": {
 		"title": "Benefits of Our Products",
 		"golden_paste": {
@@ -60,7 +60,7 @@
 			"description": "Discover premium CBD products for wellness and relaxation"
 		}
 	},
-	
+
 	"header": {
 		"navigation": {
 			"shop": "Shop",
@@ -78,11 +78,11 @@
 			"shopping_cart": "Shopping cart"
 		}
 	},
-	
+
 	"subheader": {
 		"delivery_message": "Orders from 1000 UAH are delivered free of charge 📦"
 	},
-	
+
 	"footer": {
 		"navigation": {
 			"shop": "Shop",
@@ -112,7 +112,7 @@
 			"whatsapp": "WhatsApp"
 		}
 	},
-	
+
 	"faq": {
 		"title": "Frequently Asked Questions",
 		"subtitle": "Get answers to common questions about our CBD products and wellness solutions",
@@ -141,7 +141,7 @@
 			"button": "Contact Our Team"
 		}
 	},
-	
+
 	"made_in_ukraine": {
 		"title": "Made in Ukraine",
 		"subtitle": "Proudly crafted with Ukrainian quality and tradition",
@@ -153,7 +153,7 @@
 			"standards": "International Standards"
 		}
 	},
-	
+
 	"calculator": {
 		"title": "Animal CBD Dosage Calculator",
 		"subtitle": "Get personalized CBD dosage recommendations for horses, dogs, cats, and small animals based on weight and condition",
@@ -232,7 +232,7 @@
 			"consult_vet": "Consult with your veterinarian for appropriate dosing"
 		}
 	},
-	
+
 	"email_subscription": {
 		"title": "Stay Updated with Balance Botanica",
 		"description": "Subscribe to our newsletter for exclusive offers, wellness tips, and the latest CBD product updates. Join our community of health-conscious individuals.",

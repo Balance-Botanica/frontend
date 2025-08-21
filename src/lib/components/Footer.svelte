@@ -36,9 +36,9 @@
 </script>
 
 <footer class="bg-main text-white">
-	<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+	<div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
 		<!-- Main Footer Content - 2 Column Layout -->
-		<div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+		<div class="mb-8 grid grid-cols-1 gap-8 lg:grid-cols-2">
 			<!-- Left Column: Logo, Navigation, Company Info -->
 			<div class="space-y-6">
 				<!-- Logo - Left Aligned -->
@@ -48,14 +48,22 @@
 
 				<!-- Navigation Links - Horizontal -->
 				<nav class="flex flex-wrap gap-6">
-					<a href="#" class="text-white/80 text-sm hover:text-white transition-colors">{t('footer.navigation.shop')}</a>
-					<a href="#" class="text-white/80 text-sm hover:text-white transition-colors">{t('footer.navigation.about')}</a>
-					<a href="#" class="text-white/80 text-sm hover:text-white transition-colors">{t('footer.navigation.contacts')}</a>
-					<a href="#" class="text-white/80 text-sm hover:text-white transition-colors">{t('footer.navigation.blog')}</a>
+					<a href="#" class="text-sm text-white/80 transition-colors hover:text-white"
+						>{t('footer.navigation.shop')}</a
+					>
+					<a href="#" class="text-sm text-white/80 transition-colors hover:text-white"
+						>{t('footer.navigation.about')}</a
+					>
+					<a href="#" class="text-sm text-white/80 transition-colors hover:text-white"
+						>{t('footer.navigation.contacts')}</a
+					>
+					<a href="#" class="text-sm text-white/80 transition-colors hover:text-white"
+						>{t('footer.navigation.blog')}</a
+					>
 				</nav>
 
 				<!-- Company Description -->
-				<p class="text-white/80 text-sm leading-relaxed max-w-md">
+				<p class="max-w-md text-sm leading-relaxed text-white/80">
 					{t('footer.company.description')}
 				</p>
 			</div>
@@ -64,13 +72,9 @@
 			<div>
 				<!-- Newsletter Section -->
 				<div>
-					<h3 class="text-white font-semibold text-sm mb-3">{t('footer.newsletter.title')}</h3>
+					<h3 class="mb-3 text-sm font-semibold text-white">{t('footer.newsletter.title')}</h3>
 					<form class="flex gap-2">
-						<Input
-							type="email"
-							placeholder={t('footer.newsletter.placeholder')}
-							required
-						/>
+						<Input type="email" placeholder={t('footer.newsletter.placeholder')} required />
 						<Button variant="secondary" size="sm">
 							{t('footer.newsletter.button')}
 						</Button>
@@ -81,23 +85,29 @@
 
 		<!-- Bottom Section - After Divider -->
 		<div class="border-t border-white/20 pt-6">
-			<div class="flex flex-col sm:flex-row justify-between items-center">
+			<div class="flex flex-col items-center justify-between sm:flex-row">
 				<!-- Left Side: Copyright and Terms -->
 				<div class="text-xs text-white/60">
 					<span>{t('footer.legal.copyright')}</span>
 					<span class="mx-2">|</span>
-					<a href="#" class="hover:text-white transition-colors">{t('footer.legal.terms_privacy')}</a>
+					<a href="#" class="transition-colors hover:text-white"
+						>{t('footer.legal.terms_privacy')}</a
+					>
 				</div>
 
 				<!-- Right Side: Social Icons Only (No "Follow Us" text) -->
-				<div class="flex space-x-3 mt-2 sm:mt-0">
-					{#each platforms as platform}
+				<div class="mt-2 flex space-x-3 sm:mt-0">
+					{#each platforms as platform, index}
 						<a
 							href="#"
-							class="text-white/80 hover:text-white transition-colors"
+							class="text-white/80 transition-colors hover:text-white"
 							aria-label={t(`footer.social.${platform}`)}
 						>
-							<img src={getSocialIcon(platform)} alt={t(`footer.social.${platform}`)} class="w-5 h-5" />
+							<img
+								src={getSocialIcon(platform)}
+								alt={t(`footer.social.${platform}`)}
+								class="h-5 w-5"
+							/>
 						</a>
 					{/each}
 				</div>

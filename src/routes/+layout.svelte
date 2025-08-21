@@ -8,13 +8,10 @@
 	import SubHeader from '$lib/components/SubHeader.svelte';
 	import Footer from '$lib/components/Footer.svelte';
 	import EmailSubscription from '$lib/components/EmailSubscription.svelte';
-	
+
 	let { children } = $props();
 
-	const excludeFooterRoutes = [
-		'/design-system',
-		'/components'
-	];
+	const excludeFooterRoutes = ['/design-system', '/components'];
 
 	const showFooter = $derived(!excludeFooterRoutes.includes($page.url.pathname));
 	const isHome = $derived($page.url.pathname === '/');
@@ -33,7 +30,7 @@
 	<link rel="icon" href={favicon} />
 </svelte:head>
 
-<div class="flex flex-col min-h-screen">
+<div class="flex min-h-screen flex-col">
 	{#if $i18nReady}
 		<SubHeader />
 		<Header />

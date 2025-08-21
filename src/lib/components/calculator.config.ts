@@ -1,5 +1,5 @@
 // Calculator Configuration - Evidence-based dosing from peer-reviewed research
-// 
+//
 // RESEARCH BASIS:
 // - Anxiety/Stress: Hunt et al. 2023 (4 mg/kg), Flint et al. 2024 (4 mg/kg), Masataka 2024 (4 mg/kg/day)
 // - Pain/Osteoarthritis: Gamble et al. 2018 (2 mg/kg), Brioschi et al. 2020 (2 mg/kg), Verrico et al. 2020 (20-50 mg/day)
@@ -79,7 +79,7 @@ export const CALCULATOR_CONFIG: Record<string, AnimalConfig> = {
 	cat: {
 		coefficients: {
 			wellbeing: 0.06, // mg/kg - conservative for cats based on research
-			anxiety: 0.10, // mg/kg - based on Masataka 2024 (4 mg/kg/day for anxiety)
+			anxiety: 0.1, // mg/kg - based on Masataka 2024 (4 mg/kg/day for anxiety)
 			hard_anxiety: 0.14 // mg/kg - higher for severe cases
 		},
 		weightThresholds: [

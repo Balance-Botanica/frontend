@@ -28,19 +28,24 @@
 	export let showAddToCart: boolean = true;
 
 	$: displayProducts = Array.isArray(products)
-		? (typeof limit === 'number' && limit > 0 ? products.slice(0, limit) : products)
+		? typeof limit === 'number' && limit > 0
+			? products.slice(0, limit)
+			: products
 		: [];
 </script>
 
-<section class="py-16 px-4">
-	<div class="max-w-screen-2xl mx-auto">
+<section class="px-4 py-16">
+	<div class="mx-auto max-w-screen-2xl">
 		{#if title}
-			<h2 class="text-4xl font-bold text-center text-gray-900 mb-12">{title}</h2>
+			<h2 class="mb-12 text-center text-4xl font-bold text-gray-900">{title}</h2>
 		{/if}
 
 		{#if displayProducts.length > 0}
-			<div class="grid gap-6" style="grid-template-columns: repeat(auto-fit, minmax(300px, 450px)); justify-content: center;">
-				{#each displayProducts as product}
+			<div
+				class="grid gap-6"
+				style="grid-template-columns: repeat(auto-fit, minmax(300px, 450px)); justify-content: center;"
+			>
+				{#each displayProducts as product, index}
 					<ProductCard
 						{product}
 						{showRating}

@@ -7,10 +7,13 @@ try {
 
 	// Check tables
 	const tables = db.prepare("SELECT name FROM sqlite_master WHERE type='table'").all();
-	console.log('Tables found:', tables.map(t => t.name));
+	console.log(
+		'Tables found:',
+		tables.map((t) => t.name)
+	);
 
 	// Check products table if it exists
-	if (tables.some(t => t.name === 'products')) {
+	if (tables.some((t) => t.name === 'products')) {
 		const products = db.prepare('SELECT * FROM products').all();
 		console.log('Products count:', products.length);
 		if (products.length > 0) {

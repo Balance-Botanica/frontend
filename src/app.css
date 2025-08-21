@@ -4,40 +4,42 @@
 
 /* Smooth scrolling for anchor links */
 html {
-  scroll-behavior: smooth;
+	scroll-behavior: smooth;
 }
 
 @theme {
-  --font-sans: "Poppins", ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
-  
-  /* Balance Botanica Color Palette from Figma */
-  --color-main: #4B766E;
-  --color-main-additional: #1F1F1F;
-  --color-heading: #000000;
-  --color-text: #474747;
-  --color-primary: #9A9A9A;
-  --color-secondary: #B6B6B6;
-  --color-tertiary: #C5C5C5;
-  --color-tertiary-additional: #F7F7F7;
-  --color-optional: #FFFFFF;
-  --color-destructive: #FF3B30;
-  --color-stroke: #E0E0E0;
-  --color-background: #F8F7F6;
-  --color-foreground-popup: #00000080;
-  
-  /* Balance Botanica Typography System from Figma */
-  --font-weight-regular: 400;
-  --font-weight-medium: 500;
-  --font-weight-semibold: 600;
-  
-  /* Font Sizes */
-  --font-size-xs: 12px;    /* P4 Text */
-  --font-size-sm: 14px;    /* P3 Text, link-button-Small */
-  --font-size-base: 16px;  /* P2 Text, H6 Text, link-button-Medium */
-  --font-size-lg: 18px;    /* P1 Text, H5 Text, link-button-Large */
-  --font-size-xl: 20px;    /* H4 Text */
-  --font-size-2xl: 22px;   /* H3 Text */
-  --font-size-3xl: 24px;   /* H2 Text */
-  --font-size-4xl: 28px;   /* H1 Text */
-  --font-size-5xl: 36px;   /* H1-special Text */
+	--font-sans:
+		'Poppins', ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial,
+		'Apple Color Emoji', 'Segoe UI Emoji';
+
+	/* Balance Botanica Color Palette from Figma */
+	--color-main: #4b766e;
+	--color-main-additional: #1f1f1f;
+	--color-heading: #000000;
+	--color-text: #474747;
+	--color-primary: #9a9a9a;
+	--color-secondary: #b6b6b6;
+	--color-tertiary: #c5c5c5;
+	--color-tertiary-additional: #f7f7f7;
+	--color-optional: #ffffff;
+	--color-destructive: #ff3b30;
+	--color-stroke: #e0e0e0;
+	--color-background: #f8f7f6;
+	--color-foreground-popup: #00000080;
+
+	/* Balance Botanica Typography System from Figma */
+	--font-weight-regular: 400;
+	--font-weight-medium: 500;
+	--font-weight-semibold: 600;
+
+	/* Font Sizes */
+	--font-size-xs: 12px; /* P4 Text */
+	--font-size-sm: 14px; /* P3 Text, link-button-Small */
+	--font-size-base: 16px; /* P2 Text, H6 Text, link-button-Medium */
+	--font-size-lg: 18px; /* P1 Text, H5 Text, link-button-Large */
+	--font-size-xl: 20px; /* H4 Text */
+	--font-size-2xl: 22px; /* H3 Text */
+	--font-size-3xl: 24px; /* H2 Text */
+	--font-size-4xl: 28px; /* H1 Text */
+	--font-size-5xl: 36px; /* H1-special Text */
 }

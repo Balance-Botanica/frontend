@@ -10,9 +10,28 @@
 	export let locale: SupportedLocale = 'en';
 	export let baseUrl: string = 'https://balance-botanica.com';
 	
-	// Генерируем мета-данные
+	// Generate meta data
 	$: fullTitle = title ? `${title} | Balance Botanica` : 'Balance Botanica';
 	$: ogImage = image || `${baseUrl}/images/og-image.jpg`;
+	
+	// Create JSON-LD structured data
+	$: jsonLd = JSON.stringify({
+		"@context": "https://schema.org",
+		"@type": "Organization",
+		"name": "Balance Botanica",
+		"url": baseUrl,
+		"logo": `${baseUrl}/images/logo.png`,
+		"description": description,
+		"contactPoint": {
+			"@type": "ContactPoint",
+			"contactType": "customer service",
+			"availableLanguage": ["English", "Ukrainian"]
+		},
+		"sameAs": [
+			"https://www.facebook.com/balancebotanica",
+			"https://www.instagram.com/balancebotanica"
+		]
+	});
 </script>
 
 <svelte:head>
@@ -54,22 +73,22 @@
 	
 	<!-- Schema.org structured data -->
 	<script type="application/ld+json">
-	{{
-		"@context": "https://schema.org",
-		"@type": "Organization",
-		"name": "Balance Botanica",
-		"url": baseUrl,
-		"logo": `${baseUrl}/images/logo.png`,
-		"description": description,
-		"contactPoint": {{
-			"@type": "ContactPoint",
-			"contactType": "customer service",
-			"availableLanguage": ["English", "Ukrainian"]
-		}},
-		"sameAs": [
-			"https://www.facebook.com/balancebotanica",
-			"https://www.instagram.com/balancebotanica"
-		]
-	}}
+		{JSON.stringify({
+			"@context": "https://schema.org",
+			"@type": "Organization",
+			"name": "Balance Botanica",
+			"url": baseUrl,
+			"logo": `${baseUrl}/images/logo.png`,
+			"description": description,
+			"contactPoint": {
+				"@type": "ContactPoint",
+				"contactType": "customer service",
+				"availableLanguage": ["English", "Ukrainian"]
+			},
+			"sameAs": [
+				"https://www.facebook.com/balancebotanica",
+				"https://www.instagram.com/balancebotanica"
+			]
+		})}
 	</script>
 </svelte:head>

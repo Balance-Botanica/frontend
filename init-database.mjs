@@ -1,12 +1,13 @@
 import Database from 'better-sqlite3';
 
 try {
-  const db = new Database('./drizzle.db');
-  
-  console.log('=== Initializing Database Schema ===');
-  
-  // Create categories table
-  db.prepare(`
+	const db = new Database('./drizzle.db');
+
+	console.log('=== Initializing Database Schema ===');
+
+	// Create categories table
+	db.prepare(
+		`
     CREATE TABLE IF NOT EXISTS categories (
       id TEXT PRIMARY KEY,
       name TEXT NOT NULL,
@@ -18,11 +19,13 @@ try {
       created_at INTEGER,
       updated_at INTEGER
     )
-  `).run();
-  console.log('✅ Created categories table');
-  
-  // Create products table
-  db.prepare(`
+  `
+	).run();
+	console.log('✅ Created categories table');
+
+	// Create products table
+	db.prepare(
+		`
     CREATE TABLE IF NOT EXISTS products (
       id TEXT PRIMARY KEY,
       name TEXT NOT NULL,
@@ -40,11 +43,13 @@ try {
       created_at INTEGER,
       updated_at INTEGER
     )
-  `).run();
-  console.log('✅ Created products table');
-  
-  // Create product_categories junction table
-  db.prepare(`
+  `
+	).run();
+	console.log('✅ Created products table');
+
+	// Create product_categories junction table
+	db.prepare(
+		`
     CREATE TABLE IF NOT EXISTS product_categories (
       id TEXT PRIMARY KEY,
       product_id TEXT NOT NULL,
@@ -53,33 +58,38 @@ try {
       FOREIGN KEY (product_id) REFERENCES products(id),
       FOREIGN KEY (category_id) REFERENCES categories(id)
     )
-  `).run();
-  console.log('✅ Created product_categories table');
-  
-  // Create users table
-  db.prepare(`
+  `
+	).run();
+	console.log('✅ Created product_categories table');
+
+	// Create users table
+	db.prepare(
+		`
     CREATE TABLE IF NOT EXISTS users (
       id TEXT PRIMARY KEY,
       email TEXT NOT NULL UNIQUE,
       created_at INTEGER
     )
-  `).run();
-  console.log('✅ Created users table');
-  
-  // Create sessions table
-  db.prepare(`
+  `
+	).run();
+	console.log('✅ Created users table');
+
+	// Create sessions table
+	db.prepare(
+		`
     CREATE TABLE IF NOT EXISTS sessions (
       id TEXT PRIMARY KEY,
       user_id TEXT NOT NULL,
       expires_at INTEGER NOT NULL,
       FOREIGN KEY (user_id) REFERENCES users(id)
     )
-  `).run();
-  console.log('✅ Created sessions table');
-  
-  console.log('🎉 Database schema initialized successfully!');
-  
-  db.close();
+  `
+	).run();
+	console.log('✅ Created sessions table');
+
+	console.log('🎉 Database schema initialized successfully!');
+
+	db.close();
 } catch (error) {
-  console.error('❌ Error initializing database:', error);
+	console.error('❌ Error initializing database:', error);
 }

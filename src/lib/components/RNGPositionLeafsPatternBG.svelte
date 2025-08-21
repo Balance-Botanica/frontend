@@ -1,20 +1,20 @@
 <script lang="ts">
 	import shadowLogo1Mirrored from '$lib/assets/icons/shadow_logo_mirrored.svg';
 	import shadowLogo2Mirrored from '$lib/assets/icons/shadow_logo2_mirrored.svg';
-	
-	let { 
-		leafCount = 8, 
-		opacity = 0.3, 
-		className = '' 
-	} = $props<{ 
-		leafCount?: number; 
-		opacity?: number; 
-		className?: string; 
+
+	let {
+		leafCount = 8,
+		opacity = 0.3,
+		className = ''
+	} = $props<{
+		leafCount?: number;
+		opacity?: number;
+		className?: string;
 	}>();
-	
+
 	// Available patterns - now using the mirrored versions
 	const patterns = [shadowLogo1Mirrored, shadowLogo2Mirrored];
-	
+
 	// Generate random positions and rotations for leaves
 	const leaves = Array.from({ length: leafCount }, (_, i) => ({
 		id: i,
@@ -34,9 +34,9 @@
 	}));
 </script>
 
-<div class={`absolute inset-0 pointer-events-none select-none overflow-hidden ${className}`}>
-	{#each leaves as leaf}
-		<div 
+<div class={`pointer-events-none absolute inset-0 overflow-hidden select-none ${className}`}>
+	{#each leaves as leaf, index}
+		<div
 			class="absolute transition-all duration-1000 ease-out"
 			style="
 				left: {leaf.left}%; 
@@ -48,10 +48,10 @@
 				animation-delay: {leaf.delay}s;
 			"
 		>
-			<img 
-				src={leaf.pattern} 
-				alt="" 
-				class="w-full h-full object-contain"
+			<img
+				src={leaf.pattern}
+				alt=""
+				class="h-full w-full object-contain"
 				style="filter: brightness(1.1) contrast(1.8) saturate(1.3);"
 			/>
 		</div>
@@ -63,9 +63,14 @@
 	div {
 		animation: float 6s ease-in-out infinite;
 	}
-	
+
 	@keyframes float {
-		0%, 100% { transform: translateY(0px) rotate(var(--rotation)); }
-		50% { transform: translateY(-10px) rotate(var(--rotation)); }
+		0%,
+		100% {
+			transform: translateY(0px) rotate(var(--rotation));
+		}
+		50% {
+			transform: translateY(-10px) rotate(var(--rotation));
+		}
 	}
 </style>

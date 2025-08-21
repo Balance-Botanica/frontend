@@ -17,11 +17,7 @@ const testProducts = [
 		stock: 15,
 		category: 'cbd-oils',
 		imageUrl: '/images/animal1.jpg',
-		imageUrls: JSON.stringify([
-			'/images/animal1.jpg',
-			'/images/animal1.jpg',
-			'/images/animal1.jpg'
-		])
+		imageUrls: JSON.stringify(['/images/animal1.jpg', '/images/animal1.jpg', '/images/animal1.jpg'])
 	},
 	{
 		id: crypto.randomUUID(),
@@ -32,9 +28,7 @@ const testProducts = [
 		stock: 12,
 		category: 'cbd-oils',
 		imageUrl: '/images/animal1.jpg',
-		imageUrls: JSON.stringify([
-			'/images/animal1.jpg'
-		])
+		imageUrls: JSON.stringify(['/images/animal1.jpg'])
 	},
 	{
 		id: crypto.randomUUID(),
@@ -45,10 +39,7 @@ const testProducts = [
 		stock: 8,
 		category: 'topicals',
 		imageUrl: '/images/animal1.jpg',
-		imageUrls: JSON.stringify([
-			'/images/animal1.jpg',
-			'/images/animal1.jpg'
-		])
+		imageUrls: JSON.stringify(['/images/animal1.jpg', '/images/animal1.jpg'])
 	},
 	{
 		id: crypto.randomUUID(),
@@ -59,9 +50,7 @@ const testProducts = [
 		stock: 20,
 		category: 'cbd-oils',
 		imageUrl: '/images/animal1.jpg',
-		imageUrls: JSON.stringify([
-			'/images/animal1.jpg'
-		])
+		imageUrls: JSON.stringify(['/images/animal1.jpg'])
 	}
 ];
 

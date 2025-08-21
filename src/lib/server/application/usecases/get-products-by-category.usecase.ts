@@ -12,7 +12,7 @@ export class GetProductsByCategoryUseCase {
 			}
 
 			const productDTOs = await this.productRepository.getByCategory(category);
-			return productDTOs.map(productDTO => Product.fromDTO(productDTO));
+			return productDTOs.map((productDTO) => Product.fromDTO(productDTO));
 		} catch (error) {
 			console.error('Error in GetProductsByCategoryUseCase:', error);
 			throw new Error(`Failed to retrieve products for category: ${category}`);

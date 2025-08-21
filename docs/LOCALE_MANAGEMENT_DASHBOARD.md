@@ -5,6 +5,7 @@ A comprehensive dashboard for managing application locales, internationalization
 ## Overview
 
 The Locale Management Dashboard provides administrators and developers with a powerful interface to:
+
 - Manage multiple locales (Ukrainian, English, German, Polish, Czech)
 - Configure locale-specific settings (currency, date formats, RTL support)
 - Authenticate users via phone number verification
@@ -14,24 +15,28 @@ The Locale Management Dashboard provides administrators and developers with a po
 ## Features
 
 ### 🔐 Firebase Phone Authentication
+
 - **Phone Number Verification**: SMS-based authentication with 6-digit OTP
 - **reCAPTCHA Protection**: Prevents abuse and bot attacks
 - **Secure Sessions**: Firebase Auth handles user sessions
 - **Cost-Effective**: Free tier includes 10,000 SMS/month
 
 ### 🌍 Multi-Locale Support
+
 - **5 Supported Locales**: Ukrainian (primary), English, German, Polish, Czech
 - **Priority System**: Configurable locale priority for fallbacks
 - **RTL Support**: Right-to-left language support (Arabic, Hebrew ready)
 - **Currency Integration**: Locale-specific currency symbols and formatting
 
 ### ⚙️ Advanced Configuration
+
 - **Performance Metrics**: Track locale loading times and bundle sizes
 - **Accessibility Features**: Screen reader and keyboard navigation support
 - **SEO Optimization**: Hreflang tags and alternate URL management
 - **Fallback Chains**: Intelligent locale fallback system
 
 ### 📊 Real-time Monitoring
+
 - **Current Locale Display**: Visual representation of active locale
 - **Change History**: Track all locale changes with timestamps
 - **Performance Tracking**: Monitor locale switching performance
@@ -40,6 +45,7 @@ The Locale Management Dashboard provides administrators and developers with a po
 ## Architecture
 
 ### Frontend Components
+
 ```
 src/lib/components/
 ├── PhoneAuth.svelte          # Phone authentication component
@@ -51,6 +57,7 @@ src/lib/components/
 ```
 
 ### Firebase Integration
+
 ```
 src/lib/firebase/
 ├── config.ts                 # Firebase configuration
@@ -59,6 +66,7 @@ src/lib/firebase/
 ```
 
 ### Internationalization System
+
 ```
 src/lib/i18n/
 ├── config.ts                 # Locale configurations
@@ -106,31 +114,33 @@ VITE_FIREBASE_APP_ID=your-app-id
 
 ```typescript
 export const SUPPORTED_LOCALES = {
-  'uk-ua': {
-    code: 'uk-ua',
-    iso: 'uk',
-    country: 'UA',
-    name: 'Українська',
-    nativeName: 'Українська',
-    flag: '🇺🇦',
-    rtl: false,
-    currency: 'UAH',
-    currencySymbol: '₴',
-    priority: 1
-  },
-  // ... more locales
+	'uk-ua': {
+		code: 'uk-ua',
+		iso: 'uk',
+		country: 'UA',
+		name: 'Українська',
+		nativeName: 'Українська',
+		flag: '🇺🇦',
+		rtl: false,
+		currency: 'UAH',
+		currencySymbol: '₴',
+		priority: 1
+	}
+	// ... more locales
 };
 ```
 
 ## Security Features
 
 ### Authentication Security
+
 - **Phone Verification**: Only verified phone numbers can access
 - **reCAPTCHA Protection**: Prevents automated attacks
 - **Rate Limiting**: Firebase handles SMS rate limiting
 - **Session Management**: Secure session handling
 
 ### Data Protection
+
 - **Environment Variables**: Sensitive data stored securely
 - **Input Validation**: Comprehensive input sanitization
 - **Error Handling**: Secure error messages without data leakage
@@ -138,12 +148,14 @@ export const SUPPORTED_LOCALES = {
 ## Performance
 
 ### Optimization Features
+
 - **Lazy Loading**: Locales loaded on-demand
 - **Caching**: Intelligent caching of locale data
 - **Bundle Splitting**: Separate bundles for different locales
 - **Performance Metrics**: Real-time performance monitoring
 
 ### Scalability
+
 - **30+ Locale Support**: Designed to handle enterprise-scale localization
 - **Modular Architecture**: Easy to add new locales and features
 - **Performance Tracking**: Monitor and optimize locale performance
@@ -170,6 +182,7 @@ export const SUPPORTED_LOCALES = {
 ### Debug Mode
 
 Enable debug mode by setting:
+
 ```typescript
 // In development
 console.log('Current locale:', $currentLocale);
@@ -209,16 +222,19 @@ console.log('Available locales:', getEnabledLocales());
 ## Support
 
 ### Documentation
+
 - [Firebase Setup Guide](./FIREBASE_SETUP.md)
 - [Locale System Documentation](./LANGUAGE_SYSTEM.md)
 - [Component Library Documentation](./COMPONENTS.md)
 
 ### Resources
+
 - [Firebase Documentation](https://firebase.google.com/docs)
 - [SvelteKit Documentation](https://kit.svelte.dev/docs)
 - [Paraglide JS Documentation](https://inlang.com/m/gerre34r/library-inlang-paraglideJs)
 
 ### Community
+
 - [GitHub Issues](https://github.com/your-repo/issues)
 - [Discord Community](https://discord.gg/your-community)
 - [Documentation Wiki](https://github.com/your-repo/wiki)

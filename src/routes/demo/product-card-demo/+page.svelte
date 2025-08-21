@@ -12,7 +12,8 @@
 		{
 			id: '1',
 			name: 'CBD Oil для собак - Premium',
-			description: 'Високоякісна CBD олія для собак з натуральними інгредієнтами. Допомагає зменшити тривожність та покращити загальний стан здоров\'я вашого улюбленця.',
+			description:
+				"Високоякісна CBD олія для собак з натуральними інгредієнтами. Допомагає зменшити тривожність та покращити загальний стан здоров'я вашого улюбленця.",
 			price: 80000, // 800.00 грн
 			stock: 15,
 			category: 'CBD для собак',
@@ -25,7 +26,8 @@
 		{
 			id: '2',
 			name: 'CBD Oil для кішок - Calm',
-			description: 'Спеціально розроблена формула для кішок, що допомагає зменшити стрес та забезпечити спокійний сон.',
+			description:
+				'Спеціально розроблена формула для кішок, що допомагає зменшити стрес та забезпечити спокійний сон.',
 			price: 65000, // 650.00 грн
 			stock: 8,
 			category: 'CBD для кішок',
@@ -37,7 +39,8 @@
 		{
 			id: '3',
 			name: 'CBD Oil для коней - Performance',
-			description: 'Професійна CBD олія для коней, що підтримує фізичну активність та допомагає відновитися після тренувань.',
+			description:
+				'Професійна CBD олія для коней, що підтримує фізичну активність та допомагає відновитися після тренувань.',
 			price: 120000, // 1200.00 грн
 			stock: 5,
 			category: 'CBD для коней',
@@ -46,7 +49,7 @@
 		{
 			id: '4',
 			name: 'CBD Oil для малих тварин',
-			description: 'М\'яка формула для кроликів, хом\'яків та інших малих домашніх тварин.',
+			description: "М'яка формула для кроликів, хом'яків та інших малих домашніх тварин.",
 			price: 45000, // 450.00 грн
 			stock: 12,
 			category: 'CBD для малих тварин',
@@ -75,28 +78,28 @@
 
 <div class="min-h-screen bg-[#f8f7f6]">
 	<!-- Header Section -->
-	<div class="bg-white border-b border-gray-200">
-		<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-			<h1 class="text-4xl font-semibold text-black font-poppins">Product Card Demo</h1>
-			<p class="text-gray-600 mt-2">Тестування різних конфігурацій карточки товару</p>
+	<div class="border-b border-gray-200 bg-white">
+		<div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+			<h1 class="font-poppins text-4xl font-semibold text-black">Product Card Demo</h1>
+			<p class="mt-2 text-gray-600">Тестування різних конфігурацій карточки товару</p>
 		</div>
 	</div>
 
 	<!-- Demo Controls -->
-	<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-		<div class="bg-white rounded-lg p-6 shadow-sm">
-			<h2 class="text-xl font-semibold mb-4">Конфігурації для тестування</h2>
-			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
-				<div class="p-3 bg-blue-50 rounded">
+	<div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+		<div class="rounded-lg bg-white p-6 shadow-sm">
+			<h2 class="mb-4 text-xl font-semibold">Конфігурації для тестування</h2>
+			<div class="grid grid-cols-1 gap-4 text-sm md:grid-cols-2 lg:grid-cols-4">
+				<div class="rounded bg-blue-50 p-3">
 					<strong>Продукт 1:</strong> 3 зображення (слайдер)
 				</div>
-				<div class="p-3 bg-green-50 rounded">
+				<div class="rounded bg-green-50 p-3">
 					<strong>Продукт 2:</strong> 2 зображення (слайдер)
 				</div>
-				<div class="p-3 bg-yellow-50 rounded">
+				<div class="rounded bg-yellow-50 p-3">
 					<strong>Продукт 3:</strong> 1 зображення (legacy imageUrl)
 				</div>
-				<div class="p-3 bg-purple-50 rounded">
+				<div class="rounded bg-purple-50 p-3">
 					<strong>Продукт 4:</strong> 1 зображення (масив з 1 елементом)
 				</div>
 			</div>
@@ -104,23 +107,19 @@
 	</div>
 
 	<!-- Products Grid -->
-	<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+	<div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+		<div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
 			{#each demoProducts as product}
-				<ProductCard
-					{product}
-					on:addToCart={handleAddToCart}
-					on:imageClick={handleImageClick}
-				/>
+				<ProductCard {product} on:addToCart={handleAddToCart} on:imageClick={handleImageClick} />
 			{/each}
 		</div>
 	</div>
 
 	<!-- Event Log -->
-	<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-		<div class="bg-white rounded-lg p-6 shadow-sm">
-			<h2 class="text-xl font-semibold mb-4">Лог подій</h2>
-			<div class="bg-gray-50 rounded p-4 font-mono text-sm">
+	<div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+		<div class="rounded-lg bg-white p-6 shadow-sm">
+			<h2 class="mb-4 text-xl font-semibold">Лог подій</h2>
+			<div class="rounded bg-gray-50 p-4 font-mono text-sm">
 				<p>Відкрийте консоль браузера для перегляду подій</p>
 				<p>• addToCart - при натисканні кнопки "До кошика"</p>
 				<p>• imageClick - при кліку на зображення</p>
