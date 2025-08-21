@@ -5,8 +5,10 @@ export interface Product {
 	description: string;
 	price: number; // Price in dollars (e.g., 29.99)
 	stock: number;
-	category: string;
-	imageUrl?: string;
+	size: string; // Size tag (required)
+	flavor: string; // Flavor tag (required)
+	categories: string; // JSON string of categories (from category field)
+	imageUrls: string; // JSON string of Cloudinary images (from image_url or image_urls field)
 	createdAt: Date;
 	updatedAt: Date;
 }
@@ -17,8 +19,10 @@ export interface CreateProductData {
 	description: string;
 	price: number;
 	stock: number;
-	category: string;
-	imageUrl?: string;
+	size: string; // Size tag (required)
+	flavor: string; // Flavor tag (required)
+	categories: string; // JSON string of categories
+	imageUrls: string; // JSON string of Cloudinary images
 }
 
 // Product update data (partial, without auto-generated fields)
@@ -27,8 +31,10 @@ export interface UpdateProductData {
 	description?: string;
 	price?: number;
 	stock?: number;
-	category?: string;
-	imageUrl?: string;
+	size?: string; // Size tag (optional)
+	flavor?: string; // Flavor tag (optional)
+	categories?: string; // JSON string of categories
+	imageUrls?: string; // JSON string of Cloudinary images
 }
 
 // Product repository interface - defines the contract for data access

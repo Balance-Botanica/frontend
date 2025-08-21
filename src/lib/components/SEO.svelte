@@ -59,7 +59,7 @@
 	<meta property="og:image" content={ogImage} />
 	<meta property="og:url" content={baseUrl} />
 	<meta property="og:type" content="website" />
-	<meta property="og:locale" content={locale === 'uk' ? 'uk_UA' : 'en_US'} />
+	<meta property="og:locale" content={locale === 'uk-ua' ? 'uk_UA' : 'en_US'} />
 	<meta property="og:site_name" content="Balance Botanica" />
 	
 	<!-- Twitter Card -->

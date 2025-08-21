@@ -5,6 +5,7 @@
 	import FAQ from '$lib/components/FAQ.svelte';
 	import ProductsSection from '$lib/components/ProductsSection.svelte';
 	import BenefitIcon from '$lib/components/BenefitIcon.svelte';
+	import EmailSubscription from '$lib/components/EmailSubscription.svelte';
 	import { createPageTranslations } from '$lib/i18n/store';
 	import SEO from '$lib/components/SEO.svelte';
 	import type { PageData } from './$types';
@@ -15,14 +16,12 @@
 	// Создаем переводы для страницы
 	const pageTranslations = createPageTranslations();
 
-	onMount(() => {
-		const handleScroll = () => {
-			isScrolled = window.scrollY > 50;
-		};
+	// Debug logging
+	console.log('🔍 Page data received:', data);
+	console.log('📦 Products in data:', data?.products);
+	console.log('📊 Products count:', data?.products?.length || 0);
 
-		window.addEventListener('scroll', handleScroll);
-		return () => window.removeEventListener('scroll', handleScroll);
-	});
+
 </script>
 
 {#if $pageTranslations}
@@ -223,6 +222,9 @@
 
 		<!-- FAQ Section -->
 		<FAQ />
+
+		<!-- Email Subscription Section -->
+		<EmailSubscription compact={false} />
 	</main>
 {/if}
 

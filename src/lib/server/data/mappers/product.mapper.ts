@@ -49,7 +49,7 @@ export class ProductMapper {
 			flavor: data.flavor,
 			price: data.price,
 			stock: data.stock,
-			categories: data.categoryIds ? JSON.stringify(data.categoryIds) : '[]',
+			categories: data.categories,
 			image_urls: data.imageUrls
 		};
 	}
@@ -65,7 +65,7 @@ export class ProductMapper {
 		if (data.price !== undefined) dto.price = data.price;
 		if (data.stock !== undefined) dto.stock = data.stock;
 		if (data.imageUrls !== undefined) dto.image_urls = data.imageUrls;
-		if (data.categoryIds !== undefined) dto.categories = JSON.stringify(data.categoryIds);
+		if (data.categories !== undefined) dto.categories = data.categories;
 
 		return dto;
 	}

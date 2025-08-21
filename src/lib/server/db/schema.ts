@@ -5,13 +5,14 @@ export const products = sqliteTable('products', {
 	id: text('id').primaryKey(),
 	name: text('name').notNull(),
 	description: text('description'),
+	size: text('size').notNull(),
+	flavor: text('flavor').notNull(),
 	price: integer('price').notNull(), // Price in UAH kopiyky (1 UAH = 100 kopiyky)
 	stock: integer('stock').notNull(),
-	category: text('category').notNull(),
-	imageUrl: text('image_url'), // Legacy field - will be migrated to imageUrls
-	imageUrls: text('image_urls'), // JSON string of image URLs array
-	createdAt: integer('created_at', { mode: 'timestamp' }).$defaultFn(() => new Date()),
-	updatedAt: integer('updated_at', { mode: 'timestamp' }).$defaultFn(() => new Date())
+	categories: text('categories').notNull(),
+	image_urls: text('image_urls').notNull(),
+	created_at: integer('created_at', { mode: 'timestamp' }).$defaultFn(() => new Date()),
+	updated_at: integer('updated_at', { mode: 'timestamp' }).$defaultFn(() => new Date())
 });
 
 export const users = sqliteTable('users', {

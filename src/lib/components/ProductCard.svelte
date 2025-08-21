@@ -14,7 +14,9 @@
 			console.log('✅ Successfully parsed as JSON:', parsed);
 
 			if (Array.isArray(parsed)) {
-				return parsed.filter((url) => typeof url === 'string' && url.trim() !== '');
+				const filtered = parsed.filter((url) => typeof url === 'string' && url.trim() !== '');
+				console.log('✅ Filtered array result:', filtered);
+				return filtered;
 			} else {
 				console.warn('⚠️ Parsed result is not an array:', parsed);
 				return [];
@@ -27,7 +29,8 @@
 				const urls = imageUrlsString
 					.split(',')
 					.map((url) => url.trim())
-					.filter((url) => url !== '');
+					.filter((url) => url !== '' && url !== 'undefined' && url !== 'null')
+					.filter((url) => url.startsWith('http')); // Only valid URLs
 				console.log('✅ Successfully parsed as comma-separated:', urls);
 				return urls;
 			} catch (splitError) {
@@ -59,8 +62,8 @@
 		description?: string | null;
 		price: number;
 		stock: number;
-		size?: string;
-		flavor?: string;
+		size: string;
+		flavor: string;
 		categories?: string | null;
 		imageUrls?: string | null;
 		createdAt?: Date;
@@ -89,25 +92,34 @@
 
 	// Parse image URLs and categories
 	$: {
-		console.log('🔍 Product data:', {
-			imageUrls: product.imageUrls,
-			categories: product.categories,
-			size: product.size,
-			flavor: product.flavor
-		});
+		console.log(`\n🔍 ProductCard for "${product.name}":`);
+		console.log('  Raw imageUrls:', product.imageUrls);
+		console.log('  Raw categories:', product.categories);
+		console.log('  Size:', product.size);
+		console.log('  Flavor:', product.flavor);
 
+		// Get images from imageUrls field
 		if (product.imageUrls) {
 			imageUrls = parseImageUrls(product.imageUrls);
-			console.log('📸 Parsed imageUrls:', imageUrls);
+			console.log('  📸 Parsed imageUrls:', imageUrls);
+			console.log('  📸 Image count:', imageUrls.length);
+			console.log('  🎠 Will show slider:', imageUrls.length > 1);
 		} else {
 			imageUrls = [];
-			console.log('📸 No images found');
+			console.log('  📸 No images found');
 		}
 
-		// Add fallback image if no Cloudinary images
+		// Add fallback image if no images found
 		if (imageUrls.length === 0) {
 			imageUrls = ['/images/animal1.jpg'];
 			console.log('📸 Added fallback image');
+		}
+
+		// Filter out duplicate images to avoid showing same image multiple times
+		const uniqueImageUrls = [...new Set(imageUrls)];
+		if (uniqueImageUrls.length !== imageUrls.length) {
+			console.log('🔄 Filtered out duplicate images:', uniqueImageUrls);
+			imageUrls = uniqueImageUrls;
 		}
 
 		if (product.categories) {
@@ -119,6 +131,13 @@
 		}
 
 		currentImageIndex = 0;
+		
+		// Log final state
+		console.log(`  ✅ Final state for "${product.name}":`);
+		console.log('    ImageUrls:', imageUrls);
+		console.log('    Image count:', imageUrls.length);
+		console.log('    Categories:', categories);
+		console.log('    Will show slider:', imageUrls.length > 1);
 	}
 
 	// Re-evaluate loader when image changes or loads from cache (CSR safe)
@@ -127,9 +146,10 @@
 			clearTimeout(imageLoadTimeout);
 		}
 		isImageLoading = !(browser && imgRef && imgRef.complete);
+		console.log(`🖼️ Image loading state for "${product.name}":`, isImageLoading);
 		imageLoadTimeout = setTimeout(() => {
 			if (isImageLoading) {
-				console.log('🔄 Safety: hiding loader after 5s');
+				console.log(`🔄 Safety: hiding loader after 5s for "${product.name}"`);
 				isImageLoading = false;
 			}
 		}, 5000);
@@ -137,37 +157,58 @@
 
 	// Format price from kopiyky to UAH
 	$: formattedPrice = (product.price / 100).toFixed(2);
+	
+	// Log price formatting
+	$: {
+		console.log(`💰 Price for "${product.name}": ${product.price} kopiyky = ${formattedPrice} грн`);
+	}
 
 	// Navigation functions
 	function nextImage() {
 		if (imageUrls.length > 1) {
+			const oldIndex = currentImageIndex;
 			currentImageIndex = (currentImageIndex + 1) % imageUrls.length;
+			console.log(`🔄 Next image for "${product.name}": ${oldIndex} → ${currentImageIndex}`);
+		} else {
+			console.log(`❌ Cannot go to next image for "${product.name}" - only ${imageUrls.length} image(s)`);
 		}
 	}
 
 	function prevImage() {
 		if (imageUrls.length > 1) {
+			const oldIndex = currentImageIndex;
 			currentImageIndex = currentImageIndex === 0 ? imageUrls.length - 1 : currentImageIndex - 1;
+			console.log(`🔄 Previous image for "${product.name}": ${oldIndex} → ${currentImageIndex}`);
+		} else {
+			console.log(`❌ Cannot go to previous image for "${product.name}" - only ${imageUrls.length} image(s)`);
 		}
 	}
 
 	function goToImage(index: number) {
 		if (index >= 0 && index < imageUrls.length) {
+			const oldIndex = currentImageIndex;
 			currentImageIndex = index;
+			console.log(`🎯 Go to image ${index} for "${product.name}": ${oldIndex} → ${currentImageIndex}`);
+		} else {
+			console.log(`❌ Invalid image index ${index} for "${product.name}" (valid range: 0-${imageUrls.length - 1})`);
 		}
 	}
 
 	function handleAddToCart() {
+		console.log(`🛒 Add to cart clicked for "${product.name}"`);
 		dispatch('addToCart', { productId: product.id, product });
 	}
 
 	function handleImageClick() {
 		if (imageUrls[currentImageIndex]) {
+			console.log(`🖼️ Image clicked for "${product.name}" at index ${currentImageIndex}`);
 			dispatch('imageClick', {
 				productId: product.id,
 				imageUrl: imageUrls[currentImageIndex],
 				index: currentImageIndex
 			});
+		} else {
+			console.log(`❌ No image at index ${currentImageIndex} for "${product.name}"`);
 		}
 	}
 
@@ -175,72 +216,102 @@
 	let slideshowInterval: ReturnType<typeof setInterval>;
 
 	onMount(() => {
+		console.log(`🎠 ProductCard onMount for "${product.name}":`);
+		console.log('  ImageUrls length:', imageUrls.length);
+		console.log('  Will start slideshow:', imageUrls.length > 1);
+		console.log('  Product data:', {
+			name: product.name,
+			imageUrls: product.imageUrls,
+			size: product.size,
+			flavor: product.flavor,
+			categories: product.categories
+		});
+		console.log('  Current imageUrls state:', imageUrls);
+		
+		// Only start slideshow if there are multiple unique images
 		if (imageUrls.length > 1) {
+			console.log('  🎠 Starting slideshow with interval');
 			slideshowInterval = setInterval(() => {
+				console.log(`  🎠 Auto-advancing to next image for "${product.name}"`);
 				nextImage();
 			}, 5000);
+		} else {
+			console.log('  ❌ Not enough images for slideshow');
 		}
 
 		return () => {
+			console.log(`🗑️ ProductCard cleanup for "${product.name}":`);
 			if (slideshowInterval) {
+				console.log('  🎠 Clearing slideshow interval');
 				clearInterval(slideshowInterval);
 			}
 			if (imageLoadTimeout) {
+				console.log('  ⏰ Clearing image load timeout');
 				clearTimeout(imageLoadTimeout);
 			}
 		};
 	});
 
 	$: if (imageUrls.length > 1 && slideshowInterval) {
+		console.log(`🔄 Restarting slideshow for "${product.name}" due to imageUrls change`);
+		console.log('  New imageUrls:', imageUrls);
+		console.log('  Image count:', imageUrls.length);
 		clearInterval(slideshowInterval);
 		slideshowInterval = setInterval(() => {
+			console.log(`  🎠 Auto-advancing to next image for "${product.name}" (restarted)`);
 			nextImage();
 		}, 5000);
 	}
 </script>
 
 <div
-	class="overflow-hidden rounded-[20px] border border-gray-100 bg-white shadow-sm {className}"
-	style="min-width: 300px; height: 628px;"
+	class="overflow-hidden rounded-[20px] bg-[#F8F7F6] {className}"
+	style="width: 387px; height: 733px;"
 >
-	<div class="flex h-full flex-col space-y-6 p-6">
+	<div class="flex h-full flex-col justify-end items-start p-6 gap-8">
 		<!-- Top Section: Rating + Bestseller Badge -->
 		{#if showRating || showBestsellerBadge}
 			<div class="flex items-start justify-between">
 				<!-- Rating and Reviews -->
 				{#if showRating}
-					<div class="flex items-center space-x-2">
+					<div class="flex items-center space-x-3">
 						<div class="flex space-x-1">
 							{#each Array(5) as _, _i}
-								<svg class="h-4 w-4 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+								<svg class="h-5 w-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
 									<path
 										d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
 									/>
 								</svg>
 							{/each}
 						</div>
-						<span class="text-[14px] leading-[19.6px] font-normal text-[#474747]">100 Відгуків</span
+						<span class="text-[16px] leading-[22px] font-normal text-[#474747]">100 Відгуків</span
 						>
 					</div>
 				{/if}
 
 				<!-- Bestseller Badge -->
 				{#if showBestsellerBadge}
-					<div class="rounded-[38px] bg-[#1f1f1f] px-3 py-1.5">
-						<span class="text-[14px] leading-[19.6px] font-normal text-white">Бестселер</span>
+					<div class="rounded-[38px] bg-[#1f1f1f] px-4 py-2">
+						<span class="text-[16px] leading-[22px] font-normal text-white">Бестселер</span>
 					</div>
 				{/if}
 			</div>
 		{/if}
 
 		<!-- Product Image Section -->
-		<div class="relative w-full overflow-hidden rounded-xl bg-white" style="height: 200px;">
+		<div class="relative w-full overflow-hidden rounded-xl bg-white group" style="height: 240px;">
+			<!-- Image Counter (only for multiple images) -->
+			{#if imageUrls.length > 1}
+				<div class="absolute top-3 right-3 z-10 rounded-full bg-black/60 px-2 py-1 text-xs font-medium text-white backdrop-blur-sm">
+					{currentImageIndex + 1} / {imageUrls.length}
+				</div>
+			{/if}
 			<!-- Main Image -->
 			{#if imageUrls.length > 0}
 				<img
 					src={imageUrls[currentImageIndex]}
 					alt={product.name}
-					class="h-full w-full cursor-pointer object-cover"
+					class="h-full w-full cursor-pointer object-cover transition-opacity duration-500"
 					data-product-image
 					bind:this={imgRef}
 					on:click={handleImageClick}
@@ -292,19 +363,19 @@
 				</div>
 			{/if}
 
-			<!-- Navigation Controls (only for 2+ images) -->
+			<!-- Navigation Controls (only for 2+ unique images) -->
 			{#if imageUrls.length > 1}
 				<!-- Previous Button -->
 				<button
-					class="absolute top-1/2 left-2 flex h-8 w-8 -translate-y-1/2 transform items-center justify-center rounded-full bg-black/30 text-white backdrop-blur-sm transition-all duration-200 hover:bg-black/50"
+					class="absolute top-1/2 left-3 flex h-10 w-10 -translate-y-1/2 transform items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-sm transition-all duration-300 hover:bg-black/60 hover:scale-110 shadow-lg opacity-0 group-hover:opacity-100"
 					on:click={prevImage}
 					aria-label="Previous image"
 				>
-					<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+					<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 						<path
 							stroke-linecap="round"
 							stroke-linejoin="round"
-							stroke-width="2"
+							stroke-width="2.5"
 							d="M15 19l-7-7 7-7"
 						/>
 					</svg>
@@ -312,27 +383,27 @@
 
 				<!-- Next Button -->
 				<button
-					class="absolute top-1/2 right-2 flex h-8 w-8 -translate-y-1/2 transform items-center justify-center rounded-full bg-black/30 text-white backdrop-blur-sm transition-all duration-200 hover:bg-black/50"
+					class="absolute top-1/2 right-3 flex h-10 w-10 -translate-y-1/2 transform items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-sm transition-all duration-300 hover:bg-black/60 hover:scale-110 shadow-lg opacity-0 group-hover:opacity-100"
 					on:click={nextImage}
 					aria-label="Next image"
 				>
-					<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+					<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 						<path
 							stroke-linecap="round"
 							stroke-linejoin="round"
-							stroke-width="2"
+							stroke-width="2.5"
 							d="M9 5l7 7-7 7"
 						/>
 					</svg>
 				</button>
 
 				<!-- Image Indicators -->
-				<div class="absolute bottom-2 left-1/2 flex -translate-x-1/2 transform space-x-1">
+				<div class="absolute bottom-3 left-1/2 flex -translate-x-1/2 transform space-x-2">
 					{#each imageUrls as _, index}
 						<button
-							class="h-2 w-2 rounded-full transition-all duration-200 {index === currentImageIndex
-								? 'bg-white'
-								: 'bg-white/50'}"
+							class="h-3 w-3 rounded-full transition-all duration-300 {index === currentImageIndex
+								? 'bg-white shadow-lg scale-125'
+								: 'bg-white/60 hover:bg-white/80'}"
 							on:click={() => goToImage(index)}
 							aria-label={`Go to image ${index + 1}`}
 						></button>
@@ -343,15 +414,15 @@
 
 		<!-- Product Tags -->
 		{#if showCategoryTags}
-			<div class="flex flex-wrap gap-2">
+			<div class="flex flex-wrap gap-3">
 				<!-- Size Tag -->
-				<div class="rounded-[38px] bg-[#f0f0f0] px-3 py-1.5">
+				<div class="rounded-[38px] bg-[#f0f0f0] px-4 py-2">
 					<span class="text-[14px] leading-[19.6px] font-normal text-[#474747]"
 						>{product.size || 'N/A'}</span
 					>
 				</div>
 				<!-- Flavor Tag with Label Color -->
-				<div class="rounded-[38px] bg-blue-500 px-3 py-1.5">
+				<div class="rounded-[38px] bg-blue-500 px-4 py-2">
 					<span class="text-[14px] leading-[19.6px] font-normal text-white"
 						>{product.flavor || 'N/A'}</span
 					>
@@ -359,7 +430,7 @@
 				<!-- Category Tags -->
 				{#if categories.length > 0}
 					{#each categories as category, _index}
-						<div class="rounded-[38px] bg-[#e5dcd3] px-3 py-1.5">
+						<div class="rounded-[38px] bg-[#e5dcd3] px-4 py-2">
 							<span class="text-[14px] leading-[19.6px] font-normal text-[#474747]">{category}</span
 							>
 						</div>
@@ -369,16 +440,16 @@
 		{/if}
 
 		<!-- Product Information -->
-		<div class="space-y-2">
+		<div class="space-y-3">
 			<!-- Product Name -->
-			<h3 class="font-poppins text-[18px] leading-[25.2px] font-semibold text-black">
+			<h3 class="font-poppins text-[20px] leading-[28px] font-semibold text-black">
 				{product.name}
 			</h3>
 
 			<!-- Product Description -->
 			{#if showDescription && product.description}
 				<p
-					class="font-poppins line-clamp-2 text-[14px] leading-[19.6px] font-normal text-[#474747]"
+					class="font-poppins line-clamp-2 text-[16px] leading-[22px] font-normal text-[#474747]"
 				>
 					{product.description}
 				</p>
@@ -386,16 +457,16 @@
 		</div>
 
 		<!-- Price -->
-		<div class="font-poppins text-[22px] leading-[30.8px] font-semibold text-black">
+		<div class="font-poppins text-[24px] leading-[33px] font-semibold text-black">
 			{formattedPrice} грн
 		</div>
 
 		<!-- Action Buttons Section - Sticky to bottom -->
-		<div class="mt-auto space-y-3">
+		<div class="mt-auto space-y-4">
 			<!-- Add to Cart Button -->
 			{#if showAddToCart}
 				<button
-					class="font-poppins w-full rounded-xl bg-[#4b766e] px-4 py-3 text-[14px] leading-[19.6px] font-medium text-white transition-colors duration-200 hover:bg-[#3d5f58]"
+					class="font-poppins w-full rounded-xl bg-[#4b766e] px-6 py-4 text-[16px] leading-[22px] font-medium text-white transition-colors duration-200 hover:bg-[#3d5f58]"
 					on:click={handleAddToCart}
 				>
 					До кошика

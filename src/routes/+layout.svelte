@@ -7,7 +7,7 @@
 	import Header from '$lib/components/Header.svelte';
 	import SubHeader from '$lib/components/SubHeader.svelte';
 	import Footer from '$lib/components/Footer.svelte';
-	import EmailSubscription from '$lib/components/EmailSubscription.svelte';
+
 
 	const { children } = $props();
 
@@ -38,7 +38,6 @@
 			{@render children?.()}
 		</main>
 		{#if showFooter}
-			<EmailSubscription compact={!isHome} />
 			<Footer />
 		{/if}
 	{/if}

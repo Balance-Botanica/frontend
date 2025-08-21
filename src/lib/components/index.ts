@@ -13,6 +13,10 @@ export { default as Footer } from './Footer.svelte';
 export { default as SubHeader } from './SubHeader.svelte';
 export { default as LanguageSwitcher } from './LanguageSwitcher.svelte';
 
+// Product Components
+export { default as ProductCard } from './ProductCard.svelte';
+export { default as ProductsSection } from './ProductsSection.svelte';
+
 // Utility Components
 export { default as ImageUpload } from './ImageUpload.svelte';
 export { default as ColorPalette } from './ColorPalette.svelte';
@@ -23,3 +27,7 @@ export { default as PawHybridPatternBG } from './PawHybridPatternBG.svelte';
 export { default as FAQ } from './FAQ.svelte';
 export { default as AboutUs } from './AboutUs.svelte';
 export { default as DesignSystem } from './DesignSystem.svelte';
+export { default as SEO } from './SEO.svelte';
+export { default as MadeInUkraine } from './MadeInUkraine.svelte';
+export { default as CalculatorSection } from './CalculatorSection.svelte';
+export { default as BenefitIcon } from './BenefitIcon.svelte';
