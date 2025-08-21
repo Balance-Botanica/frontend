@@ -21,3 +21,5 @@ export { default as EmailSubscription } from './EmailSubscription.svelte';
 export { default as RNGPositionLeafsPatternBG } from './RNGPositionLeafsPatternBG.svelte';
 export { default as PawHybridPatternBG } from './PawHybridPatternBG.svelte';
 export { default as FAQ } from './FAQ.svelte';
+export { default as AboutUs } from './AboutUs.svelte';
+export { default as DesignSystem } from './DesignSystem.svelte';

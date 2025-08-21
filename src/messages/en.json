@@ -246,5 +246,29 @@
 		},
 		"privacy_notice": "We respect your privacy. Unsubscribe at any time.",
 		"privacy_policy": "Privacy Policy"
+	},
+	"about_us": {
+		"title": "About Us",
+		"description": "We are passionate about creating high-quality, natural products for your beloved pets. Our mission is to provide safe, effective solutions that enhance the health and happiness of your furry family members.",
+		"image1_alt": "Natural ingredients for pets",
+		"image2_alt": "Quality assurance process",
+		"image3_alt": "Happy pets using our products"
+	},
+	"design_system": {
+		"typography": {
+			"title": "Typography Scale"
+		},
+		"colors": {
+			"title": "Color Palette"
+		},
+		"spacing": {
+			"title": "Spacing Scale"
+		},
+		"components": {
+			"title": "Component Examples"
+		},
+		"grid": {
+			"title": "Grid System"
+		}
 	}
 }

@@ -17,10 +17,3 @@ docs/
 # Ignore configuration files
 .prettierrc
 eslint.config.js
-
-# Ignore auto-generated files
-drizzle/meta/
-
-# Ignore components with formatting issues
-src/lib/components/SEO.svelte
-src/lib/components/DesignSystem.svelte

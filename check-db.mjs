@@ -17,12 +17,7 @@ try {
 		const products = db.prepare('SELECT * FROM products').all();
 		console.log('Products count:', products.length);
 		if (products.length > 0) {
-			console.log('First product:', {
-				id: products[0].id,
-				name: products[0].name,
-				imageUrl: products[0].image_url,
-				imageUrls: products[0].image_urls
-			});
+			console.log('First product:', products[0]);
 		}
 	}
 

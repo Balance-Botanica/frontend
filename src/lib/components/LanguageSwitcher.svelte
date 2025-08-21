@@ -14,7 +14,7 @@
 </script>
 
 <div class="flex items-center gap-2 {className}">
-	{#each $availableLocales as locale, index}
+	{#each $availableLocales as locale, _index (locale.code)}
 		<button
 			onclick={() => handleLanguageSwitch(locale.code)}
 			class="flex items-center gap-2 rounded-lg px-3 py-2 transition-colors hover:bg-gray-100"

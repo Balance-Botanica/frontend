@@ -7,8 +7,8 @@
 		description?: string | null;
 		price: number;
 		stock: number;
-		size: string;
-		flavor: string;
+		size?: string;
+		flavor?: string;
 		categories?: string | null;
 		imageUrls?: string | null;
 		createdAt?: Date;
@@ -41,11 +41,8 @@
 		{/if}
 
 		{#if displayProducts.length > 0}
-			<div
-				class="grid gap-6"
-				style="grid-template-columns: repeat(auto-fit, minmax(300px, 450px)); justify-content: center;"
-			>
-				{#each displayProducts as product, index}
+			<div class="products-grid">
+				{#each displayProducts as product, _index}
 					<ProductCard
 						{product}
 						{showRating}
@@ -61,3 +58,37 @@
 		{/if}
 	</div>
 </section>
+
+<style>
+	.products-grid {
+		display: grid;
+		gap: 2rem;
+		grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+		justify-items: stretch;
+	}
+
+	/* Responsive grid adjustments */
+	@media (min-width: 640px) {
+		.products-grid {
+			grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+		}
+	}
+
+	@media (min-width: 1024px) {
+		.products-grid {
+			grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+		}
+	}
+
+	@media (min-width: 1280px) {
+		.products-grid {
+			grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+		}
+	}
+
+	@media (min-width: 1536px) {
+		.products-grid {
+			grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+		}
+	}
+</style>

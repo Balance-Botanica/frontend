@@ -34,61 +34,39 @@
 		locale={$pageTranslations.locale}
 	/>
 
-	<!-- Full Screen Hero Banner -->
-	<section class="relative flex h-screen items-center justify-center overflow-hidden">
-		<!-- Background Image with Overlay -->
-		<div class="absolute inset-0">
-			<img
-				src={mainBanner}
-				alt="Balance Botanica - Premium CBD Products"
-				class="h-full w-full object-cover"
-			/>
-			<!-- Dark overlay for better text readability -->
-			<div class="absolute inset-0 bg-black/40"></div>
-		</div>
-
-		<!-- Hero Content -->
-		<div class="relative z-10 mx-auto max-w-5xl px-4 text-center text-white">
-			<h1 class="mb-6 text-5xl leading-tight font-bold md:text-7xl">
-				{$pageTranslations.t('benefits.hero.title')}
-			</h1>
-			<p class="mx-auto mb-8 max-w-3xl text-xl leading-relaxed text-white/90 md:text-2xl">
-				{$pageTranslations.t('benefits.hero.subtitle')}
-			</p>
-			<div class="flex flex-col justify-center gap-4 sm:flex-row">
-				<a
-					href="/products"
-					class="transform rounded-lg bg-white px-8 py-4 text-lg font-semibold text-green-800 shadow-lg transition-all duration-300 hover:scale-105 hover:bg-green-50 hover:shadow-xl"
-				>
-					{$pageTranslations.t('benefits.hero.shop_button')}
-				</a>
-				<a
-					href="/about"
-					class="transform rounded-lg border-2 border-white px-8 py-4 text-lg font-semibold text-white transition-all duration-300 hover:scale-105 hover:bg-white hover:text-green-800"
-				>
-					{$pageTranslations.t('benefits.hero.learn_button')}
-				</a>
-			</div>
-		</div>
-
-		<!-- Scroll Indicator -->
-		<div class="absolute bottom-8 left-1/2 -translate-x-1/2 transform animate-bounce">
-			<svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-				<path
-					stroke-linecap="round"
-					stroke-linejoin="round"
-					stroke-width="2"
-					d="M19 14l-7 7m0 0l-7-7m7 7V3"
-				></path>
-			</svg>
-		</div>
-	</section>
-
 	<!-- Main Content -->
-	<main class="min-h-screen bg-white">
+	<main class="main-section">
+		<!-- Hero Section - Fixed Height -->
+		<section class="hero-section">
+			<div class="hero-content">
+				<!-- Left Column - Text Content -->
+				<div class="hero-text">
+					<h1 class="hero-title">
+						{$pageTranslations.t('benefits.hero.title')}
+					</h1>
+					<p class="hero-subtitle">
+						{$pageTranslations.t('benefits.hero.subtitle')}
+					</p>
+					<div class="hero-buttons">
+						<a href="/products" class="hero-button primary">
+							{$pageTranslations.t('benefits.hero.shop_button')}
+						</a>
+						<a href="/about" class="hero-button secondary">
+							{$pageTranslations.t('benefits.hero.learn_button')}
+						</a>
+					</div>
+				</div>
+
+				<!-- Right Column - Hero Image -->
+				<div class="hero-image">
+					<img src={mainBanner} alt="Balance Botanica - Premium CBD Products" class="hero-banner" />
+				</div>
+			</div>
+		</section>
+
 		<!-- Benefits Section - Split into Two Products -->
-		<section class="bg-[#3f6f68] px-4 py-20">
-			<div class="mx-auto max-w-6xl">
+		<section class="benefits-section">
+			<div class="benefits-content">
 				<h2 class="mb-12 text-center text-3xl font-bold text-white md:text-4xl">
 					{$pageTranslations.t('benefits.title')}
 				</h2>
@@ -240,3 +218,211 @@
 		<FAQ />
 	</main>
 {/if}
+
+<style>
+	/* Frame 427320931 - Main Section Layout */
+	.main-section {
+		/* Auto layout */
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		padding: 0;
+		gap: 0;
+
+		width: 100%;
+		min-height: 100vh;
+
+		/* Inside auto layout */
+		flex: none;
+		order: 2;
+		flex-grow: 0;
+	}
+
+	/* Hero Section - Fixed Height */
+	.hero-section {
+		width: 100%;
+		height: 640px;
+		background: white;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.hero-content {
+		/* Auto layout */
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		padding: 10px 150px;
+		gap: 60px;
+
+		width: 1920px;
+		height: 640px;
+
+		/* Inside auto layout */
+		flex: none;
+		order: 2;
+		flex-grow: 0;
+
+		/* Responsive adjustments */
+		max-width: 100vw;
+		overflow-x: auto;
+	}
+
+	.hero-text {
+		flex: 1;
+		max-width: 600px;
+	}
+
+	.hero-title {
+		font-size: 3.5rem;
+		font-weight: 900;
+		color: #1a1a1a;
+		line-height: 1.1;
+		margin-bottom: 1.5rem;
+	}
+
+	.hero-subtitle {
+		font-size: 1.25rem;
+		color: #404040;
+		line-height: 1.6;
+		margin-bottom: 2rem;
+	}
+
+	.hero-buttons {
+		display: flex;
+		gap: 1rem;
+		flex-wrap: wrap;
+	}
+
+	.hero-button {
+		padding: 1rem 2rem;
+		border-radius: 8px;
+		font-weight: 600;
+		text-decoration: none;
+		transition: all 0.2s ease;
+		font-size: 1rem;
+	}
+
+	.hero-button.primary {
+		background: #3f6f68;
+		color: white;
+	}
+
+	.hero-button.primary:hover {
+		background: #2d5a54;
+		transform: translateY(-2px);
+	}
+
+	.hero-button.secondary {
+		background: transparent;
+		color: #3f6f68;
+		border: 2px solid #3f6f68;
+	}
+
+	.hero-button.secondary:hover {
+		background: #3f6f68;
+		color: white;
+		transform: translateY(-2px);
+	}
+
+	.hero-image {
+		flex: 1;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+
+	.hero-banner {
+		max-width: 100%;
+		height: auto;
+		border-radius: 16px;
+		box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+	}
+
+	/* Benefits Section - Full Width Background */
+	.benefits-section {
+		width: 100vw;
+		margin-left: calc(-50vw + 50%);
+		background: #3f6f68;
+		padding: 5rem 0;
+	}
+
+	.benefits-content {
+		max-width: 72rem;
+		margin: 0 auto;
+		padding: 0 1rem;
+	}
+
+	/* Responsive design for smaller screens */
+	@media (max-width: 1920px) {
+		.hero-content {
+			width: 100%;
+			padding: 10px 4rem;
+		}
+	}
+
+	@media (max-width: 768px) {
+		.hero-section {
+			height: auto;
+			min-height: 640px;
+			padding: 2rem 0;
+		}
+
+		.hero-content {
+			flex-direction: column;
+			padding: 10px 2rem;
+			gap: 40px;
+			height: auto;
+		}
+
+		.hero-title {
+			font-size: 2.5rem;
+			text-align: center;
+		}
+
+		.hero-subtitle {
+			text-align: center;
+		}
+
+		.hero-buttons {
+			justify-content: center;
+		}
+
+		.hero-text {
+			text-align: center;
+		}
+
+		.benefits-section {
+			padding: 3rem 0;
+		}
+
+		.benefits-content {
+			padding: 0 1rem;
+		}
+	}
+
+	@media (max-width: 480px) {
+		.hero-content {
+			padding: 10px 1rem;
+			gap: 30px;
+		}
+
+		.hero-title {
+			font-size: 2rem;
+		}
+
+		.hero-subtitle {
+			font-size: 1.125rem;
+		}
+
+		.hero-button {
+			padding: 0.875rem 1.5rem;
+			font-size: 0.875rem;
+		}
+
+		.benefits-section {
+			padding: 2rem 0;
+		}
+	}
+</style>

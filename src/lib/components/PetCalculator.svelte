@@ -281,7 +281,7 @@
 						{t('calculator.quality_assurance.title')}
 					</h4>
 					<ul class="space-y-2 text-sm text-blue-800">
-						{#each t('calculator.quality_assurance.tips.general') as tip, index}
+						{#each t('calculator.quality_assurance.tips.general') as tip, _index}
 							<li class="flex items-start">
 								<span class="mr-2 text-blue-600">•</span>
 								<span>{tip}</span>
