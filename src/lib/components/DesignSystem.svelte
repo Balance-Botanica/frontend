@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { t } from '../i18n';
+	import Switcher from './Switcher.svelte';
 </script>
 
 <div class="design-system">
@@ -222,6 +223,33 @@
 								<input type="checkbox" />
 								<span>Checkbox Label</span>
 							</label>
+						</div>
+					</div>
+
+					<!-- Switchers -->
+					<div class="component-group">
+						<h3>Switchers</h3>
+						<div class="switcher-examples">
+							<div class="switcher-item">
+								<span class="switcher-label">Default (Off)</span>
+								<Switcher checked={false} onChange={() => {}} />
+							</div>
+							<div class="switcher-item">
+								<span class="switcher-label">Default (On)</span>
+								<Switcher checked={true} onChange={() => {}} />
+							</div>
+							<div class="switcher-item">
+								<span class="switcher-label">Disabled</span>
+								<Switcher checked={false} disabled={true} onChange={() => {}} />
+							</div>
+							<div class="switcher-item">
+								<span class="switcher-label">Cookie Variant (Off)</span>
+								<Switcher checked={false} variant="cookie" onChange={() => {}} />
+							</div>
+							<div class="switcher-item">
+								<span class="switcher-label">Cookie Variant (On)</span>
+								<Switcher checked={true} variant="cookie" onChange={() => {}} />
+							</div>
 						</div>
 					</div>
 
@@ -774,6 +802,29 @@
 	.grid-col-3 { flex: 0 0 calc(25% - 0.375rem); }
 	.grid-col-4 { flex: 0 0 calc(33.333% - 0.333rem); }
 	.grid-col-6 { flex: 0 0 calc(50% - 0.25rem); }
+
+	/* Switcher Examples */
+	.switcher-examples {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+	}
+
+	.switcher-item {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: 0.75rem;
+		border: 1px solid #e5e7eb;
+		border-radius: 8px;
+		background: white;
+	}
+
+	.switcher-label {
+		font-size: 0.875rem;
+		font-weight: 500;
+		color: #374151;
+	}
 
 	/* Responsive Design */
 	@media (max-width: 768px) {

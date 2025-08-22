@@ -5,6 +5,7 @@ export { default as Checkbox } from './Checkbox.svelte';
 export { default as Radio } from './Radio.svelte';
 export { default as RadioGroup } from './RadioGroup.svelte';
 export { default as Switch } from './Switch.svelte';
+export { default as Switcher } from './Switcher.svelte';
 export { default as Logo } from './Logo.svelte';
 
 // Layout Components
@@ -16,6 +17,10 @@ export { default as LanguageSwitcher } from './LanguageSwitcher.svelte';
 // Product Components
 export { default as ProductCard } from './ProductCard.svelte';
 export { default as ProductsSection } from './ProductsSection.svelte';
+
+// Auth Components
+export { default as LoginForm } from './LoginForm.svelte';
+export { default as AuthGuard } from './AuthGuard.svelte';
 
 // Utility Components
 export { default as ImageUpload } from './ImageUpload.svelte';

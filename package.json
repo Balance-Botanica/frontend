@@ -51,9 +51,11 @@
 		"vitest": "^3.2.4"
 	},
 	"dependencies": {
+		"@fontsource/nunito": "^5.2.6",
 		"@node-rs/argon2": "^2.0.2",
 		"@oslojs/crypto": "^1.0.1",
 		"@oslojs/encoding": "^1.1.0",
+		"@supabase/supabase-js": "^2.56.0",
 		"better-sqlite3": "^11.8.0",
 		"cloudinary": "^2.7.0",
 		"dotenv": "^17.2.1",

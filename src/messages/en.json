@@ -79,6 +79,33 @@
 		}
 	},
 
+	"cookie_consent": {
+		"title": "We use cookies",
+		"description": "We use cookies and similar technologies to personalise content and to analyse our traffic.",
+		"manage": "Manage cookies",
+		"accept_necessary": "Accept Necessary",
+		"accept_all": "Accept All",
+		"close": "Close cookie consent"
+	},
+
+	"cookie_manage": {
+		"title": "Manage cookies",
+		"necessary": {
+			"title": "Necessary",
+			"description": "Necessary cookies help make a website usable by enabling basic functions like page navigation and access to secure areas of the website. The website cannot function properly without these cookies."
+		},
+		"statistics": {
+			"title": "Statistics",
+			"description": "Statistic cookies help website owners to understand how visitors interact with websites by collecting and reporting information."
+		},
+		"marketing": {
+			"title": "Marketing",
+			"description": "Marketing cookies are used to track visitors across websites. The intention is to display ads that are relevant and engaging for the individual user and thereby more valuable for publishers and third party advertisers."
+		},
+		"accept_selected": "Accept Selected",
+		"accept_all": "Accept All"
+	},
+
 	"subheader": {
 		"delivery_message": "Orders from 1000 UAH are delivered free of charge 📦"
 	},

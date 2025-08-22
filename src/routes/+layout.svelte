@@ -7,6 +7,7 @@
 	import Header from '$lib/components/Header.svelte';
 	import SubHeader from '$lib/components/SubHeader.svelte';
 	import Footer from '$lib/components/Footer.svelte';
+	import CookieConsent from '$lib/components/CookieConsent.svelte';
 
 
 	const { children } = $props();
@@ -41,4 +42,7 @@
 			<Footer />
 		{/if}
 	{/if}
+	
+	<!-- Глобальный Cookie Consent -->
+	<CookieConsent />
 </div>
