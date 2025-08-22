@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { t } from '$lib/i18n';
-	import { cookieConsentStore, acceptNecessary, acceptAll, hideCookieConsent, updateCookieSetting, acceptSelected } from '$lib/stores/cookie-consent';
+	import { cookieConsentStore, acceptNecessary, acceptAll, hideCookieConsent, updateCookieSetting, acceptSelected, resetCookieConsentForDevelopment } from '$lib/stores/cookie-consent';
 	import Switcher from './Switcher.svelte';
 
 	// Подписываемся на store
@@ -39,6 +39,11 @@
 
 	function handleAcceptSelected() {
 		acceptSelected();
+	}
+
+	// TODO: Удалить эту функцию после завершения разработки
+	function handleResetForDevelopment() {
+		resetCookieConsentForDevelopment();
 	}
 </script>
 
@@ -97,6 +102,16 @@
 					>
 						{t('cookie_consent.manage')}
 					</button>
+
+					<!-- TODO: Удалить после завершения разработки - кнопка для тестирования -->
+					<button
+						type="button"
+						on:click={handleResetForDevelopment}
+						class="text-xs text-white/40 underline transition-colors hover:text-white/60 cursor-pointer"
+						title="Сбросить куки для тестирования (только для разработки)"
+					>
+						🔄 Сбросить для тестирования
+					</button>
 				</div>
 			{:else}
 				<!-- Развернутый режим -->
@@ -151,6 +166,18 @@
 								onChange={(checked) => handleToggle('marketing')}
 							/>
 						</div>
+					</div>
+
+					<!-- TODO: Удалить после завершения разработки - кнопка для тестирования -->
+					<div class="pt-4 border-t border-white/20">
+						<button
+							type="button"
+							on:click={handleResetForDevelopment}
+							class="w-full px-4 py-2 text-xs text-white/60 border border-white/20 rounded-lg hover:bg-white/10 transition-colors"
+							title="Сбросить куки для тестирования (только для разработки)"
+						>
+							🔄 Сбросить куки для тестирования
+						</button>
 					</div>
 				</div>
 			{/if}

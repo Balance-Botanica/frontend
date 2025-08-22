@@ -198,6 +198,28 @@ export function resetCookieConsent() {
 	}
 }
 
+// TODO: Удалить эту функцию после завершения разработки
+// Функция для разработки - сбрасывает куки и показывает баннер снова
+export function resetCookieConsentForDevelopment() {
+	const newState: CookieConsentState = {
+		status: 'none',
+		isVisible: true, // Показываем баннер снова
+		hasShown: false,
+		showManageModal: false,
+		settings: {
+			necessary: true,
+			statistics: false,
+			marketing: false
+		}
+	};
+
+	cookieConsentStore.set(newState);
+
+	if (browser) {
+		localStorage.removeItem('cookie-consent');
+	}
+}
+
 // Функция для проверки, нужно ли показать consent
 export function shouldShowCookieConsent(): boolean {
 	if (!browser) return false;
@@ -221,4 +243,14 @@ export function getCookieConsentStatus(): CookieConsentStatus {
 	}
 
 	return 'none';
+}
+
+// TODO: Удалить после завершения разработки
+// Делаем функцию доступной глобально для удобства тестирования через консоль
+if (browser) {
+	(window as any).resetCookieConsent = resetCookieConsentForDevelopment;
+	(window as any).getCookieStatus = getCookieConsentStatus;
+	console.log('🍪 Cookie Consent Debug Functions:');
+	console.log('  - resetCookieConsent() - сбросить куки и показать баннер');
+	console.log('  - getCookieStatus() - получить текущий статус куки');
 }
