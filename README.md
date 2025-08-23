@@ -1,8 +1,8 @@
 # Balance Botanica - CBD Products E-commerce
 
-Современный e-commerce сайт для CBD продуктов, построенный на SvelteKit с использованием Drizzle ORM и SQLite.
+A modern e-commerce website for CBD products, built with SvelteKit using Drizzle ORM and SQLite.
 
-## 🚀 Технологии
+## 🚀 Technologies
 
 - **Frontend**: SvelteKit + TypeScript + Tailwind CSS
 - **Backend**: SvelteKit Server-Side Rendering
@@ -10,163 +10,163 @@
 - **Image Hosting**: Cloudinary
 - **Internationalization**: i18next
 
-## 📁 Структура проекта
+## 📁 Project Structure
 
 ```
 src/
 ├── lib/
-│   ├── components/           # React компоненты
-│   │   ├── ProductCard.svelte      # Карточка продукта со слайдером
-│   │   ├── ProductsSection.svelte  # Секция продуктов с навигацией
+│   ├── components/           # Svelte components
+│   │   ├── ProductCard.svelte      # Product card with slider
+│   │   ├── ProductsSection.svelte  # Product section with navigation
 │   │   └── ...
-│   ├── server/              # Server-side код
-│   │   ├── db/              # База данных
-│   │   │   ├── schema.ts    # Drizzle схема
-│   │   │   └── index.ts     # Подключение к БД
+│   ├── server/              # Server-side code
+│   │   ├── db/              # Database
+│   │   │   ├── schema.ts    # Drizzle schema
+│   │   │   └── index.ts     # DB connection
 │   │   ├── data/            # Data layer
-│   │   │   ├── repositories/ # Репозитории
-│   │   │   └── mappers/     # Мапперы
+│   │   │   ├── repositories/ # Repositories
+│   │   │   └── mappers/     # Mappers
 │   │   ├── domain/          # Domain layer
-│   │   │   └── interfaces/  # Интерфейсы
+│   │   │   └── interfaces/  # Interfaces
 │   │   └── products/        # Product service
-│   └── i18n/                # Интернационализация
-├── routes/                   # SvelteKit роуты
-│   ├── +page.svelte         # Главная страница
-│   ├── +page.server.ts      # Server-side загрузка главной
-│   ├── products/            # Страница продуктов
+│   └── i18n/                # Internationalization
+├── routes/                   # SvelteKit routes
+│   ├── +page.svelte         # Home page
+│   ├── +page.server.ts      # Server-side home loading
+│   ├── products/            # Products page
 │   └── ...
-└── drizzle/                  # Drizzle миграции и база
-    ├── database.sqlite      # SQLite база данных
-    └── migrations/          # Миграции
+└── drizzle/                  # Drizzle migrations and database
+    ├── database.sqlite      # SQLite database
+    └── migrations/          # Migrations
 ```
 
-## 🚀 Быстрый старт
+## 🚀 Quick Start
 
-### Установка зависимостей
+### Install Dependencies
 ```sh
 npm install
 ```
 
-### Запуск в режиме разработки
+### Development Mode
 ```sh
 npm run dev
 
-# или с автоматическим открытием в браузере
+# or with automatic browser opening
 npm run dev -- --open
 ```
 
-### Сборка для продакшена
+### Production Build
 ```sh
 npm run build
 npm run preview
 ```
 
-## 🐛 Отладка и логирование
+## 🐛 Debugging and Logging
 
-### Логирование продуктов
-Все компоненты имеют подробное логирование для отладки:
+### Product Logging
+All components have detailed logging for debugging:
 
-- **`+page.server.ts`** - Логи загрузки товаров с сервера
-- **`ProductsSection.svelte`** - Логи слайдера товаров и навигации
-- **`ProductCard.svelte`** - Логи парсинга картинок и слайдера
+- **`+page.server.ts`** - Product loading logs from server
+- **`ProductsSection.svelte`** - Product slider and navigation logs
+- **`ProductCard.svelte`** - Image parsing and slider logs
 
-### Проверка базы данных
+### Database Inspection
 ```sh
-# Проверить содержимое базы данных
+# Check database content
 sqlite3 drizzle/database.sqlite "SELECT COUNT(*) as count FROM products;"
 sqlite3 drizzle/database.sqlite "SELECT name, size, flavor FROM products LIMIT 3;"
 ```
 
-### Типичные проблемы и решения
+### Common Issues and Solutions
 
-#### Товары не загружаются
-1. Проверить подключение к базе в `src/lib/server/db/index.ts`
-2. Убедиться что схема соответствует реальной базе данных
-3. Проверить логи сервера в терминале
+#### Products Not Loading
+1. Check database connection in `src/lib/server/db/index.ts`
+2. Ensure schema matches the actual database
+3. Check server logs in terminal
 
-#### Слайдер не работает
-1. Убедиться что `imageUrls` содержит JSON массив с несколькими URL
-2. Проверить что `imageUrls.length > 1` в `ProductCard.svelte`
-3. Проверить консоль браузера на ошибки парсинга JSON
+#### Slider Not Working
+1. Ensure `imageUrls` contains JSON array with multiple URLs
+2. Check that `imageUrls.length > 1` in `ProductCard.svelte`
+3. Check browser console for JSON parsing errors
 
 
 
-## 🗄️ База данных и фетчинг продуктов
+## 🗄️ Database and Product Fetching
 
-### Структура базы данных
+### Database Structure
 ```sql
 CREATE TABLE products (
     id TEXT PRIMARY KEY,
     name TEXT NOT NULL,
     description TEXT,
-    size TEXT NOT NULL,           -- Размер продукта (30мл, 50мл, 100мл)
-    flavor TEXT NOT NULL,         -- Вкус продукта (натуральний, лаванда, ягода)
-    price INTEGER NOT NULL,       -- Цена в копейках (2500 = 25.00 грн)
-    stock INTEGER NOT NULL,       -- Количество на складе
-    categories TEXT NOT NULL,     -- JSON массив категорий ["CBD", "Oil", "Premium"]
-    image_urls TEXT NOT NULL,     -- JSON массив URL картинок Cloudinary
-    created_at INTEGER NOT NULL,  -- Unix timestamp создания
-    updated_at INTEGER NOT NULL   -- Unix timestamp обновления
+    size TEXT NOT NULL,           -- Product size (30ml, 50ml, 100ml)
+    flavor TEXT NOT NULL,         -- Product flavor (natural, lavender, berry)
+    price INTEGER NOT NULL,       -- Price in kopecks (2500 = 25.00 UAH)
+    stock INTEGER NOT NULL,       -- Stock quantity
+    categories TEXT NOT NULL,     -- JSON array of categories ["CBD", "Oil", "Premium"]
+    image_urls TEXT NOT NULL,     -- JSON array of Cloudinary image URLs
+    created_at INTEGER NOT NULL,  -- Unix timestamp of creation
+    updated_at INTEGER NOT NULL   -- Unix timestamp of update
 );
 ```
 
-### Архитектура фетчинга продуктов
+### Product Fetching Architecture
 
-#### 1. **Слой данных (Data Layer)**
-- **`src/lib/server/db/schema.ts`** - Drizzle схема базы данных
-- **`src/lib/server/data/repositories/drizzle-product.repository.ts`** - Реализация репозитория
-- **`src/lib/server/data/mappers/product.mapper.ts`** - Маппинг между DTO и доменной моделью
+#### 1. **Data Layer**
+- **`src/lib/server/db/schema.ts`** - Drizzle database schema
+- **`src/lib/server/data/repositories/drizzle-product.repository.ts`** - Repository implementation
+- **`src/lib/server/data/mappers/product.mapper.ts`** - Mapping between DTO and domain model
 
-#### 2. **Доменный слой (Domain Layer)**
-- **`src/lib/server/domain/interfaces/product.interface.ts`** - Интерфейсы продуктов и репозитория
+#### 2. **Domain Layer**
+- **`src/lib/server/domain/interfaces/product.interface.ts`** - Product and repository interfaces
 
-#### 3. **Слой сервисов (Service Layer)**
-- **`src/lib/server/products/index.ts`** - Фабрика репозиториев и ProductService
+#### 3. **Service Layer**
+- **`src/lib/server/products/index.ts`** - Repository factory and ProductService
 
-#### 4. **Слой представления (Presentation Layer)**
-- **`src/routes/+page.server.ts`** - Server-side загрузка данных для главной страницы
-- **`src/routes/products/+page.server.ts`** - Server-side загрузка данных для страницы продуктов
-- **`src/lib/components/ProductsSection.svelte`** - Компонент отображения секции продуктов
-- **`src/lib/components/ProductCard.svelte`** - Компонент карточки продукта со слайдером
+#### 4. **Presentation Layer**
+- **`src/routes/+page.server.ts`** - Server-side data loading for home page
+- **`src/routes/products/+page.server.ts`** - Server-side data loading for products page
+- **`src/lib/components/ProductsSection.svelte`** - Product section display component
+- **`src/lib/components/ProductCard.svelte`** - Product card component with slider
 
-### Поток данных
+### Data Flow
 ```
 Database (SQLite) → Drizzle ORM → Repository → Service → Page Server → Component → UI
 ```
 
-### Особенности реализации
+### Implementation Features
 
-#### **Слайдер картинок**
-- Автоматически показывается для продуктов с `imageUrls.length > 1`
-- Поддерживает навигацию стрелками, touch swipe, клавиатурой
-- Автоматическое переключение каждые 5 секунд
-- Индикаторы текущей картинки
+#### **Image Slider**
+- Automatically shown for products with `imageUrls.length > 1`
+- Supports arrow navigation, touch swipe, keyboard navigation
+- Automatic switching every 5 seconds
+- Current image indicators
 
 #### **Responsive Grid**
-- Адаптивная сетка: 1-3 товара в ряд в зависимости от размера экрана
-- Навигация стрелками для прокрутки товаров
-- Touch поддержка для мобильных устройств
+- Adaptive grid: 1-3 products per row depending on screen size
+- Arrow navigation for product scrolling
+- Touch support for mobile devices
 
-#### **Парсинг данных**
-- `imageUrls` парсится как JSON массив
-- `categories` парсится как JSON массив
-- Fallback на `/images/animal1.jpg` если картинки не загрузились
+#### **Data Parsing**
+- `imageUrls` parsed as JSON array
+- `categories` parsed as JSON array
+- Fallback to `/images/animal1.jpg` if images fail to load
 
-### Текущее состояние базы данных
+### Current Database State
 
-В базе данных `drizzle/database.sqlite` находится **7 товаров**:
+The `drizzle/database.sqlite` database contains **7 products**:
 
-- **4 товара** с 1 картинкой (без слайдера)
-- **3 товара** с множественными картинками (со слайдером):
-  - Premium CBD Oil: 3 картинки
-  - CBD Gummies: 2 картинки  
-  - CBD Cream: 3 картинки
+- **4 products** with 1 image (no slider)
+- **3 products** with multiple images (with slider):
+  - Premium CBD Oil: 3 images
+  - CBD Gummies: 2 images  
+  - CBD Cream: 3 images
 
-Все товары имеют корректные Cloudinary URL и правильно структурированные данные.
+All products have correct Cloudinary URLs and properly structured data.
 
-### Примеры использования
+### Usage Examples
 
-#### Загрузка продуктов на главной странице
+#### Loading products on home page
 ```typescript
 // src/routes/+page.server.ts
 export const load: PageServerLoad = async () => {
@@ -176,7 +176,7 @@ export const load: PageServerLoad = async () => {
 };
 ```
 
-#### Отображение в компоненте
+#### Component display
 ```svelte
 <!-- src/lib/components/ProductsSection.svelte -->
 <script>
