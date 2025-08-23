@@ -60,7 +60,7 @@ export class ProductDatabaseMapper {
 	 * GRASP: High Cohesion (related mapping operations)
 	 */
 	mapArrayToEntities(dtos: ProductDTO[]): Product[] {
-		return dtos.map(dto => this.mapToEntity(dto));
+		return dtos.map((dto) => this.mapToEntity(dto));
 	}
 }
 
@@ -91,7 +91,7 @@ export class ProductApplicationMapper {
 	 * GRASP: High Cohesion (related mapping operations)
 	 */
 	mapArrayToApplicationDTOs(entities: Product[]): ProductApplicationDTO[] {
-		return entities.map(entity => this.mapToApplicationDTO(entity));
+		return entities.map((entity) => this.mapToApplicationDTO(entity));
 	}
 }
 
@@ -178,9 +178,14 @@ export class ProductCardMapper {
 			categories: appDto.categories,
 			isAvailable: appDto.isAvailable,
 			isLowStock: appDto.isLowStock,
-			stockLevel: appDto.stock === 0 ? 'out' : 
-					 appDto.stock <= 5 ? 'low' : 
-					 appDto.stock <= 20 ? 'medium' : 'high'
+			stockLevel:
+				appDto.stock === 0
+					? 'out'
+					: appDto.stock <= 5
+						? 'low'
+						: appDto.stock <= 20
+							? 'medium'
+							: 'high'
 		};
 	}
 
@@ -189,7 +194,7 @@ export class ProductCardMapper {
 	 * GRASP: High Cohesion (related mapping operations)
 	 */
 	mapArrayToCardDTOs(entities: Product[]): ProductCardDTO[] {
-		return entities.map(entity => this.mapToCardDTO(entity));
+		return entities.map((entity) => this.mapToCardDTO(entity));
 	}
 }
 
@@ -233,7 +238,7 @@ export const ProductMapperUtils = {
 	toAvailableCards: (entities: Product[]): ProductCardDTO[] => {
 		const mapper = new ProductCardMapper();
 		return entities
-			.filter(entity => entity.isAvailable())
-			.map(entity => mapper.mapToCardDTO(entity));
+			.filter((entity) => entity.isAvailable())
+			.map((entity) => mapper.mapToCardDTO(entity));
 	}
 } as const;

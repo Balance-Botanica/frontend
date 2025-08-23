@@ -35,7 +35,10 @@ export interface CartTotals {
 class CartService {
 	static calculateTotals(items: CartItem[]): CartTotals {
 		const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
-		const subtotal = items.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+		const subtotal = items.reduce(
+			(sum, item) => sum + item.product.price.getKopiyky() * item.quantity,
+			0
+		);
 		const subtotalUAH = subtotal / 100; // Convert kopiyky to UAH
 
 		// Business rules
@@ -54,7 +57,7 @@ class CartService {
 	}
 
 	static findCartItem(items: CartItem[], productId: string): CartItem | undefined {
-		return items.find((item) => item.product.id === productId);
+		return items.find((item) => item.product.id.getValue() === productId);
 	}
 
 	static validateQuantity(quantity: number): void {
@@ -83,12 +86,12 @@ function createCartStore() {
 			try {
 				const persistData = {
 					items: state.items.map((item) => ({
-						productId: item.product.id,
+						productId: item.product.id.getValue(),
 						quantity: item.quantity,
 						addedAt: item.addedAt.toISOString(),
 						// Store minimal product data to avoid stale data
 						product: {
-							id: item.product.id,
+							id: item.product.id.getValue(),
 							name: item.product.name,
 							price: item.product.price,
 							imageUrls: item.product.imageUrls
@@ -140,7 +143,7 @@ function createCartStore() {
 				CartService.validateQuantity(quantity);
 
 				update((state) => {
-					const existingItem = CartService.findCartItem(state.items, product.id);
+					const existingItem = CartService.findCartItem(state.items, product.id.getValue());
 
 					if (existingItem) {
 						// Update existing item
@@ -148,7 +151,9 @@ function createCartStore() {
 						CartService.validateQuantity(newQuantity);
 
 						const updatedItems = state.items.map((item) =>
-							item.product.id === product.id ? { ...item, quantity: newQuantity } : item
+							item.product.id.getValue() === product.id.getValue()
+								? { ...item, quantity: newQuantity }
+								: item
 						);
 
 						const newState = {
@@ -196,7 +201,7 @@ function createCartStore() {
 						// Remove item if quantity is 0
 						const newState = {
 							...state,
-							items: state.items.filter((item) => item.product.id !== productId),
+							items: state.items.filter((item) => item.product.id.getValue() !== productId),
 							lastUpdated: new Date(),
 							error: null
 						};
@@ -205,7 +210,7 @@ function createCartStore() {
 					}
 
 					const updatedItems = state.items.map((item) =>
-						item.product.id === productId ? { ...item, quantity } : item
+						item.product.id.getValue() === productId ? { ...item, quantity } : item
 					);
 
 					const newState = {
@@ -230,7 +235,7 @@ function createCartStore() {
 			update((state) => {
 				const newState = {
 					...state,
-					items: state.items.filter((item) => item.product.id !== productId),
+					items: state.items.filter((item) => item.product.id.getValue() !== productId),
 					lastUpdated: new Date(),
 					error: null
 				};
@@ -271,7 +276,7 @@ export const cartError = derived(cartStore, ($cart) => $cart.error);
 // 🔍 Utility derived stores
 export const cartProductIds = derived(
 	cartItems,
-	($items) => new Set($items.map((item) => item.product.id))
+	($items) => new Set($items.map((item) => item.product.id.getValue()))
 );
 
 export const isProductInCart = derived(

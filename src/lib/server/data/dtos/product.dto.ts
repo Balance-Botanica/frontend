@@ -24,7 +24,7 @@ export interface ProductDTO {
 	image_urls: string; // JSON string
 	created_at: number; // Unix timestamp
 	updated_at: number; // Unix timestamp
-	
+
 	// i18n fields (future)
 	name_en?: string | null;
 	description_en?: string | null;
@@ -54,11 +54,11 @@ export interface ProductApplicationDTO {
 	imageUrls: string[]; // parsed array
 	createdAt: Date; // proper Date object
 	updatedAt: Date; // proper Date object
-	
+
 	// Business computed fields
 	isAvailable: boolean;
 	isLowStock: boolean;
-	
+
 	// i18n fields
 	nameEn?: string;
 	descriptionEn?: string;
@@ -84,7 +84,7 @@ export interface CreateProductDTO {
 	stock: number;
 	categories: string[];
 	imageUrls: string[];
-	
+
 	// i18n fields
 	nameEn?: string;
 	descriptionEn?: string;
@@ -107,7 +107,7 @@ export interface UpdateProductDTO {
 	stock?: number;
 	categories?: string[];
 	imageUrls?: string[];
-	
+
 	// i18n fields
 	nameEn?: string;
 	descriptionEn?: string;
@@ -131,15 +131,15 @@ export interface ProductQueryDTO {
 	maxPrice?: number; // in kopiyky
 	inStock?: boolean;
 	searchTerm?: string;
-	
+
 	// Pagination
 	page?: number;
 	limit?: number;
-	
+
 	// Sorting
 	sortBy?: 'name' | 'price' | 'created_at' | 'stock';
 	sortOrder?: 'asc' | 'desc';
-	
+
 	// i18n
 	locale?: 'uk-ua' | 'en';
 }
