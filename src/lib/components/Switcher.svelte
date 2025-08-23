@@ -22,10 +22,9 @@
 		aria-disabled={disabled}
 		{disabled}
 		on:click={handleToggle}
-		class="relative inline-flex h-8 w-[52px] items-center rounded-full transition-all duration-200 ease-in-out focus:ring-2 focus:ring-offset-2 focus:outline-none cursor-pointer"
+		class="relative inline-flex h-8 w-[52px] items-center rounded-full transition-all duration-200 ease-in-out cursor-pointer"
 		style="
       background-color: {variant === 'cookie' ? (checked ? '#f97316' : '#4b5563') : (checked ? colors.main : colors.tertiary)};
-      focus-ring-color: {variant === 'cookie' ? '#f97316' : colors.main};
     "
 		class:opacity-50={disabled}
 		class:cursor-not-allowed={disabled}
@@ -56,3 +55,18 @@
 		</label>
 	{/if}
 </div>
+
+<style>
+	/* Полностью убираем все focus стили */
+	button:focus {
+		outline: none !important;
+		box-shadow: none !important;
+		ring: none !important;
+	}
+	
+	/* Убираем любые возможные focus кольца от Tailwind */
+	button:focus-visible {
+		outline: none !important;
+		box-shadow: none !important;
+	}
+</style>

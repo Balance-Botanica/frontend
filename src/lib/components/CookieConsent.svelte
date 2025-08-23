@@ -161,7 +161,7 @@
 			<button
 				type="button"
 				on:click={showManageModal ? handleAcceptSelected : handleAcceptNecessary}
-				class="cookie-btn-necessary flex-1 rounded-[20px] border-2 border-white bg-transparent px-6 py-3 text-sm font-medium text-white transition-all duration-300 hover:bg-white hover:text-[#059669]"
+				class="cookie-btn-necessary flex-1 rounded-[20px] border-2 border-white bg-transparent px-6 py-3 text-sm font-medium text-white transition-all duration-300 hover:bg-white hover:text-[#059669] cursor-pointer"
 			>
 				{showManageModal ? t('cookie_manage.accept_selected') : t('cookie_consent.accept_necessary')}
 			</button>
@@ -169,7 +169,7 @@
 			<button
 				type="button"
 				on:click={handleAcceptAll}
-				class="cookie-btn-all flex-1 rounded-[20px] bg-white px-6 py-3 text-sm font-medium text-[#059669] transition-all duration-300 hover:bg-gray-100"
+				class="cookie-btn-all flex-1 rounded-[20px] bg-white px-6 py-3 text-sm font-medium text-[#059669] transition-all duration-300 hover:bg-gray-100 cursor-pointer"
 			>
 				{t('cookie_consent.accept_all')}
 			</button>
