@@ -3,7 +3,7 @@
 	import { typography } from '../typography';
 	import { createPageTranslations } from '$lib/i18n/store';
 	import LanguageSwitcher from './LanguageSwitcher.svelte';
-	import { authStore, user, isAuthenticated } from '$lib/auth/store';
+	import { supabaseAuthStore, user, isAuthenticated } from '$lib/auth/supabase-store';
 	import { onMount } from 'svelte';
 	import Logo from './Logo.svelte';
 	import { goto } from '$app/navigation';
@@ -12,12 +12,12 @@
 	import personIcon from '../assets/icons/person.svg';
 	import cartIcon from '../assets/icons/cart.svg';
 
-	// Инициализируем auth store
+	// Initialize auth store
 	onMount(() => {
-		authStore.initialize();
+		supabaseAuthStore.initialize();
 	});
 
-	// Создаем переводы для страницы
+	// Create page translations
 	const pageTranslations = createPageTranslations();
 
 	$: navigationLinks = $pageTranslations
@@ -31,17 +31,34 @@
 
 	async function handlePersonClick() {
 		if ($isAuthenticated) {
-			// Разлогиниваемся
+			// Sign out
 			try {
-				await authStore.signOut();
-				console.log('✅ Разлогинились успешно');
+				await supabaseAuthStore.signOut();
+				console.log('✅ Successfully signed out from Google account');
+				// Redirect to home page after logout
+				goto('/');
 			} catch (error) {
-				console.error('❌ Ошибка при разлогине:', error);
+				console.error('❌ Error signing out:', error);
 			}
 		} else {
-			// Переходим на страницу входа
+			// Go to login page
 			goto('/login');
 		}
+	}
+
+	// Function to get user display name, prioritizing Google account data
+	function getUserDisplayName(user: any): string {
+		if (!user) return 'User';
+		
+		// Priority order: full_name from Google > name > first+last > email
+		if (user.name) return user.name;
+		if (user.firstName && user.lastName) return `${user.firstName} ${user.lastName}`;
+		if (user.firstName) return user.firstName;
+		if (user.email) {
+			// Extract name from email (before @)
+			return user.email.split('@')[0];
+		}
+		return 'User';
 	}
 
 	function handleCartClick() {
@@ -94,23 +111,35 @@
 					<button
 						class="flex cursor-pointer items-center justify-center transition-all duration-200 hover:scale-110"
 						on:click={handlePersonClick}
-						aria-label={$isAuthenticated ? 'Выйти из аккаунта' : 'Войти в аккаунт'}
+						aria-label={$isAuthenticated ? 'Sign out' : 'Sign in'}
 					>
 						{#if $isAuthenticated}
 							<!-- Залогиненный пользователь -->
 							<div class="user-info">
-								<span class="username">{$user?.name || 'User'}</span>
-								<div class="user-icon-container logged-in">
-									<img
-										src={personIcon}
-										alt="Account"
-										class="user-icon"
-									/>
+								<span class="username" title="Click to logout">
+									{getUserDisplayName($user)}
+								</span>
+								<div class="user-icon-container logged-in" title="Logout">
+									{#if $user?.avatarUrl}
+										<!-- Display Google profile picture if available -->
+										<img
+											src={$user.avatarUrl}
+											alt="Profile"
+											class="profile-picture"
+										/>
+									{:else}
+										<!-- Fallback to person icon -->
+										<img
+											src={personIcon}
+											alt="Account"
+											class="user-icon"
+										/>
+									{/if}
 								</div>
 							</div>
 						{:else}
 							<!-- Не залогиненный пользователь -->
-							<div class="user-icon-container logged-out">
+							<div class="user-icon-container logged-out" title="Sign in">
 								<img
 									src={personIcon}
 									alt="Account"
@@ -167,6 +196,21 @@
 		font-weight: 500;
 		color: #4B766E;
 		white-space: nowrap;
+		cursor: pointer;
+		transition: color 0.2s ease;
+	}
+
+	.username:hover {
+		color: #3a5d56;
+	}
+
+	.profile-picture {
+		width: 40px;
+		height: 40px;
+		border-radius: 50%;
+		object-fit: cover;
+		transition: transform 0.2s ease;
+		border: 2px solid #4B766E;
 	}
 
 	.user-icon-container {

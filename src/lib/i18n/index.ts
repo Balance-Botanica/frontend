@@ -37,7 +37,7 @@ export async function initI18n(initialLocale?: SupportedLocale): Promise<void> {
 
 	try {
 		await i18next.use(LanguageDetector).init({
-			debug: true, // Enable debug mode temporarily
+			debug: false, // Disabled debug mode for production
 			fallbackLng: DEFAULT_LOCALE,
 			lng:
 				(initialLocale === 'uk-ua' ? 'uk' : initialLocale) ||

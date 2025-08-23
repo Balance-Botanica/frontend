@@ -92,19 +92,57 @@ function createSupabaseAuthStore() {
 			const { data, error } = await supabase.auth.signInWithOAuth({
 				provider: 'google',
 				options: {
-					redirectTo: `${window.location.origin}/auth/callback`
+					redirectTo: `${window.location.origin}/auth/callback`,
+					// Use PKCE flow for better security (as per Supabase docs)
+					skipBrowserRedirect: false,
+					queryParams: {
+						access_type: 'offline',
+						prompt: 'consent'
+						// Removed response_type to let Supabase handle the flow type
+					}
 				}
 			});
 
 			if (error) throw error;
 
-			// После успешной авторизации обновляем состояние
-			await handleSuccessfulAuth();
-
-			// Для OAuth возвращаем только URL для редиректа
+			// For OAuth, the actual authentication happens in the callback
+			// This just redirects to Google
 			return data;
 		} catch (error) {
 			const errorMessage = error instanceof Error ? error.message : 'Failed to sign in with Google';
+			set({ user: null, session: null, isLoading: false, error: errorMessage });
+			throw error;
+		}
+	}
+
+	/**
+	 * 📘 Facebook OAuth авторизация
+	 * Автоматически линкует с существующим email аккаунтом
+	 */
+	async function signInWithFacebook() {
+		try {
+			update((state) => ({ ...state, isLoading: true, error: null }));
+
+			const { data, error } = await supabase.auth.signInWithOAuth({
+				provider: 'facebook',
+				options: {
+					redirectTo: `${window.location.origin}/auth/callback`,
+					skipBrowserRedirect: false,
+					queryParams: {
+						access_type: 'offline',
+						prompt: 'consent'
+					}
+				}
+			});
+
+			if (error) throw error;
+
+			// For OAuth, the actual authentication happens in the callback
+			// This just redirects to Facebook
+			return data;
+		} catch (error) {
+			const errorMessage =
+				error instanceof Error ? error.message : 'Failed to sign in with Facebook';
 			set({ user: null, session: null, isLoading: false, error: errorMessage });
 			throw error;
 		}
@@ -290,6 +328,39 @@ function createSupabaseAuthStore() {
 	}
 
 	/**
+	 * 🔑 Set session from OAuth callback
+	 * Handles tokens received from URL fragments (implicit flow)
+	 */
+	async function setSession(sessionData: any) {
+		try {
+			update((state) => ({ ...state, isLoading: true, error: null }));
+
+			// Set the session in Supabase auth
+			const { data, error } = await supabase.auth.setSession({
+				access_token: sessionData.access_token,
+				refresh_token: sessionData.refresh_token
+			});
+
+			if (error) throw error;
+
+			// Update the store with user and session data
+			if (data.session && data.user) {
+				const user = await getExtendedUserProfile(data.user.id);
+				const adaptedSession = adaptSupabaseSession(data.session);
+				set({ user, session: adaptedSession, isLoading: false, error: null });
+			} else {
+				throw new Error('No session data received');
+			}
+
+			return { user: data.user, session: data.session };
+		} catch (error) {
+			const errorMessage = error instanceof Error ? error.message : 'Failed to set session';
+			set({ user: null, session: null, isLoading: false, error: errorMessage });
+			throw error;
+		}
+	}
+
+	/**
 	 * 🧹 Очистка ошибок
 	 */
 	function clearError() {
@@ -327,6 +398,11 @@ function createSupabaseAuthStore() {
 			await handleSuccessfulAuth();
 		} else if (event === 'SIGNED_OUT') {
 			set({ user: null, session: null, isLoading: false, error: null });
+		} else if (event === 'TOKEN_REFRESHED' && session) {
+			// Update session when token is refreshed
+			const user = await getExtendedUserProfile(session.user.id);
+			const adaptedSession = adaptSupabaseSession(session);
+			set({ user, session: adaptedSession, isLoading: false, error: null });
 		}
 	});
 
@@ -334,16 +410,23 @@ function createSupabaseAuthStore() {
 		subscribe,
 		initialize,
 		signInWithGoogle,
+		signInWithFacebook,
 		signInWithEmail,
 		linkAccount,
 		updateUserProfile,
 		signOut,
+		setSession,
 		clearError,
 		getLinkedAccountsStats
 	};
 }
 
 export const supabaseAuthStore = createSupabaseAuthStore();
+
+// Auto-initialize the auth store when it's created
+if (typeof window !== 'undefined') {
+	supabaseAuthStore.initialize();
+}
 
 // Derived stores для удобства
 export const user = derived(supabaseAuthStore, ($store) => $store.user);
@@ -375,10 +458,15 @@ function mapProfileToUser(profile: any): User {
 }
 
 /**
- * 🔄 Адаптер для Supabase Session
- * Преобразует Supabase Session в наш тип Session
+ * 🔄 Adapter for Supabase Session
+ * Converts Supabase Session to our Session type with enhanced Google data extraction
  */
 function adaptSupabaseSession(supabaseSession: any): Session {
+	const userMetadata = supabaseSession.user.user_metadata || {};
+
+	// Debug: Log Google profile data
+	console.log('🔍 Google user metadata:', userMetadata);
+
 	return {
 		access_token: supabaseSession.access_token,
 		refresh_token: supabaseSession.refresh_token,
@@ -386,12 +474,14 @@ function adaptSupabaseSession(supabaseSession: any): Session {
 		user: {
 			id: supabaseSession.user.id,
 			email: supabaseSession.user.email || '',
-			name: supabaseSession.user.user_metadata?.full_name,
-			firstName: supabaseSession.user.user_metadata?.first_name,
-			lastName: supabaseSession.user.user_metadata?.last_name,
+			// Prioritize Google's full_name over individual names
+			name: userMetadata.full_name || userMetadata.name,
+			firstName: userMetadata.first_name,
+			lastName: userMetadata.last_name,
 			phone: undefined,
 			dateOfBirth: undefined,
-			avatarUrl: supabaseSession.user.user_metadata?.avatar_url,
+			// Get Google profile picture (avatar_url or picture)
+			avatarUrl: userMetadata.avatar_url || userMetadata.picture,
 			linkedAccounts: [],
 			createdAt: supabaseSession.user.created_at,
 			updatedAt: supabaseSession.user.updated_at

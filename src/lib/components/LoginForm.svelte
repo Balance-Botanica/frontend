@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
-	import { authStore } from '$lib/auth/store';
+	import { supabaseAuthStore } from '$lib/auth/supabase-store';
 	import type { OAuthProvider } from '$lib/auth/types';
 
 	const dispatch = createEventDispatcher<{
@@ -8,7 +8,7 @@
 		error: string;
 	}>();
 
-	// Состояние формы
+	// Form state
 	let email = '';
 	let password = '';
 	let name = '';
@@ -16,7 +16,7 @@
 	let isLoading = false;
 	let errorMessage = '';
 
-	// OAuth провайдеры
+	// OAuth providers - including both Google and Facebook
 	const oauthProviders: OAuthProvider[] = [
 		{
 			name: 'google',
@@ -30,20 +30,23 @@
 		}
 	];
 
-	// Обработка OAuth входа
+	// Handle OAuth login
 	async function handleOAuthSignIn(provider: 'google' | 'facebook') {
 		try {
 			isLoading = true;
 			errorMessage = '';
 
-			let result;
 			if (provider === 'google') {
-				result = await authStore.signInWithGoogle();
+				// Google OAuth will redirect, so we don't get a result here
+				await supabaseAuthStore.signInWithGoogle();
+				// The success will be handled by the auth state change listener
+			} else if (provider === 'facebook') {
+				// Facebook OAuth will redirect, so we don't get a result here
+				await supabaseAuthStore.signInWithFacebook();
+				// The success will be handled by the auth state change listener
 			} else {
-				result = await authStore.signInWithFacebook();
+				errorMessage = `${provider} authentication not supported yet`;
 			}
-
-			dispatch('success', result);
 		} catch (error) {
 			errorMessage = error instanceof Error ? error.message : `Failed to sign in with ${provider}`;
 			dispatch('error', errorMessage);
@@ -52,22 +55,34 @@
 		}
 	}
 
-	// Обработка email/password входа
+	// Handle email/password authentication
 	async function handleEmailSignIn() {
-		// TODO: Добавить валидацию полей позже
+		if (!email || !password) {
+			errorMessage = 'Please fill in all required fields';
+			return;
+		}
+
+		if (isSignUp && !name) {
+			errorMessage = 'Please enter your full name';
+			return;
+		}
+
 		try {
 			isLoading = true;
 			errorMessage = '';
 
 			let result;
 			if (isSignUp) {
-				// TODO: Добавить валидацию имени позже
-				result = await authStore.signUp(email || 'demo@example.com', password || 'demo123', name || 'Demo User');
+				// For sign up, we use the same signInWithEmail function
+				// Supabase will automatically create account if it doesn't exist
+				result = await supabaseAuthStore.signInWithEmail({ email, password });
 			} else {
-				result = await authStore.signInWithEmail(email || 'demo@example.com', password || 'demo123');
+				result = await supabaseAuthStore.signInWithEmail({ email, password });
 			}
 
-			dispatch('success', result);
+			if (result.user) {
+				dispatch('success', result);
+			}
 		} catch (error) {
 			errorMessage = error instanceof Error ? error.message : 'Authentication failed';
 			dispatch('error', errorMessage);
@@ -76,7 +91,7 @@
 		}
 	}
 
-	// Переключение между входом и регистрацией
+	// Toggle between sign in and sign up
 	function toggleMode() {
 		isSignUp = !isSignUp;
 		errorMessage = '';
@@ -85,9 +100,23 @@
 		name = '';
 	}
 
-	// Очистка ошибки при изменении полей
+	// Clear error when fields change
 	$: if (email || password || name) {
 		errorMessage = '';
+	}
+
+	// Listen to auth state changes
+	$: {
+		const unsubscribe = supabaseAuthStore.subscribe((state) => {
+			if (state.user && state.session) {
+				dispatch('success', { user: state.user, session: state.session });
+			}
+			if (state.error) {
+				errorMessage = state.error;
+				dispatch('error', state.error);
+			}
+			isLoading = state.isLoading;
+		});
 	}
 </script>
 
@@ -469,12 +498,14 @@
 
 	.mode-toggle {
 		display: flex;
-		flex-direction: column;
+		flex-direction: row;
 		align-items: center;
+		justify-content: center;
 		padding: 0px;
-		gap: 16px;
+		gap: 6px;
 		width: 460px;
-		height: 84px;
+		height: auto;
+		margin-top: 20px;
 		align-self: stretch;
 	}
 
@@ -484,7 +515,7 @@
 		align-items: center;
 		padding: 0px;
 		gap: 6px;
-		width: 344px;
+		width: auto;
 		height: 22px;
 		margin: 0;
 		color: #474747;
@@ -510,7 +541,7 @@
 		cursor: pointer;
 		text-decoration-line: underline;
 		margin: 0;
-		width: 132px;
+		width: auto;
 		height: 22px;
 		display: flex;
 		align-items: center;

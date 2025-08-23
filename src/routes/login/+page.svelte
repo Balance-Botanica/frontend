@@ -1,29 +1,29 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
-	import { authStore, isAuthenticated } from '$lib/auth/store';
+	import { supabaseAuthStore, isAuthenticated } from '$lib/auth/supabase-store';
 	import LoginForm from '$lib/components/LoginForm.svelte';
 
-	// Инициализируем auth store
+	// Initialize auth store
 	onMount(() => {
-		authStore.initialize();
+		supabaseAuthStore.initialize();
 	});
 
-	// Обработка успешной авторизации
+	// Handle successful authentication
 	function handleAuthSuccess(event: CustomEvent) {
-		console.log('✅ Авторизация успешна:', event.detail);
+		console.log('✅ Authentication successful:', event.detail);
 		
-		// Перенаправляем на главную страницу
+		// Redirect to homepage
 		goto('/');
 	}
 
-	// Обработка ошибки авторизации
+	// Handle authentication error
 	function handleAuthError(event: CustomEvent) {
-		console.error('❌ Ошибка авторизации:', event.detail);
-		// Ошибка уже отображается в компоненте формы
+		console.error('❌ Authentication error:', event.detail);
+		// Error is already displayed in the form component
 	}
 
-	// Если пользователь уже авторизован, перенаправляем
+	// If user is already authenticated, redirect
 	$: if ($isAuthenticated) {
 		goto('/');
 	}

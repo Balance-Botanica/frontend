@@ -8,6 +8,7 @@
 	import SubHeader from '$lib/components/SubHeader.svelte';
 	import Footer from '$lib/components/Footer.svelte';
 	import CookieConsent from '$lib/components/CookieConsent.svelte';
+	import { supabaseAuthStore } from '$lib/auth/supabase-store';
 
 
 	const { children } = $props();
@@ -17,12 +18,15 @@
 	const showFooter = $derived(!excludeFooterRoutes.includes($page.url.pathname));
 	const isHome = $derived($page.url.pathname === '/');
 
-	// Инициализируем i18n при загрузке
+	// Initialize i18n and auth on mount
 	onMount(async () => {
 		try {
+			// Initialize auth state - let Supabase handle OAuth automatically
+			supabaseAuthStore.initialize();
+			
 			await initializeI18n('uk-ua'); // Start with Ukrainian as default
 		} catch (error) {
-			console.error('Failed to initialize i18n:', error);
+			console.error('Failed to initialize:', error);
 		}
 	});
 </script>
@@ -41,8 +45,8 @@
 		{#if showFooter}
 			<Footer />
 		{/if}
+		
+		<!-- Cookie Consent - now inside i18nReady block for proper translations -->
+		<CookieConsent />
 	{/if}
-	
-	<!-- Глобальный Cookie Consent -->
-	<CookieConsent />
 </div>

@@ -1,21 +1,20 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { t } from '$lib/i18n';
-	import { cookieConsentStore, acceptNecessary, acceptAll, hideCookieConsent, updateCookieSetting, acceptSelected } from '$lib/stores/cookie-consent';
+	import { 
+		cookieConsentStore, 
+		acceptNecessary, 
+		acceptAll, 
+		hideCookieConsent, 
+		updateCookieSetting, 
+		acceptSelected,
+		showManageModal,
+		hideManageModal
+	} from '$lib/stores/cookie-consent';
 	import Switcher from './Switcher.svelte';
 
-	// Подписываемся на store
-	$: ({ isVisible, hasShown, showManageModal, settings } = $cookieConsentStore);
-
-	// Анимация появления
-	onMount(() => {
-		// Показываем через 1 секунду после загрузки страницы
-		setTimeout(() => {
-			if (!$cookieConsentStore.hasShown) {
-				$cookieConsentStore.isVisible = true;
-			}
-		}, 1000);
-	});
+	// Subscribe to store
+	$: ({ isVisible, hasShown, showManageModal: isManageModalOpen, settings } = $cookieConsentStore);
 
 	function handleAcceptAll() {
 		acceptAll();
@@ -26,11 +25,11 @@
 	}
 
 	function handleManage() {
-		$cookieConsentStore.showManageModal = true;
+		showManageModal();
 	}
 
-	function hideManageModal() {
-		$cookieConsentStore.showManageModal = false;
+	function handleHideManageModal() {
+		hideManageModal();
 	}
 
 	function handleToggle(key: 'statistics' | 'marketing') {
@@ -52,7 +51,7 @@
 	>
 		<!-- Header -->
 		<div class="mb-4 flex items-start justify-between">
-			{#if !showManageModal}
+			{#if !isManageModalOpen}
 				<div class="flex items-center gap-3">
 					<h3 class="text-lg font-semibold">{t('cookie_consent.title')}</h3>
 					<img src="/icons/cookie.svg" alt="Cookie" class="h-6 w-6" />
@@ -69,9 +68,9 @@
 			{:else}
 				<div class="flex items-center gap-3">
 					<button
-						on:click={hideManageModal}
+						on:click={handleHideManageModal}
 						class="rounded-full p-2 transition-colors hover:bg-white/10 cursor-pointer"
-						aria-label="Назад"
+						aria-label="Back"
 					>
 						<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
 							<path d="M19 12H5M12 19l-7-7 7-7" />
@@ -82,10 +81,10 @@
 			{/if}
 		</div>
 
-		<!-- Основное содержимое -->
+		<!-- Main content -->
 		<div class="transition-all duration-500 ease-out overflow-hidden">
-			{#if !showManageModal}
-				<!-- Компактный режим -->
+			{#if !isManageModalOpen}
+				<!-- Compact mode -->
 				<div class="space-y-4">
 					<p class="text-sm text-white/80">
 						{t('cookie_consent.description')}
@@ -99,9 +98,9 @@
 					</button>
 				</div>
 			{:else}
-				<!-- Развернутый режим -->
+				<!-- Expanded mode -->
 				<div class="space-y-6 animate-in slide-in-from-top duration-300">
-					<!-- Necessary - всегда включено -->
+					<!-- Necessary - always enabled -->
 					<div class="space-y-2">
 						<div class="flex items-center justify-between">
 							<div class="flex-1">
@@ -156,14 +155,14 @@
 			{/if}
 		</div>
 
-		<!-- Footer с кнопками (всегда показаны) -->
+		<!-- Footer with buttons (always shown) -->
 		<div class="mt-6 flex gap-3">
 			<button
 				type="button"
-				on:click={showManageModal ? handleAcceptSelected : handleAcceptNecessary}
+				on:click={isManageModalOpen ? handleAcceptSelected : handleAcceptNecessary}
 				class="cookie-btn-necessary flex-1 rounded-[20px] border-2 border-white bg-transparent px-6 py-3 text-sm font-medium text-white transition-all duration-300 hover:bg-white hover:text-[#059669] cursor-pointer"
 			>
-				{showManageModal ? t('cookie_manage.accept_selected') : t('cookie_consent.accept_necessary')}
+				{isManageModalOpen ? t('cookie_manage.accept_selected') : t('cookie_consent.accept_necessary')}
 			</button>
 
 			<button
@@ -178,7 +177,7 @@
 {/if}
 
 <style>
-	/* CSS Variables как в оригинале */
+	/* CSS Variables for consistency */
 	:global(:root) {
 		--rt-color-white: #fff;
 		--rt-color-dark: #222;
@@ -191,7 +190,7 @@
 		--rt-transition-closing-delay: 0.15s;
 	}
 
-	/* Основные стили как в оригинале */
+	/* Base styles for cookie management modal */
 	:global(.cookie-manage-modal) {
 		font-family: "Nunito", "GT Walsheim", "Helvetica Neue", Helvetica, Arial, sans-serif;
 		letter-spacing: -0.02em;
@@ -214,32 +213,30 @@
 	/* Accept Necessary Button Styles */
 	.cookie-btn-necessary {
 		transition: all 0.3s ease;
-		min-width: 200px; /* Базовый размер для английского */
+		min-width: 200px; /* Base size for English */
 	}
 
-	/* Адаптивные размеры для разных языков */
+	/* Adaptive sizes for different languages */
 	:global([lang="uk"]) .cookie-btn-necessary {
-		min-width: 220px; /* Больше для украинского */
+		min-width: 220px; /* Larger for Ukrainian */
 	}
 
 	:global([lang="en"]) .cookie-btn-necessary {
-		min-width: 200px; /* Меньше для английского */
+		min-width: 200px; /* Smaller for English */
 	}
 
 	/* Accept All Button Styles */
 	.cookie-btn-all {
 		transition: all 0.3s ease;
-		min-width: 120px; /* Базовый размер для английского */
+		min-width: 120px; /* Base size for English */
 	}
 
-	/* Адаптивные размеры для разных языков */
+	/* Adaptive sizes for different languages */
 	:global([lang="uk"]) .cookie-btn-all {
-		min-width: 140px; /* Больше для украинского */
+		min-width: 140px; /* Larger for Ukrainian */
 	}
 
 	:global([lang="en"]) .cookie-btn-all {
-		min-width: 120px; /* Меньше для английского */
+		min-width: 120px; /* Smaller for English */
 	}
-
-
 </style>
