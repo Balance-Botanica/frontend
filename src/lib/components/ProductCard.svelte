@@ -1,6 +1,9 @@
 <script lang="ts">
 	import { createEventDispatcher, onMount } from 'svelte';
 	import { browser } from '$app/environment';
+	import { cartStore } from '$lib/stores/cart.store';
+	import { notificationStore } from '$lib/stores/notifications';
+	import { createClientProduct, type RawProduct } from '$lib/types/product.types';
 
 	// Helper function to parse image URLs
 	function parseImageUrls(imageUrlsString: string | null): string[] {
@@ -56,19 +59,7 @@
 	}
 
 	// Props
-	export let product: {
-		id: string;
-		name: string;
-		description?: string | null;
-		price: number;
-		stock: number;
-		size: string;
-		flavor: string;
-		categories?: string | null;
-		imageUrls?: string | null;
-		createdAt?: Date;
-		updatedAt?: Date;
-	};
+	export let product: RawProduct;
 
 	export let showRating: boolean = true;
 	export let showBestsellerBadge: boolean = true;
@@ -195,8 +186,24 @@
 	}
 
 	function handleAddToCart() {
-		// console.log(`🛒 Add to cart clicked for "${product.name}"`);
-		dispatch('addToCart', { productId: product.id, product });
+		try {
+			// Convert raw product data to client product for cart
+			const clientProduct = createClientProduct(product);
+
+			// Add to cart
+			cartStore.addItem(clientProduct, 1);
+
+			// Show success notification
+			notificationStore.success(`${product.name} added to cart!`, {
+				duration: 3000
+			});
+
+			// Dispatch event for parent components
+			dispatch('addToCart', { productId: product.id, product });
+		} catch (error) {
+			console.error('❌ Error adding product to cart:', error);
+			notificationStore.error('Failed to add item to cart. Please try again.');
+		}
 	}
 
 	function handleImageClick() {

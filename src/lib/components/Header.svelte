@@ -4,6 +4,7 @@
 	import { createPageTranslations } from '$lib/i18n/store';
 	import LanguageSwitcher from './LanguageSwitcher.svelte';
 	import { supabaseAuthStore, user, isAuthenticated, isLoading } from '$lib/auth/supabase-store';
+	import { cartItemCount } from '$lib/stores/cart.store';
 	import { onMount } from 'svelte';
 	import Logo from './Logo.svelte';
 	import { goto } from '$app/navigation';
@@ -135,13 +136,8 @@
 	}
 
 	function handleCartClick() {
-		if ($isAuthenticated) {
-			// Переходим в корзину
-			goto('/cart');
-		} else {
-			// Переходим на страницу входа
-			goto('/login');
-		}
+		// Always go to cart page, authentication will be required only at checkout
+		goto('/cart');
 	}
 </script>
 
@@ -229,25 +225,16 @@
 						aria-label={$pageTranslations?.t('header.accessibility.shopping_cart') ||
 							'Shopping cart'}
 					>
-						{#if $isAuthenticated}
-							<!-- Logged in user - full cart -->
-							<div class="cart-icon-container logged-in">
-								<img
-									src={cartIcon}
-									alt="Cart"
-									class="cart-icon"
-								/>
-							</div>
-						{:else}
-							<!-- Not logged in user - outlined cart -->
-							<div class="cart-icon-container logged-out">
-								<img
-									src={cartIcon}
-									alt="Cart"
-									class="cart-icon"
-								/>
-							</div>
-						{/if}
+						<div class="cart-icon-container">
+							<img
+								src={cartIcon}
+								alt="Cart"
+								class="cart-icon"
+							/>
+							{#if $cartItemCount > 0}
+								<span class="cart-badge">{$cartItemCount}</span>
+							{/if}
+						</div>
 					</button>
 				</div>
 			</div>
@@ -357,6 +344,9 @@
 		justify-content: center;
 		cursor: pointer;
 		transition: all 0.2s ease;
+		border: none;
+		background: transparent;
+		position: relative;
 	}
 
 	.cart-icon-container {
@@ -367,41 +357,43 @@
 		height: 48px;
 		border-radius: 50%;
 		transition: all 0.2s ease;
-	}
-
-	.cart-icon-container.logged-in {
 		background: transparent;
 		border: 2px solid #4B766E;
+		position: relative;
 	}
 
-	.cart-icon-container.logged-in:hover {
+	.cart-icon-container:hover {
 		border-color: #3a5d56;
 		transform: scale(1.1);
 		box-shadow: 0 4px 12px rgba(75, 118, 110, 0.3);
-	}
-
-	.cart-icon-container.logged-out {
-		background: transparent;
-		border: 2px solid rgba(255, 255, 255, 0.8);
-	}
-
-	.cart-icon-container.logged-out:hover {
-		border-color: #4B766E;
-		transform: scale(1.1);
 	}
 
 	.cart-icon {
 		width: 24px;
 		height: 24px;
 		transition: transform 0.2s ease;
-	}
-
-	.cart-icon-container.logged-in .cart-icon {
 		filter: brightness(0) saturate(100%) hue-rotate(120deg) brightness(0.6);
 	}
 
-	.cart-icon-container.logged-out .cart-icon {
-		filter: brightness(0) saturate(100%) hue-rotate(120deg) brightness(0.6);
+	.cart-badge {
+		position: absolute;
+		top: -4px;
+		right: -4px;
+		background: #ff4444;
+		color: white;
+		border-radius: 50%;
+		width: 20px;
+		height: 20px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 12px;
+		font-weight: 600;
+		font-family: 'Nunito', sans-serif;
+		min-width: 20px;
+		padding: 0 2px;
+		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+		border: 2px solid white;
 	}
 
 	/* Logout Dialog Styles */

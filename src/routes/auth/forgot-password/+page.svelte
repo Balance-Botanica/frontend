@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import { notificationStore } from '$lib/stores/notifications';
 	import type { ActionData } from './$types';
 
 	const { form }: { form: ActionData } = $props();
@@ -64,9 +65,24 @@
 			action="?/forgot-password" 
 			use:enhance={() => {
 				isSubmitting = true;
-				return async ({ update }) => {
+				return async ({ result, update }) => {
 					await update();
 					isSubmitting = false;
+					
+					// Show notification on successful password reset email
+					if (result.type === 'success' && result.data?.success && email) {
+						notificationStore.info(`We've sent password reset instructions to ${email}. Please check your inbox and spam folder.`, {
+							title: 'Password reset email sent!',
+							duration: 10000,
+							actions: [
+								{
+									label: 'Got it',
+									action: () => {},
+									style: 'secondary'
+								}
+							]
+						});
+					}
 				};
 			}} 
 			class="space-y-6"

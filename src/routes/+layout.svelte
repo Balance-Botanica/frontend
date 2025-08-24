@@ -20,6 +20,7 @@
 	import SubHeader from '$lib/components/SubHeader.svelte';
 	import Footer from '$lib/components/Footer.svelte';
 	import CookieConsent from '$lib/components/CookieConsent.svelte';
+	import NotificationContainer from '$lib/components/NotificationContainer.svelte';
 	import { supabaseAuthStore, user, isAuthenticated, isLoading } from '$lib/auth/supabase-store';
 
 	const { children } = $props();
@@ -150,5 +151,8 @@
 		
 		<!-- Cookie Consent - now inside i18nReady block for proper translations -->
 		<CookieConsent />
+		
+		<!-- Global Notification Container -->
+		<NotificationContainer />
 	{/if}
 </div>

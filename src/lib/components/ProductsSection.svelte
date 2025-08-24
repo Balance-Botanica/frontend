@@ -1,22 +1,9 @@
 <script lang="ts">
 	import ProductCard from '$lib/components/ProductCard.svelte';
 	import { onMount, onDestroy } from 'svelte';
+	import type { RawProduct } from '$lib/types/product.types';
 
-	export interface UiProduct {
-		id: string;
-		name: string;
-		description?: string | null;
-		price: number;
-		stock: number;
-		size: string;
-		flavor: string;
-		categories?: string | null;
-		imageUrls?: string | null;
-		createdAt?: Date;
-		updatedAt?: Date;
-	}
-
-	export let products: UiProduct[] = [];
+	export let products: RawProduct[] = [];
 	export let title: string = 'Наші товари';
 	// Optional limit of items to render; if undefined/null, render all
 	export let limit: number | null | undefined = null;

@@ -1,13 +1,13 @@
 import { writable, derived } from 'svelte/store';
 import { browser } from '$app/environment';
-import type { Product } from '$lib/server/domain/entities/product.entity';
+import type { ClientProduct } from '$lib/types/product.types';
 
 // ================================
 // 🏗️ DOMAIN TYPES (following Clean Architecture)
 // ================================
 
 export interface CartItem {
-	product: Product;
+	product: ClientProduct;
 	quantity: number;
 	addedAt: Date;
 }
@@ -138,7 +138,7 @@ function createCartStore() {
 		subscribe,
 
 		// 🛒 CART ACTIONS (Use Cases)
-		addItem: (product: Product, quantity: number = 1) => {
+		addItem: (product: ClientProduct, quantity: number = 1) => {
 			try {
 				CartService.validateQuantity(quantity);
 

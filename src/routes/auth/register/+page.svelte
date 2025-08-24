@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import { onMount } from 'svelte';
+	import { notificationStore } from '$lib/stores/notifications';
 	import type { ActionData } from './$types';
 
 	const { form }: { form: ActionData } = $props();
@@ -28,6 +30,24 @@
 	function handleConfirmPasswordInput() {
 		showPasswordMatch = confirmPassword.length > 0;
 	}
+	
+	// Handle successful registration notifications
+	onMount(() => {
+		if (form?.success && form?.confirmationRequired && email) {
+			// Show notification for email confirmation
+			notificationStore.success(`Please check ${email} for a confirmation link to activate your account.`, {
+				title: 'Registration successful!',
+				duration: 12000, // Give users time to read
+				actions: [
+					{
+						label: 'Got it',
+						action: () => {}, // Will auto-remove
+						style: 'secondary'
+					}
+				]
+			});
+		}
+	});
 </script>
 
 <svelte:head>
@@ -68,9 +88,24 @@
 		action="?/register" 
 		use:enhance={() => {
 			isSubmitting = true;
-			return async ({ update }) => {
+			return async ({ result, update }) => {
 				await update();
 				isSubmitting = false;
+				
+				// Show notification on successful registration
+				if (result.type === 'success' && result.data?.success && result.data?.confirmationRequired && email) {
+					notificationStore.success(`Please check ${email} for a confirmation link to activate your account.`, {
+						title: 'Registration successful!',
+						duration: 12000,
+						actions: [
+							{
+								label: 'Got it',
+								action: () => {},
+								style: 'secondary'
+							}
+						]
+					});
+				}
 			};
 		}} 
 		class="space-y-6"

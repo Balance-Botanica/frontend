@@ -36,3 +36,4 @@ export { default as SEO } from './SEO.svelte';
 export { default as MadeInUkraine } from './MadeInUkraine.svelte';
 export { default as CalculatorSection } from './CalculatorSection.svelte';
 export { default as BenefitIcon } from './BenefitIcon.svelte';
+export { default as NotificationContainer } from './NotificationContainer.svelte';
