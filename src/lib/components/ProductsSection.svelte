@@ -22,32 +22,32 @@
 	export let limit: number | null | undefined = null;
 
 	// Debug logging
-	console.log('🔍 ProductsSection received products:', products);
-	console.log('📊 Products count:', products?.length || 0);
-	console.log('📋 First product:', products?.[0]);
+	// console.log('🔍 ProductsSection received products:', products);
+	// console.log('📊 Products count:', products?.length || 0);
+	// console.log('📋 First product:', products?.[0]);
 	
 	// Log each product's image details
 	$: if (products) {
-		console.log('\n🔄 ProductsSection products update:');
-		products.forEach((product, index) => {
-			console.log(`\n📸 Product ${index + 1} in ProductsSection:`);
-			console.log('  Name:', product.name);
-			console.log('  ImageUrls:', product.imageUrls);
-			
-			if (product.imageUrls) {
-				try {
-					const parsed = JSON.parse(product.imageUrls);
-					console.log('  Parsed ImageUrls:', parsed);
-					console.log('  Image count:', Array.isArray(parsed) ? parsed.length : 'Not array');
-					console.log('  Will show slider:', Array.isArray(parsed) && parsed.length > 1);
-				} catch (error: unknown) {
-					const errorMessage = error instanceof Error ? error.message : String(error);
-					console.log('  ❌ Failed to parse imageUrls:', errorMessage);
-				}
-			} else {
-				console.log('  ❌ No imageUrls field');
-			}
-		});
+		// console.log('\n🔄 ProductsSection products update:');
+		// products.forEach((product, index) => {
+		// 	console.log(`\n📸 Product ${index + 1} in ProductsSection:`);
+		// 	console.log('  Name:', product.name);
+		// 	console.log('  ImageUrls:', product.imageUrls);
+		// 	
+		// 	if (product.imageUrls) {
+		// 		try {
+		// 			const parsed = JSON.parse(product.imageUrls);
+		// 			console.log('  Parsed ImageUrls:', parsed);
+		// 			console.log('  Image count:', Array.isArray(parsed) ? parsed.length : 'Not array');
+		// 			console.log('  Will show slider:', Array.isArray(parsed) && parsed.length > 1);
+		// 		} catch (error: unknown) {
+		// 			const errorMessage = error instanceof Error ? error.message : String(error);
+		// 			console.log('  ❌ Failed to parse imageUrls:', errorMessage);
+		// 		}
+		// 	} else {
+		// 		console.log('  ❌ No imageUrls field');
+		// 	}
+		// });
 	}
 
 	// Pass-through flags to `ProductCard`
@@ -64,32 +64,32 @@
 		: [];
 	
 	$: {
-		console.log('🔄 displayProducts updated:');
-		console.log('  Products count:', products?.length || 0);
-		console.log('  Limit:', limit);
-		console.log('  Display products count:', displayProducts.length);
-		console.log('  First display product:', displayProducts[0]?.name);
+		// console.log('🔄 displayProducts updated:');
+		// console.log('  Products count:', products?.length || 0);
+		// console.log('  Limit:', limit);
+		// console.log('  Display products count:', displayProducts.length);
+		// console.log('  First display product:', displayProducts[0]?.name);
 		
 		// Log each product's image details
-		displayProducts.forEach((product, index) => {
-			console.log(`\n📸 Product ${index + 1} in displayProducts:`);
-			console.log('  Name:', product.name);
-			console.log('  ImageUrls:', product.imageUrls);
-			
-			if (product.imageUrls) {
-				try {
-					const parsed = JSON.parse(product.imageUrls);
-					console.log('  Parsed ImageUrls:', parsed);
-					console.log('  Image count:', Array.isArray(parsed) ? parsed.length : 'Not array');
-					console.log('  Will show slider:', Array.isArray(parsed) && parsed.length > 1);
-				} catch (error: unknown) {
-					const errorMessage = error instanceof Error ? error.message : String(error);
-					console.log('  ❌ Failed to parse imageUrls:', errorMessage);
-				}
-			} else {
-				console.log('  ❌ No imageUrls field');
-			}
-		});
+		// displayProducts.forEach((product, index) => {
+		// 	console.log(`\n📸 Product ${index + 1} in displayProducts:`);
+		// 	console.log('  Name:', product.name);
+		// 	console.log('  ImageUrls:', product.imageUrls);
+		// 	
+		// 	if (product.imageUrls) {
+		// 		try {
+		// 			const parsed = JSON.parse(product.imageUrls);
+		// 			console.log('  Parsed ImageUrls:', parsed);
+		// 			console.log('  Image count:', Array.isArray(parsed) ? parsed.length : 'Not array');
+		// 			console.log('  Will show slider:', Array.isArray(parsed) && parsed.length > 1);
+		// 		} catch (error: unknown) {
+		// 			const errorMessage = error instanceof Error ? error.message : String(error);
+		// 			console.log('  ❌ Failed to parse imageUrls:', errorMessage);
+		// 		}
+		// 	} else {
+		// 		console.log('  ❌ No imageUrls field');
+		// 	}
+		// });
 	}
 
 	// Slider navigation state
@@ -101,65 +101,65 @@
 	
 	// Track currentIndex changes
 	$: {
-		console.log('🎠 currentIndex changed:', currentIndex);
-		console.log('  Max index:', Math.max(0, displayProducts.length - visibleProducts));
-		console.log('  Can go prev:', currentIndex > 0);
-		console.log('  Can go next:', currentIndex < Math.max(0, displayProducts.length - visibleProducts));
+		// console.log('🎠 currentIndex changed:', currentIndex);
+		// console.log('  Max index:', Math.max(0, displayProducts.length - visibleProducts));
+		// console.log('  Can go prev:', currentIndex > 0);
+		// console.log('  Can go next:', currentIndex < Math.max(0, displayProducts.length - visibleProducts));
 	}
 	
 	// Track visibleProducts changes
 	$: {
-		console.log('👁️ visibleProducts changed:', visibleProducts);
-		console.log('  Products count:', displayProducts.length);
-		console.log('  Max index:', Math.max(0, displayProducts.length - visibleProducts));
-		console.log('  Current index:', currentIndex);
+		// console.log('👁️ visibleProducts changed:', visibleProducts);
+		// console.log('  Products count:', displayProducts.length);
+		// console.log('  Max index:', Math.max(0, displayProducts.length - visibleProducts));
+		// console.log('  Current index:', currentIndex);
 	}
 
 	const handlePrevClick = () => {
-		console.log('⬅️ Previous button clicked');
-		console.log('  Current index:', currentIndex);
+		// console.log('⬅️ Previous button clicked');
+		// console.log('  Current index:', currentIndex);
 		if (currentIndex > 0) {
 			currentIndex--;
-			console.log('  ✅ Moved to index:', currentIndex);
+			// console.log('  ✅ Moved to index:', currentIndex);
 		} else {
-			console.log('  ❌ Already at first index');
+			// console.log('  ❌ Already at first index');
 		}
 	};
 
 	const handleNextClick = () => {
-		console.log('➡️ Next button clicked');
+		// console.log('➡️ Next button clicked');
 		const maxIndex = Math.max(0, displayProducts.length - visibleProducts);
-		console.log('  Current index:', currentIndex);
-		console.log('  Max index:', maxIndex);
+		// console.log('  Current index:', currentIndex);
+		// console.log('  Max index:', maxIndex);
 		if (currentIndex < maxIndex) {
 			currentIndex++;
-			console.log('  ✅ Moved to index:', currentIndex);
+			// console.log('  ✅ Moved to index:', currentIndex);
 		} else {
-			console.log('  ❌ Already at last index');
+			// console.log('  ❌ Already at last index');
 		}
 	};
 
 	const handleKeyDown = (event: KeyboardEvent) => {
-		console.log('⌨️ Key pressed:', event.key);
+		// console.log('⌨️ Key pressed:', event.key);
 		if (event.key === 'ArrowLeft') {
 			event.preventDefault();
-			console.log('  ⬅️ Left arrow, going to previous');
+			// console.log('  ⬅️ Left arrow, going to previous');
 			handlePrevClick();
 		} else if (event.key === 'ArrowRight') {
 			event.preventDefault();
-			console.log('  ➡️ Right arrow, going to next');
+			// console.log('  ➡️ Right arrow, going to next');
 			handleNextClick();
 		}
 	};
 
 	const handleTouchStart = (event: TouchEvent) => {
 		touchStartX = event.touches[0].clientX;
-		console.log('👆 Touch start:', touchStartX);
+		// console.log('👆 Touch start:', touchStartX);
 	};
 
 	const handleTouchEnd = (event: TouchEvent) => {
 		touchEndX = event.changedTouches[0].clientX;
-		console.log('👆 Touch end:', touchEndX);
+		// console.log('👆 Touch end:', touchEndX);
 		handleSwipe();
 	};
 
@@ -167,24 +167,24 @@
 		const swipeThreshold = 50;
 		const diff = touchStartX - touchEndX;
 		
-		console.log('👆 Swipe detected:');
-		console.log('  Touch start X:', touchStartX);
-		console.log('  Touch end X:', touchEndX);
-		console.log('  Difference:', diff);
-		console.log('  Threshold:', swipeThreshold);
+		// console.log('👆 Swipe detected:');
+		// console.log('  Touch start X:', touchStartX);
+		// console.log('  Touch end X:', touchEndX);
+		// console.log('  Difference:', diff);
+		// console.log('  Threshold:', swipeThreshold);
 
 		if (Math.abs(diff) > swipeThreshold) {
 			if (diff > 0) {
 				// Swiped left - go to next
-				console.log('  ➡️ Swiped left, going to next');
+				// console.log('  ➡️ Swiped left, going to next');
 				handleNextClick();
 			} else {
 				// Swiped right - go to previous
-				console.log('  ⬅️ Swiped right, going to previous');
+				// console.log('  ⬅️ Swiped right, going to previous');
 				handlePrevClick();
 			}
 		} else {
-			console.log('  ❌ Swipe too small, ignoring');
+			// console.log('  ❌ Swipe too small, ignoring');
 		}
 	};
 
@@ -192,33 +192,33 @@
 		// Determine how many products are visible based on screen width
 		if (typeof window !== 'undefined') {
 			const width = window.innerWidth;
-			console.log('📱 Screen width:', width);
+			// console.log('📱 Screen width:', width);
 			
 			if (width >= 1920) {
-				console.log('  🖥️ Wide screen: 3 products per row');
+				// console.log('  🖥️ Wide screen: 3 products per row');
 				return 3; // 3 products per row on wide screens
 			}
 			if (width >= 1280) {
-				console.log('  🖥️ Large screen: 3 products per row');
+				// console.log('  🖥️ Large screen: 3 products per row');
 				return 3; // 3 products per row on large screens
 			}
 			if (width >= 1024) {
-				console.log('  🖥️ Medium screen: 2 products per row');
+				// console.log('  🖥️ Medium screen: 2 products per row');
 				return 2; // 2 products per row on medium screens
 			}
 		}
-		console.log('  📱 Default: 1 product per row');
+		// console.log('  📱 Default: 1 product per row');
 		return 1; // 1 product per row on small screens
 	};
 
 	const handleResize = () => {
 		const newVisibleProducts = getVisibleProducts();
-		console.log('🔄 Resize event:');
-		console.log('  Old visible products:', visibleProducts);
-		console.log('  New visible products:', newVisibleProducts);
+		// console.log('🔄 Resize event:');
+		// console.log('  Old visible products:', visibleProducts);
+		// console.log('  New visible products:', newVisibleProducts);
 		
 		if (newVisibleProducts !== visibleProducts) {
-			console.log('  📱 Updating visible products');
+			// console.log('  📱 Updating visible products');
 			visibleProducts = newVisibleProducts;
 			// Reset to first page when screen size changes
 			currentIndex = 0;
@@ -227,31 +227,31 @@
 
 	// Update current index when products change
 	$: if (displayProducts.length > 0) {
-		console.log('🔄 Resetting currentIndex to 0');
+		// console.log('🔄 Resetting currentIndex to 0');
 		currentIndex = 0;
 	}
 
 	onMount(() => {
-		console.log('🎠 ProductsSection onMount:');
-		console.log('  Products count:', displayProducts.length);
-		console.log('  Visible products:', getVisibleProducts());
-		console.log('  Window width:', typeof window !== 'undefined' ? window.innerWidth : 'N/A');
+		// console.log('🎠 ProductsSection onMount:');
+		// console.log('  Products count:', displayProducts.length);
+		// console.log('  Visible products:', getVisibleProducts());
+		// console.log('  Window width:', typeof window !== 'undefined' ? window.innerWidth : 'N/A');
 		
 		visibleProducts = getVisibleProducts();
 		window.addEventListener('resize', handleResize);
 		// Add keyboard navigation
 		document.addEventListener('keydown', handleKeyDown);
 		
-		console.log('  ✅ Event listeners added');
-		console.log('  ✅ Initial visibleProducts:', visibleProducts);
+		// console.log('  ✅ Event listeners added');
+		// console.log('  ✅ Initial visibleProducts:', visibleProducts);
 	});
 
 	onDestroy(() => {
-		console.log('🗑️ ProductsSection onDestroy:');
-		console.log('  Removing event listeners');
+		// console.log('🗑️ ProductsSection onDestroy:');
+		// console.log('  Removing event listeners');
 		window.removeEventListener('resize', handleResize);
 		document.removeEventListener('keydown', handleKeyDown);
-		console.log('  ✅ Event listeners removed');
+		// console.log('  ✅ Event listeners removed');
 	});
 </script>
 

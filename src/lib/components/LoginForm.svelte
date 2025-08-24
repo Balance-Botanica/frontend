@@ -15,6 +15,12 @@
 	let isSignUp = false;
 	let isLoading = false;
 	let errorMessage = '';
+	let showPassword = false;
+
+	// Toggle password visibility
+	function togglePasswordVisibility() {
+		showPassword = !showPassword;
+	}
 
 	// OAuth providers - including both Google and Facebook
 	const oauthProviders: OAuthProvider[] = [
@@ -170,29 +176,53 @@
 		{/if}
 
 		<div class="form-group">
-			<label for="email" class="form-label">Email</label>
+			<label for="email" class="form-label">Електронна пошта</label>
 			<input
 				id="email"
 				type="email"
 				bind:value={email}
 				class="form-input"
-				placeholder="23SDSDS3dsj"
+				placeholder="email@example.com"
 				required
 				disabled={isLoading}
 			/>
 		</div>
 
 		<div class="form-group">
-			<label for="password" class="form-label">Password</label>
-			<input
-				id="password"
-				type="password"
-				bind:value={password}
-				class="form-input"
-				placeholder="23SDSDS3dsj"
-				required
-				disabled={isLoading}
-			/>
+			<label for="password" class="form-label">Пароль</label>
+			<div class="password-input-container">
+				<input
+					id="password"
+					type={showPassword ? 'text' : 'password'}
+					bind:value={password}
+					class="form-input password-input"
+					placeholder="23SDSDS3dsj"
+					required
+					disabled={isLoading}
+				/>
+				<button
+					type="button"
+					class="password-toggle"
+					on:click={togglePasswordVisibility}
+					disabled={isLoading}
+					aria-label={showPassword ? 'Сховати пароль' : 'Показати пароль'}
+				>
+					{#if showPassword}
+						<!-- Eye closed icon -->
+						<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+							<path d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+							<path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+							<path d="M3 3l18 18" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+						</svg>
+					{:else}
+						<!-- Eye open icon -->
+						<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+							<path d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+							<path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+						</svg>
+					{/if}
+				</button>
+			</div>
 		</div>
 
 		<!-- Забыли пароль (только для входа) -->
@@ -381,7 +411,7 @@
 		padding: 0px;
 		gap: 20px;
 		width: 460px;
-		height: 201px;
+		min-height: 201px;
 		align-self: stretch;
 	}
 
@@ -429,6 +459,41 @@
 		align-self: stretch;
 	}
 
+	.password-input-container {
+		position: relative;
+		width: 100%;
+	}
+
+	.password-input {
+		padding-right: 48px; /* Space for the toggle button */
+	}
+
+	.password-toggle {
+		position: absolute;
+		right: 12px;
+		top: 50%;
+		transform: translateY(-50%);
+		background: none;
+		border: none;
+		cursor: pointer;
+		padding: 4px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 24px;
+		height: 24px;
+		transition: opacity 0.2s ease;
+	}
+
+	.password-toggle:hover:not(:disabled) {
+		opacity: 0.7;
+	}
+
+	.password-toggle:disabled {
+		opacity: 0.5;
+		cursor: not-allowed;
+	}
+
 	.form-input:focus {
 		outline: none;
 		border-color: #4B766E;
@@ -458,12 +523,12 @@
 		gap: 8px;
 		width: 460px;
 		height: 46px;
-		background: #4B766E;
+		background: #52796F;
 		border: none;
 		border-radius: 12px;
 		font-family: 'Nunito', sans-serif;
 		font-style: normal;
-		font-weight: 500;
+		font-weight: 600;
 		font-size: 16px;
 		line-height: 140%;
 		color: #FFFFFF;
@@ -473,7 +538,7 @@
 	}
 
 	.submit-button:hover:not(:disabled) {
-		background: #3a5d56;
+		background: #3e5d56;
 	}
 
 	.submit-button:disabled {

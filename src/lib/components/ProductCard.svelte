@@ -6,23 +6,23 @@
 	function parseImageUrls(imageUrlsString: string | null): string[] {
 		if (!imageUrlsString) return [];
 
-		console.log('🔧 Parsing imageUrlsString:', imageUrlsString);
+		// console.log('🔧 Parsing imageUrlsString:', imageUrlsString);
 
 		try {
 			// First try to parse as JSON
 			const parsed = JSON.parse(imageUrlsString);
-			console.log('✅ Successfully parsed as JSON:', parsed);
+			// console.log('✅ Successfully parsed as JSON:', parsed);
 
 			if (Array.isArray(parsed)) {
 				const filtered = parsed.filter((url) => typeof url === 'string' && url.trim() !== '');
-				console.log('✅ Filtered array result:', filtered);
+				// console.log('✅ Filtered array result:', filtered);
 				return filtered;
 			} else {
-				console.warn('⚠️ Parsed result is not an array:', parsed);
+				// console.warn('⚠️ Parsed result is not an array:', parsed);
 				return [];
 			}
 		} catch (jsonError) {
-			console.log('❌ JSON parse failed, trying comma-separated:', jsonError);
+			// console.log('❌ JSON parse failed, trying comma-separated:', jsonError);
 
 			// If JSON fails, try comma-separated string
 			try {
@@ -31,10 +31,10 @@
 					.map((url) => url.trim())
 					.filter((url) => url !== '' && url !== 'undefined' && url !== 'null')
 					.filter((url) => url.startsWith('http')); // Only valid URLs
-				console.log('✅ Successfully parsed as comma-separated:', urls);
+				// console.log('✅ Successfully parsed as comma-separated:', urls);
 				return urls;
 			} catch (splitError) {
-				console.error('❌ All parsing methods failed:', splitError);
+				// console.error('❌ All parsing methods failed:', splitError);
 				return [];
 			}
 		}
@@ -92,52 +92,52 @@
 
 	// Parse image URLs and categories
 	$: {
-		console.log(`\n🔍 ProductCard for "${product.name}":`);
-		console.log('  Raw imageUrls:', product.imageUrls);
-		console.log('  Raw categories:', product.categories);
-		console.log('  Size:', product.size);
-		console.log('  Flavor:', product.flavor);
+		// console.log(`\n🔍 ProductCard for "${product.name}":`);
+		// console.log('  Raw imageUrls:', product.imageUrls);
+		// console.log('  Raw categories:', product.categories);
+		// console.log('  Size:', product.size);
+		// console.log('  Flavor:', product.flavor);
 
 		// Get images from imageUrls field
 		if (product.imageUrls) {
 			imageUrls = parseImageUrls(product.imageUrls);
-			console.log('  📸 Parsed imageUrls:', imageUrls);
-			console.log('  📸 Image count:', imageUrls.length);
-			console.log('  🎠 Will show slider:', imageUrls.length > 1);
+			// console.log('  📸 Parsed imageUrls:', imageUrls);
+			// console.log('  📸 Image count:', imageUrls.length);
+			// console.log('  🎠 Will show slider:', imageUrls.length > 1);
 		} else {
 			imageUrls = [];
-			console.log('  📸 No images found');
+			// console.log('  📸 No images found');
 		}
 
 		// Add fallback image if no images found
 		if (imageUrls.length === 0) {
 			imageUrls = ['/images/animal1.jpg'];
-			console.log('📸 Added fallback image');
+			// console.log('📸 Added fallback image');
 		}
 
 		// Filter out duplicate images to avoid showing same image multiple times
 		const uniqueImageUrls = [...new Set(imageUrls)];
 		if (uniqueImageUrls.length !== imageUrls.length) {
-			console.log('🔄 Filtered out duplicate images:', uniqueImageUrls);
+			// console.log('🔄 Filtered out duplicate images:', uniqueImageUrls);
 			imageUrls = uniqueImageUrls;
 		}
 
 		if (product.categories) {
 			categories = parseCategories(product.categories);
-			console.log('🏷️ Parsed categories:', categories);
+			// console.log('🏷️ Parsed categories:', categories);
 		} else {
 			categories = [];
-			console.log('🏷️ No categories found');
+			// console.log('🏷️ No categories found');
 		}
 
 		currentImageIndex = 0;
 		
 		// Log final state
-		console.log(`  ✅ Final state for "${product.name}":`);
-		console.log('    ImageUrls:', imageUrls);
-		console.log('    Image count:', imageUrls.length);
-		console.log('    Categories:', categories);
-		console.log('    Will show slider:', imageUrls.length > 1);
+		// console.log(`  ✅ Final state for "${product.name}":`);
+		// console.log('    ImageUrls:', imageUrls);
+		// console.log('    Image count:', imageUrls.length);
+		// console.log('    Categories:', categories);
+		// console.log('    Will show slider:', imageUrls.length > 1);
 	}
 
 	// Re-evaluate loader when image changes or loads from cache (CSR safe)
@@ -146,10 +146,10 @@
 			clearTimeout(imageLoadTimeout);
 		}
 		isImageLoading = !(browser && imgRef && imgRef.complete);
-		console.log(`🖼️ Image loading state for "${product.name}":`, isImageLoading);
+		// console.log(`🖼️ Image loading state for "${product.name}":`, isImageLoading);
 		imageLoadTimeout = setTimeout(() => {
 			if (isImageLoading) {
-				console.log(`🔄 Safety: hiding loader after 5s for "${product.name}"`);
+				// console.log(`🔄 Safety: hiding loader after 5s for "${product.name}"`);
 				isImageLoading = false;
 			}
 		}, 5000);
@@ -160,7 +160,7 @@
 	
 	// Log price formatting
 	$: {
-		console.log(`💰 Price for "${product.name}": ${product.price} kopiyky = ${formattedPrice} грн`);
+		// console.log(`💰 Price for "${product.name}": ${product.price} kopiyky = ${formattedPrice} грн`);
 	}
 
 	// Navigation functions
@@ -168,9 +168,9 @@
 		if (imageUrls.length > 1) {
 			const oldIndex = currentImageIndex;
 			currentImageIndex = (currentImageIndex + 1) % imageUrls.length;
-			console.log(`🔄 Next image for "${product.name}": ${oldIndex} → ${currentImageIndex}`);
+			// console.log(`🔄 Next image for "${product.name}": ${oldIndex} → ${currentImageIndex}`);
 		} else {
-			console.log(`❌ Cannot go to next image for "${product.name}" - only ${imageUrls.length} image(s)`);
+			// console.log(`❌ Cannot go to next image for "${product.name}" - only ${imageUrls.length} image(s)`);
 		}
 	}
 
@@ -178,9 +178,9 @@
 		if (imageUrls.length > 1) {
 			const oldIndex = currentImageIndex;
 			currentImageIndex = currentImageIndex === 0 ? imageUrls.length - 1 : currentImageIndex - 1;
-			console.log(`🔄 Previous image for "${product.name}": ${oldIndex} → ${currentImageIndex}`);
+			// console.log(`🔄 Previous image for "${product.name}": ${oldIndex} → ${currentImageIndex}`);
 		} else {
-			console.log(`❌ Cannot go to previous image for "${product.name}" - only ${imageUrls.length} image(s)`);
+			// console.log(`❌ Cannot go to previous image for "${product.name}" - only ${imageUrls.length} image(s)`);
 		}
 	}
 
@@ -188,27 +188,27 @@
 		if (index >= 0 && index < imageUrls.length) {
 			const oldIndex = currentImageIndex;
 			currentImageIndex = index;
-			console.log(`🎯 Go to image ${index} for "${product.name}": ${oldIndex} → ${currentImageIndex}`);
+			// console.log(`🎯 Go to image ${index} for "${product.name}": ${oldIndex} → ${currentImageIndex}`);
 		} else {
-			console.log(`❌ Invalid image index ${index} for "${product.name}" (valid range: 0-${imageUrls.length - 1})`);
+			// console.log(`❌ Invalid image index ${index} for "${product.name}" (valid range: 0-${imageUrls.length - 1})`);
 		}
 	}
 
 	function handleAddToCart() {
-		console.log(`🛒 Add to cart clicked for "${product.name}"`);
+		// console.log(`🛒 Add to cart clicked for "${product.name}"`);
 		dispatch('addToCart', { productId: product.id, product });
 	}
 
 	function handleImageClick() {
 		if (imageUrls[currentImageIndex]) {
-			console.log(`🖼️ Image clicked for "${product.name}" at index ${currentImageIndex}`);
+			// console.log(`🖼️ Image clicked for "${product.name}" at index ${currentImageIndex}`);
 			dispatch('imageClick', {
 				productId: product.id,
 				imageUrl: imageUrls[currentImageIndex],
 				index: currentImageIndex
 			});
 		} else {
-			console.log(`❌ No image at index ${currentImageIndex} for "${product.name}"`);
+			// console.log(`❌ No image at index ${currentImageIndex} for "${product.name}"`);
 		}
 	}
 
@@ -216,49 +216,49 @@
 	let slideshowInterval: ReturnType<typeof setInterval>;
 
 	onMount(() => {
-		console.log(`🎠 ProductCard onMount for "${product.name}":`);
-		console.log('  ImageUrls length:', imageUrls.length);
-		console.log('  Will start slideshow:', imageUrls.length > 1);
-		console.log('  Product data:', {
-			name: product.name,
-			imageUrls: product.imageUrls,
-			size: product.size,
-			flavor: product.flavor,
-			categories: product.categories
-		});
-		console.log('  Current imageUrls state:', imageUrls);
+		// console.log(`🎠 ProductCard onMount for "${product.name}":`);
+		// console.log('  ImageUrls length:', imageUrls.length);
+		// console.log('  Will start slideshow:', imageUrls.length > 1);
+		// console.log('  Product data:', {
+		// 	name: product.name,
+		// 	imageUrls: product.imageUrls,
+		// 	size: product.size,
+		// 	flavor: product.flavor,
+		// 	categories: product.categories
+		// });
+		// console.log('  Current imageUrls state:', imageUrls);
 		
 		// Only start slideshow if there are multiple unique images
 		if (imageUrls.length > 1) {
-			console.log('  🎠 Starting slideshow with interval');
+			// console.log('  🎠 Starting slideshow with interval');
 			slideshowInterval = setInterval(() => {
-				console.log(`  🎠 Auto-advancing to next image for "${product.name}"`);
+				// console.log(`  🎠 Auto-advancing to next image for "${product.name}"`);
 				nextImage();
 			}, 5000);
 		} else {
-			console.log('  ❌ Not enough images for slideshow');
+			// console.log('  ❌ Not enough images for slideshow');
 		}
 
 		return () => {
-			console.log(`🗑️ ProductCard cleanup for "${product.name}":`);
+			// console.log(`🗑️ ProductCard cleanup for "${product.name}":`);
 			if (slideshowInterval) {
-				console.log('  🎠 Clearing slideshow interval');
+				// console.log('  🎠 Clearing slideshow interval');
 				clearInterval(slideshowInterval);
 			}
 			if (imageLoadTimeout) {
-				console.log('  ⏰ Clearing image load timeout');
+				// console.log('  ⏰ Clearing image load timeout');
 				clearTimeout(imageLoadTimeout);
 			}
 		};
 	});
 
 	$: if (imageUrls.length > 1 && slideshowInterval) {
-		console.log(`🔄 Restarting slideshow for "${product.name}" due to imageUrls change`);
-		console.log('  New imageUrls:', imageUrls);
-		console.log('  Image count:', imageUrls.length);
+		// console.log(`🔄 Restarting slideshow for "${product.name}" due to imageUrls change`);
+		// console.log('  New imageUrls:', imageUrls);
+		// console.log('  Image count:', imageUrls.length);
 		clearInterval(slideshowInterval);
 		slideshowInterval = setInterval(() => {
-			console.log(`  🎠 Auto-advancing to next image for "${product.name}" (restarted)`);
+			// console.log(`  🎠 Auto-advancing to next image for "${product.name}" (restarted)`);
 			nextImage();
 		}, 5000);
 	}
@@ -316,7 +316,7 @@
 					bind:this={imgRef}
 					on:click={handleImageClick}
 					on:load={() => {
-						console.log('🖼️ Image loaded successfully:', imageUrls[currentImageIndex]);
+						// console.log('🖼️ Image loaded successfully:', imageUrls[currentImageIndex]);
 						isImageLoading = false;
 						// Clear timeout since image loaded successfully
 						if (imageLoadTimeout) {
@@ -324,7 +324,7 @@
 						}
 					}}
 					on:error={() => {
-						console.log('Image load error, switching to fallback');
+						// console.log('Image load error, switching to fallback');
 						isImageLoading = false;
 						// Clear timeout since we're handling the error
 						if (imageLoadTimeout) {
@@ -345,7 +345,7 @@
 					class="h-full w-full cursor-pointer object-cover"
 					on:click={handleImageClick}
 					on:load={() => {
-						console.log('Fallback image loaded');
+						// console.log('Fallback image loaded');
 						isImageLoading = false;
 					}}
 					style="object-fit: cover; object-position: center;"

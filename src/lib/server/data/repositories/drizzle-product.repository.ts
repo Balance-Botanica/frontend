@@ -12,14 +12,14 @@ import type {
 export class DrizzleProductRepository implements ProductRepository {
 	async getAll(): Promise<Product[]> {
 		try {
-			console.log('🔍 Fetching products from Drizzle...');
+			// console.log('🔍 Fetching products from Drizzle...');
 			const results = await db.select().from(products).orderBy(desc(products.created_at));
-			console.log('📊 Raw results from DB:', results.length, 'products');
-			console.log('🔍 First raw result:', results[0]);
+			// console.log('📊 Raw results from DB:', results.length, 'products');
+			// console.log('🔍 First raw result:', results[0]);
 
 			const mappedProducts = results.map(this.mapToDomain);
-			console.log('✅ Mapped products:', mappedProducts.length, 'products');
-			console.log('🔍 First mapped product:', mappedProducts[0]);
+			// console.log('✅ Mapped products:', mappedProducts.length, 'products');
+			// console.log('🔍 First mapped product:', mappedProducts[0]);
 
 			return mappedProducts;
 		} catch (error) {
@@ -152,16 +152,16 @@ export class DrizzleProductRepository implements ProductRepository {
 
 	// Map Drizzle schema to domain model
 	private mapToDomain(dbProduct: any): Product {
-		console.log('🔧 Mapping DB product to domain:', {
-			id: dbProduct.id,
-			name: dbProduct.name,
-			size: dbProduct.size,
-			flavor: dbProduct.flavor,
-			categories: dbProduct.categories,
-			image_urls: dbProduct.image_urls,
-			created_at: dbProduct.created_at,
-			updated_at: dbProduct.updated_at
-		});
+		// console.log('🔧 Mapping DB product to domain:', {
+		// 	id: dbProduct.id,
+		// 	name: dbProduct.name,
+		// 	size: dbProduct.size,
+		// 	flavor: dbProduct.flavor,
+		// 	categories: dbProduct.categories,
+		// 	image_urls: dbProduct.image_urls,
+		// 	created_at: dbProduct.created_at,
+		// 	updated_at: dbProduct.updated_at
+		// });
 
 		const mapped = {
 			id: dbProduct.id,
@@ -177,7 +177,7 @@ export class DrizzleProductRepository implements ProductRepository {
 			updatedAt: new Date(dbProduct.updated_at * 1000) // Convert from Unix timestamp
 		};
 
-		console.log('✅ Mapped product:', mapped);
+		// console.log('✅ Mapped product:', mapped);
 		return mapped;
 	}
 }

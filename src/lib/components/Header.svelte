@@ -3,7 +3,7 @@
 	import { typography } from '../typography';
 	import { createPageTranslations } from '$lib/i18n/store';
 	import LanguageSwitcher from './LanguageSwitcher.svelte';
-	import { supabaseAuthStore, user, isAuthenticated } from '$lib/auth/supabase-store';
+	import { supabaseAuthStore, user, isAuthenticated, isLoading } from '$lib/auth/supabase-store';
 	import { onMount } from 'svelte';
 	import Logo from './Logo.svelte';
 	import { goto } from '$app/navigation';
@@ -14,11 +14,63 @@
 
 	// Initialize auth store
 	onMount(() => {
+		console.log('🐄 [HEADER] Initializing header component...');
 		supabaseAuthStore.initialize();
+
+		// Manual subscription to force reactivity
+		const unsubscribe = supabaseAuthStore.subscribe((state) => {
+			console.log('🔄 [HEADER] ⭐ MANUAL STORE SUBSCRIPTION UPDATE:', {
+				isAuthenticated: !!state.user && !!state.session,
+				userEmail: state.user?.email,
+				userName: state.user?.name,
+				isLoading: state.isLoading,
+				errorPresent: !!state.error,
+				timestamp: new Date().toISOString()
+			});
+		});
+
+		// Force a check after a small delay to catch any missed updates
+		setTimeout(() => {
+			console.log('🕰️ [HEADER] ⭐ FORCED REACTIVITY CHECK AFTER 1 SECOND');
+			console.log('🔍 [HEADER] Current derived store values:', {
+				isAuthenticated: $isAuthenticated,
+				userEmail: $user?.email,
+				userName: $user?.name,
+				isLoading: $isLoading
+			});
+		}, 1000);
+
+		// Another check after 3 seconds
+		setTimeout(() => {
+			console.log('🕰️ [HEADER] ⭐ FINAL REACTIVITY CHECK AFTER 3 SECONDS');
+			console.log('🔍 [HEADER] Final derived store values:', {
+				isAuthenticated: $isAuthenticated,
+				userEmail: $user?.email,
+				userName: $user?.name,
+				isLoading: $isLoading
+			});
+		}, 3000);
+
+		// Cleanup subscription on destroy
+		return () => {
+			unsubscribe();
+		};
 	});
 
 	// Create page translations
 	const pageTranslations = createPageTranslations();
+
+	// State for logout confirmation dialog
+	let showLogoutDialog = false;
+
+	$: {
+		console.log('🐄 [HEADER] Auth state updated:', {
+			isAuthenticated: $isAuthenticated,
+			userEmail: $user?.email,
+			userName: $user?.name,
+			isLoading: $isLoading
+		});
+	}
 
 	$: navigationLinks = $pageTranslations
 		? [
@@ -30,20 +82,41 @@
 		: [];
 
 	async function handlePersonClick() {
+		console.log('👤 [HEADER] Person icon clicked, auth state:', {
+			isAuthenticated: $isAuthenticated,
+			userEmail: $user?.email
+		});
+		
 		if ($isAuthenticated) {
-			// Sign out
-			try {
-				await supabaseAuthStore.signOut();
-				console.log('✅ Successfully signed out from Google account');
-				// Redirect to home page after logout
-				goto('/');
-			} catch (error) {
-				console.error('❌ Error signing out:', error);
-			}
+			console.log('🔓 [HEADER] User is authenticated, showing logout confirmation...');
+			// Show logout confirmation dialog
+			showLogoutDialog = true;
 		} else {
+			console.log('🔗 [HEADER] User not authenticated, redirecting to login...');
 			// Go to login page
 			goto('/login');
 		}
+	}
+
+	// Handle logout confirmation
+	async function handleLogoutConfirm() {
+		console.log('🚪 [HEADER] Logout confirmed, signing out...');
+		
+		try {
+			showLogoutDialog = false;
+			await supabaseAuthStore.signOut();
+			console.log('✅ [HEADER] Successfully signed out');
+			// Redirect to home page after logout
+			goto('/');
+		} catch (error) {
+			console.error('❌ [HEADER] Error signing out:', error);
+		}
+	}
+
+	// Handle logout cancellation
+	function handleLogoutCancel() {
+		console.log('🙅 [HEADER] Logout cancelled');
+		showLogoutDialog = false;
 	}
 
 	// Function to get user display name, prioritizing Google account data
@@ -111,15 +184,15 @@
 					<button
 						class="flex cursor-pointer items-center justify-center transition-all duration-200 hover:scale-110"
 						on:click={handlePersonClick}
-						aria-label={$isAuthenticated ? 'Sign out' : 'Sign in'}
+						aria-label={$isAuthenticated ? 'Account menu' : 'Sign in'}
 					>
 						{#if $isAuthenticated}
-							<!-- Залогиненный пользователь -->
+							<!-- Logged in user -->
 							<div class="user-info">
-								<span class="username" title="Click to logout">
+								<span class="username" title="Click for account menu">
 									{getUserDisplayName($user)}
 								</span>
-								<div class="user-icon-container logged-in" title="Logout">
+								<div class="user-icon-container logged-in" title="Account menu">
 									{#if $user?.avatarUrl}
 										<!-- Display Google profile picture if available -->
 										<img
@@ -138,7 +211,7 @@
 								</div>
 							</div>
 						{:else}
-							<!-- Не залогиненный пользователь -->
+							<!-- Not logged in user -->
 							<div class="user-icon-container logged-out" title="Sign in">
 								<img
 									src={personIcon}
@@ -157,7 +230,7 @@
 							'Shopping cart'}
 					>
 						{#if $isAuthenticated}
-							<!-- Залогиненный пользователь - полная корзина -->
+							<!-- Logged in user - full cart -->
 							<div class="cart-icon-container logged-in">
 								<img
 									src={cartIcon}
@@ -166,7 +239,7 @@
 								/>
 							</div>
 						{:else}
-							<!-- Не залогиненный пользователь - обведенная корзина -->
+							<!-- Not logged in user - outlined cart -->
 							<div class="cart-icon-container logged-out">
 								<img
 									src={cartIcon}
@@ -180,6 +253,26 @@
 			</div>
 		</div>
 	</header>
+
+	<!-- Logout Confirmation Dialog -->
+	{#if showLogoutDialog}
+		<div class="logout-dialog-overlay" on:click={handleLogoutCancel}>
+			<div class="logout-dialog" on:click|stopPropagation>
+				<h3 class="logout-dialog-title">Confirm Logout</h3>
+				<p class="logout-dialog-message">
+					Are you sure you want to sign out?
+				</p>
+				<div class="logout-dialog-buttons">
+					<button class="logout-cancel-btn" on:click={handleLogoutCancel}>
+						Cancel
+					</button>
+					<button class="logout-confirm-btn" on:click={handleLogoutConfirm}>
+						Sign Out
+					</button>
+				</div>
+			</div>
+		</div>
+	{/if}
 {/if}
 
 <style>
@@ -309,5 +402,112 @@
 
 	.cart-icon-container.logged-out .cart-icon {
 		filter: brightness(0) saturate(100%) hue-rotate(120deg) brightness(0.6);
+	}
+
+	/* Logout Dialog Styles */
+	.logout-dialog-overlay {
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background: rgba(0, 0, 0, 0.5);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		z-index: 1000;
+		animation: fadeIn 0.2s ease-out;
+	}
+
+	.logout-dialog {
+		background: white;
+		border-radius: 12px;
+		padding: 24px;
+		min-width: 320px;
+		max-width: 400px;
+		box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+		animation: slideIn 0.2s ease-out;
+	}
+
+	.logout-dialog-title {
+		font-family: 'Nunito', sans-serif;
+		font-size: 18px;
+		font-weight: 600;
+		color: #222222;
+		margin: 0 0 12px 0;
+		text-align: center;
+	}
+
+	.logout-dialog-message {
+		font-family: 'Nunito', sans-serif;
+		font-size: 14px;
+		font-weight: 400;
+		color: #666666;
+		margin: 0 0 24px 0;
+		text-align: center;
+		line-height: 1.5;
+	}
+
+	.logout-dialog-buttons {
+		display: flex;
+		gap: 12px;
+		justify-content: center;
+	}
+
+	.logout-cancel-btn {
+		padding: 10px 20px;
+		border: 1px solid #D1D5DB;
+		background: white;
+		color: #374151;
+		border-radius: 8px;
+		font-family: 'Nunito', sans-serif;
+		font-size: 14px;
+		font-weight: 500;
+		cursor: pointer;
+		transition: all 0.2s ease;
+		min-width: 80px;
+	}
+
+	.logout-cancel-btn:hover {
+		background: #F9FAFB;
+		border-color: #9CA3AF;
+	}
+
+	.logout-confirm-btn {
+		padding: 10px 20px;
+		border: none;
+		background: #EF4444;
+		color: white;
+		border-radius: 8px;
+		font-family: 'Nunito', sans-serif;
+		font-size: 14px;
+		font-weight: 500;
+		cursor: pointer;
+		transition: all 0.2s ease;
+		min-width: 80px;
+	}
+
+	.logout-confirm-btn:hover {
+		background: #DC2626;
+	}
+
+	@keyframes fadeIn {
+		from {
+			opacity: 0;
+		}
+		to {
+			opacity: 1;
+		}
+	}
+
+	@keyframes slideIn {
+		from {
+			transform: translateY(-10px);
+			opacity: 0;
+		}
+		to {
+			transform: translateY(0);
+			opacity: 1;
+		}
 	}
 </style>

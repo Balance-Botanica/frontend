@@ -21,16 +21,18 @@
 				console.error('❌ OAuth error:', urlError);
 				error = urlError;
 				loading = false;
-				setTimeout(() => goto('/login'), 3000);
+				// Clean URL before redirect
+				cleanUrlAndRedirect('/login', 3000);
 				return;
 			}
 
-			// Check for PKCE flow (code parameter)
+			// Check for PKCE flow (code parameter) - handled by server
 			const code = $page.url.searchParams.get('code');
 			if (code) {
-				console.log('🔄 PKCE flow detected - code parameter found');
-				// The server-side +page.server.ts will handle the code exchange
-				// We just need to wait for the auth state to update
+				console.log('🔄 PKCE flow detected - server will handle code exchange');
+				// Server-side +page.server.ts handles the code exchange
+				// Just wait for auth state to update
+				awaitAuthStateChange();
 				return;
 			}
 
@@ -40,59 +42,94 @@
 				console.log('🔄 Implicit flow detected - tokens in URL hash');
 				
 				// Clean the URL hash immediately to prevent token exposure
-				if (window.history.replaceState) {
-					window.history.replaceState({}, '', window.location.pathname);
-				}
+				cleanUrlHash();
 				
-				// Let the Supabase client with detectSessionInUrl handle this automatically
-				// The onAuthStateChange listener will catch the session update
+				// Let Supabase client handle the session automatically
+				// The auth state listener will catch the session update
+				awaitAuthStateChange();
+				return;
 			}
 
-			// Initialize auth store to detect any existing session
-			await supabaseAuthStore.initialize();
-			
-			// Listen for auth state changes
-			const unsubscribe = supabaseAuthStore.subscribe(state => {
-				console.log('🔍 Auth state:', { 
-					user: state.user?.email, 
-					isLoading: state.isLoading,
-					error: state.error 
-				});
-				
-				if (!state.isLoading) {
-					if (state.user) {
-						console.log('✅ Authentication successful!');
-						success = true;
-						loading = false;
-						unsubscribe();
-						setTimeout(() => goto('/'), 1500);
-					} else if (state.error) {
-						console.error('❌ Authentication failed:', state.error);
-						error = state.error;
-						loading = false;
-						unsubscribe();
-						setTimeout(() => goto('/login'), 3000);
-					}
-				}
-			});
-			
-			// Fallback: if no auth state change after 10 seconds, show error
-			setTimeout(() => {
-				if (loading) {
-					console.error('❌ Timeout: No authentication state change detected');
-					error = 'Authentication timeout - please try again';
-					loading = false;
-					setTimeout(() => goto('/login'), 3000);
-				}
-			}, 10000);
+			// No OAuth params found - check if already authenticated
+			console.log('ℹ️ No OAuth parameters found - checking existing session');
+			awaitAuthStateChange();
 
 		} catch (err) {
 			console.error('❌ Callback processing error:', err);
 			error = 'Authentication processing failed';
 			loading = false;
-			setTimeout(() => goto('/login'), 3000);
+			cleanUrlAndRedirect('/login', 3000);
 		}
 	});
+
+	/**
+	 * Clean URL hash to prevent token exposure
+	 */
+	function cleanUrlHash() {
+		if (window.history.replaceState) {
+			const cleanUrl = window.location.pathname + window.location.search;
+			window.history.replaceState({}, document.title, cleanUrl);
+			console.log('🧹 URL hash cleaned:', cleanUrl);
+		}
+	}
+
+	/**
+	 * Clean URL and redirect after a delay
+	 */
+	function cleanUrlAndRedirect(path: string, delay: number) {
+		cleanUrlHash();
+		setTimeout(() => goto(path), delay);
+	}
+
+	/**
+	 * Wait for auth state changes with timeout
+	 */
+	function awaitAuthStateChange() {
+		// Initialize auth store to trigger session detection
+		supabaseAuthStore.initialize();
+		
+		// Listen for auth state changes
+		const unsubscribe = supabaseAuthStore.subscribe(state => {
+			console.log('🔍 Auth state update:', { 
+				user: state.user?.email, 
+				isLoading: state.isLoading,
+				error: state.error 
+			});
+			
+			if (!state.isLoading) {
+				if (state.user) {
+					console.log('✅ Authentication successful!');
+					success = true;
+					loading = false;
+					unsubscribe();
+					cleanUrlAndRedirect('/', 1500);
+				} else if (state.error) {
+					console.error('❌ Authentication failed:', state.error);
+					error = state.error;
+					loading = false;
+					unsubscribe();
+					cleanUrlAndRedirect('/login', 3000);
+				} else {
+					// No user and no error - redirect to login
+					console.log('ℹ️ No user session found');
+					loading = false;
+					unsubscribe();
+					cleanUrlAndRedirect('/login', 2000);
+				}
+			}
+		});
+		
+		// Fallback: timeout after 10 seconds
+		setTimeout(() => {
+			if (loading) {
+				console.error('❌ Timeout: No authentication state change detected');
+				error = 'Authentication timeout - please try again';
+				loading = false;
+				unsubscribe();
+				cleanUrlAndRedirect('/login', 3000);
+			}
+		}, 10000);
+	}
 </script>
 
 <svelte:head>
