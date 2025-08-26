@@ -351,10 +351,9 @@
 
 	/* Benefits Section - Full Width Background */
 	.benefits-section {
-		width: 100vw;
-		margin-left: calc(-50vw + 50%);
+		width: 100%;
 		background: #3f6f68;
-		padding: 5rem 0;
+		padding: 5rem 1rem;
 	}
 
 	.benefits-content {
@@ -368,6 +367,36 @@
 		.hero-content {
 			width: 100%;
 			padding: 10px 4rem;
+		}
+	}
+
+	@media (max-width: 1536px) {
+		.hero-content {
+			padding: 10px 3rem;
+		}
+		
+		.benefits-section {
+			padding: 4rem 1.5rem;
+		}
+	}
+
+	@media (max-width: 1280px) {
+		.hero-content {
+			padding: 10px 2.5rem;
+		}
+		
+		.benefits-section {
+			padding: 3.5rem 1.25rem;
+		}
+	}
+
+	@media (max-width: 1024px) {
+		.hero-content {
+			padding: 10px 2rem;
+		}
+		
+		.benefits-section {
+			padding: 3rem 1rem;
 		}
 	}
 
@@ -403,11 +432,25 @@
 		}
 
 		.benefits-section {
-			padding: 3rem 0;
+			padding: 3rem 1rem;
 		}
 
 		.benefits-content {
-			padding: 0 1rem;
+			padding: 0 0.5rem;
+		}
+	}
+
+	@media (max-width: 640px) {
+		.hero-content {
+			padding: 10px 1.5rem;
+		}
+		
+		.benefits-section {
+			padding: 2.5rem 1rem;
+		}
+		
+		.benefits-content {
+			padding: 0 0.25rem;
 		}
 	}
 
@@ -431,7 +474,11 @@
 		}
 
 		.benefits-section {
-			padding: 2rem 0;
+			padding: 2rem 1rem;
+		}
+		
+		.benefits-content {
+			padding: 0;
 		}
 	}
 </style>
