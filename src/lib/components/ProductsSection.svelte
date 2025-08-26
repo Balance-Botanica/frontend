@@ -26,7 +26,7 @@
 		: [];
 </script>
 
-<section class="px-4 py-16">
+<section class="px-4 py-16 sm:px-6">
 	<div class="mx-auto max-w-screen-2xl">
 		{#if title}
 			<div class="mb-12 flex items-center justify-between">
@@ -64,5 +64,5 @@
 </section>
 
 <style>
-	/* Add any additional styling here if needed */
+	/* Removed the media query for small screens padding */
 </style>

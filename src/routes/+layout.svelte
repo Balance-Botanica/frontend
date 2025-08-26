@@ -156,3 +156,7 @@
 		<NotificationContainer />
 	{/if}
 </div>
+
+<style>
+	/* Removed the media query for small screens padding */
+</style>

@@ -208,23 +208,33 @@
 		</section>
 
 		<!-- Featured Products on Home -->
-		<ProductsSection
-			products={data.products}
-			limit={3}
-			title={$pageTranslations.t('benefits.products.homepage_title')}
-		/>
+		<div class="mt-16">
+			<ProductsSection
+				products={data.products}
+				limit={3}
+				title={$pageTranslations.t('benefits.products.homepage_title')}
+			/>
+		</div>
 
 		<!-- Made in Ukraine Section -->
-		<MadeInUkraine />
+		<div class="mt-16">
+			<MadeInUkraine />
+		</div>
 
 		<!-- Calculator Section -->
-		<CalculatorSection />
+		<div class="mt-16">
+			<CalculatorSection />
+		</div>
 
 		<!-- FAQ Section -->
-		<FAQ />
+		<div class="mt-16">
+			<FAQ />
+		</div>
 
 		<!-- Email Subscription Section -->
-		<EmailSubscription compact={false} />
+		<div class="mt-16">
+			<EmailSubscription compact={false} />
+		</div>
 	</main>
 {/if}
 
@@ -353,7 +363,7 @@
 	.benefits-section {
 		width: 100%;
 		background: #3f6f68;
-		padding: 5rem 1rem;
+		padding: 5rem 0;
 	}
 
 	.benefits-content {
@@ -376,7 +386,7 @@
 		}
 		
 		.benefits-section {
-			padding: 4rem 1.5rem;
+			padding: 4rem 0;
 		}
 	}
 
@@ -386,17 +396,21 @@
 		}
 		
 		.benefits-section {
-			padding: 3.5rem 1.25rem;
+			padding: 3.5rem 0;
 		}
 	}
 
-	@media (max-width: 1024px) {
+	@media (max-width: 1100px) {
 		.hero-content {
 			padding: 10px 2rem;
 		}
 		
 		.benefits-section {
-			padding: 3rem 1rem;
+			padding: 3rem 0;
+		}
+		
+		.benefits-content {
+			padding: 0 3rem; /* 3rem padding on screens 1100px and less */
 		}
 	}
 
@@ -432,11 +446,11 @@
 		}
 
 		.benefits-section {
-			padding: 3rem 1rem;
+			padding: 3rem 0;
 		}
 
 		.benefits-content {
-			padding: 0 0.5rem;
+			padding: 0 3rem; /* Maintaining 3rem padding */
 		}
 	}
 
@@ -446,11 +460,11 @@
 		}
 		
 		.benefits-section {
-			padding: 2.5rem 1rem;
+			padding: 2.5rem 0;
 		}
 		
 		.benefits-content {
-			padding: 0 0.25rem;
+			padding: 0 3rem; /* Maintaining 3rem padding */
 		}
 	}
 
@@ -474,11 +488,35 @@
 		}
 
 		.benefits-section {
-			padding: 2rem 1rem;
+			padding: 2rem 0;
 		}
 		
 		.benefits-content {
-			padding: 0;
+			padding: 0 3rem; /* Maintaining 3rem padding */
+		}
+		
+		/* Add margin to sections on small screens */
+		.mt-16 {
+			margin-top: 2rem;
+		}
+	}
+	
+	@media (max-width: 400px) {
+		.hero-content {
+			padding: 10px 1rem;
+		}
+		
+		.benefits-section {
+			padding: 1.5rem 0;
+		}
+		
+		.benefits-content {
+			padding: 0 3rem; /* Maintaining 3rem padding */
+		}
+		
+		/* Increase margin on very small screens */
+		.mt-16 {
+			margin-top: 2.5rem;
 		}
 	}
 </style>

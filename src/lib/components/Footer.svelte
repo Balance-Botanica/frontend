@@ -115,3 +115,7 @@
 		</div>
 	</div>
 </footer>
+
+<style>
+	/* Removed the media query for small screens padding */
+</style>

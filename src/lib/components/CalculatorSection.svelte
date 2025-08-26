@@ -116,3 +116,40 @@
 		</div>
 	</div>
 </section>
+
+<style>
+	@media (max-width: 1100px) {
+		section .relative.z-10.mx-auto.max-w-7xl {
+			padding-left: 3rem !important;
+			padding-right: 3rem !important;
+		}
+	}
+	
+	@media (max-width: 768px) {
+		section .relative.z-10.mx-auto.max-w-7xl {
+			padding-left: 3rem !important;
+			padding-right: 3rem !important;
+		}
+	}
+	
+	@media (max-width: 640px) {
+		section .relative.z-10.mx-auto.max-w-7xl {
+			padding-left: 3rem !important;
+			padding-right: 3rem !important;
+		}
+	}
+	
+	@media (max-width: 480px) {
+		section .relative.z-10.mx-auto.max-w-7xl {
+			padding-left: 3rem !important;
+			padding-right: 3rem !important;
+		}
+	}
+	
+	@media (max-width: 400px) {
+		section .relative.z-10.mx-auto.max-w-7xl {
+			padding-left: 3rem !important;
+			padding-right: 3rem !important;
+		}
+	}
+</style>
