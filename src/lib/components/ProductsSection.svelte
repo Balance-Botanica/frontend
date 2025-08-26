@@ -34,12 +34,7 @@
 				
 				<!-- Navigation Controls -->
 				<div class="flex items-center gap-4">
-					<a 
-						href="/products" 
-						class="rounded-lg bg-[#4b766e] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#3d5f58]"
-					>
-						Уся продукція
-					</a>
+					<!-- Removed "Уся продукція" button -->
 				</div>
 			</div>
 		{/if}
