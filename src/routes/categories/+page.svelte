@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import type { PageData } from './$types';
-	import ProductGrid from '$lib/components/ProductGrid.svelte';
+	import ProductCard from '$lib/components/ProductCard.svelte';
 	import ProductSearch from '$lib/components/ProductSearch.svelte';
 	import { createPageTranslations } from '$lib/i18n/store';
 	import SEO from '$lib/components/SEO.svelte';
@@ -17,35 +17,49 @@
 		
 		// Build query parameters
 		const params = new URLSearchParams();
+		if (data.category) params.set('category', data.category);
 		if (searchTerm) params.set('search', searchTerm);
-		if (category) params.set('category', category);
 		if (size) params.set('size', size);
 		if (flavor) params.set('flavor', flavor);
 		if (minPrice !== null) params.set('minPrice', minPrice.toString());
 		if (maxPrice !== null) params.set('maxPrice', maxPrice.toString());
 		
 		// Navigate to the same page with new query parameters
-		goto(`/products?${params.toString()}`);
+		goto(`/categories?${params.toString()}`);
 	}
 
 	// Handle reset event
 	function handleReset() {
-		// Navigate to the base products page without query parameters
-		goto('/products');
+		// Navigate to the base categories page with category parameter
+		if (data.category) {
+			goto(`/categories?category=${data.category}`);
+		} else {
+			goto('/categories');
+		}
+	}
+
+	// Handle category change
+	function handleCategoryChange(category: string) {
+		// Navigate to the categories page with selected category
+		if (category) {
+			goto(`/categories?category=${category}`);
+		} else {
+			goto('/categories');
+		}
 	}
 </script>
 
+<!-- Fixed block closing issue -->
 {#if $pageTranslations}
-	<SEO
-		title={$pageTranslations.t('products.meta.title')}
-		description={$pageTranslations.t('products.meta.description')}
-		locale={$pageTranslations.locale}
-	/>
-{/if}
+<SEO
+	title={$pageTranslations.t('products.meta.title')}
+	description={$pageTranslations.t('products.meta.description')}
+	locale={$pageTranslations.locale}
+/>
 
-<div class="min-h-screen bg-gray-50 overflow-x-hidden">
+<div class="min-h-screen bg-gray-50">
 	<!-- Main Content -->
-	<div class="mx-auto max-w-7xl px-3 sm:px-4 py-8 sm:px-6 lg:px-8 overflow-x-hidden">
+	<div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
 		{#if data.error}
 			<div class="py-12 text-center">
 				<div class="mb-4 text-red-600">
@@ -62,6 +76,38 @@
 				<p class="text-gray-600">{data.error}</p>
 			</div>
 		{:else}
+			<!-- Category Navigation -->
+			<div class="mb-8">
+				<h1 class="text-2xl font-bold text-gray-900 mb-4">
+					{#if data.category}
+						{data.category}
+					{:else}
+						{$pageTranslations.t('products.search.title')}
+					{/if}
+				</h1>
+				
+				<!-- Category Filter Chips -->
+				<div class="flex flex-wrap gap-2 mb-6">
+					<button
+						on:click={() => handleCategoryChange('')}
+						class:active={data.category === ''}
+						class="px-4 py-2 rounded-full text-sm font-medium transition-colors {data.category === '' ? 'bg-[#4b766e] text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}"
+					>
+						{$pageTranslations.t('products.search.all_categories')}
+					</button>
+					
+					{#each data.categories as cat}
+						<button
+							on:click={() => handleCategoryChange(cat)}
+							class:active={data.category === cat}
+							class="px-4 py-2 rounded-full text-sm font-medium transition-colors {data.category === cat ? 'bg-[#4b766e] text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}"
+						>
+							{cat}
+						</button>
+					{/each}
+				</div>
+			</div>
+
 			<!-- Search and Filter Component -->
 			<ProductSearch
 				searchTerm={data.searchTerm}
@@ -80,30 +126,23 @@
 			<!-- Results Info -->
 			<div class="mb-6">
 				<p class="text-gray-600">
-					{#if data.searchTerm || data.category || data.size || data.flavor || data.minPrice !== null || data.maxPrice !== null}
-						{#if $pageTranslations?.locale === 'uk-ua'}
-							Показано {data.totalProducts} з {data.allProductsCount} продуктів
-						{:else}
-							{$pageTranslations?.t('products.search.results_info', { count: data.totalProducts, total: data.allProductsCount })}
-						{/if}
+					{#if data.searchTerm || data.size || data.flavor || data.minPrice !== null || data.maxPrice !== null}
+						{$pageTranslations.t('products.search.results_info', { count: data.totalProducts, total: data.allProductsCount })}
 					{:else}
-						{#if $pageTranslations?.locale === 'uk-ua'}
-							Показано {data.totalProducts} {data.totalProducts === 1 ? 'продукт' : data.totalProducts < 5 ? 'продукти' : 'продуктів'}
-						{:else}
-							{$pageTranslations?.t('products.search.results_info', { count: data.totalProducts, total: data.totalProducts })}
-						{/if}
+						{$pageTranslations.t('products.search.results_info', { count: data.totalProducts, total: data.totalProducts })}
 					{/if}
 				</p>
 			</div>
 
 			{#if data.products && data.products.length > 0}
-				<!-- Products Grid using ProductGrid component -->
-				<ProductGrid 
-					products={data.products}
-					columns={3}
-					gap="gap-6"
-					cardClassName="bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow h-full"
-				/>
+				<!-- Products Grid using ProductCard component -->
+				<div class="products-grid-container">
+					<div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-3">
+						{#each data.products as product (product.id)}
+							<ProductCard {product} />
+						{/each}
+					</div>
+				</div>
 			{:else}
 				<!-- Empty State -->
 				<div class="py-12 text-center">
@@ -120,16 +159,16 @@
 							d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"
 						/>
 					</svg>
-					<h3 class="mt-2 text-sm font-medium text-gray-900">{$pageTranslations?.t('products.no_products_found')}</h3>
+					<h3 class="mt-2 text-sm font-medium text-gray-900">{$pageTranslations.t('products.no_products_found')}</h3>
 					<p class="mt-1 text-sm text-gray-500">
-						{$pageTranslations?.t('products.try_different_filters')}
+						{$pageTranslations.t('products.try_different_filters')}
 					</p>
 					<div class="mt-6">
 						<button
 							on:click={handleReset}
 							class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-[#4b766e] hover:bg-[#3d5f58] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#4b766e]"
 						>
-							{$pageTranslations?.t('products.reset_filters')}
+							{$pageTranslations.t('products.reset_filters')}
 						</button>
 					</div>
 				</div>
@@ -137,13 +176,24 @@
 		{/if}
 	</div>
 </div>
+{/if}
 
 <style>
-	/* Prevent horizontal scrolling */
-	:global(body) {
-		overflow-x: hidden;
-		max-width: 100vw;
+	.products-grid-container {
+		max-width: 1400px;
+		margin: 0 auto;
 	}
-	
-	/* Add any additional styling here if needed */
+
+	/* Ensure grid items don't get too wide on very large screens */
+	@media (min-width: 1920px) {
+		.products-grid-container {
+			max-width: 1200px;
+		}
+	}
+
+	@media (min-width: 2560px) {
+		.products-grid-container {
+			max-width: 1400px;
+		}
+	}
 </style>

@@ -76,6 +76,7 @@
 	$: navigationLinks = $pageTranslations
 		? [
 				{ href: '/products', label: $pageTranslations.t('header.navigation.shop') },
+				{ href: '/categories', label: $pageTranslations.t('header.navigation.categories') },
 				{ href: '/about', label: $pageTranslations.t('header.navigation.about') },
 				{ href: '/contacts', label: $pageTranslations.t('header.navigation.contacts') },
 				{ href: '/blog', label: $pageTranslations.t('header.navigation.blog') }

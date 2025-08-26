@@ -60,7 +60,7 @@
 			<p class="mt-2 text-sm text-gray-600">{form.message}</p>
 			<div class="mt-6">
 				<a
-					href="/auth/login"
+					href="/login"
 					class="inline-flex justify-center rounded-md border border-transparent bg-green-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
 				>
 					Sign In Now
@@ -80,7 +80,7 @@
 		{#if form?.error && form?.message}
 			<div class="mb-4 rounded-md border border-red-200 bg-red-50 p-4">
 				<p class="text-sm text-red-600">{form.message}</p>
-				{#if form?.sessionExpired}
+				{#if form?.error && (form as any)?.sessionExpired}
 					<div class="mt-3">
 						<a
 							href="/auth/forgot-password"
@@ -211,12 +211,12 @@
 			<p class="text-sm text-gray-600">
 				Remember your password?
 				<a 
-					href="/auth/login" 
+					href="/login" 
 					class="font-medium text-green-600 hover:text-green-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 rounded"
 				>
 					Sign in here
 				</a>
 			</p>
-		</div>
+			</div>
 	{/if}
 </div>

@@ -3,12 +3,19 @@
 	import { isAuthenticated } from '$lib/auth/supabase-store';
 	import { goto } from '$app/navigation';
 	import { notificationStore } from '$lib/stores/notifications';
+	import { createPageTranslations } from '$lib/i18n/store';
+	import SEO from '$lib/components/SEO.svelte';
+
+	// Create page translations
+	const pageTranslations = createPageTranslations();
 
 	// Handle quantity changes
 	function updateQuantity(productId: string, newQuantity: number) {
 		if (newQuantity <= 0) {
 			cartStore.removeItem(productId);
-			notificationStore.success('Item removed from cart');
+			if ($pageTranslations) {
+				notificationStore.success($pageTranslations.t('cart.notifications.item_removed'));
+			}
 		} else {
 			cartStore.updateQuantity(productId, newQuantity);
 		}
@@ -17,34 +24,40 @@
 	// Handle item removal
 	function removeItem(productId: string) {
 		cartStore.removeItem(productId);
-		notificationStore.success('Item removed from cart');
+		if ($pageTranslations) {
+			notificationStore.success($pageTranslations.t('cart.notifications.item_removed'));
+		}
 	}
 
 	// Handle checkout
 	function handleCheckout() {
 		if (!$isAuthenticated) {
 			// Show notification and redirect to login
-			notificationStore.info('Please sign in to proceed to checkout', {
-				title: 'Authentication Required',
-				duration: 8000,
-				actions: [
-					{
-						label: 'Sign In',
-						action: () => goto('/auth/login'),
-						style: 'primary'
-					},
-					{
-						label: 'Create Account',
-						action: () => goto('/auth/register'),
-						style: 'secondary'
-					}
-				]
-			});
+			if ($pageTranslations) {
+				notificationStore.info($pageTranslations.t('cart.notifications.auth_required.message'), {
+					title: $pageTranslations.t('cart.notifications.auth_required.title'),
+					duration: 8000,
+					actions: [
+						{
+							label: $pageTranslations.t('cart.notifications.auth_required.sign_in'),
+							action: () => goto('/login'),
+							style: 'primary'
+						},
+						{
+							label: $pageTranslations.t('cart.notifications.auth_required.create_account'),
+							action: () => goto('/login'),
+							style: 'secondary'
+						}
+					]
+				});
+			}
 			return;
 		}
 		
 		// TODO: Implement actual checkout flow
-		notificationStore.success('Checkout functionality will be implemented soon!');
+		if ($pageTranslations) {
+			notificationStore.success($pageTranslations.t('cart.notifications.checkout_coming_soon'));
+		}
 	}
 
 	// Continue shopping
@@ -58,14 +71,16 @@
 	}
 </script>
 
-<svelte:head>
-	<title>Shopping Cart - Balance Botanica</title>
-	<meta name="description" content="Review your Balance Botanica cart items and proceed to checkout" />
-</svelte:head>
+{#if $pageTranslations}
+<SEO
+	title={$pageTranslations.t('cart.meta.title')}
+	description={$pageTranslations.t('cart.meta.description')}
+	locale={$pageTranslations.locale}
+/>
 
 <main class="cart-page">
 	<div class="cart-container">
-		<h1 class="cart-title">Shopping Cart</h1>
+		<h1 class="cart-title">{$pageTranslations.t('cart.title')}</h1>
 		
 		{#if $cartIsEmpty}
 			<!-- Empty Cart -->
@@ -75,10 +90,10 @@
 						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2 8m2-8h10m0 0v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6z"></path>
 					</svg>
 				</div>
-				<p class="cart-empty">Your cart is empty</p>
-				<p class="cart-hint">Add some products to start shopping</p>
+				<p class="cart-empty">{$pageTranslations.t('cart.empty.title')}</p>
+				<p class="cart-hint">{$pageTranslations.t('cart.empty.description')}</p>
 				<button class="continue-shopping-btn" on:click={continueShopping}>
-					Continue Shopping
+					{$pageTranslations.t('cart.empty.continue_shopping')}
 				</button>
 			</div>
 		{:else}
@@ -87,7 +102,10 @@
 				<!-- Left Column: Cart Items (3/4) -->
 				<div class="cart-items-column">
 					<div class="cart-items-container">
-						<h2 class="section-title">Items in your cart ({$cartTotals.itemCount})</h2>
+						<h2 class="section-title">
+							{$pageTranslations.t('cart.items.title')} 
+							({$cartTotals.itemCount} {$cartTotals.itemCount === 1 ? 'товар' : 'товарів'})
+						</h2>
 						
 						<div class="cart-items-list">
 							{#each $cartItems as item (item.product.id.getValue())}
@@ -109,18 +127,18 @@
 											<span class="spec-divider">•</span>
 											<span class="spec-item">{item.product.flavor}</span>
 										</div>
-										<p class="item-price">{formatPrice(item.product.price.getKopiyky())} each</p>
+										<p class="item-price">{formatPrice(item.product.price.getKopiyky())} {$pageTranslations.t('cart.items.each_price')}</p>
 									</div>
 									
 									<!-- Quantity Controls -->
 									<div class="item-quantity">
-										<label class="quantity-label">Quantity:</label>
+										<label class="quantity-label">{$pageTranslations.t('cart.items.quantity_label')}</label>
 										<div class="quantity-controls">
 											<button 
 												class="quantity-btn decrease" 
 												on:click={() => updateQuantity(item.product.id.getValue(), item.quantity - 1)}
 												disabled={item.quantity <= 1}
-												title="Decrease quantity"
+												title={$pageTranslations.t('cart.items.decrease_quantity')}
 											>
 												-
 											</button>
@@ -139,7 +157,7 @@
 												class="quantity-btn increase" 
 												on:click={() => updateQuantity(item.product.id.getValue(), item.quantity + 1)}
 												disabled={item.quantity >= 99}
-												title="Increase quantity"
+												title={$pageTranslations.t('cart.items.increase_quantity')}
 											>
 												+
 											</button>
@@ -148,7 +166,7 @@
 									
 									<!-- Item Total -->
 									<div class="item-total">
-										<p class="total-label">Total:</p>
+										<p class="total-label">{$pageTranslations.t('cart.items.total_label')}</p>
 										<p class="total-price">{formatPrice(item.product.price.getKopiyky() * item.quantity)}</p>
 									</div>
 									
@@ -156,7 +174,7 @@
 									<button 
 										class="remove-btn" 
 										on:click={() => removeItem(item.product.id.getValue())}
-										title="Remove item from cart"
+										title={$pageTranslations.t('cart.items.remove_item')}
 									>
 										<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
 											<path d="M18 6L6 18M6 6l12 12"></path>
@@ -171,23 +189,27 @@
 				<!-- Right Column: Order Summary (1/4) -->
 				<div class="cart-summary-column">
 					<div class="cart-summary-container">
-						<h2 class="summary-title">Order Summary</h2>
+						<h2 class="summary-title">{$pageTranslations.t('cart.summary.title')}</h2>
 						
 						<!-- Summary Details -->
 						<div class="summary-details">
 							<div class="summary-line">
-								<span class="summary-label">Subtotal ({$cartTotals.itemCount} items):</span>
+								<span class="summary-label">
+									{$pageTranslations.t('cart.summary.subtotal')} 
+									({$cartTotals.itemCount} {$cartTotals.itemCount === 1 ? 'товар' : 'товарів'}):
+								</span>
 								<span class="summary-value">{formatPrice($cartTotals.subtotal)}</span>
 							</div>
-							<div class="summary-line">
-								<span class="summary-label">Tax (20% VAT):</span>
+							<!-- Tax field hidden as requested -->
+							<!-- <div class="summary-line">
+								<span class="summary-label">{$pageTranslations.t('cart.summary.tax')}:</span>
 								<span class="summary-value">{formatPrice($cartTotals.tax)}</span>
-							</div>
+							</div> -->
 							<div class="summary-line">
-								<span class="summary-label">Shipping:</span>
+								<span class="summary-label">{$pageTranslations.t('cart.summary.shipping')}:</span>
 								<span class="summary-value">
 									{#if $cartTotals.shipping === 0}
-										<span class="free-label">Free</span>
+										<span class="free-label">{$pageTranslations.t('cart.summary.shipping_free')}</span>
 									{:else}
 										{formatPrice($cartTotals.shipping)}
 									{/if}
@@ -197,7 +219,11 @@
 							{#if $cartTotals.subtotalUAH < 1000}
 								<div class="free-shipping-notice">
 									<p class="notice-text">
-										💡 Add {formatPrice((1000 - $cartTotals.subtotalUAH) * 100)} more for <strong>free shipping!</strong>
+										{#if $pageTranslations.locale === 'en'}
+											💡 Add <strong>{formatPrice((1000 - $cartTotals.subtotalUAH) * 100)}</strong> more for <strong>free shipping!</strong>
+										{:else}
+											💡 Додайте ще <strong>{formatPrice((1000 - $cartTotals.subtotalUAH) * 100)}</strong> для <strong>безкоштовної доставки!</strong>
+										{/if}
 									</p>
 								</div>
 							{/if}
@@ -205,7 +231,7 @@
 							<div class="summary-divider"></div>
 							
 							<div class="summary-total">
-								<span class="total-label">Total:</span>
+								<span class="total-label">{$pageTranslations.t('cart.summary.total')}:</span>
 								<span class="total-value">{formatPrice($cartTotals.total)}</span>
 							</div>
 						</div>
@@ -214,14 +240,14 @@
 						<div class="summary-actions">
 							<button class="checkout-btn" on:click={handleCheckout}>
 								{#if $isAuthenticated}
-									🛒 Proceed to Checkout
+									{$pageTranslations.t('cart.summary.checkout_authenticated')}
 								{:else}
-									🔐 Sign In to Checkout
+									{$pageTranslations.t('cart.summary.checkout_sign_in')}
 								{/if}
 							</button>
 							
 							<button class="continue-shopping-btn secondary" on:click={continueShopping}>
-								Continue Shopping
+								{$pageTranslations.t('cart.summary.continue_shopping')}
 							</button>
 						</div>
 					</div>
@@ -230,6 +256,14 @@
 		{/if}
 	</div>
 </main>
+{:else}
+	<!-- Loading state while translations are initializing -->
+	<main class="cart-page">
+		<div class="cart-container">
+			<h1 class="cart-title">Loading...</h1>
+		</div>
+	</main>
+{/if}
 
 <style>
 	/* Base Page Styles */
@@ -287,10 +321,10 @@
 		margin-bottom: 32px;
 	}
 
-	/* Main Cart Layout - 3/4 + 1/4 */
+	/* Main Cart Layout - Adjusted for better button fitting */
 	.cart-layout {
 		display: grid;
-		grid-template-columns: 3fr 1fr;
+		grid-template-columns: 2.5fr 1.5fr;
 		gap: 32px;
 		align-items: start;
 	}
@@ -327,7 +361,7 @@
 		grid-template-columns: 100px 1fr auto auto auto;
 		gap: 20px;
 		align-items: center;
-		padding: 24px 0;
+		padding: 24px 16px 24px 20px;
 		border-bottom: 1px solid #f0f0f0;
 		position: relative;
 	}
@@ -592,6 +626,7 @@
 	.summary-total {
 		display: flex;
 		justify-content: space-between;
+		align-items: center;
 		padding: 16px;
 		background: #f8f9fa;
 		border-radius: 8px;

@@ -46,7 +46,7 @@
 		<!-- Additional actions after success -->
 		<div class="space-y-3">
 			<a
-				href="/auth/login"
+				href="/login"
 				class="flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
 			>
 				Back to Sign In
@@ -130,7 +130,7 @@
 			<p class="text-sm text-gray-600">
 				Remember your password?
 				<a 
-					href="/auth/login" 
+					href="/login" 
 					class="font-medium text-green-600 hover:text-green-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 rounded"
 				>
 					Sign in here
@@ -139,7 +139,7 @@
 			<p class="text-sm text-gray-600">
 				Don't have an account?
 				<a 
-					href="/auth/register" 
+					href="/login" 
 					class="font-medium text-green-600 hover:text-green-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 rounded"
 				>
 					Sign up here

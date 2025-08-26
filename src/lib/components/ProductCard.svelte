@@ -63,10 +63,12 @@
 
 	export let showRating: boolean = true;
 	export let showBestsellerBadge: boolean = true;
+	export let forceBestsellerBadge: boolean = false; // New prop to force showing bestseller badge
 	export let showCategoryTags: boolean = true;
 	export let showDescription: boolean = true;
 	export let showAddToCart: boolean = true;
 	export let className: string = '';
+	export let productIndex: number = -1; // New prop to track the index of the product
 
 	// Internal state
 	let currentImageIndex = 0;
@@ -273,36 +275,38 @@
 
 <div
 	class="overflow-hidden rounded-[20px] bg-[#F8F7F6] {className}"
-	style="width: 387px; height: 733px;"
+	style="min-height: 650px; height: 100%; display: flex; flex-direction: column; max-width: 100%;"
 >
-	<div class="flex h-full flex-col justify-end items-start p-6 gap-8">
+	<div class="flex h-full flex-col justify-end items-start p-4 md:p-6 gap-4 md:gap-6">
 		<!-- Top Section: Rating + Bestseller Badge -->
-		{#if showRating || showBestsellerBadge}
-			<div class="flex items-start justify-between">
+		{#if showRating || (showBestsellerBadge && (forceBestsellerBadge || productIndex === 1 || productIndex === 2))}
+			<div class="flex items-start justify-between w-full py-1">
 				<!-- Rating and Reviews -->
 				{#if showRating}
-					<div class="flex items-center space-x-3">
+					<div class="flex flex-col items-start space-y-1 md:space-y-2">
 						<div class="flex space-x-1">
 							{#each Array(5) as _, _i}
-								<svg class="h-5 w-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+								<svg class="h-4 w-4 md:h-5 md:w-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
 									<path
 										d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
 									/>
 								</svg>
 							{/each}
 						</div>
-						<span class="text-[16px] leading-[22px] font-normal text-[#474747]">100 Відгуків</span
-						>
+						<span class="text-[14px] md:text-[16px] leading-[18px] md:leading-[22px] font-normal text-[#474747]">100 Відгуків</span>
 					</div>
 				{/if}
 
 				<!-- Bestseller Badge -->
-				{#if showBestsellerBadge}
-					<div class="rounded-[38px] bg-[#1f1f1f] px-4 py-2">
-						<span class="text-[16px] leading-[22px] font-normal text-white">Бестселер</span>
+				{#if showBestsellerBadge && (forceBestsellerBadge || productIndex === 1 || productIndex === 2)}
+					<div class="rounded-[38px] bg-[#1f1f1f] px-3 py-1 md:px-4 md:py-2 ml-auto">
+						<span class="text-[14px] md:text-[16px] leading-[22px] font-normal text-white">Бестселер</span>
 					</div>
 				{/if}
 			</div>
+		{:else}
+			<!-- Spacer div when no ratings or bestseller badge -->
+			<div class="h-4 md:h-8"></div>
 		{/if}
 
 		<!-- Product Image Section -->
@@ -447,16 +451,16 @@
 		{/if}
 
 		<!-- Product Information -->
-		<div class="space-y-3">
+		<div class="space-y-2 md:space-y-3 w-full">
 			<!-- Product Name -->
-			<h3 class="font-poppins text-[20px] leading-[28px] font-semibold text-black">
+			<h3 class="font-poppins text-[18px] md:text-[20px] leading-[26px] md:leading-[28px] font-semibold text-black">
 				{product.name}
 			</h3>
 
 			<!-- Product Description -->
 			{#if showDescription && product.description}
 				<p
-					class="font-poppins line-clamp-2 text-[16px] leading-[22px] font-normal text-[#474747]"
+					class="font-poppins line-clamp-2 text-[14px] md:text-[16px] leading-[20px] md:leading-[22px] font-normal text-[#474747]"
 				>
 					{product.description}
 				</p>
@@ -464,12 +468,12 @@
 		</div>
 
 		<!-- Price -->
-		<div class="font-poppins text-[24px] leading-[33px] font-semibold text-black">
+		<div class="font-poppins text-[20px] md:text-[24px] leading-[28px] md:leading-[33px] font-semibold text-black">
 			{formattedPrice} грн
 		</div>
 
 		<!-- Action Buttons Section - Sticky to bottom -->
-		<div class="mt-auto space-y-4">
+		<div class="mt-auto space-y-4 w-full">
 			<!-- Add to Cart Button -->
 			{#if showAddToCart}
 				<button
@@ -499,5 +503,13 @@
 
 	.font-poppins {
 		font-family: 'Nunito', sans-serif;
+	}
+	
+	/* Prevent overflow on small screens */
+	@media (max-width: 400px) {
+		h3, p, div {
+			max-width: 100%;
+			word-break: break-word;
+		}
 	}
 </style>

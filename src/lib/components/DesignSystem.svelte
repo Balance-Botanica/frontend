@@ -1,10 +1,60 @@
 <script lang="ts">
-	import { t } from '../i18n';
+	import { onMount } from 'svelte';
+	import { t } from '$lib/i18n';
 	import Switcher from './Switcher.svelte';
+	import ProductGrid from './ProductGrid.svelte';
+	
+	// Sample products data for ProductGrid example
+	let products = [
+		{
+			id: '1',
+			name: 'CBD Oil 5%',
+			description: 'High-quality CBD oil for daily wellness',
+			price: 59900,
+			stock: 15,
+			size: '30ml',
+			flavor: 'Natural',
+			categories: JSON.stringify(['oils', 'wellness']),
+			imageUrls: JSON.stringify([
+				'https://placehold.co/400x400/4b766e/white?text=CBD+Oil+1'
+			]),
+			createdAt: new Date(),
+			updatedAt: new Date()
+		},
+		{
+			id: '2',
+			name: 'CBD Capsules',
+			description: 'Convenient CBD capsules for on-the-go wellness',
+			price: 74900,
+			stock: 8,
+			size: '60 capsules',
+			flavor: 'Neutral',
+			categories: JSON.stringify(['capsules', 'wellness']),
+			imageUrls: JSON.stringify([
+				'https://placehold.co/400x400/4b766e/white?text=CBD+Capsules+1'
+			]),
+			createdAt: new Date(),
+			updatedAt: new Date()
+		},
+		{
+			id: '3',
+			name: 'CBD Cream',
+			description: 'Relief cream for targeted comfort',
+			price: 44900,
+			stock: 12,
+			size: '100ml',
+			flavor: 'Lavender',
+			categories: JSON.stringify(['topicals', 'relief']),
+			imageUrls: JSON.stringify([
+				'https://placehold.co/400x400/4b766e/white?text=CBD+Cream+1'
+			]),
+			createdAt: new Date(),
+			updatedAt: new Date()
+		}
+	];
 </script>
 
 <div class="design-system">
-	<!-- UI Kit for Wireframes -->
 	<div class="ui-kit-wireframes">
 		<div class="wireframe-container">
 			<!-- Typography Scale -->
@@ -12,16 +62,18 @@
 				<h2 class="section-title">{t('design_system.typography.title')}</h2>
 				
 				<div class="typography-examples">
-					<h1 class="display-1">Display 1 - 64px/4rem</h1>
-					<h2 class="display-2">Display 2 - 48px/3rem</h2>
-					<h3 class="heading-1">Heading 1 - 36px/2.25rem</h3>
-					<h4 class="heading-2">Heading 2 - 30px/1.875rem</h4>
-					<h5 class="heading-3">Heading 3 - 24px/1.5rem</h5>
-					<h6 class="heading-4">Heading 4 - 20px/1.25rem</h6>
-					<p class="body-large">Body Large - 18px/1.125rem</p>
-					<p class="body-medium">Body Medium - 16px/1rem</p>
-					<p class="body-small">Body Small - 14px/0.875rem</p>
-					<p class="caption">Caption - 12px/0.75rem</p>
+					<h1 class="display-1">Display 1</h1>
+					<h2 class="display-2">Display 2</h2>
+					<h1 class="heading-1">Heading 1</h1>
+					<h2 class="heading-2">Heading 2</h2>
+					<h3 class="heading-3">Heading 3</h3>
+					<h4 class="heading-4">Heading 4</h4>
+					<p class="body-large">Body Large - For important text and introductory paragraphs</p>
+					<p class="body-medium">Body Medium - Standard body text for most content</p>
+					<p class="body-small">Body Small - For captions, helper text, and secondary information</p>
+					<p class="body-large"><strong>Body Large Bold</strong> - Emphasized text with strong importance</p>
+					<p class="body-medium"><strong>Body Medium Bold</strong> - Standard bold text for emphasis</p>
+					<p class="body-small"><strong>Body Small Bold</strong> - Small bold text for labels and highlights</p>
 				</div>
 			</section>
 
@@ -29,124 +81,110 @@
 			<section class="color-palette">
 				<h2 class="section-title">{t('design_system.colors.title')}</h2>
 				
-				<div class="color-categories">
-					<div class="color-category">
+				<div class="color-grid">
+					<div class="color-group">
 						<h3>Primary Colors</h3>
 						<div class="color-swatches">
-							<div class="color-swatch primary-100">
-								<span class="color-name">Primary 100</span>
-								<span class="color-value">#E6F3FF</span>
+							<div class="color-swatch bg-primary-main">
+								<span class="color-name">Primary Main</span>
+								<span class="color-value">#4b766e</span>
 							</div>
-							<div class="color-swatch primary-200">
-								<span class="color-name">Primary 200</span>
-								<span class="color-value">#B3D9FF</span>
+							<div class="color-swatch bg-primary-dark">
+								<span class="color-name">Primary Dark</span>
+								<span class="color-value">#3d5f58</span>
 							</div>
-							<div class="color-swatch primary-300">
-								<span class="color-name">Primary 300</span>
-								<span class="color-value">#80BFFF</span>
-							</div>
-							<div class="color-swatch primary-400">
-								<span class="color-name">Primary 400</span>
-								<span class="color-value">#4DA6FF</span>
-							</div>
-							<div class="color-swatch primary-500">
-								<span class="color-name">Primary 500</span>
-								<span class="color-value">#1A8CFF</span>
-							</div>
-							<div class="color-swatch primary-600">
-								<span class="color-name">Primary 600</span>
-								<span class="color-value">#0073E6</span>
-							</div>
-							<div class="color-swatch primary-700">
-								<span class="color-name">Primary 700</span>
-								<span class="color-value">#0059B3</span>
-							</div>
-							<div class="color-swatch primary-800">
-								<span class="color-name">Primary 800</span>
-								<span class="color-value">#004080</span>
-							</div>
-							<div class="color-swatch primary-900">
-								<span class="color-name">Primary 900</span>
-								<span class="color-value">#00264D</span>
+							<div class="color-swatch bg-primary-light">
+								<span class="color-name">Primary Light</span>
+								<span class="color-value">#e8f1f0</span>
 							</div>
 						</div>
 					</div>
-
-					<div class="color-category">
+					
+					<div class="color-group">
+						<h3>Secondary Colors</h3>
+						<div class="color-swatches">
+							<div class="color-swatch bg-secondary-main">
+								<span class="color-name">Secondary Main</span>
+								<span class="color-value">#1f1f1f</span>
+							</div>
+							<div class="color-swatch bg-secondary-dark">
+								<span class="color-name">Secondary Dark</span>
+								<span class="color-value">#000000</span>
+							</div>
+							<div class="color-swatch bg-secondary-light">
+								<span class="color-name">Secondary Light</span>
+								<span class="color-value">#4a4a4a</span>
+							</div>
+						</div>
+					</div>
+					
+					<div class="color-group">
 						<h3>Neutral Colors</h3>
 						<div class="color-swatches">
-							<div class="color-swatch neutral-50">
-								<span class="color-name">Neutral 50</span>
-								<span class="color-value">#FAFAFA</span>
+							<div class="color-swatch bg-white">
+								<span class="color-name">White</span>
+								<span class="color-value">#ffffff</span>
 							</div>
-							<div class="color-swatch neutral-100">
-								<span class="color-name">Neutral 100</span>
-								<span class="color-value">#F5F5F5</span>
+							<div class="color-swatch bg-gray-50">
+								<span class="color-name">Gray 50</span>
+								<span class="color-value">#f8f7f6</span>
 							</div>
-							<div class="color-swatch neutral-200">
-								<span class="color-name">Neutral 200</span>
-								<span class="color-value">#E5E5E5</span>
+							<div class="color-swatch bg-gray-100">
+								<span class="color-name">Gray 100</span>
+								<span class="color-value">#e7e5e4</span>
 							</div>
-							<div class="color-swatch neutral-300">
-								<span class="color-name">Neutral 300</span>
-								<span class="color-value">#D4D4D4</span>
+							<div class="color-swatch bg-gray-200">
+								<span class="color-name">Gray 200</span>
+								<span class="color-value">#d6d3d1</span>
 							</div>
-							<div class="color-swatch neutral-400">
-								<span class="color-name">Neutral 400</span>
-								<span class="color-value">#A3A3A3</span>
+							<div class="color-swatch bg-gray-300">
+								<span class="color-name">Gray 300</span>
+								<span class="color-value">#a8a29e</span>
 							</div>
-							<div class="color-swatch neutral-500">
-								<span class="color-name">Neutral 500</span>
-								<span class="color-value">#737373</span>
+							<div class="color-swatch bg-gray-400">
+								<span class="color-name">Gray 400</span>
+								<span class="color-value">#78716c</span>
 							</div>
-							<div class="color-swatch neutral-600">
-								<span class="color-name">Neutral 600</span>
-								<span class="color-value">#525252</span>
+							<div class="color-swatch bg-gray-500">
+								<span class="color-name">Gray 500</span>
+								<span class="color-value">#57534e</span>
 							</div>
-							<div class="color-swatch neutral-700">
-								<span class="color-name">Neutral 700</span>
-								<span class="color-value">#404040</span>
+							<div class="color-swatch bg-gray-600">
+								<span class="color-name">Gray 600</span>
+								<span class="color-value">#44403c</span>
 							</div>
-							<div class="color-swatch neutral-800">
-								<span class="color-name">Neutral 800</span>
-								<span class="color-value">#262626</span>
+							<div class="color-swatch bg-gray-700">
+								<span class="color-name">Gray 700</span>
+								<span class="color-value">#292524</span>
 							</div>
-							<div class="color-swatch neutral-900">
-								<span class="color-name">Neutral 900</span>
-								<span class="color-value">#171717</span>
+							<div class="color-swatch bg-black">
+								<span class="color-name">Black</span>
+								<span class="color-value">#000000</span>
 							</div>
 						</div>
 					</div>
-
-					<div class="color-category">
-						<h3>Semantic Colors</h3>
+					
+					<div class="color-group">
+						<h3>Accent Colors</h3>
 						<div class="color-swatches">
-							<div class="color-swatch success">
-								<span class="color-name">Success</span>
-								<span class="color-value">#10B981</span>
+							<div class="color-swatch bg-accent-green">
+								<span class="color-name">Accent Green</span>
+								<span class="color-value">#e5dcd3</span>
 							</div>
-							<div class="color-swatch warning">
-								<span class="color-name">Warning</span>
-								<span class="color-value">#F59E0B</span>
-							</div>
-							<div class="color-swatch error">
-								<span class="color-name">Error</span>
-								<span class="color-value">#EF4444</span>
-							</div>
-							<div class="color-swatch info">
-								<span class="color-name">Info</span>
-								<span class="color-value">#3B82F6</span>
+							<div class="color-swatch bg-accent-beige">
+								<span class="color-name">Accent Beige</span>
+								<span class="color-value">#f0f0f0</span>
 							</div>
 						</div>
 					</div>
 				</div>
 			</section>
 
-			<!-- Spacing Scale -->
-			<section class="spacing-scale">
+			<!-- Spacing System -->
+			<section class="spacing-system">
 				<h2 class="section-title">{t('design_system.spacing.title')}</h2>
 				
-				<div class="spacing-examples">
+				<div class="spacing-grid">
 					<div class="spacing-item spacing-4">
 						<span class="spacing-label">4px (0.25rem)</span>
 						<div class="spacing-visual"></div>
@@ -163,20 +201,12 @@
 						<span class="spacing-label">16px (1rem)</span>
 						<div class="spacing-visual"></div>
 					</div>
-					<div class="spacing-item spacing-20">
-						<span class="spacing-label">20px (1.25rem)</span>
-						<div class="spacing-visual"></div>
-					</div>
 					<div class="spacing-item spacing-24">
 						<span class="spacing-label">24px (1.5rem)</span>
 						<div class="spacing-visual"></div>
 					</div>
 					<div class="spacing-item spacing-32">
 						<span class="spacing-label">32px (2rem)</span>
-						<div class="spacing-visual"></div>
-					</div>
-					<div class="spacing-item spacing-40">
-						<span class="spacing-label">40px (2.5rem)</span>
 						<div class="spacing-visual"></div>
 					</div>
 					<div class="spacing-item spacing-48">
@@ -268,6 +298,20 @@
 									<button class="btn btn-primary">Action</button>
 								</div>
 							</div>
+						</div>
+					</div>
+
+					<!-- Product Grid -->
+					<div class="component-group">
+						<h3>Product Grid</h3>
+						<div class="product-grid-examples">
+							<p>Product grids display products in a responsive grid layout.</p>
+							<ProductGrid 
+								{products} 
+								columns={3} 
+								gap="gap-6" 
+								cardClassName="bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow"
+							/>
 						</div>
 					</div>
 
@@ -399,7 +443,7 @@
 		font-size: 1.875rem;
 		font-weight: 600;
 		color: #1a1a1a;
-		line-height: 1.4;
+		line-height: 1.3;
 	}
 
 	.heading-3 {
@@ -411,35 +455,30 @@
 
 	.heading-4 {
 		font-size: 1.25rem;
-		font-weight: 500;
+		font-weight: 600;
 		color: #1a1a1a;
-		line-height: 1.5;
+		line-height: 1.4;
 	}
 
 	.body-large {
 		font-size: 1.125rem;
-		color: #404040;
+		font-weight: 400;
+		color: #474747;
 		line-height: 1.6;
 	}
 
 	.body-medium {
 		font-size: 1rem;
-		color: #404040;
+		font-weight: 400;
+		color: #474747;
 		line-height: 1.6;
 	}
 
 	.body-small {
 		font-size: 0.875rem;
-		color: #525252;
-		line-height: 1.6;
-	}
-
-	.caption {
-		font-size: 0.75rem;
-		color: #737373;
+		font-weight: 400;
+		color: #474747;
 		line-height: 1.5;
-		text-transform: uppercase;
-		letter-spacing: 0.05em;
 	}
 
 	/* Color Palette */
@@ -447,119 +486,107 @@
 		margin-bottom: 3rem;
 	}
 
-	.color-categories {
+	.color-grid {
 		display: grid;
 		grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
 		gap: 2rem;
 	}
 
-	.color-category h3 {
+	.color-group {
+		margin-bottom: 1.5rem;
+	}
+
+	.color-group h3 {
 		font-size: 1.25rem;
 		font-weight: 600;
-		margin-bottom: 1rem;
 		color: #1a1a1a;
+		margin-bottom: 1rem;
 	}
 
 	.color-swatches {
 		display: flex;
-		flex-direction: column;
-		gap: 0.5rem;
+		flex-wrap: wrap;
+		gap: 1rem;
 	}
 
 	.color-swatch {
-		display: flex;
-		align-items: center;
-		padding: 0.75rem;
+		flex: 1;
+		min-width: 120px;
+		height: 80px;
 		border-radius: 8px;
-		border: 1px solid #e5e5e5;
-		background: white;
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-end;
+		padding: 0.5rem;
+		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 	}
 
-	.color-swatch::before {
-		content: '';
-		width: 24px;
-		height: 24px;
-		border-radius: 4px;
-		margin-right: 0.75rem;
-		border: 1px solid #d4d4d4;
+	.color-swatch span {
+		font-size: 0.75rem;
+		font-weight: 500;
 	}
-
-	.primary-100::before { background: #E6F3FF; }
-	.primary-200::before { background: #B3D9FF; }
-	.primary-300::before { background: #80BFFF; }
-	.primary-400::before { background: #4DA6FF; }
-	.primary-500::before { background: #1A8CFF; }
-	.primary-600::before { background: #0073E6; }
-	.primary-700::before { background: #0059B3; }
-	.primary-800::before { background: #004080; }
-	.primary-900::before { background: #00264D; }
-
-	.neutral-50::before { background: #FAFAFA; }
-	.neutral-100::before { background: #F5F5F5; }
-	.neutral-200::before { background: #E5E5E5; }
-	.neutral-300::before { background: #D4D4D4; }
-	.neutral-400::before { background: #A3A3A3; }
-	.neutral-500::before { background: #737373; }
-	.neutral-600::before { background: #525252; }
-	.neutral-700::before { background: #404040; }
-	.neutral-800::before { background: #262626; }
-	.neutral-900::before { background: #171717; }
-
-	.success::before { background: #10B981; }
-	.warning::before { background: #F59E0B; }
-	.error::before { background: #EF4444; }
-	.info::before { background: #3B82F6; }
 
 	.color-name {
-		font-weight: 500;
-		color: #1a1a1a;
-		margin-right: auto;
+		color: rgba(255, 255, 255, 0.9);
+		text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 	}
 
 	.color-value {
-		font-family: monospace;
-		font-size: 0.875rem;
-		color: #737373;
+		color: rgba(255, 255, 255, 0.8);
+		font-weight: 400;
 	}
 
-	/* Spacing Scale */
-	.spacing-scale {
+	/* For light backgrounds, use dark text */
+	.bg-white .color-name,
+	.bg-white .color-value,
+	.bg-gray-50 .color-name,
+	.bg-gray-50 .color-value,
+	.bg-gray-100 .color-name,
+	.bg-gray-100 .color-value,
+	.bg-gray-200 .color-name,
+	.bg-gray-200 .color-value {
+		color: #1a1a1a;
+		text-shadow: none;
+	}
+
+	/* Spacing System */
+	.spacing-system {
 		margin-bottom: 3rem;
 	}
 
-	.spacing-examples {
-		display: flex;
-		flex-direction: column;
-		gap: 1rem;
+	.spacing-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+		gap: 1.5rem;
 	}
 
 	.spacing-item {
 		display: flex;
+		flex-direction: column;
 		align-items: center;
-		gap: 1rem;
 	}
 
 	.spacing-label {
-		min-width: 120px;
 		font-size: 0.875rem;
-		color: #525252;
+		color: #474747;
+		margin-bottom: 0.5rem;
+		text-align: center;
 	}
 
 	.spacing-visual {
-		background: #1A8CFF;
+		width: 100%;
+		background: linear-gradient(90deg, #4b766e 0%, #4b766e 100%);
 		border-radius: 4px;
 	}
 
-	.spacing-4 .spacing-visual { width: 4px; height: 16px; }
-	.spacing-8 .spacing-visual { width: 8px; height: 16px; }
-	.spacing-12 .spacing-visual { width: 12px; height: 16px; }
-	.spacing-16 .spacing-visual { width: 16px; height: 16px; }
-	.spacing-20 .spacing-visual { width: 20px; height: 16px; }
-	.spacing-24 .spacing-visual { width: 24px; height: 16px; }
-	.spacing-32 .spacing-visual { width: 32px; height: 16px; }
-	.spacing-40 .spacing-visual { width: 40px; height: 16px; }
-	.spacing-48 .spacing-visual { width: 48px; height: 16px; }
-	.spacing-64 .spacing-visual { width: 64px; height: 16px; }
+	.spacing-4 .spacing-visual { height: 4px; }
+	.spacing-8 .spacing-visual { height: 8px; }
+	.spacing-12 .spacing-visual { height: 12px; }
+	.spacing-16 .spacing-visual { height: 16px; }
+	.spacing-24 .spacing-visual { height: 24px; }
+	.spacing-32 .spacing-visual { height: 32px; }
+	.spacing-48 .spacing-visual { height: 48px; }
+	.spacing-64 .spacing-visual { height: 64px; }
 
 	/* Component Examples */
 	.component-examples {
@@ -572,80 +599,28 @@
 		gap: 2rem;
 	}
 
-	.component-group h3 {
-		font-size: 1.125rem;
-		font-weight: 600;
-		margin-bottom: 1rem;
-		color: #1a1a1a;
+	.component-group {
+		background: #f8f7f6;
+		border-radius: 12px;
+		padding: 1.5rem;
 	}
 
-	/* Buttons */
+	.component-group h3 {
+		font-size: 1.25rem;
+		font-weight: 600;
+		color: #1a1a1a;
+		margin-bottom: 1rem;
+	}
+
+	/* Button Examples */
 	.button-examples {
 		display: flex;
 		flex-wrap: wrap;
 		gap: 0.75rem;
+		align-items: center;
 	}
 
-	.btn {
-		padding: 0.75rem 1.5rem;
-		border-radius: 8px;
-		font-weight: 500;
-		border: none;
-		cursor: pointer;
-		transition: all 0.2s ease;
-		font-size: 0.875rem;
-	}
-
-	.btn-primary {
-		background: #1A8CFF;
-		color: white;
-	}
-
-	.btn-primary:hover {
-		background: #0073E6;
-	}
-
-	.btn-secondary {
-		background: #F5F5F5;
-		color: #1a1a1a;
-		border: 1px solid #E5E5E5;
-	}
-
-	.btn-secondary:hover {
-		background: #E5E5E5;
-	}
-
-	.btn-outline {
-		background: transparent;
-		color: #1A8CFF;
-		border: 2px solid #1A8CFF;
-	}
-
-	.btn-outline:hover {
-		background: #1A8CFF;
-		color: white;
-	}
-
-	.btn-ghost {
-		background: transparent;
-		color: #1a1a1a;
-	}
-
-	.btn-ghost:hover {
-		background: #F5F5F5;
-	}
-
-	.btn-sm {
-		padding: 0.5rem 1rem;
-		font-size: 0.75rem;
-	}
-
-	.btn-lg {
-		padding: 1rem 2rem;
-		font-size: 1rem;
-	}
-
-	/* Form Elements */
+	/* Form Examples */
 	.form-examples {
 		display: flex;
 		flex-direction: column;
@@ -656,22 +631,21 @@
 	.form-select,
 	.form-textarea {
 		padding: 0.75rem;
-		border: 1px solid #D4D4D4;
+		border: 1px solid #d6d3d1;
 		border-radius: 8px;
-		font-size: 0.875rem;
-		transition: border-color 0.2s ease;
+		font-size: 1rem;
+		transition: border-color 0.2s;
 	}
 
 	.form-input:focus,
-	.form-select:focus,
-	.form-textarea:focus {
+	.form-select:focus {
 		outline: none;
-		border-color: #1A8CFF;
-		box-shadow: 0 0 0 3px rgba(26, 140, 255, 0.1);
+		border-color: #4b766e;
+		box-shadow: 0 0 0 3px rgba(75, 118, 110, 0.1);
 	}
 
 	.form-textarea {
-		min-height: 80px;
+		min-height: 100px;
 		resize: vertical;
 	}
 
@@ -682,13 +656,26 @@
 		cursor: pointer;
 	}
 
-	.form-checkbox input[type="checkbox"] {
-		width: 16px;
-		height: 16px;
-		accent-color: #1A8CFF;
+	/* Switcher Examples */
+	.switcher-examples {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
 	}
 
-	/* Cards */
+	.switcher-item {
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+	}
+
+	.switcher-label {
+		font-size: 0.875rem;
+		color: #474747;
+		min-width: 120px;
+	}
+
+	/* Card Examples */
 	.card-examples {
 		display: flex;
 		flex-direction: column;
@@ -696,23 +683,26 @@
 	}
 
 	.card {
-		border: 1px solid #E5E5E5;
+		background: white;
 		border-radius: 12px;
 		overflow: hidden;
-		background: white;
+		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+	}
+
+	.card-default {
+		max-width: 300px;
 	}
 
 	.card-header {
 		padding: 1rem;
-		background: #F5F5F5;
-		border-bottom: 1px solid #E5E5E5;
+		border-bottom: 1px solid #e7e5e4;
 	}
 
 	.card-header h4 {
-		margin: 0;
 		font-size: 1.125rem;
 		font-weight: 600;
 		color: #1a1a1a;
+		margin: 0;
 	}
 
 	.card-body {
@@ -720,59 +710,73 @@
 	}
 
 	.card-body p {
+		font-size: 0.875rem;
+		color: #474747;
 		margin: 0;
-		color: #404040;
-		line-height: 1.6;
+		line-height: 1.5;
 	}
 
 	.card-footer {
 		padding: 1rem;
-		background: #FAFAFA;
-		border-top: 1px solid #E5E5E5;
+		border-top: 1px solid #e7e5e4;
+		background: #f8f7f6;
 	}
 
-	/* Alerts */
+	/* Product Grid Examples */
+	.product-grid-examples {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+	}
+
+	.product-grid-examples > p {
+		font-size: 0.875rem;
+		color: #474747;
+		margin: 0;
+	}
+
+	/* Alert Examples */
 	.alert-examples {
 		display: flex;
 		flex-direction: column;
-		gap: 0.75rem;
+		gap: 1rem;
 	}
 
 	.alert {
-		padding: 0.75rem 1rem;
+		padding: 1rem;
 		border-radius: 8px;
-		border-left: 4px solid;
+		font-size: 0.875rem;
 		display: flex;
 		align-items: center;
 	}
 
 	.alert-info {
-		background: #EFF6FF;
-		border-left-color: #3B82F6;
-		color: #1E40AF;
+		background: #e8f1f0;
+		color: #3d5f58;
+		border: 1px solid #d1e2df;
 	}
 
 	.alert-success {
-		background: #ECFDF5;
-		border-left-color: #10B981;
-		color: #065F46;
+		background: #f0fdf4;
+		color: #166534;
+		border: 1px solid #bbf7d0;
 	}
 
 	.alert-warning {
-		background: #FFFBEB;
-		border-left-color: #F59E0B;
-		color: #92400E;
+		background: #fffbeb;
+		color: #854d0e;
+		border: 1px solid #fde68a;
 	}
 
 	.alert-error {
-		background: #FEF2F2;
-		border-left-color: #EF4444;
-		color: #991B1B;
+		background: #fef2f2;
+		color: #991b1b;
+		border: 1px solid #fecaca;
 	}
 
 	/* Grid System */
 	.grid-system {
-		margin-bottom: 2rem;
+		margin-bottom: 3rem;
 	}
 
 	.grid-examples {
@@ -787,101 +791,46 @@
 	}
 
 	.grid-col {
-		background: #1A8CFF;
+		background: #4b766e;
 		color: white;
+		padding: 1rem;
+		border-radius: 4px;
+		text-align: center;
+		font-size: 0.875rem;
+		font-weight: 500;
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		padding: 1rem 0.5rem;
-		border-radius: 4px;
-		font-weight: 600;
-		font-size: 0.875rem;
 	}
 
 	.grid-col-1 { flex: 1; }
-	.grid-col-3 { flex: 0 0 calc(25% - 0.375rem); }
-	.grid-col-4 { flex: 0 0 calc(33.333% - 0.333rem); }
-	.grid-col-6 { flex: 0 0 calc(50% - 0.25rem); }
+	.grid-col-2 { flex: 2; }
+	.grid-col-3 { flex: 3; }
+	.grid-col-4 { flex: 4; }
+	.grid-col-5 { flex: 5; }
+	.grid-col-6 { flex: 6; }
 
-	/* Switcher Examples */
-	.switcher-examples {
-		display: flex;
-		flex-direction: column;
-		gap: 1rem;
-	}
-
-	.switcher-item {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		padding: 0.75rem;
-		border: 1px solid #e5e7eb;
-		border-radius: 8px;
-		background: white;
-	}
-
-	.switcher-label {
-		font-size: 0.875rem;
-		font-weight: 500;
-		color: #374151;
-	}
-
-	/* Responsive Design */
+	/* Responsive adjustments */
 	@media (max-width: 768px) {
 		.design-system {
 			padding: 1rem;
 		}
-
+		
 		.ui-kit-wireframes {
 			padding: 1.5rem;
+			border-radius: 20px;
 		}
-
+		
 		.wireframe-container {
 			padding: 1rem;
 		}
-
-		.color-categories {
-			grid-template-columns: 1fr;
-		}
-
+		
 		.component-grid {
 			grid-template-columns: 1fr;
 		}
-
-		.button-examples {
-			flex-direction: column;
-		}
-
-		.grid-row {
-			flex-wrap: wrap;
-		}
-
-		.grid-col-6,
-		.grid-col-4,
-		.grid-col-3 {
-			flex: 0 0 calc(50% - 0.25rem);
-		}
-	}
-
-	@media (max-width: 480px) {
-		.ui-kit-wireframes {
-			padding: 1rem;
-		}
-
-		.wireframe-container {
-			padding: 0.75rem;
-		}
-
-		.section-title {
-			font-size: 1.5rem;
-		}
-
-		.display-1 {
-			font-size: 2.5rem;
-		}
-
-		.display-2 {
-			font-size: 2rem;
+		
+		.color-grid {
+			grid-template-columns: 1fr;
 		}
 	}
 </style>

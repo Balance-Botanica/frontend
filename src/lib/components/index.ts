@@ -16,6 +16,7 @@ export { default as LanguageSwitcher } from './LanguageSwitcher.svelte';
 
 // Product Components
 export { default as ProductCard } from './ProductCard.svelte';
+export { default as ProductGrid } from './ProductGrid.svelte';
 export { default as ProductsSection } from './ProductsSection.svelte';
 
 // Auth Components

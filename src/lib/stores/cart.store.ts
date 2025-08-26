@@ -1,6 +1,13 @@
 import { writable, derived } from 'svelte/store';
 import { browser } from '$app/environment';
 import type { ClientProduct } from '$lib/types/product.types';
+import {
+	createClientProduct,
+	createProductId,
+	createProductName,
+	createMoney,
+	createStock
+} from '$lib/types/product.types';
 
 // ================================
 // 🏗️ DOMAIN TYPES (following Clean Architecture)
@@ -89,17 +96,25 @@ function createCartStore() {
 						productId: item.product.id.getValue(),
 						quantity: item.quantity,
 						addedAt: item.addedAt.toISOString(),
-						// Store minimal product data to avoid stale data
+						// Store simplified product data for reconstruction
 						product: {
 							id: item.product.id.getValue(),
-							name: item.product.name,
-							price: item.product.price,
-							imageUrls: item.product.imageUrls
+							name: item.product.name.getUkrainian(), // Store as simple string
+							price: item.product.price.getKopiyky(),
+							imageUrls: JSON.stringify(item.product.imageUrls),
+							description: item.product.description || '',
+							size: item.product.size,
+							flavor: item.product.flavor,
+							stock: item.product.stock.getValue(),
+							categories: JSON.stringify(item.product.categories),
+							createdAt: item.product.createdAt.toISOString(),
+							updatedAt: item.product.updatedAt.toISOString()
 						}
 					})),
 					lastUpdated: state.lastUpdated.toISOString()
 				};
 				localStorage.setItem('cart-state', JSON.stringify(persistData));
+				console.log(`💾 [CART] Saved ${state.items.length} items to localStorage`);
 			} catch (error) {
 				console.error('Failed to save cart to storage:', error);
 			}
@@ -114,17 +129,71 @@ function createCartStore() {
 			if (!stored) return initialState;
 
 			const parsed = JSON.parse(stored);
+
+			// Check if we have valid cart data structure
+			if (!parsed.items || !Array.isArray(parsed.items)) {
+				console.warn('🔄 [CART] Invalid cart structure, clearing localStorage');
+				localStorage.removeItem('cart-state');
+				return initialState;
+			}
+
+			// Reconstruct client-safe products from stored data
+			const reconstructedItems: CartItem[] = [];
+
+			for (const item of parsed.items) {
+				try {
+					// Validate basic structure
+					if (
+						!item.product ||
+						!item.product.id ||
+						!item.product.name ||
+						!item.product.price ||
+						!item.quantity ||
+						!item.addedAt
+					) {
+						console.warn('🔄 [CART] Invalid cart item structure, skipping item');
+						continue;
+					}
+
+					// Reconstruct the client-safe product from stored data
+					const clientProduct = createClientProduct({
+						id: item.product.id,
+						name: item.product.name,
+						price: item.product.price,
+						imageUrls: item.product.imageUrls,
+						description: item.product.description,
+						size: item.product.size,
+						flavor: item.product.flavor,
+						stock: item.product.stock,
+						categories: item.product.categories,
+						createdAt: new Date(item.product.createdAt),
+						updatedAt: new Date(item.product.updatedAt)
+					});
+
+					reconstructedItems.push({
+						product: clientProduct,
+						quantity: item.quantity,
+						addedAt: new Date(item.addedAt)
+					});
+				} catch (itemError) {
+					console.warn('🔄 [CART] Failed to reconstruct cart item, skipping:', itemError);
+					continue;
+				}
+			}
+
+			console.log(`✅ [CART] Loaded ${reconstructedItems.length} items from localStorage`);
+
 			return {
 				...initialState,
-				items: parsed.items.map((item: any) => ({
-					product: item.product,
-					quantity: item.quantity,
-					addedAt: new Date(item.addedAt)
-				})),
-				lastUpdated: new Date(parsed.lastUpdated)
+				items: reconstructedItems,
+				lastUpdated: new Date(parsed.lastUpdated || Date.now())
 			};
 		} catch (error) {
-			console.error('Failed to load cart from storage:', error);
+			console.error('Failed to load cart from storage, clearing cart:', error);
+			// Clear corrupted cart data
+			if (browser) {
+				localStorage.removeItem('cart-state');
+			}
 			return initialState;
 		}
 	}

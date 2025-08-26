@@ -3,6 +3,11 @@
 	import { onMount } from 'svelte';
 	import { supabaseAuthStore, isAuthenticated } from '$lib/auth/supabase-store';
 	import LoginForm from '$lib/components/LoginForm.svelte';
+	import { createPageTranslations } from '$lib/i18n/store';
+	import SEO from '$lib/components/SEO.svelte';
+
+	// Create page translations
+	const pageTranslations = createPageTranslations();
 
 	// Initialize auth store
 	onMount(() => {
@@ -29,10 +34,12 @@
 	}
 </script>
 
-<svelte:head>
-	<title>Вход - Balance Botanica</title>
-	<meta name="description" content="Войдите в свой аккаунт Balance Botanica для доступа к эксклюзивным CBD продуктам" />
-</svelte:head>
+{#if $pageTranslations}
+<SEO
+	title={$pageTranslations.t('login.meta.title')}
+	description={$pageTranslations.t('login.meta.description')}
+	locale={$pageTranslations.locale}
+/>
 
 <!-- Main Content -->
 <main class="login-page">

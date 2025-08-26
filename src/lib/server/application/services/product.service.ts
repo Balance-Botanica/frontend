@@ -32,6 +32,64 @@ export class ProductService {
 		return await this.productRepository.search(query);
 	}
 
+	// Advanced search with multiple filters
+	async searchProductsWithFilters(filters: {
+		searchTerm?: string;
+		category?: string;
+		size?: string;
+		flavor?: string;
+		minPrice?: number;
+		maxPrice?: number;
+	}): Promise<Product[]> {
+		const allProducts = await this.getAllProducts();
+
+		return allProducts.filter((product) => {
+			// Search term filter (name or description)
+			if (filters.searchTerm) {
+				const term = filters.searchTerm.toLowerCase();
+				if (
+					!product.name.toLowerCase().includes(term) &&
+					(!product.description || !product.description.toLowerCase().includes(term))
+				) {
+					return false;
+				}
+			}
+
+			// Category filter
+			if (filters.category) {
+				try {
+					const categories = JSON.parse(product.categories);
+					if (!Array.isArray(categories) || !categories.includes(filters.category)) {
+						return false;
+					}
+				} catch {
+					return false;
+				}
+			}
+
+			// Size filter
+			if (filters.size && product.size !== filters.size) {
+				return false;
+			}
+
+			// Flavor filter
+			if (filters.flavor && product.flavor !== filters.flavor) {
+				return false;
+			}
+
+			// Price filters (convert from kopiyky to UAH)
+			const priceUAH = product.price / 100;
+			if (filters.minPrice !== undefined && priceUAH < filters.minPrice) {
+				return false;
+			}
+			if (filters.maxPrice !== undefined && priceUAH > filters.maxPrice) {
+				return false;
+			}
+
+			return true;
+		});
+	}
+
 	// Create new product
 	async createProduct(data: CreateProductData): Promise<Product | null> {
 		// Business logic validation
@@ -93,5 +151,52 @@ export class ProductService {
 			const priceInDollars = product.price / 100;
 			return priceInDollars >= minPrice && priceInDollars <= maxPrice;
 		});
+	}
+
+	// Get unique categories from all products
+	async getUniqueCategories(): Promise<string[]> {
+		const allProducts = await this.getAllProducts();
+		const categories = new Set<string>();
+
+		allProducts.forEach((product) => {
+			try {
+				const productCategories = JSON.parse(product.categories);
+				if (Array.isArray(productCategories)) {
+					productCategories.forEach((cat) => categories.add(cat));
+				}
+			} catch (e) {
+				// Ignore parsing errors
+			}
+		});
+
+		return Array.from(categories);
+	}
+
+	// Get unique sizes from all products
+	async getUniqueSizes(): Promise<string[]> {
+		const allProducts = await this.getAllProducts();
+		const sizes = new Set<string>();
+
+		allProducts.forEach((product) => {
+			if (product.size) {
+				sizes.add(product.size);
+			}
+		});
+
+		return Array.from(sizes);
+	}
+
+	// Get unique flavors from all products
+	async getUniqueFlavors(): Promise<string[]> {
+		const allProducts = await this.getAllProducts();
+		const flavors = new Set<string>();
+
+		allProducts.forEach((product) => {
+			if (product.flavor) {
+				flavors.add(product.flavor);
+			}
+		});
+
+		return Array.from(flavors);
 	}
 }

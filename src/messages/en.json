@@ -64,6 +64,7 @@
 	"header": {
 		"navigation": {
 			"shop": "Shop",
+			"categories": "Categories",
 			"about": "About Company",
 			"contacts": "Contacts",
 			"blog": "Blog"
@@ -137,6 +138,129 @@
 			"tiktok": "TikTok",
 			"telegram": "Telegram",
 			"whatsapp": "WhatsApp"
+		}
+	},
+
+	"products": {
+		"meta": {
+			"title": "Premium CBD Products | Balance Botanica",
+			"description": "Browse our selection of high-quality CBD products designed for wellness and relaxation. Find the perfect CBD solution for your needs."
+		},
+		"search": {
+			"title": "Find Your Perfect CBD Product",
+			"search_label": "Search Products",
+			"search_placeholder": "Search by name or description...",
+			"category_label": "Category",
+			"all_categories": "All Categories",
+			"size_label": "Size",
+			"all_sizes": "All Sizes",
+			"flavor_label": "Flavor",
+			"all_flavors": "All Flavors",
+			"price_label": "Price Range (UAH)",
+			"min_price": "Min",
+			"max_price": "Max",
+			"search_button": "Search",
+			"reset_button": "Reset Filters",
+			"results_info": "Showing {count} of {total} products"
+		},
+		"no_products_found": "No products found matching your criteria",
+		"try_different_filters": "Try adjusting your search or filter criteria",
+		"reset_filters": "Reset Filters"
+	},
+
+	"login": {
+		"meta": {
+			"title": "Sign In | Balance Botanica",
+			"description": "Sign in to your Balance Botanica account for access to exclusive CBD products, order history, and personalized recommendations."
+		}
+	},
+
+	"cart": {
+		"meta": {
+			"title": "Shopping Cart | Balance Botanica",
+			"description": "Review your selected CBD products and proceed to checkout. Free shipping on orders over 1000 UAH."
+		},
+		"title": "Shopping Cart",
+		"empty": {
+			"title": "Your cart is empty",
+			"description": "Add some products to start shopping",
+			"continue_shopping": "Continue Shopping"
+		},
+		"items": {
+			"title": "Cart Items",
+			"each_price": "each",
+			"quantity_label": "Quantity",
+			"decrease_quantity": "Decrease quantity",
+			"increase_quantity": "Increase quantity",
+			"total_label": "Total",
+			"remove_item": "Remove item"
+		},
+		"summary": {
+			"title": "Order Summary",
+			"subtotal": "Subtotal",
+			"shipping": "Shipping",
+			"shipping_free": "FREE",
+			"free_shipping_notice": "💡 Add {amount} more for **free shipping!**",
+			"total": "Total",
+			"checkout_authenticated": "Proceed to Checkout",
+			"checkout_sign_in": "Sign In to Checkout",
+			"continue_shopping": "Continue Shopping"
+		},
+		"notifications": {
+			"item_removed": "Item removed from cart",
+			"checkout_coming_soon": "Checkout functionality coming soon!",
+			"auth_required": {
+				"title": "Authentication Required",
+				"message": "Please sign in to proceed to checkout",
+				"sign_in": "Sign In",
+				"create_account": "Create Account"
+			}
+		}
+	},
+
+	"community_values": {
+		"meta": {
+			"title": "Community Values | Balance Botanica",
+			"description": "Our community values and guidelines for respectful interaction at Balance Botanica"
+		},
+		"title": "This is a Space of Mutual Respect",
+		"garden": {
+			"title": "Community as a Shared Garden",
+			"paragraph1": "Please treat our community with the same respect you would a public garden. We, too, are a shared space — a place to nurture wellness, knowledge, and meaningful connections through authentic conversation and support.",
+			"paragraph2": "These are not rigid rules but guiding principles to aid our collective journey toward wellness. They exist to help us maintain a kind, friendly place for civilized discourse about CBD, wellness, and natural healing."
+		},
+		"discourse": {
+			"title": "Nurturing Positive Discourse",
+			"paragraph1": "Help us cultivate this space by always adding something positive to the discussion, however small. If you're not sure your comment adds to the conversation, take a moment to reflect and try again later.",
+			"paragraph2": "One way to enrich our community is by exploring discussions already happening. Spend time browsing topics before responding, and you'll develop a better understanding of our shared interests and values.",
+			"paragraph3": "The wellness journeys discussed here matter deeply to us, and we want you to engage as if they matter to you too. Be respectful of others' experiences and the people sharing them, even if you disagree with some perspectives."
+		},
+		"disagreement": {
+			"title": "Be Agreeable, Even When You Disagree",
+			"paragraph1": "You may wish to respond with a different perspective. That's welcomed. But remember to critique ideas, not people. Please avoid:",
+			"avoid_list": [
+				"Name-calling or personal attacks",
+				"Ad hominem remarks",
+				"Responding to someone's tone instead of their actual content",
+				"Dismissive contradiction without thoughtful engagement",
+				"Making assumptions about someone's intentions"
+			],
+			"paragraph2": "Instead, provide thoughtful insights that elevate the conversation. Share your personal experiences in a way that acknowledges the validity of others' journeys."
+		},
+		"journey": {
+			"title": "Wellness is a Personal Journey",
+			"paragraph1": "Remember that each person's wellness journey is unique. What works for one may not work for all. At Balance Botanica, we honor these individual paths while creating space for shared wisdom.",
+			"paragraph2": "When sharing your experiences with CBD and natural wellness products, speak from your own perspective rather than making universal claims. Use 'I found...' rather than 'Everyone should...'"
+		},
+		"trust": {
+			"title": "Building Trust Through Authenticity",
+			"paragraph1": "Our community thrives on authentic connections. Be genuine in your interactions, honor your commitments, and communicate with integrity. Trust is the foundation of our collective wellness journey.",
+			"paragraph2": "If you represent a brand or have a commercial interest, please be transparent about your affiliations when relevant to the discussion."
+		},
+		"closing": {
+			"paragraph": "By participating in our community, you're contributing to a supportive environment where everyone can explore natural wellness with respect and dignity. Thank you for being part of our journey.",
+			"signature": "With gratitude,",
+			"team": "The Balance Botanica Team"
 		}
 	},
 
@@ -296,6 +420,52 @@
 		},
 		"grid": {
 			"title": "Grid System"
+		}
+	},
+
+	"cart": {
+		"title": "Shopping Cart",
+		"meta": {
+			"title": "Shopping Cart - Balance Botanica",
+			"description": "Review your Balance Botanica cart items and proceed to checkout"
+		},
+		"empty": {
+			"title": "Your cart is empty",
+			"description": "Add some products to start shopping",
+			"continue_shopping": "Continue Shopping"
+		},
+		"items": {
+			"title": "Items in your cart",
+			"count_single": "({count} item)",
+			"count_multiple": "({count} items)",
+			"quantity_label": "Quantity:",
+			"total_label": "Total:",
+			"each_price": "each",
+			"decrease_quantity": "Decrease quantity",
+			"increase_quantity": "Increase quantity",
+			"remove_item": "Remove item from cart"
+		},
+		"summary": {
+			"title": "Order Summary",
+			"subtotal": "Subtotal",
+			"tax": "Tax (20% VAT)",
+			"shipping": "Shipping",
+			"shipping_free": "Free",
+			"total": "Total",
+			"free_shipping_notice": "💡 Add {amount} more for **free shipping!**",
+			"checkout_authenticated": "🛒 Proceed to Checkout",
+			"checkout_sign_in": "🔐 Sign In to Checkout",
+			"continue_shopping": "Continue Shopping"
+		},
+		"notifications": {
+			"item_removed": "Item removed from cart",
+			"checkout_coming_soon": "Checkout functionality will be implemented soon!",
+			"auth_required": {
+				"title": "Authentication Required",
+				"message": "Please sign in to proceed to checkout",
+				"sign_in": "Sign In",
+				"create_account": "Create Account"
+			}
 		}
 	}
 }
