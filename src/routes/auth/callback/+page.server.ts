@@ -1,5 +1,6 @@
 import { redirect } from '@sveltejs/kit';
 import { supabase } from '$lib/supabase/client.js';
+import * as auth from '$lib/server/auth';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ url, cookies }) => {
@@ -8,6 +9,15 @@ export const load: PageServerLoad = async ({ url, cookies }) => {
 
 	if (code) {
 		try {
+			// Check if supabase client is available
+			if (!supabase) {
+				console.error('❌ Supabase client not initialized');
+				throw redirect(
+					303,
+					`/login?error=${encodeURIComponent('Authentication service not available')}`
+				);
+			}
+
 			// Exchange the code for a session
 			const { data, error } = await supabase.auth.exchangeCodeForSession(code);
 
@@ -33,6 +43,11 @@ export const load: PageServerLoad = async ({ url, cookies }) => {
 					secure: true,
 					sameSite: 'lax'
 				});
+
+				// Create session token for server-side authentication
+				const sessionToken = auth.generateSessionToken();
+				const session = await auth.createSession(sessionToken, data.user.id);
+				auth.setSessionTokenCookie({ cookies } as any, sessionToken, session.expiresAt);
 
 				console.log('✅ OAuth login successful for:', data.user?.email);
 			}

@@ -7,6 +7,7 @@
 	import SEO from '$lib/components/SEO.svelte';
 	import Button from '$lib/components/Button.svelte';
 	import Input from '$lib/components/Input.svelte';
+	import NovaPoshtaSelector from '$lib/components/NovaPoshtaSelector.svelte';
 	import { enhance } from '$app/forms';
 	import type { PageData } from './$types';
 
@@ -15,12 +16,22 @@
 
 	// Form state
 	let deliveryAddress = {
+		name: '',
 		street: '',
 		city: '',
 		postalCode: '',
-		country: 'Ukraine'
+		country: 'Ukraine',
+		// Nova Poshta fields
+		npCityName: '',
+		npCityFullName: '',
+		npWarehouse: '',
+		useNovaPost: true,
+		isDefault: false
 	};
 
+	let isAddingNew = false;
+	let isEditing = false;
+	let editingAddressId = '';
 	let isSaving = false;
 	let saveSuccess = false;
 	let saveError = '';
@@ -30,62 +41,145 @@
 
 	// Initialize with data from server
 	onMount(() => {
+		console.log('[Profile Page] Initializing profile page');
 		supabaseAuthStore.initialize();
-		
-		// Initialize form with delivery address data if available
-		if (data?.deliveryAddress) {
-			deliveryAddress = {
-				street: data.deliveryAddress.street || '',
-				city: data.deliveryAddress.city || '',
-				postalCode: data.deliveryAddress.postalCode || '',
-				country: data.deliveryAddress.country || 'Ukraine'
-			};
-		}
+		console.log('[Profile Page] Supabase auth store initialized');
 	});
 
 	// Redirect to login if not authenticated
 	$: if (!$isAuthenticated && !$isLoading) {
+		console.log('[Profile Page] User not authenticated and not loading, redirecting to login');
 		goto('/login');
 	}
 
+	// Form state
+	$: deliveryAddresses = data?.deliveryAddresses || [];
+	$: hasAddresses = deliveryAddresses.length > 0;
+	console.log('[Profile Page] Delivery addresses loaded:', deliveryAddresses.length);
+
 	// Handle form input changes
-	function handleAddressChange(field: keyof typeof deliveryAddress, value: string) {
+	function handleAddressChange(field: keyof typeof deliveryAddress, value: string | boolean) {
+		console.log('[Profile Page] Address field changed:', field, value);
 		deliveryAddress = { ...deliveryAddress, [field]: value };
 	}
 
-	// Handle logout
-	async function handleLogout() {
-		try {
-			await supabaseAuthStore.signOut();
-			goto('/');
-		} catch (error) {
-			console.error('Error signing out:', error);
-		}
+	// Handle Nova Poshta selection changes
+	function handleNovaPoshtaChange(event: CustomEvent<{npCityName: string; npCityFullName: string; npWarehouse: string}>) {
+		const { npCityName, npCityFullName, npWarehouse } = event.detail;
+		console.log('[Profile Page] Nova Poshta selection changed:', { npCityName, npCityFullName, npWarehouse });
+		deliveryAddress = {
+			...deliveryAddress,
+			npCityName,
+			npCityFullName,
+			npWarehouse
+		};
+	}
+
+	// Start adding a new address
+	function addNewAddress() {
+		console.log('[Profile Page] Starting to add new address');
+		isAddingNew = true;
+		isEditing = false;
+		deliveryAddress = {
+			name: '',
+			street: '',
+			city: '',
+			postalCode: '',
+			country: 'Ukraine',
+			npCityName: '',
+			npCityFullName: '',
+			npWarehouse: '',
+			useNovaPost: true,
+			isDefault: false
+		};
+	}
+
+	// Edit an existing address
+	function editAddress(address: any) {
+		console.log('[Profile Page] Editing address:', address.id);
+		isEditing = true;
+		isAddingNew = false;
+		editingAddressId = address.id;
+		deliveryAddress = {
+			name: address.name || '',
+			street: address.street || '',
+			city: address.city || '',
+			postalCode: address.postalCode || '',
+			country: address.country || 'Ukraine',
+			npCityName: address.npCityName || '',
+			npCityFullName: address.npCityFullName || '',
+			npWarehouse: address.npWarehouse || '',
+			useNovaPost: address.useNovaPost || false,
+			isDefault: address.isDefault || false
+		};
+	}
+
+	// Cancel editing/adding
+	function cancelEdit() {
+		console.log('[Profile Page] Cancelling edit/add');
+		isEditing = false;
+		isAddingNew = false;
+		editingAddressId = '';
 	}
 
 	// Handle form enhancement for better UX
 	function enhanceForm({ form, data, cancel }: any) {
+		console.log('[Profile Page] Enhancing form submission');
 		isSaving = true;
 		saveSuccess = false;
 		saveError = '';
 		
 		return async ({ result }: any) => {
+			console.log('[Profile Page] Form submission result:', result);
 			isSaving = false;
 			
 			if (result.type === 'success') {
 				const responseData = result.data;
 				if (responseData?.success) {
+					console.log('[Profile Page] Address saved successfully');
 					saveSuccess = true;
+					isAddingNew = false;
+					isEditing = false;
+					
+					// Refresh the page to show updated data
 					setTimeout(() => {
-						saveSuccess = false;
-					}, 3000);
+						window.location.reload();
+					}, 1000);
 				} else {
+					console.log('[Profile Page] Address save failed:', responseData?.error);
 					saveError = responseData?.error || 'Failed to save address. Please try again.';
 				}
 			} else {
+				console.log('[Profile Page] Form submission failed');
 				saveError = 'Failed to save address. Please try again.';
 			}
 		};
+	}
+
+	// Format address for display
+	function formatAddress(address: any) {
+		if (address.useNovaPost) {
+			return `${address.npCityFullName}, ${address.npWarehouse}`;
+		} else {
+			return `${address.street}, ${address.city}, ${address.postalCode}, ${address.country}`;
+		}
+	}
+
+	// Handle logout
+	async function handleLogout() {
+		try {
+			console.log('🚪 Initiating logout...');
+			await supabaseAuthStore.signOut();
+			console.log('✅ Logout successful, redirecting to home page...');
+			// Add a small delay to ensure the auth state is properly updated
+			setTimeout(() => {
+				goto('/');
+			}, 100);
+		} catch (error) {
+			console.error('❌ Error during logout:', error);
+			// Even if there's an error, still redirect to home page
+			goto('/');
+		}
 	}
 </script>
 
@@ -103,7 +197,7 @@
 			<Button 
 				variant="outline" 
 				size="sm" 
-				on:click={handleLogout}
+				onClick={handleLogout}
 			>
 				{$pageTranslations.t('profile.logout')}
 			</Button>
@@ -136,78 +230,185 @@
 
 				<!-- Delivery Address Section -->
 				<section class="profile-section">
-					<h2 class="section-title">{$pageTranslations.t('profile.deliveryAddress')}</h2>
-					<form 
-						class="address-form" 
-						method="POST" 
-						action="?/saveDeliveryAddress"
-						use:enhance={enhanceForm}
-					>
-						<div class="form-grid">
-							<div class="form-field">
-								<label class="form-label">{$pageTranslations.t('profile.street')}</label>
-								<Input
-									type="text"
-									name="street"
-									placeholder={$pageTranslations.t('profile.streetPlaceholder')}
-									value={deliveryAddress.street}
-									onChange={(value) => handleAddressChange('street', value)}
-								/>
-							</div>
-							<div class="form-field">
-								<label class="form-label">{$pageTranslations.t('profile.city')}</label>
-								<Input
-									type="text"
-									name="city"
-									placeholder={$pageTranslations.t('profile.cityPlaceholder')}
-									value={deliveryAddress.city}
-									onChange={(value) => handleAddressChange('city', value)}
-								/>
-							</div>
-							<div class="form-field">
-								<label class="form-label">{$pageTranslations.t('profile.postalCode')}</label>
-								<Input
-									type="text"
-									name="postalCode"
-									placeholder={$pageTranslations.t('profile.postalCodePlaceholder')}
-									value={deliveryAddress.postalCode}
-									onChange={(value) => handleAddressChange('postalCode', value)}
-								/>
-							</div>
-							<div class="form-field">
-								<label class="form-label">{$pageTranslations.t('profile.country')}</label>
-								<Input
-									type="text"
-									name="country"
-									value={deliveryAddress.country}
-									disabled
-								/>
-							</div>
-						</div>
-						<div class="form-actions">
+					<div class="section-header">
+						<h2 class="section-title">{$pageTranslations.t('profile.deliveryAddress')}</h2>
+						{#if !isAddingNew && !isEditing && hasAddresses}
 							<Button 
-								type="submit" 
 								variant="primary" 
-								disabled={isSaving}
+								size="sm" 
+								onClick={addNewAddress}
 							>
-								{#if isSaving}
-									{$pageTranslations.t('profile.saving')}
-								{:else}
-									{$pageTranslations.t('profile.saveAddress')}
-								{/if}
+								{$pageTranslations.t('profile.address.addNew')}
+							</Button>
+						{/if}
+					</div>
+					
+					<!-- Delivery Info -->
+					<div class="delivery-info">
+						<p class="delivery-description">
+							{$pageTranslations.t('delivery.description')}
+						</p>
+					</div>
+					
+					<!-- Show saved addresses if any exist -->
+					{#if hasAddresses && !isEditing && !isAddingNew}
+						<div class="saved-addresses">
+							{#each deliveryAddresses as address}
+								<div class="address-card {address.isDefault ? 'default' : ''}">
+									<div class="address-header">
+										<h3 class="address-name">{address.name || $pageTranslations.t('profile.address.addressName')}</h3>
+										{#if address.isDefault}
+											<span class="default-badge">{$pageTranslations.t('profile.address.defaultBadge')}</span>
+										{/if}
+									</div>
+									<div class="address-content">
+										<p class="address-text">
+											{formatAddress(address)}
+										</p>
+										<div class="address-type">
+											{#if address.useNovaPost}
+												<span class="delivery-type">{$pageTranslations.t('profile.address.deliveryType.novaPoshta')}</span>
+											{:else}
+												<span class="delivery-type">{$pageTranslations.t('profile.address.deliveryType.regular')}</span>
+											{/if}
+										</div>
+									</div>
+									<div class="address-actions">
+										<button class="action-btn edit" on:click={() => editAddress(address)}>
+											{$pageTranslations.t('profile.address.edit')}
+										</button>
+										{#if !address.isDefault}
+											<form 
+												method="POST" 
+												action="?/setDefaultAddress"
+												use:enhance
+											>
+												<input type="hidden" name="addressId" value={address.id}>
+												<button type="submit" class="action-btn default">
+													{$pageTranslations.t('profile.address.setDefault')}
+												</button>
+											</form>
+											<form 
+												method="POST" 
+												action="?/deleteAddress"
+												use:enhance
+											>
+												<input type="hidden" name="addressId" value={address.id}>
+												<button type="submit" class="action-btn delete">
+													{$pageTranslations.t('profile.address.delete')}
+												</button>
+											</form>
+										{/if}
+									</div>
+								</div>
+							{/each}
+							
+							{#if deliveryAddresses.length < 3}
+								<button class="add-address-btn" on:click={addNewAddress}>
+									+ {$pageTranslations.t('profile.address.addNew')}
+								</button>
+							{/if}
+						</div>
+					{:else if !hasAddresses && !isAddingNew}
+						<div class="no-addresses">
+							<p>{$pageTranslations.t('profile.address.noAddresses')}</p>
+							<Button 
+								variant="primary" 
+								onClick={addNewAddress}
+							>
+								{$pageTranslations.t('profile.address.addAddress')}
 							</Button>
 						</div>
-						{#if saveSuccess}
-							<div class="success-message">
-								{$pageTranslations.t('profile.addressSaved')}
+					{/if}
+					
+					<!-- Address Form for Adding/Editing -->
+					{#if isAddingNew || isEditing}
+						<form 
+							class="address-form" 
+							method="POST" 
+							action="?/saveDeliveryAddress"
+							use:enhance={enhanceForm}
+						>
+							<!-- Address Name -->
+							<div class="form-group">
+								<label for="name" class="form-label">{$pageTranslations.t('profile.address.addressName')}</label>
+								<input 
+									type="text" 
+									id="name" 
+									name="name" 
+									class="form-input"
+									placeholder={$pageTranslations.t('profile.address.addressNamePlaceholder')}
+									bind:value={deliveryAddress.name}
+									on:input={(e) => handleAddressChange('name', e.currentTarget.value)}
+								/>
 							</div>
-						{/if}
-						{#if saveError}
-							<div class="error-message">
-								{saveError}
+							
+							<!-- Is Default Checkbox -->
+							<div class="form-group checkbox">
+								<label class="checkbox-label">
+									<input 
+										type="checkbox" 
+										name="isDefault" 
+										value="true"
+										checked={deliveryAddress.isDefault}
+										on:change={(e) => handleAddressChange('isDefault', e.currentTarget.checked)}
+									/>
+									{$pageTranslations.t('profile.address.setDefaultCheckbox')}
+								</label>
 							</div>
-						{/if}
-					</form>
+							
+							<!-- Hidden inputs for Nova Poshta data -->
+							<input type="hidden" name="npCityName" value={deliveryAddress.npCityName}>
+							<input type="hidden" name="npCityFullName" value={deliveryAddress.npCityFullName}>
+							<input type="hidden" name="npWarehouse" value={deliveryAddress.npWarehouse}>
+							<input type="hidden" name="useNovaPost" value="true">
+							<input type="hidden" name="country" value="Ukraine">
+							<input type="hidden" name="street" value="">
+							<input type="hidden" name="city" value="">
+							<input type="hidden" name="postalCode" value="">
+							
+							<!-- Nova Poshta Selection -->
+							<div class="nova-poshta-container">
+								<NovaPoshtaSelector
+									selectedCityName={deliveryAddress.npCityName}
+									selectedCityFullName={deliveryAddress.npCityFullName}
+									selectedWarehouse={deliveryAddress.npWarehouse}
+									on:change={handleNovaPoshtaChange}
+								/>
+							</div>
+							
+							<div class="form-actions">
+								<Button 
+									type="button" 
+									variant="outline" 
+									onClick={cancelEdit}
+								>
+									{$pageTranslations.t('profile.address.cancel')}
+								</Button>
+								<Button 
+									type="submit" 
+									variant="primary" 
+									disabled={isSaving}
+								>
+									{#if isSaving}
+										{$pageTranslations.t('profile.saving')}
+									{:else}
+										{isEditing ? $pageTranslations.t('profile.address.update') : $pageTranslations.t('profile.address.save')}
+									{/if}
+								</Button>
+							</div>
+							{#if saveSuccess}
+								<div class="success-message">
+									{$pageTranslations.t('profile.addressSaved')}
+								</div>
+							{/if}
+							{#if saveError}
+								<div class="error-message">
+									{saveError}
+								</div>
+							{/if}
+						</form>
+					{/if}
 				</section>
 			</div>
 		{:else if $isLoading}
@@ -264,79 +465,178 @@
 	.profile-section:last-child {
 		margin-bottom: 0;
 	}
+	
+	.section-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		margin-bottom: 16px;
+	}
 
 	.section-title {
 		font-family: 'Nunito', sans-serif;
-		font-size: 22px;
+		font-size: 20px;
 		font-weight: 600;
-		line-height: 1.3;
-		color: #000000;
-		margin: 0 0 24px 0;
+		color: #333;
+		margin: 0 0 16px 0;
+	}
+	
+	.delivery-info {
+		background: #f0f7f5;
+		border-radius: 12px;
+		padding: 16px 20px;
+		margin-bottom: 24px;
+		border-left: 4px solid #4B766E;
 	}
 
-	.user-info-grid {
+	.delivery-description {
+		font-family: 'Nunito', sans-serif;
+		font-size: 16px;
+		color: #4B766E;
+		font-weight: 500;
+		margin: 0;
+	}
+	
+	/* Saved Addresses */
+	.saved-addresses {
 		display: grid;
-		grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-		gap: 20px;
+		grid-template-columns: 1fr;
+		gap: 16px;
+		margin-bottom: 24px;
 	}
-
-	.info-item {
-		margin-bottom: 16px;
+	
+	.address-card {
+		background: #f9f9f9;
+		border-radius: 12px;
+		padding: 16px;
+		border: 1px solid #eee;
+		transition: all 0.2s ease;
 	}
-
-	.info-item:last-child {
-		margin-bottom: 0;
+	
+	.address-card.default {
+		background: #f0f7f5;
+		border-color: #4B766E;
 	}
-
-	.info-label {
+	
+	.address-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		margin-bottom: 8px;
+	}
+	
+	.address-name {
+		font-family: 'Nunito', sans-serif;
+		font-size: 18px;
+		font-weight: 600;
+		color: #333;
+		margin: 0;
+	}
+	
+	.default-badge {
+		background: #4B766E;
+		color: white;
+		font-size: 12px;
+		padding: 4px 8px;
+		border-radius: 4px;
+		font-weight: 500;
+	}
+	
+	.address-content {
+		margin-bottom: 12px;
+	}
+	
+	.address-text {
+		font-family: 'Nunito', sans-serif;
+		font-size: 15px;
+		color: #555;
+		margin: 0 0 8px 0;
+	}
+	
+	.delivery-type {
+		font-size: 13px;
+		background: #f0f0f0;
+		padding: 2px 8px;
+		border-radius: 4px;
+		color: #666;
+	}
+	
+	.address-actions {
+		display: flex;
+		gap: 8px;
+		flex-wrap: wrap;
+	}
+	
+	.action-btn {
+		background: none;
+		border: none;
 		font-family: 'Nunito', sans-serif;
 		font-size: 14px;
 		font-weight: 500;
-		line-height: 1.5;
-		color: #9A9A9A;
-		display: block;
-		margin-bottom: 4px;
+		padding: 6px 12px;
+		border-radius: 6px;
+		cursor: pointer;
+		transition: all 0.2s ease;
 	}
-
-	.info-value {
+	
+	.action-btn.edit {
+		background: #f0f0f0;
+		color: #555;
+	}
+	
+	.action-btn.default {
+		background: #e0f0ed;
+		color: #4B766E;
+	}
+	
+	.action-btn.delete {
+		background: #ffeded;
+		color: #e74c3c;
+	}
+	
+	.action-btn:hover {
+		opacity: 0.8;
+	}
+	
+	.add-address-btn {
+		background: #f5f5f5;
+		border: 1px dashed #ccc;
+		border-radius: 12px;
+		padding: 16px;
+		width: 100%;
 		font-family: 'Nunito', sans-serif;
 		font-size: 16px;
-		font-weight: 400;
-		line-height: 1.6;
-		color: #474747;
-		padding: 8px 0;
+		color: #4B766E;
+		cursor: pointer;
+		transition: all 0.2s ease;
+		text-align: center;
+	}
+	
+	.add-address-btn:hover {
+		background: #f0f7f5;
+		border-color: #4B766E;
+	}
+	
+	.no-addresses {
+		text-align: center;
+		padding: 40px 20px;
+		background: #f9f9f9;
+		border-radius: 12px;
+	}
+	
+	.no-addresses p {
+		margin-bottom: 16px;
+		color: #666;
 	}
 
-	.address-form {
-		width: 100%;
-	}
-
-	.form-grid {
-		display: grid;
-		grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-		gap: 20px;
+	.nova-poshta-container {
 		margin-bottom: 24px;
 	}
 
-	.form-field {
-		margin-bottom: 16px;
-	}
-
-	.form-field:last-child {
-		margin-bottom: 0;
-	}
-
-	.form-label {
-		font-family: 'Nunito', sans-serif;
-		font-size: 14px;
-		font-weight: 500;
-		line-height: 1.5;
-		color: #9A9A9A;
-		display: block;
-		margin-bottom: 8px;
-	}
-
 	.form-actions {
+		display: flex;
+		justify-content: flex-end;
+		gap: 12px;
 		margin-top: 24px;
 	}
 
@@ -382,6 +682,44 @@
 		margin-bottom: 16px;
 	}
 
+	/* Form styles */
+	.form-group {
+		margin-bottom: 16px;
+	}
+	
+	.form-label {
+		display: block;
+		font-family: 'Nunito', sans-serif;
+		font-size: 16px;
+		font-weight: 500;
+		color: #333;
+		margin-bottom: 8px;
+	}
+	
+	.form-input {
+		width: 100%;
+		padding: 10px 12px;
+		border: 1px solid #ddd;
+		border-radius: 8px;
+		font-family: 'Nunito', sans-serif;
+		font-size: 15px;
+	}
+	
+	.checkbox {
+		display: flex;
+		align-items: center;
+	}
+	
+	.checkbox-label {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		font-family: 'Nunito', sans-serif;
+		font-size: 15px;
+		color: #333;
+		cursor: pointer;
+	}
+
 	@keyframes spin {
 		0% { transform: rotate(0deg); }
 		100% { transform: rotate(360deg); }
@@ -408,6 +746,20 @@
 
 		.user-info-grid {
 			grid-template-columns: 1fr;
+		}
+		
+		.delivery-method-options {
+			flex-direction: column;
+			gap: 10px;
+		}
+		
+		.form-actions {
+			flex-direction: column;
+		}
+		
+		.action-btn {
+			font-size: 13px;
+			padding: 4px 8px;
 		}
 	}
 </style>

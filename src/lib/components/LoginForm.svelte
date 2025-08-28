@@ -87,6 +87,8 @@
 			}
 
 			if (result.user) {
+				// Create session token for server-side authentication
+				await createSessionToken(result.user.id);
 				dispatch('success', result);
 			}
 		} catch (error) {
@@ -94,6 +96,26 @@
 			dispatch('error', errorMessage);
 		} finally {
 			isLoading = false;
+		}
+	}
+
+	// Create session token for server-side authentication
+	async function createSessionToken(userId: string) {
+		try {
+			const response = await fetch('/auth/login', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({ userId, email })
+			});
+
+			const data = await response.json();
+			if (!data.success) {
+				console.error('Failed to create session token:', data.error);
+			}
+		} catch (error) {
+			console.error('Error creating session token:', error);
 		}
 	}
 
@@ -115,6 +137,8 @@
 	$: {
 		const unsubscribe = supabaseAuthStore.subscribe((state) => {
 			if (state.user && state.session) {
+				// Create session token for server-side authentication
+				createSessionToken(state.user.id);
 				dispatch('success', { user: state.user, session: state.session });
 			}
 			if (state.error) {

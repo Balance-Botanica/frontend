@@ -123,14 +123,7 @@
 			"title": "Newsletter Subscription",
 			"description": "Subscribe to our newsletter for exclusive offers, wellness tips, and the latest CBD product updates. Join our community of health-conscious individuals.",
 			"placeholder": "Email Address",
-			"button": "Subscribe",
-			"benefits": {
-				"exclusive_offers": "Exclusive offers and discounts",
-				"wellness_tips": "Wellness tips and pet care advice",
-				"new_products": "First access to new products"
-			},
-			"privacy_notice": "We respect your privacy. Unsubscribe at any time.",
-			"privacy_policy": "Privacy Policy"
+			"button": "Subscribe"
 		},
 		"company": {
 			"description": "Balance Botanica is one of the first companies in Ukraine that produces products with cannabidiol (CBD). Founded in 2023. We offer high-quality products at affordable prices that compete with Western analogues."
@@ -234,26 +227,7 @@
 		"saving": "Saving...",
 		"addressSaved": "Delivery address saved successfully!",
 		"loading": "Loading your profile information...",
-		"logout": "Log Out",
-		"address": {
-			"addNew": "Add New Address",
-			"edit": "Edit",
-			"delete": "Delete",
-			"setDefault": "Set as Default",
-			"update": "Update Address",
-			"save": "Save Address",
-			"cancel": "Cancel",
-			"addressName": "Address Name",
-			"addressNamePlaceholder": "Home, Work, etc.",
-			"setDefaultCheckbox": "Set as default address",
-			"defaultBadge": "Default",
-			"noAddresses": "You don't have any saved delivery addresses yet.",
-			"addAddress": "Add Address",
-			"deliveryType": {
-				"novaPoshta": "Nova Poshta",
-				"regular": "Regular Delivery"
-			}
-		}
+		"logout": "Log Out"
 	},
 	
 	"delivery": {
@@ -269,110 +243,6 @@
 		"loading": "Loading...",
 		"errorLoading": "Error loading data",
 		"noResults": "No cities found",
-		"noWarehouses": "No warehouses found for this city",
-		"description": "Select your Nova Poshta delivery location"
-	},
-	
-	"made_in_ukraine": {
-		"title": "Made in Ukraine",
-		"subtitle": "Proudly Ukrainian",
-		"description": "Our products are proudly made in Ukraine with the highest quality standards and care. We support local production and sustainable practices."
-	},
-	
-	"calculator": {
-		"title": "CBD Dosage Calculator",
-		"subtitle": "Calculate the optimal CBD dosage for your pet based on their weight and condition",
-		"benefits": {
-			"title": "Why Use Our Calculator?",
-			"precise": "Precise dosing tailored to your pet's specific needs",
-			"safe": "Safe and vet-recommended dosage guidelines",
-			"personalized": "Personalized recommendations based on animal type and condition"
-		},
-		"disclaimer": {
-			"title": "Important Disclaimer",
-			"text": "This calculator provides general guidance only. Always consult with your veterinarian before giving CBD to your pet, especially if they are on medication or have health conditions."
-		},
-		"additional_info": "Consult your veterinarian for personalized advice",
-		"form": {
-			"animal_type": "Animal Type",
-			"weight": "Weight",
-			"weight_placeholder": "Enter weight in kg",
-			"condition": "Condition",
-			"calculate_button": "Calculate Dosage"
-		},
-		"animal_types": {
-			"horse": "Horse",
-			"dog": "Dog",
-			"cat": "Cat",
-			"small_animal": "Small Animal"
-		},
-		"conditions": {
-			"wellbeing": "General Wellbeing",
-			"anxiety": "Mild Anxiety",
-			"hard_anxiety": "Severe Anxiety"
-		},
-		"frequency": {
-			"once_daily": "once daily",
-			"twice_daily": "twice daily",
-			"three_times_daily": "three times daily"
-		},
-		"duration": {
-			"one_week": "for 1 week",
-			"two_weeks": "for 2 weeks",
-			"one_month": "for 1 month",
-			"ongoing": "as needed"
-		},
-		"results": {
-			"title": "Recommended Dosage",
-			"for_animal": "For {animalType} with {condition}",
-			"administer_text": "Administer {dosage} mg {frequency} {duration}",
-			"usage_recommendation": "Usage Recommendation"
-		},
-		"actions": {
-			"calculate_again": "Calculate Again",
-			"modify_inputs": "Modify Inputs"
-		},
-		"quality_assurance": {
-			"title": "Quality Assurance Tips",
-			"tips": {
-				"general": [
-					"Start with a lower dose and gradually increase if needed",
-					"Monitor your pet's response and adjust accordingly",
-					"Give CBD with food for better absorption"
-				],
-				"cat": "Cats are more sensitive to CBD - use extra caution with dosing",
-				"horse": "For horses, divide the daily dose into multiple administrations",
-				"small_animal": "Small animals require precise dosing - use a digital scale"
-			}
-		}
-	},
-	
-	"faq": {
-		"title": "Frequently Asked Questions",
-		"subtitle": "Find answers to common questions about our CBD products and usage",
-		"benefits": {
-			"question": "What are the benefits of CBD for pets?",
-			"answer": "CBD can help reduce anxiety, inflammation, and pain in pets. It may also support joint health, improve sleep quality, and promote overall wellness. Our products are made with high-quality, natural ingredients."
-		},
-		"choosing": {
-			"question": "How do I choose between Golden Paste and CBD Oil?",
-			"answer": "Golden Paste contains turmeric and ginger for additional anti-inflammatory benefits, making it ideal for pets with joint issues. CBD Oil is more versatile and easier to dose, perfect for general wellness and anxiety management."
-		},
-		"testing": {
-			"question": "Are your products tested for quality and safety?",
-			"answer": "Yes, all our products undergo rigorous third-party testing for potency, purity, and safety. We provide Certificates of Analysis (COA) for transparency and quality assurance."
-		},
-		"spectrum": {
-			"question": "What is the difference between full-spectrum and isolate CBD?",
-			"answer": "Full-spectrum CBD contains all naturally occurring compounds in the hemp plant, including trace amounts of THC (<0.3%). Isolate CBD contains only pure CBD. Full-spectrum may provide enhanced benefits through the 'entourage effect.'"
-		},
-		"effects": {
-			"question": "How long does it take to see effects?",
-			"answer": "Effects can vary by pet, but many owners notice improvements within 30-60 minutes for acute issues. For chronic conditions, consistent daily use for 2-4 weeks may be needed for optimal results."
-		},
-		"cta": {
-			"text": "Have more questions? Our team is here to help!",
-			"button": "Contact Us"
-		}
+		"noWarehouses": "No warehouses found for this city"
 	}
 }

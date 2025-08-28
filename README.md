@@ -189,6 +189,21 @@ export const load: PageServerLoad = async () => {
 {/each}
 ```
 
+## 🚚 Nova Poshta API Configuration
+
+The application uses the Nova Poshta API for delivery address selection. Nova Poshta is the only available delivery option for this e-commerce platform.
+
+To configure:
+
+1. Set the `NOVA_POSHTA_API_URL` environment variable (defaults to `https://api.novaposhta.ua/v2.0/json/`)
+2. Set the `NOVA_POSHTA_API_KEY` environment variable with your Nova Poshta API key
+
+Example `.env` configuration:
+``env
+NOVA_POSHTA_API_URL=https://api.novaposhta.ua/v2.0/json/
+NOVA_POSHTA_API_KEY=your_api_key_here
+```
+
 ## 🏗️ Building
 
 To create a production version of your app:

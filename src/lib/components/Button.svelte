@@ -43,14 +43,13 @@
 	{type}
 	{disabled}
 	on:click={onClick}
-	class="inline-flex items-center justify-center rounded-lg border-2 font-medium transition-all duration-200 ease-in-out focus:ring-2 focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer {sizeClasses[
+	class="inline-flex items-center justify-center rounded-lg border-2 font-medium transition-all duration-200 ease-in-out focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer {sizeClasses[
 		size
 	]} {disabled ? 'cursor-not-allowed opacity-50' : ''}"
 	style="
     background-color: {currentStyle.backgroundColor};
     color: {currentStyle.color};
     border-color: {currentStyle.borderColor};
-    focus-ring-color: {colors.main};
   "
 >
 	<slot />

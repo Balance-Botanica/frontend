@@ -26,10 +26,17 @@ export const deliveryAddresses = sqliteTable('delivery_addresses', {
 	userId: text('user_id')
 		.notNull()
 		.references(() => users.id),
+	name: text('name'),
+	isDefault: integer('is_default', { mode: 'boolean' }).default(false),
 	street: text('street').notNull(),
 	city: text('city').notNull(),
 	postalCode: text('postal_code').notNull(),
 	country: text('country').notNull().default('Ukraine'),
+	// Nova Poshta fields
+	npCityName: text('np_city_name'),
+	npCityFullName: text('np_city_full_name'),
+	npWarehouse: text('np_warehouse'),
+	useNovaPost: integer('use_nova_post', { mode: 'boolean' }).default(false),
 	createdAt: integer('created_at', { mode: 'timestamp' }).$defaultFn(() => new Date()),
 	updatedAt: integer('updated_at', { mode: 'timestamp' }).$defaultFn(() => new Date())
 });

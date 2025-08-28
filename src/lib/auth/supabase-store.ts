@@ -724,6 +724,9 @@ function createSupabaseAuthStore() {
 
 			set({ user, session: adaptedSession, isLoading: false, error: null });
 
+			// Create session token for server-side authentication
+			await createSessionToken(user.id);
+
 			console.log('🎉 [AUTH] ⭐⭐⭐ AUTH STATE UPDATED SUCCESSFULLY! Store should now show:');
 			console.log('   🔐 isAuthenticated: true');
 			console.log('   👤 user.email:', user?.email);
@@ -774,6 +777,30 @@ function createSupabaseAuthStore() {
 				isLoading: false,
 				error: 'Failed to process authentication'
 			});
+		}
+	}
+
+	// Create session token for server-side authentication
+	async function createSessionToken(userId: string) {
+		try {
+			// Get user email from state
+			const currentState = get(supabaseAuthStore);
+			const email = currentState.user?.email || '';
+
+			const response = await fetch('/auth/login', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({ userId, email })
+			});
+
+			const data = await response.json();
+			if (!data.success) {
+				console.error('Failed to create session token:', data.error);
+			}
+		} catch (error) {
+			console.error('Error creating session token:', error);
 		}
 	}
 

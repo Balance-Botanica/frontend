@@ -9,10 +9,17 @@ export interface User {
 export interface DeliveryAddress {
 	id: string;
 	userId: string;
+	name?: string;
+	isDefault?: boolean;
 	street: string;
 	city: string;
 	postalCode: string;
 	country: string;
+	// Nova Poshta fields
+	npCityName?: string;
+	npCityFullName?: string;
+	npWarehouse?: string;
+	useNovaPost?: boolean;
 	createdAt: Date;
 	updatedAt: Date;
 }
@@ -25,18 +32,32 @@ export interface CreateUserData {
 // Delivery address creation data
 export interface CreateDeliveryAddressData {
 	userId: string;
+	name?: string;
+	isDefault?: boolean;
 	street: string;
 	city: string;
 	postalCode: string;
 	country: string;
+	// Nova Poshta fields
+	npCityName?: string;
+	npCityFullName?: string;
+	npWarehouse?: string;
+	useNovaPost?: boolean;
 }
 
 // Delivery address update data (partial)
 export interface UpdateDeliveryAddressData {
+	name?: string;
+	isDefault?: boolean;
 	street?: string;
 	city?: string;
 	postalCode?: string;
 	country?: string;
+	// Nova Poshta fields
+	npCityName?: string;
+	npCityFullName?: string;
+	npWarehouse?: string;
+	useNovaPost?: boolean;
 }
 
 // User repository interface - defines the contract for user data access
@@ -47,11 +68,13 @@ export interface UserRepository {
 	createUser(data: CreateUserData): Promise<User | null>;
 
 	// Delivery address operations
-	getDeliveryAddressByUserId(userId: string): Promise<DeliveryAddress | null>;
+	getDeliveryAddressesByUserId(userId: string): Promise<DeliveryAddress[]>;
+	getDeliveryAddressById(id: string): Promise<DeliveryAddress | null>;
 	createDeliveryAddress(data: CreateDeliveryAddressData): Promise<DeliveryAddress | null>;
 	updateDeliveryAddress(
-		userId: string,
+		id: string,
 		data: UpdateDeliveryAddressData
 	): Promise<DeliveryAddress | null>;
-	deleteDeliveryAddress(userId: string): Promise<boolean>;
+	deleteDeliveryAddressById(id: string): Promise<boolean>;
+	setDefaultAddress(userId: string, addressId: string): Promise<boolean>;
 }

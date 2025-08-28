@@ -18,7 +18,8 @@
 		"db:studio": "drizzle-kit studio",
 		"db:seed": "node scripts/seed-products.js",
 		"db:migrate-price": "node scripts/migrate-price-to-real.js",
-		"db:migrate-images": "node scripts/migrate-to-image-urls.js"
+		"db:migrate-images": "node scripts/migrate-to-image-urls.js",
+		"db:migrate-address": "node scripts/migrate-addresses.js"
 	},
 	"devDependencies": {
 		"@eslint/compat": "^1.2.5",
