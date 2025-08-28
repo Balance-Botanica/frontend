@@ -1,18 +1,16 @@
 import { userService } from '$lib/server/application/services/user.service';
-import type { Actions, PageServerLoad } from './$types';
+import type { PageServerLoad, Actions } from '../../../.svelte-kit/types/src/routes/profile/$types';
 
 // Load user delivery address
 export const load: PageServerLoad = async ({ locals }) => {
-	const session = await locals.getSession();
-
-	if (!session?.user?.id) {
+	if (!locals.user?.id) {
 		return {
 			deliveryAddress: null
 		};
 	}
 
 	try {
-		const deliveryAddress = await userService.getDeliveryAddressByUserId(session.user.id);
+		const deliveryAddress = await userService.getDeliveryAddressByUserId(locals.user.id);
 		return {
 			deliveryAddress
 		};
@@ -27,9 +25,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 // Actions for saving delivery address
 export const actions: Actions = {
 	saveDeliveryAddress: async ({ request, locals }) => {
-		const session = await locals.getSession();
-
-		if (!session?.user?.id) {
+		if (!locals.user?.id) {
 			return {
 				success: false,
 				error: 'User not authenticated'
@@ -45,7 +41,7 @@ export const actions: Actions = {
 				country: formData.get('country') as string
 			};
 
-			const result = await userService.saveDeliveryAddress(session.user.id, deliveryAddressData);
+			const result = await userService.saveDeliveryAddress(locals.user.id, deliveryAddressData);
 
 			if (result) {
 				return {
