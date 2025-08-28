@@ -14,7 +14,7 @@ import type {
 export class DrizzleUserRepository implements UserRepository {
 	async getUserById(id: string): Promise<User | null> {
 		try {
-			console.log('[DrizzleUserRepository] Attempting to fetch user by ID:', id);
+			console.log('[DrizzleUserRepository] Attempting to fetch user by database ID:', id);
 			const results = await db.select().from(users).where(eq(users.id, id)).limit(1);
 			const user = results[0] ? this.mapUserToDomain(results[0]) : null;
 			console.log('[DrizzleUserRepository] User fetch result:', user ? 'Found' : 'Not found');
@@ -228,23 +228,7 @@ export class DrizzleUserRepository implements UserRepository {
 
 			// Delete the address
 			await db.delete(deliveryAddresses).where(eq(deliveryAddresses.id, id));
-
-			// If this was the default address, make another address default
-			if (address && address.isDefault) {
-				console.log(
-					'[DrizzleUserRepository] Deleted address was default, setting new default for user:',
-					address.userId
-				);
-				const addresses = await this.getDeliveryAddressesByUserId(address.userId);
-				if (addresses.length > 0) {
-					await db
-						.update(deliveryAddresses)
-						.set({ isDefault: true })
-						.where(eq(deliveryAddresses.id, addresses[0].id));
-				}
-			}
-
-			console.log('[DrizzleUserRepository] Delivery address deletion result: Success');
+			console.log('[DrizzleUserRepository] Delivery address deleted successfully');
 			return true;
 		} catch (error) {
 			console.error('[DrizzleUserRepository] Error deleting delivery address from Drizzle:', error);
@@ -255,18 +239,19 @@ export class DrizzleUserRepository implements UserRepository {
 	async setDefaultAddress(userId: string, addressId: string): Promise<boolean> {
 		try {
 			console.log(
-				'[DrizzleUserRepository] Setting default address',
-				addressId,
-				'for user:',
-				userId
+				'[DrizzleUserRepository] Setting default address for user:',
+				userId,
+				'address:',
+				addressId
 			);
-			// Clear all default flags for this user
+
+			// First, clear all default addresses for this user
 			await db
 				.update(deliveryAddresses)
 				.set({ isDefault: false })
 				.where(eq(deliveryAddresses.userId, userId));
 
-			// Set the new default
+			// Then set the specified address as default
 			await db
 				.update(deliveryAddresses)
 				.set({ isDefault: true })
@@ -280,7 +265,7 @@ export class DrizzleUserRepository implements UserRepository {
 		}
 	}
 
-	// Map Drizzle user schema to domain model
+	// Helper methods for mapping database records to domain objects
 	private mapUserToDomain(dbUser: any): User {
 		return {
 			id: dbUser.id,
@@ -289,7 +274,6 @@ export class DrizzleUserRepository implements UserRepository {
 		};
 	}
 
-	// Map Drizzle delivery address schema to domain model
 	private mapDeliveryAddressToDomain(dbAddress: any): DeliveryAddress {
 		return {
 			id: dbAddress.id,
@@ -300,7 +284,6 @@ export class DrizzleUserRepository implements UserRepository {
 			city: dbAddress.city,
 			postalCode: dbAddress.postalCode,
 			country: dbAddress.country,
-			// Nova Poshta fields
 			npCityName: dbAddress.npCityName,
 			npCityFullName: dbAddress.npCityFullName,
 			npWarehouse: dbAddress.npWarehouse,

@@ -1,6 +1,7 @@
 import { redirect } from '@sveltejs/kit';
 import { supabase } from '$lib/supabase/client.js';
 import * as auth from '$lib/server/auth';
+import { userService } from '$lib/server/application/services/user.service';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ url, cookies }) => {
@@ -45,8 +46,21 @@ export const load: PageServerLoad = async ({ url, cookies }) => {
 				});
 
 				// Create session token for server-side authentication
+				// Get or create user in our database and use the database user ID
+				const supabaseUserId = data.user.id;
+				const userEmail = data.user.email || '';
+
+				console.log('[OAuth Callback] Getting or creating user in database');
+				const user = await userService.getOrCreateUser(supabaseUserId, userEmail);
+
+				if (!user) {
+					console.error('❌ Failed to create user in database');
+					throw redirect(303, `/login?error=${encodeURIComponent('Failed to create user')}`);
+				}
+
+				// Create session with the database user ID
 				const sessionToken = auth.generateSessionToken();
-				const session = await auth.createSession(sessionToken, data.user.id);
+				const session = await auth.createSession(sessionToken, user.id);
 				auth.setSessionTokenCookie({ cookies } as any, sessionToken, session.expiresAt);
 
 				console.log('✅ OAuth login successful for:', data.user?.email);

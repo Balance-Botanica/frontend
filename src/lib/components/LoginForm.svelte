@@ -88,7 +88,7 @@
 
 			if (result.user) {
 				// Create session token for server-side authentication
-				await createSessionToken(result.user.id);
+				await createSessionToken(result.user.id, email);
 				dispatch('success', result);
 			}
 		} catch (error) {
@@ -100,14 +100,14 @@
 	}
 
 	// Create session token for server-side authentication
-	async function createSessionToken(userId: string) {
+	async function createSessionToken(userId: string, userEmail: string) {
 		try {
 			const response = await fetch('/auth/login', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json'
 				},
-				body: JSON.stringify({ userId, email })
+				body: JSON.stringify({ userId, email: userEmail })
 			});
 
 			const data = await response.json();
@@ -138,7 +138,9 @@
 		const unsubscribe = supabaseAuthStore.subscribe((state) => {
 			if (state.user && state.session) {
 				// Create session token for server-side authentication
-				createSessionToken(state.user.id);
+				// Pass the user's email from the auth state, with a fallback
+				const userEmail = state.user.email || email || '';
+				createSessionToken(state.user.id, userEmail);
 				dispatch('success', { user: state.user, session: state.session });
 			}
 			if (state.error) {

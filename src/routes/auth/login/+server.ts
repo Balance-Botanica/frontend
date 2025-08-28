@@ -33,8 +33,8 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 		// Create a new session token for the user
 		console.log('[Login Server] Generating session token');
 		const sessionToken = auth.generateSessionToken();
-		console.log('[Login Server] Creating session with token');
-		const session = await auth.createSession(sessionToken, userId);
+		console.log('[Login Server] Creating session with token for database user ID:', user.id);
+		const session = await auth.createSession(sessionToken, user.id); // Use database user ID, not Supabase ID
 
 		// Set the session cookie
 		console.log('[Login Server] Setting session token cookie');

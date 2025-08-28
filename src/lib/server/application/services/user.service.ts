@@ -12,18 +12,22 @@ export class UserService {
 
 	/**
 	 * Get user by ID or create if not exists
+	 * Note: The userId parameter is the Supabase user ID, but we store our own ID in the database
 	 */
 	async getOrCreateUser(userId: string, email: string) {
 		try {
-			console.log('[UserService] Getting or creating user - ID:', userId, 'Email:', email);
-			let user = await this.userRepository.getUserById(userId);
+			console.log('[UserService] Getting or creating user - Supabase ID:', userId, 'Email:', email);
+
+			// First, try to find user by email since that's our unique identifier
+			let user = await this.userRepository.getUserByEmail(email);
 
 			if (!user) {
-				console.log('[UserService] User not found, creating new user:', { userId, email });
+				console.log('[UserService] User not found by email, creating new user with email:', email);
+				// Create user with email - the database will generate its own ID
 				user = await this.userRepository.createUser({ email });
 				console.log('[UserService] User creation result:', user ? 'Success' : 'Failed');
 			} else {
-				console.log('[UserService] User found:', user.id);
+				console.log('[UserService] User found by email:', user.id);
 			}
 
 			return user;

@@ -206,9 +206,21 @@
 			"title": "Order Summary",
 			"subtotal": "Subtotal",
 			"shipping": "Shipping",
-			"free": "Free",
+			"shipping_free": "Free",
 			"total": "Total",
-			"checkout": "Proceed to Checkout"
+			"checkout_authenticated": "Proceed to Checkout",
+			"checkout_sign_in": "Sign In to Checkout",
+			"continue_shopping": "Continue Shopping"
+		},
+		"notifications": {
+			"item_removed": "Item removed from cart",
+			"auth_required": {
+				"title": "Authentication Required",
+				"message": "You need to sign in to proceed with checkout",
+				"sign_in": "Sign In",
+				"create_account": "Create Account"
+			},
+			"checkout_coming_soon": "Checkout functionality will be available soon"
 		}
 	},
 	
@@ -348,31 +360,67 @@
 	},
 	
 	"faq": {
-		"title": "Frequently Asked Questions",
-		"subtitle": "Find answers to common questions about our CBD products and usage",
-		"benefits": {
-			"question": "What are the benefits of CBD for pets?",
-			"answer": "CBD can help reduce anxiety, inflammation, and pain in pets. It may also support joint health, improve sleep quality, and promote overall wellness. Our products are made with high-quality, natural ingredients."
+		"title": "Frequently Asked Questions about CBD",
+		"subtitle": "Find answers to the most common questions about CBD",
+		"search_placeholder": "Search questions...",
+		"no_results": "No questions found",
+		"categories": {
+			"general": "General Questions",
+			"pets": "For Pets",
+			"health": "Health",
+			"products": "Products",
+			"usage": "Usage"
 		},
-		"choosing": {
-			"question": "How do I choose between Golden Paste and CBD Oil?",
-			"answer": "Golden Paste contains turmeric and ginger for additional anti-inflammatory benefits, making it ideal for pets with joint issues. CBD Oil is more versatile and easier to dose, perfect for general wellness and anxiety management."
-		},
-		"testing": {
-			"question": "Are your products tested for quality and safety?",
-			"answer": "Yes, all our products undergo rigorous third-party testing for potency, purity, and safety. We provide Certificates of Analysis (COA) for transparency and quality assurance."
-		},
-		"spectrum": {
-			"question": "What is the difference between full-spectrum and isolate CBD?",
-			"answer": "Full-spectrum CBD contains all naturally occurring compounds in the hemp plant, including trace amounts of THC (<0.3%). Isolate CBD contains only pure CBD. Full-spectrum may provide enhanced benefits through the 'entourage effect.'"
-		},
-		"effects": {
-			"question": "How long does it take to see effects?",
-			"answer": "Effects can vary by pet, but many owners notice improvements within 30-60 minutes for acute issues. For chronic conditions, consistent daily use for 2-4 weeks may be needed for optimal results."
-		},
-		"cta": {
-			"text": "Have more questions? Our team is here to help!",
-			"button": "Contact Us"
+		"questions": {
+			"what_is_cbd": {
+				"question": "What is CBD?",
+				"answer": "Cannabidiol (CBD) is a natural compound found in the hemp plant. It does not cause euphoria or a 'high', but has therapeutic properties including anti-inflammatory, antiepileptic, anxiolytic, and neuroprotective effects."
+			},
+			"how_does_cbd_work": {
+				"question": "How does CBD work in the body?",
+				"answer": "CBD interacts with the body's endocannabinoid system (ECS), which regulates many physiological processes including mood, pain, inflammation, and sleep. CBD helps maintain balance in this system."
+			},
+			"is_cbd_safe_for_pets": {
+				"question": "Is CBD safe for pets?",
+				"answer": "Yes, CBD is generally considered safe for pets, especially when derived from hemp and containing no THC. However, always consult with your veterinarian before starting use."
+			},
+			"will_cbd_get_my_pet_high": {
+				"question": "Will CBD get my pet high?",
+				"answer": "No, our products contain only CBD and do not contain THC - the psychoactive compound that causes euphoria. CBD does not cause changes in consciousness or behavior."
+			},
+			"how_to_dose_cbd": {
+				"question": "How to properly dose CBD?",
+				"answer": "Dosage depends on the pet's weight, condition, and sensitivity. We recommend starting with a lower dose and gradually increasing. Use our dosage calculator or consult with your veterinarian."
+			},
+			"cbd_side_effects": {
+				"question": "Are there any side effects of CBD?",
+				"answer": "CBD is generally well-tolerated, but some pets may experience drowsiness, changes in appetite, or mild digestive upset. These effects are usually temporary and resolve with dose adjustment."
+			}
+		}
+	},
+	
+	"contacts": {
+		"title": "Contacts",
+		"subtitle": "Contact us for additional information",
+		"email": "Email",
+		"phone": "Phone",
+		"address": "Address",
+		"social_media": "Social Media",
+		"business_hours": "Business Hours",
+		"monday_friday": "Monday - Friday",
+		"saturday": "Saturday",
+		"sunday": "Sunday",
+		"closed": "Closed",
+		"contact_form": {
+			"title": "Contact Us",
+			"name": "Name",
+			"email": "Email",
+			"subject": "Subject",
+			"message": "Message",
+			"send": "Send Message",
+			"sending": "Sending...",
+			"success": "Message sent successfully!",
+			"error": "Error sending message. Please try again."
 		}
 	}
 }
