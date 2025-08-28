@@ -73,10 +73,10 @@ export class DrizzleUserRepository implements UserRepository {
 
 			const insertData = {
 				id,
-				user_id: data.userId,
+				userId: data.userId,
 				street: data.street,
 				city: data.city,
-				postal_code: data.postalCode,
+				postalCode: data.postalCode,
 				country: data.country,
 				created_at: Math.floor(now.getTime() / 1000),
 				updated_at: Math.floor(now.getTime() / 1000)
@@ -99,7 +99,7 @@ export class DrizzleUserRepository implements UserRepository {
 
 			if (data.street !== undefined) updateData.street = data.street;
 			if (data.city !== undefined) updateData.city = data.city;
-			if (data.postalCode !== undefined) updateData.postal_code = data.postalCode;
+			if (data.postalCode !== undefined) updateData.postalCode = data.postalCode;
 			if (data.country !== undefined) updateData.country = data.country;
 
 			updateData.updated_at = Math.floor(new Date().getTime() / 1000);
