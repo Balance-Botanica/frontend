@@ -7,6 +7,9 @@
 	export let onChange: (checked: boolean) => void = () => {};
 	export let variant: 'default' | 'cookie' = 'default';
 
+	// Generate a unique ID for accessibility
+	let switchId = 'switch-' + Math.random().toString(36).substr(2, 9);
+
 	function handleToggle() {
 		if (!disabled) {
 			onChange(!checked);
@@ -28,6 +31,7 @@
 		role="switch"
 		aria-checked={checked}
 		aria-disabled={disabled}
+		aria-labelledby={label ? switchId + '-label' : undefined}
 		{disabled}
 		onclick={handleToggle}
 		onkeydown={handleKeyDown}
@@ -55,6 +59,7 @@
 
 	{#if label}
 		<label
+			id={switchId + '-label'}
 			class="cursor-pointer text-sm font-medium select-none transition-colors duration-200"
 			style="color: {disabled ? colors.primary : colors.text};"
 			class:cursor-not-allowed={disabled}

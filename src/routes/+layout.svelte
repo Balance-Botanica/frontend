@@ -216,7 +216,19 @@
 			
 			<!-- Mobile Menu Overlay -->
 			{#if isMobileMenuOpen}
-				<div class="fixed inset-0 z-40 bg-black/50" onclick={toggleMobileMenu}></div>
+				<div 
+					class="fixed inset-0 z-40 bg-black/50" 
+					role="button"
+					tabindex="0"
+					onclick={toggleMobileMenu}
+					onkeydown={(e) => {
+						if (e.key === 'Enter' || e.key === ' ') {
+							e.preventDefault();
+							toggleMobileMenu();
+						}
+					}}
+					aria-label="Close menu"
+				></div>
 				<div class="fixed left-0 top-0 z-50 h-full w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out">
 					<div class="p-4 border-b">
 						<h2 class="text-xl font-bold">Menu</h2>

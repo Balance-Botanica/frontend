@@ -243,8 +243,28 @@
 
 		<!-- Logout Confirmation Dialog -->
 		{#if showLogoutDialog}
-			<div class="logout-dialog-overlay" onclick={handleLogoutCancel}>
-				<div class="logout-dialog" onclick={(e) => e.stopPropagation()}>
+			<div 
+				class="logout-dialog-overlay" 
+				role="button"
+				tabindex="0"
+				onclick={handleLogoutCancel}
+				onkeydown={(e) => {
+					if (e.key === 'Enter' || e.key === ' ') {
+						e.preventDefault();
+						handleLogoutCancel();
+					}
+				}}
+			>
+				<div 
+					class="logout-dialog" 
+					role="presentation"
+					onclick={(e) => e.stopPropagation()}
+					onkeydown={(e) => {
+						if (e.key === 'Enter' || e.key === ' ') {
+							e.stopPropagation();
+						}
+					}}
+				>
 					<h3 class="logout-dialog-title">Confirm Logout</h3>
 					<p class="logout-dialog-message">
 						Are you sure you want to sign out?
