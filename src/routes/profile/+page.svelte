@@ -147,7 +147,17 @@
 					}, 1000);
 				} else {
 					console.log('[Profile Page] Address save failed:', responseData?.error);
-					saveError = responseData?.error || 'Failed to save address. Please try again.';
+					// Check if it's an authentication error
+					if (responseData?.error === 'User not authenticated') {
+						console.log('[Profile Page] Authentication error detected, redirecting to login');
+						saveError = 'Your session has expired. Redirecting to login...';
+						// Redirect to login after a short delay
+						setTimeout(() => {
+							goto('/login');
+						}, 2000);
+					} else {
+						saveError = responseData?.error || 'Failed to save address. Please try again.';
+					}
 				}
 			} else {
 				console.log('[Profile Page] Form submission failed');
