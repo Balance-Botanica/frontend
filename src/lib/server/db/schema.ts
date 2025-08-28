@@ -21,6 +21,19 @@ export const users = sqliteTable('users', {
 	createdAt: integer('created_at', { mode: 'timestamp' }).$defaultFn(() => new Date())
 });
 
+export const deliveryAddresses = sqliteTable('delivery_addresses', {
+	id: text('id').primaryKey(),
+	userId: text('user_id')
+		.notNull()
+		.references(() => users.id),
+	street: text('street').notNull(),
+	city: text('city').notNull(),
+	postalCode: text('postal_code').notNull(),
+	country: text('country').notNull().default('Ukraine'),
+	createdAt: integer('created_at', { mode: 'timestamp' }).$defaultFn(() => new Date()),
+	updatedAt: integer('updated_at', { mode: 'timestamp' }).$defaultFn(() => new Date())
+});
+
 export const sessions = sqliteTable('sessions', {
 	id: text('id').primaryKey(),
 	userId: text('user_id')
@@ -31,4 +44,5 @@ export const sessions = sqliteTable('sessions', {
 
 export type Session = typeof sessions.$inferSelect;
 export type User = typeof users.$inferSelect;
+export type DeliveryAddress = typeof deliveryAddresses.$inferSelect;
 export type Product = typeof products.$inferSelect;

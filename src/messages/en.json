@@ -285,7 +285,7 @@
 		},
 		"effects": {
 			"question": "How long does it take to feel the effects of CBD?",
-			"answer": "The onset time varies depending on the delivery method and individual factors. Sublingual oils typically work within 15-45 minutes, while topicals may take 30-60 minutes. Capsules usually take 1-2 hours. Effects can last 4-8 hours depending on dosage and metabolism."
+			"answer": "The onset time varies depending on the delivery method and individual factors. Sublingual oils typically work within 15-45 minutes, while topicals may take 30-60 minutes. Capsules usually take 1-2 hours. Effects can last 4-88 hours depending on dosage and metabolism."
 		},
 		"cta": {
 			"text": "Still have questions? We're here to help!",
@@ -487,5 +487,29 @@
 				"create_account": "Create Account"
 			}
 		}
+	},
+	"profile": {
+		"meta": {
+			"title": "Profile | Balance Botanica",
+			"description": "Manage your account information and delivery address"
+		},
+		"title": "My Profile",
+		"logout": "Logout",
+		"userInformation": "User Information",
+		"email": "Email",
+		"name": "Name",
+		"fullName": "Full Name",
+		"deliveryAddress": "Delivery Address",
+		"street": "Street Address",
+		"streetPlaceholder": "Enter your street address",
+		"city": "City",
+		"cityPlaceholder": "Enter your city",
+		"postalCode": "Postal Code",
+		"postalCodePlaceholder": "Enter postal code",
+		"country": "Country",
+		"saveAddress": "Save Address",
+		"saving": "Saving...",
+		"addressSaved": "Address saved successfully!",
+		"loading": "Loading profile information..."
 	}
 }

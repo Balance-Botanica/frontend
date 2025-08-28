@@ -152,6 +152,20 @@ This document tracks our project tasks, priorities, and progress.
 - Moved `bind:this={imgRef}` from the div wrapper to the actual img elements
 - This resolves the type mismatch error and ensures proper image loading detection functionality
 
+## New Features Implementation
+
+### User Profile Page with Delivery Address Management
+**Status:** COMPLETED
+- Created `/profile` route accessible from the header user icon
+- Implemented user information display (email, name)
+- Added delivery address form with fields for street, city, postal code, and country
+- Created database schema for storing delivery addresses
+- Implemented Drizzle repository for user and delivery address operations
+- Created user service for business logic
+- Added server-side endpoint for handling delivery address operations
+- Integrated with existing authentication system
+- Fully translated in both English and Ukrainian
+
 ## Development Guidelines
 
 1. Always check the existing codebase structure before implementing new features

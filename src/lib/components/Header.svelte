@@ -89,9 +89,9 @@
 		});
 		
 		if ($isAuthenticated) {
-			console.log('🔓 [HEADER] User is authenticated, showing logout confirmation...');
-			// Show logout confirmation dialog
-			showLogoutDialog = true;
+			console.log('🔓 [HEADER] User is authenticated, navigating to profile...');
+			// Go to profile page
+			goto('/profile');
 		} else {
 			console.log('🔗 [HEADER] User not authenticated, redirecting to login...');
 			// Go to login page
