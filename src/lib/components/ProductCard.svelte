@@ -76,7 +76,11 @@
 	let categories: string[] = [];
 	let isImageLoading = true;
 	let imageLoadTimeout: ReturnType<typeof setTimeout>;
-	let imgRef: HTMLImageElement | null = null;
+	let imgRef: HTMLImageElement | null = null; // Changed from HTMLDivElement to HTMLImageElement
+	let touchStartX = 0;
+	let touchStartY = 0;
+	let touchEndX = 0;
+	let isSwiping = false;
 
 	const dispatch = createEventDispatcher<{
 		addToCart: { productId: string; product: typeof product };
@@ -187,6 +191,55 @@
 		}
 	}
 
+	// Touch event handlers
+	function handleTouchStart(event: TouchEvent) {
+		touchStartX = event.touches[0].clientX;
+		touchStartY = event.touches[0].clientY;
+		isSwiping = true;
+	}
+
+	function handleTouchMove(event: TouchEvent) {
+		if (!isSwiping) return;
+		
+		const touchX = event.touches[0].clientX;
+		const touchY = event.touches[0].clientY;
+		
+		const diffX = touchStartX - touchX;
+		const diffY = touchStartY - touchY;
+		
+		// Check if horizontal swipe
+		if (Math.abs(diffX) > Math.abs(diffY)) {
+			event.preventDefault();
+		}
+	}
+
+	function handleTouchEnd(event: TouchEvent) {
+		if (!isSwiping) return;
+		
+		const touchEndX = event.changedTouches[0].clientX;
+		const diffX = touchStartX - touchEndX;
+		const absDiffX = Math.abs(diffX);
+		
+		// Minimum swipe distance
+		if (absDiffX > 50) {
+			if (diffX > 0) {
+				nextImage(); // Swipe left - next image
+			} else {
+				prevImage(); // Swipe right - previous image
+			}
+		}
+		
+		isSwiping = false;
+	}
+	
+	// Add keyboard event handler for accessibility
+	function handleKeyDown(event: KeyboardEvent, action: () => void) {
+		if (event.key === 'Enter' || event.key === ' ') {
+			event.preventDefault();
+			action();
+		}
+	}
+
 	function handleAddToCart() {
 		try {
 			// Convert raw product data to client product for cart
@@ -274,7 +327,7 @@
 </script>
 
 <div
-	class="overflow-hidden rounded-[20px] bg-[#F8F7F6] {className}"
+	class="overflow-hidden {className}"
 	style="min-height: 650px; height: 100%; display: flex; flex-direction: column; max-width: 100%;"
 >
 	<div class="flex h-full flex-col justify-end items-start p-4 md:p-6 gap-4 md:gap-6">
@@ -310,7 +363,12 @@
 		{/if}
 
 		<!-- Product Image Section -->
-		<div class="relative w-full overflow-hidden rounded-xl bg-white group" style="height: 240px;">
+		<div 
+			class="relative w-full overflow-hidden rounded-xl bg-white group" 
+			style="height: 240px;"
+			ontouchstart={handleTouchStart}
+			ontouchend={handleTouchEnd}
+		>
 			<!-- Image Counter (only for multiple images) -->
 			{#if imageUrls.length > 1}
 				<div class="absolute top-3 right-3 z-10 rounded-full bg-black/60 px-2 py-1 text-xs font-medium text-white backdrop-blur-sm">
@@ -319,48 +377,69 @@
 			{/if}
 			<!-- Main Image -->
 			{#if imageUrls.length > 0}
-				<img
-					src={imageUrls[currentImageIndex]}
-					alt={product.name}
+				<div 
 					class="h-full w-full cursor-pointer object-cover transition-opacity duration-500"
+					role="button"
+					tabindex="0"
+					onclick={handleImageClick}
+					onkeydown={(e) => handleKeyDown(e, handleImageClick)}
 					data-product-image
-					bind:this={imgRef}
-					on:click={handleImageClick}
-					on:load={() => {
-						// console.log('🖼️ Image loaded successfully:', imageUrls[currentImageIndex]);
-						isImageLoading = false;
-						// Clear timeout since image loaded successfully
-						if (imageLoadTimeout) {
-							clearTimeout(imageLoadTimeout);
-						}
-					}}
-					on:error={() => {
-						// console.log('Image load error, switching to fallback');
-						isImageLoading = false;
-						// Clear timeout since we're handling the error
-						if (imageLoadTimeout) {
-							clearTimeout(imageLoadTimeout);
-						}
-						// Add fallback image instead of replacing
-						if (!imageUrls.includes('/images/animal1.jpg')) {
-							imageUrls = [...imageUrls, '/images/animal1.jpg'];
-						}
-					}}
-					style="object-fit: cover; object-position: center;"
-				/>
+				>
+					<img
+						src={imageUrls[currentImageIndex]}
+						alt={product.name}
+						class="h-full w-full object-cover"
+						ontouchstart={handleTouchStart}
+						ontouchmove={handleTouchMove}
+						ontouchend={handleTouchEnd}
+						onload={() => {
+							// console.log('🖼️ Image loaded successfully:', imageUrls[currentImageIndex]);
+							isImageLoading = false;
+							// Clear timeout since image loaded successfully
+							if (imageLoadTimeout) {
+								clearTimeout(imageLoadTimeout);
+							}
+						}}
+						onerror={() => {
+							// console.log('Image load error, switching to fallback');
+							isImageLoading = false;
+							// Clear timeout since we're handling the error
+							if (imageLoadTimeout) {
+								clearTimeout(imageLoadTimeout);
+							}
+							// Add fallback image instead of replacing
+							if (!imageUrls.includes('/images/animal1.jpg')) {
+								imageUrls = [...imageUrls, '/images/animal1.jpg'];
+							}
+						}}
+						style="object-fit: cover; object-position: center;"
+						bind:this={imgRef}
+					/>
+				</div>
 			{:else}
 				<!-- Fallback Image -->
-				<img
-					src="/images/animal1.jpg"
-					alt={product.name}
+				<div 
 					class="h-full w-full cursor-pointer object-cover"
-					on:click={handleImageClick}
-					on:load={() => {
-						// console.log('Fallback image loaded');
-						isImageLoading = false;
-					}}
-					style="object-fit: cover; object-position: center;"
-				/>
+					role="button"
+					tabindex="0"
+					onclick={handleImageClick}
+					onkeydown={(e) => handleKeyDown(e, handleImageClick)}
+				>
+					<img
+						src="/images/animal1.jpg"
+						alt={product.name}
+						class="h-full w-full object-cover"
+						ontouchstart={handleTouchStart}
+						ontouchmove={handleTouchMove}
+						ontouchend={handleTouchEnd}
+						onload={() => {
+							// console.log('Fallback image loaded');
+							isImageLoading = false;
+						}}
+						style="object-fit: cover; object-position: center;"
+						bind:this={imgRef}
+					/>
+				</div>
 			{/if}
 
 			<!-- Loading State -->
@@ -378,8 +457,8 @@
 			{#if imageUrls.length > 1}
 				<!-- Previous Button -->
 				<button
-					class="absolute top-1/2 left-3 flex h-10 w-10 -translate-y-1/2 transform items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-sm transition-all duration-300 hover:bg-black/60 hover:scale-110 shadow-lg opacity-0 group-hover:opacity-100"
-					on:click={prevImage}
+					class="touch-button absolute top-1/2 left-3 flex h-10 w-10 -translate-y-1/2 transform items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-sm transition-all duration-300 hover:bg-black/60 hover:scale-110 shadow-lg opacity-0 group-hover:opacity-100"
+					onclick={prevImage}
 					aria-label="Previous image"
 				>
 					<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -394,8 +473,8 @@
 
 				<!-- Next Button -->
 				<button
-					class="absolute top-1/2 right-3 flex h-10 w-10 -translate-y-1/2 transform items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-sm transition-all duration-300 hover:bg-black/60 hover:scale-110 shadow-lg opacity-0 group-hover:opacity-100"
-					on:click={nextImage}
+					class="touch-button absolute top-1/2 right-3 flex h-10 w-10 -translate-y-1/2 transform items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-sm transition-all duration-300 hover:bg-black/60 hover:scale-110 shadow-lg opacity-0 group-hover:opacity-100"
+					onclick={nextImage}
 					aria-label="Next image"
 				>
 					<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -412,10 +491,10 @@
 				<div class="absolute bottom-3 left-1/2 flex -translate-x-1/2 transform space-x-2">
 					{#each imageUrls as _, index}
 						<button
-							class="h-3 w-3 rounded-full transition-all duration-300 {index === currentImageIndex
+							class="touch-button h-3 w-3 rounded-full transition-all duration-300 {index === currentImageIndex
 								? 'bg-white shadow-lg scale-125'
 								: 'bg-white/60 hover:bg-white/80'}"
-							on:click={() => goToImage(index)}
+							onclick={() => goToImage(index)}
 							aria-label={`Go to image ${index + 1}`}
 						></button>
 					{/each}
@@ -477,15 +556,15 @@
 			<!-- Add to Cart Button -->
 			{#if showAddToCart}
 				<button
-					class="font-poppins w-full rounded-xl bg-[#4b766e] px-6 py-4 text-[16px] leading-[22px] font-medium text-white transition-colors duration-200 hover:bg-[#3d5f58]"
-					on:click={handleAddToCart}
+					class="touch-button font-poppins w-full rounded-xl bg-[#4b766e] px-6 py-4 text-[16px] leading-[22px] font-medium text-white transition-colors duration-200 hover:bg-[#3d5f58]"
+					onclick={handleAddToCart}
 				>
 					До кошика
 				</button>
 			{/if}
 
 			<!-- Future Subscribe Button Placeholder -->
-			<!-- <button class="w-full bg-[#1f1f1f] hover:bg-[#333] text-white font-medium text-[14px] leading-[19.6px] py-3 px-4 rounded-xl transition-colors duration-200 font-poppins">
+			<!-- <button class="touch-button w-full bg-[#1f1f1f] hover:bg-[#333] text-white font-medium text-[14px] leading-[19.6px] py-3 px-4 rounded-xl transition-colors duration-200 font-poppins">
 				Підписатися
 			</button> -->
 		</div>
@@ -510,6 +589,54 @@
 		h3, p, div {
 			max-width: 100%;
 			word-break: break-word;
+		}
+	}
+	
+	/* Mobile-specific styles */
+	@media (max-width: 767px) {
+		.mobile-card {
+			background-color: white;
+			border-radius: 16px;
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+			overflow: hidden;
+			transition: all 0.2s ease;
+		}
+
+		.mobile-card:hover {
+			box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+			transform: translateY(-2px);
+		}
+		
+		.touch-button {
+			min-height: 44px;
+			min-width: 44px;
+			padding: var(--spacing-sm) var(--spacing-md);
+			border-radius: 8px;
+			font-weight: var(--font-weight-medium);
+			transition: all 0.2s ease;
+			cursor: pointer;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			text-align: center;
+		}
+
+		.touch-button:active {
+			transform: scale(0.98);
+		}
+	}
+	
+	/* Desktop styles */
+	@media (min-width: 768px) {
+		.touch-button {
+			/* Reset touch-specific styles for desktop */
+			min-height: auto;
+			min-width: auto;
+			transform: none;
+		}
+		
+		.touch-button:active {
+			transform: none;
 		}
 	}
 </style>
