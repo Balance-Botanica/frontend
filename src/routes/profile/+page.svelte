@@ -54,8 +54,8 @@
 
 	// Form state
 	$: deliveryAddresses = data?.deliveryAddresses || [];
-	$: hasAddresses = deliveryAddresses.length > 0;
-	console.log('[Profile Page] Delivery addresses loaded:', deliveryAddresses.length);
+	$: hasAddresses = deliveryAddresses?.length > 0;
+	console.log('[Profile Page] Delivery addresses loaded:', deliveryAddresses?.length);
 
 	// Handle form input changes
 	function handleAddressChange(field: keyof typeof deliveryAddress, value: string | boolean) {
@@ -303,7 +303,7 @@
 								</div>
 							{/each}
 							
-							{#if deliveryAddresses.length < 3}
+							{#if deliveryAddresses?.length < 3}
 								<button class="add-address-btn" on:click={addNewAddress}>
 									+ {$pageTranslations.t('profile.address.addNew')}
 								</button>
