@@ -41,22 +41,28 @@ export class ProductService {
 		minPrice?: number;
 		maxPrice?: number;
 	}): Promise<Product[]> {
-		const allProducts = await this.getAllProducts();
+		console.log('ProductService: searchProductsWithFilters called with filters:', filters);
 
-		return allProducts.filter((product) => {
+		const allProducts = await this.getAllProducts();
+		console.log('ProductService: Total products before filtering:', allProducts.length);
+
+		const filteredProducts = allProducts.filter((product) => {
 			// Search term filter (name or description)
-			if (filters.searchTerm) {
-				const term = filters.searchTerm.toLowerCase();
-				if (
-					!product.name.toLowerCase().includes(term) &&
-					(!product.description || !product.description.toLowerCase().includes(term))
-				) {
+			if (filters.searchTerm && filters.searchTerm.trim() !== '') {
+				const term = filters.searchTerm.toLowerCase().trim();
+				const nameMatch = product.name.toLowerCase().includes(term);
+				const descriptionMatch = product.description
+					? product.description.toLowerCase().includes(term)
+					: false;
+
+				// If no match in name or description, exclude product
+				if (!nameMatch && !descriptionMatch) {
 					return false;
 				}
 			}
 
 			// Category filter
-			if (filters.category) {
+			if (filters.category && filters.category.trim() !== '') {
 				try {
 					const categories = JSON.parse(product.categories);
 					if (!Array.isArray(categories) || !categories.includes(filters.category)) {
@@ -68,26 +74,39 @@ export class ProductService {
 			}
 
 			// Size filter
-			if (filters.size && product.size !== filters.size) {
+			if (filters.size && filters.size.trim() !== '' && product.size !== filters.size) {
 				return false;
 			}
 
 			// Flavor filter
-			if (filters.flavor && product.flavor !== filters.flavor) {
+			if (filters.flavor && filters.flavor.trim() !== '' && product.flavor !== filters.flavor) {
 				return false;
 			}
 
-			// Price filters (convert from kopiyky to UAH)
-			const priceUAH = product.price / 100;
-			if (filters.minPrice !== undefined && priceUAH < filters.minPrice) {
-				return false;
-			}
-			if (filters.maxPrice !== undefined && priceUAH > filters.maxPrice) {
-				return false;
+			// Price filters (convert from kopiyky to UAH for comparison)
+			if (filters.minPrice !== undefined || filters.maxPrice !== undefined) {
+				const priceUAH = product.price / 100;
+
+				if (filters.minPrice !== undefined && priceUAH < filters.minPrice) {
+					return false;
+				}
+				if (filters.maxPrice !== undefined && priceUAH > filters.maxPrice) {
+					return false;
+				}
 			}
 
 			return true;
 		});
+
+		console.log('ProductService: Filtered products count:', filteredProducts.length);
+		if (filters.searchTerm && filteredProducts.length > 0) {
+			console.log('ProductService: Sample product match:', {
+				searchTerm: filters.searchTerm,
+				productName: filteredProducts[0].name
+			});
+		}
+
+		return filteredProducts;
 	}
 
 	// Create new product

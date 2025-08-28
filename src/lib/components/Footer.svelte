@@ -33,6 +33,15 @@
 				return waIcon;
 		}
 	}
+	
+	// Function to handle navigation - to be implemented with actual routes
+	function handleNavigation(path: string) {
+		// For now, we'll just log the intended navigation
+		console.log('Navigate to:', path);
+		// In a real implementation, you would use goto from $app/navigation
+		// import { goto } from '$app/navigation';
+		// goto(path);
+	}
 </script>
 
 <footer class="bg-main text-white">
@@ -48,18 +57,30 @@
 
 				<!-- Navigation Links - Horizontal -->
 				<nav class="flex flex-wrap gap-6">
-					<a href="#" class="text-sm text-white/80 transition-colors hover:text-white"
-						>{t('footer.navigation.shop')}</a
+					<button 
+						class="text-sm text-white/80 transition-colors hover:text-white"
+						onclick={() => handleNavigation('/products')}
 					>
-					<a href="#" class="text-sm text-white/80 transition-colors hover:text-white"
-						>{t('footer.navigation.about')}</a
+						{t('footer.navigation.shop')}
+					</button>
+					<button 
+						class="text-sm text-white/80 transition-colors hover:text-white"
+						onclick={() => handleNavigation('/about')}
 					>
-					<a href="#" class="text-sm text-white/80 transition-colors hover:text-white"
-						>{t('footer.navigation.contacts')}</a
+						{t('footer.navigation.about')}
+					</button>
+					<button 
+						class="text-sm text-white/80 transition-colors hover:text-white"
+						onclick={() => handleNavigation('/contacts')}
 					>
-					<a href="#" class="text-sm text-white/80 transition-colors hover:text-white"
-						>{t('footer.navigation.blog')}</a
+						{t('footer.navigation.contacts')}
+					</button>
+					<button 
+						class="text-sm text-white/80 transition-colors hover:text-white"
+						onclick={() => handleNavigation('/blog')}
 					>
+						{t('footer.navigation.blog')}
+					</button>
 				</nav>
 
 				<!-- Company Description -->
@@ -90,25 +111,28 @@
 				<div class="text-xs text-white/60">
 					<span>{t('footer.legal.copyright')}</span>
 					<span class="mx-2">|</span>
-					<a href="#" class="transition-colors hover:text-white"
-						>{t('footer.legal.terms_privacy')}</a
+					<button 
+						class="transition-colors hover:text-white"
+						onclick={() => handleNavigation('/terms')}
 					>
+						{t('footer.legal.terms_privacy')}
+					</button>
 				</div>
 
 				<!-- Right Side: Social Icons Only (No "Follow Us" text) -->
 				<div class="mt-2 flex space-x-3 sm:mt-0">
 					{#each platforms as platform (platform)}
-						<a
-							href="#"
+						<button
 							class="text-white/80 transition-colors hover:text-white"
 							aria-label={t(`footer.social.${platform}`)}
+							onclick={() => handleNavigation(`/social/${platform}`)}
 						>
 							<img
 								src={getSocialIcon(platform)}
 								alt={t(`footer.social.${platform}`)}
 								class="h-5 w-5"
 							/>
-						</a>
+						</button>
 					{/each}
 				</div>
 			</div>

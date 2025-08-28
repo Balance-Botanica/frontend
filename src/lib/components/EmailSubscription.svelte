@@ -1,5 +1,4 @@
 <script lang="ts">
-	import PawHybridPatternBG from './PawHybridPatternBG.svelte';
 	import { t } from '../i18n';
 
 	const { compact = false } = $props<{ compact?: boolean }>();
@@ -20,12 +19,11 @@
 	}
 </script>
 
-<section
+<div
+	id="subscribe"
 	aria-labelledby="email-subscription-heading"
-	class={`w-full ${sectionPadding} relative overflow-hidden bg-main/5`}
+	class={`w-full ${sectionPadding} relative overflow-hidden bg-main/5 bg-gray-50`}
 >
-	<!-- Fluffy Paw Pattern Background -->
-	<PawHybridPatternBG patternCount={35} opacity={0.12} density="medium" />
 
 	<div class="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 		<div class="w-full rounded-2xl bg-white shadow-sm ring-1 ring-black/5">
@@ -112,4 +110,4 @@
 			</div>
 		</div>
 	</div>
-</section>
+</div>

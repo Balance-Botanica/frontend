@@ -12,6 +12,14 @@
 			onChange(!checked);
 		}
 	}
+	
+	// Add keyboard event handler for accessibility
+	function handleKeyDown(event: KeyboardEvent) {
+		if (event.key === 'Enter' || event.key === ' ') {
+			event.preventDefault();
+			handleToggle();
+		}
+	}
 </script>
 
 <div class="flex items-center space-x-3">
@@ -21,7 +29,8 @@
 		aria-checked={checked}
 		aria-disabled={disabled}
 		{disabled}
-		on:click={handleToggle}
+		onclick={handleToggle}
+		onkeydown={handleKeyDown}
 		class="relative inline-flex h-8 w-[52px] items-center rounded-full transition-all duration-200 ease-in-out cursor-pointer"
 		style="
       background-color: {variant === 'cookie' ? (checked ? '#f97316' : '#4b5563') : (checked ? colors.main : colors.tertiary)};
@@ -49,7 +58,6 @@
 			class="cursor-pointer text-sm font-medium select-none transition-colors duration-200"
 			style="color: {disabled ? colors.primary : colors.text};"
 			class:cursor-not-allowed={disabled}
-			on:click={!disabled ? handleToggle : undefined}
 		>
 			{label}
 		</label>

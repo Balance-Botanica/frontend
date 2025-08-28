@@ -39,41 +39,45 @@
 		}
 	}
 
-	// Get notification colors based on type
+	// Get notification colors based on Balance Botanica color palette
 	function getNotificationColors(type: string) {
 		switch (type) {
 			case 'success':
 				return {
-					bg: 'bg-green-50 border-green-200',
-					icon: 'text-green-600',
-					title: 'text-green-800',
-					message: 'text-green-700',
-					button: 'text-green-600 hover:text-green-800'
+					bg: 'bg-white border-[#4b766e]', // main color
+					icon: 'text-[#4b766e]', // main color
+					title: 'text-[#1f1f1f]', // main-additional
+					message: 'text-[#474747]', // text color
+					button: 'text-[#4b766e] hover:text-[#3d5f58]', // main color with darker hover
+					progress: 'bg-[#4b766e]' // main color
 				};
 			case 'error':
 				return {
-					bg: 'bg-red-50 border-red-200',
-					icon: 'text-red-600',
-					title: 'text-red-800',
-					message: 'text-red-700',
-					button: 'text-red-600 hover:text-red-800'
+					bg: 'bg-white border-[#ff3b30]', // destructive color
+					icon: 'text-[#ff3b30]', // destructive color
+					title: 'text-[#1f1f1f]', // main-additional
+					message: 'text-[#474747]', // text color
+					button: 'text-[#ff3b30] hover:text-[#cc2f26]', // destructive color with darker hover
+					progress: 'bg-[#ff3b30]' // destructive color
 				};
 			case 'warning':
 				return {
-					bg: 'bg-yellow-50 border-yellow-200',
-					icon: 'text-yellow-600',
-					title: 'text-yellow-800',
-					message: 'text-yellow-700',
-					button: 'text-yellow-600 hover:text-yellow-800'
+					bg: 'bg-white border-[#f7f7f7]', // tertiary-additional
+					icon: 'text-[#c5c5c5]', // tertiary
+					title: 'text-[#1f1f1f]', // main-additional
+					message: 'text-[#474747]', // text color
+					button: 'text-[#9a9a9a] hover:text-[#7a7a7a]', // primary with darker hover
+					progress: 'bg-[#c5c5c5]' // tertiary
 				};
 			case 'info':
 			default:
 				return {
-					bg: 'bg-blue-50 border-blue-200',
-					icon: 'text-blue-600',
-					title: 'text-blue-800',
-					message: 'text-blue-700',
-					button: 'text-blue-600 hover:text-blue-800'
+					bg: 'bg-white border-[#4b766e]', // main color
+					icon: 'text-[#4b766e]', // main color
+					title: 'text-[#1f1f1f]', // main-additional
+					message: 'text-[#474747]', // text color
+					button: 'text-[#4b766e] hover:text-[#3d5f58]', // main color with darker hover
+					progress: 'bg-[#4b766e]' // main color
 				};
 		}
 	}
@@ -90,22 +94,22 @@
 				in:fly={{ y: -100, duration: 300 }}
 				out:fade={{ duration: 200 }}
 			>
-				<div class="border rounded-lg shadow-lg backdrop-blur-sm {colors.bg} overflow-hidden">
+				<div class="border rounded-xl shadow-lg backdrop-blur-sm {colors.bg} overflow-hidden">
 					<div class="p-4">
 						<div class="flex items-start">
 							<!-- Icon -->
 							<div class="flex-shrink-0">
-								<div class="flex items-center justify-center w-8 h-8 rounded-full bg-white/50">
-									<span class="text-lg font-bold {colors.icon}">
+								<div class="flex items-center justify-center w-10 h-10 rounded-full bg-[#f8f7f6]">
+									<span class="text-xl font-bold {colors.icon}">
 										{getNotificationIcon(notification.type)}
 									</span>
 								</div>
 							</div>
 							
 							<!-- Content -->
-							<div class="ml-3 flex-1">
+							<div class="ml-4 flex-1">
 								{#if notification.title}
-									<h3 class="text-sm font-semibold {colors.title}">
+									<h3 class="text-base font-semibold {colors.title}">
 										{notification.title}
 									</h3>
 								{/if}
@@ -115,12 +119,12 @@
 								
 								<!-- Actions -->
 								{#if notification.actions && notification.actions.length > 0}
-									<div class="mt-3 flex space-x-2">
+									<div class="mt-3 flex space-x-3">
 										{#each notification.actions as action, index}
 											<button
 												type="button"
 												on:click={() => handleAction(notification, index)}
-												class="text-xs font-medium {colors.button} hover:underline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-current rounded px-2 py-1"
+												class="text-sm font-medium {colors.button} hover:underline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-current rounded px-3 py-1 transition-colors"
 											>
 												{action.label}
 											</button>
@@ -134,10 +138,10 @@
 								<button
 									type="button"
 									on:click={() => dismissNotification(notification.id)}
-									class="inline-flex text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 rounded-md p-1 transition-colors"
+									class="inline-flex text-[#b6b6b6] hover:text-[#9a9a9a] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#4b766e] rounded-md p-1 transition-colors"
 									aria-label="Dismiss notification"
 								>
-									<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
 									</svg>
 								</button>
@@ -147,9 +151,9 @@
 					
 					<!-- Progress Bar for Timed Notifications -->
 					{#if notification.duration && notification.duration > 0}
-						<div class="h-1 bg-black/10 overflow-hidden">
+						<div class="h-1 bg-[#f8f7f6] overflow-hidden">
 							<div 
-								class="h-full bg-current {colors.icon} transition-all ease-linear"
+								class="h-full {colors.progress} transition-all ease-linear"
 								style="animation: shrink {notification.duration}ms linear forwards;"
 							></div>
 						</div>
@@ -168,5 +172,15 @@
 		to {
 			width: 0%;
 		}
+	}
+	
+	/* Add subtle shadow for better depth */
+	.shadow-lg {
+		box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+	}
+	
+	/* Add smooth transitions for all interactive elements */
+	button {
+		transition: all 0.2s ease;
 	}
 </style>

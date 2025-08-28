@@ -26,8 +26,8 @@
 		: [];
 </script>
 
-<section class="px-4 py-16 sm:px-6">
-	<div class="mx-auto max-w-screen-2xl">
+<div id="products" class="w-full bg-white px-4 py-16 sm:px-6 lg:px-8">
+	<div class="w-full">
 		{#if title}
 			<div class="mb-12 flex items-center justify-between">
 				<h2 class="text-4xl font-bold text-gray-900">{title}</h2>
@@ -61,7 +61,7 @@
 			<p class="text-center text-gray-500 mt-8">Товари скоро з'являться.</p>
 		{/if}
 	</div>
-</section>
+</div>
 
 <style>
 	/* Removed the media query for small screens padding */

@@ -144,6 +144,14 @@ This document tracks our project tasks, priorities, and progress.
 - Translation files are up to date
 - Language switcher component working
 
+## Bug Fixes and Maintenance
+
+### TypeScript Error Fix in ProductCard Component
+**Status:** COMPLETED
+- Fixed TypeScript error where `HTMLDivElement` was being assigned to `imgRef` which should be `HTMLImageElement`
+- Moved `bind:this={imgRef}` from the div wrapper to the actual img elements
+- This resolves the type mismatch error and ensures proper image loading detection functionality
+
 ## Development Guidelines
 
 1. Always check the existing codebase structure before implementing new features

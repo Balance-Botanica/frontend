@@ -4,7 +4,8 @@
 	import CalculatorSection from '$lib/components/CalculatorSection.svelte';
 	import FAQ from '$lib/components/FAQ.svelte';
 	import ProductsSection from '$lib/components/ProductsSection.svelte';
-	import BenefitIcon from '$lib/components/BenefitIcon.svelte';
+	import HeroBanner from '$lib/components/HeroBanner.svelte';
+	import BenefitsSection from '$lib/components/BenefitsSection.svelte';
 	import EmailSubscription from '$lib/components/EmailSubscription.svelte';
 	import { createPageTranslations } from '$lib/i18n/store';
 	import SEO from '$lib/components/SEO.svelte';
@@ -21,7 +22,28 @@
 	console.log('📦 Products in data:', data?.products);
 	console.log('📊 Products count:', data?.products?.length || 0);
 
+	// State for mobile sections
+	let activeSection = 'hero';
+	let isScrolled = false;
 
+	onMount(() => {
+		// Add scroll listener for mobile section tracking
+		const handleScroll = () => {
+			isScrolled = window.scrollY > 50;
+		};
+		
+		window.addEventListener('scroll', handleScroll);
+		return () => window.removeEventListener('scroll', handleScroll);
+	});
+
+	// Function to scroll to a section
+	function scrollToSection(sectionId: string) {
+		activeSection = sectionId;
+		const element = document.getElementById(sectionId);
+		if (element) {
+			element.scrollIntoView({ behavior: 'smooth' });
+		}
+	}
 </script>
 
 {#if $pageTranslations}
@@ -32,491 +54,41 @@
 	/>
 
 	<!-- Main Content -->
-	<main class="main-section">
-		<!-- Hero Section - Fixed Height -->
-		<section class="hero-section">
-			<div class="hero-content">
-				<!-- Left Column - Text Content -->
-				<div class="hero-text">
-					<h1 class="hero-title">
-						{$pageTranslations.t('benefits.hero.title')}
-					</h1>
-					<p class="hero-subtitle">
-						{$pageTranslations.t('benefits.hero.subtitle')}
-					</p>
-					<div class="hero-buttons">
-						<a href="/products" class="hero-button primary">
-							{$pageTranslations.t('benefits.hero.shop_button')}
-						</a>
-						<a href="/about" class="hero-button secondary">
-							{$pageTranslations.t('benefits.hero.learn_button')}
-						</a>
-					</div>
-				</div>
+	<main class="flex-1">
+		<!-- Hero Section -->
+		<HeroBanner
+			title={$pageTranslations.t('benefits.hero.title')}
+			subtitle={$pageTranslations.t('benefits.hero.subtitle')}
+			shopButtonText={$pageTranslations.t('benefits.hero.shop_button')}
+			learnButtonText={$pageTranslations.t('benefits.hero.learn_button')}
+			imageUrl={mainBanner}
+			imageAlt="Balance Botanica - Premium CBD Products"
+		/>
 
-				<!-- Right Column - Hero Image -->
-				<div class="hero-image">
-					<img src={mainBanner} alt="Balance Botanica - Premium CBD Products" class="hero-banner" />
-				</div>
-			</div>
-		</section>
-
-		<!-- Benefits Section - Split into Two Products -->
-		<section class="benefits-section" aria-labelledby="benefits-heading">
-			<div class="benefits-content">
-				<header>
-					<h2
-						id="benefits-heading"
-						class="mb-12 text-center text-3xl font-bold text-white md:text-4xl"
-					>
-						{$pageTranslations.t('benefits.title')}
-					</h2>
-				</header>
-				<div class="grid gap-16 text-white md:grid-cols-2">
-					<!-- Left Column - Golden Paste CBD -->
-					<article class="space-y-6" aria-labelledby="golden-paste-heading">
-						<header>
-							<h3 id="golden-paste-heading" class="mb-8 text-center text-2xl font-bold">
-								{$pageTranslations.t('benefits.golden_paste.title')}
-							</h3>
-						</header>
-
-						<!-- Куркума -->
-						<div class="flex items-start gap-4">
-							<BenefitIcon emoji="🟡" />
-							<div>
-								<h4 class="mb-1 text-lg font-semibold">
-									{$pageTranslations.t('benefits.golden_paste.turmeric.title')}
-								</h4>
-								<p class="text-sm text-white/80">
-									{$pageTranslations.t('benefits.golden_paste.turmeric.description')}
-								</p>
-							</div>
-						</div>
-
-						<!-- Імбир -->
-						<div class="flex items-start gap-4">
-							<BenefitIcon emoji="🟠" />
-							<div>
-								<h4 class="mb-1 text-lg font-semibold">
-									{$pageTranslations.t('benefits.golden_paste.ginger.title')}
-								</h4>
-								<p class="text-sm text-white/80">
-									{$pageTranslations.t('benefits.golden_paste.ginger.description')}
-								</p>
-							</div>
-						</div>
-
-						<!-- Кокосове масло -->
-						<div class="flex items-start gap-4">
-							<BenefitIcon emoji="🥥" />
-							<div>
-								<h4 class="mb-1 text-lg font-semibold">
-									{$pageTranslations.t('benefits.golden_paste.coconut_oil.title')}
-								</h4>
-								<p class="text-sm text-white/80">
-									{$pageTranslations.t('benefits.golden_paste.coconut_oil.description')}
-								</p>
-							</div>
-						</div>
-
-						<!-- CBD для собак -->
-						<div class="flex items-start gap-4">
-							<BenefitIcon emoji="🐕" />
-							<div>
-								<h4 class="mb-1 text-lg font-semibold">
-									{$pageTranslations.t('benefits.golden_paste.cbd_for_dogs.title')}
-								</h4>
-								<p class="text-sm text-white/80">
-									{$pageTranslations.t('benefits.golden_paste.cbd_for_dogs.description')}
-								</p>
-							</div>
-						</div>
-					</article>
-
-					<!-- Right Column - CBD Oil -->
-					<article class="space-y-6" aria-labelledby="cbd-oil-heading">
-						<header>
-							<h3 id="cbd-oil-heading" class="mb-8 text-center text-2xl font-bold">
-								{$pageTranslations.t('benefits.cbd_oil.title')}
-							</h3>
-						</header>
-
-						<!-- MCT Oil основа -->
-						<div class="flex items-start gap-4">
-							<BenefitIcon emoji="🥥" />
-							<div>
-								<h4 class="mb-1 text-lg font-semibold">
-									{$pageTranslations.t('benefits.cbd_oil.mct_base.title')}
-								</h4>
-								<p class="text-sm text-white/80">
-									{$pageTranslations.t('benefits.cbd_oil.mct_base.description')}
-								</p>
-							</div>
-						</div>
-
-						<!-- Два смаки -->
-						<div class="flex items-start gap-4">
-							<BenefitIcon emoji="🍖" />
-							<div>
-								<h4 class="mb-1 text-lg font-semibold">
-									{$pageTranslations.t('benefits.cbd_oil.two_flavors.title')}
-								</h4>
-								<p class="text-sm text-white/80">
-									{$pageTranslations.t('benefits.cbd_oil.two_flavors.description')}
-								</p>
-							</div>
-						</div>
-
-						<!-- Зручний дозатор -->
-						<div class="flex items-start gap-4">
-							<BenefitIcon emoji="💧" />
-							<div>
-								<h4 class="mb-1 text-lg font-semibold">
-									{$pageTranslations.t('benefits.cbd_oil.convenient_dropper.title')}
-								</h4>
-								<p class="text-sm text-white/80">
-									{$pageTranslations.t('benefits.cbd_oil.convenient_dropper.description')}
-								</p>
-							</div>
-						</div>
-
-						<!-- Швидка дія -->
-						<div class="flex items-start gap-4">
-							<BenefitIcon emoji="⚡" />
-							<div>
-								<h4 class="mb-1 text-lg font-semibold">
-									{$pageTranslations.t('benefits.cbd_oil.fast_action.title')}
-								</h4>
-								<p class="text-sm text-white/80">
-									{$pageTranslations.t('benefits.cbd_oil.fast_action.description')}
-								</p>
-							</div>
-						</div>
-					</article>
-				</div>
-
-				<!-- Bottom recommendation text -->
-				<footer class="mt-12 border-t border-white/20 pt-8 text-center">
-					<p class="mx-auto max-w-3xl text-sm text-white/70">
-						{@html $pageTranslations.locale === 'uk-ua'
-							? 'Обидва продукти можна давати як собакам, так і котам. Щоб правильно обрати продукт та дозування, <a href="#calculator" class="text-green-400 hover:text-green-300 underline font-medium transition-colors">використайте наш калькулятор</a> та проконсультуватися з ветеринаром.'
-							: 'Both products can be given to both dogs and cats. To properly choose a product and dosage, <a href="#calculator" class="text-green-400 hover:text-green-300 underline font-medium transition-colors">use our calculator</a> and consult with your veterinarian.'}
-					</p>
-				</footer>
-			</div>
-		</section>
+		<!-- Benefits Section -->
+		<BenefitsSection locale={$pageTranslations.locale} />
 
 		<!-- Featured Products on Home -->
-		<div class="mt-16">
-			<ProductsSection
-				products={data.products}
-				limit={3}
-				title={$pageTranslations.t('benefits.products.homepage_title')}
-			/>
-		</div>
+		<ProductsSection
+			products={data.products}
+			limit={3}
+			title={$pageTranslations.t('benefits.products.homepage_title')}
+		/>
 
 		<!-- Made in Ukraine Section -->
-		<div class="mt-16">
-			<MadeInUkraine />
-		</div>
+		<MadeInUkraine />
 
 		<!-- Calculator Section -->
-		<div class="mt-16">
-			<CalculatorSection />
-		</div>
+		<CalculatorSection />
 
 		<!-- FAQ Section -->
-		<div class="mt-16">
-			<FAQ />
-		</div>
+		<FAQ />
 
 		<!-- Email Subscription Section -->
-		<div class="mt-16">
-			<EmailSubscription compact={false} />
-		</div>
+		<EmailSubscription compact={false} />
 	</main>
 {/if}
 
 <style>
-	/* Frame 427320931 - Main Section Layout */
-	.main-section {
-		/* Auto layout */
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		padding: 0;
-		gap: 0;
-
-		width: 100%;
-		min-height: 100vh;
-
-		/* Inside auto layout */
-		flex: none;
-		order: 2;
-		flex-grow: 0;
-	}
-
-	/* Hero Section - Fixed Height */
-	.hero-section {
-		width: 100%;
-		height: 640px;
-		background: white;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-	}
-
-	.hero-content {
-		/* Auto layout */
-		display: flex;
-		flex-direction: row;
-		align-items: center;
-		padding: 10px 150px;
-		gap: 60px;
-
-		width: 1920px;
-		height: 640px;
-
-		/* Inside auto layout */
-		flex: none;
-		order: 2;
-		flex-grow: 0;
-
-		/* Responsive adjustments */
-		max-width: 100vw;
-		overflow-x: auto;
-	}
-
-	.hero-text {
-		flex: 1;
-		max-width: 600px;
-	}
-
-	.hero-title {
-		font-size: 3.5rem;
-		font-weight: 900;
-		color: #1a1a1a;
-		line-height: 1.1;
-		margin-bottom: 1.5rem;
-	}
-
-	.hero-subtitle {
-		font-size: 1.25rem;
-		color: #404040;
-		line-height: 1.6;
-		margin-bottom: 2rem;
-	}
-
-	.hero-buttons {
-		display: flex;
-		gap: 1rem;
-		flex-wrap: wrap;
-	}
-
-	.hero-button {
-		padding: 1rem 2rem;
-		border-radius: 8px;
-		font-weight: 600;
-		text-decoration: none;
-		transition: all 0.2s ease;
-		font-size: 1rem;
-	}
-
-	.hero-button.primary {
-		background: #3f6f68;
-		color: white;
-	}
-
-	.hero-button.primary:hover {
-		background: #2d5a54;
-		transform: translateY(-2px);
-	}
-
-	.hero-button.secondary {
-		background: transparent;
-		color: #3f6f68;
-		border: 2px solid #3f6f68;
-	}
-
-	.hero-button.secondary:hover {
-		background: #3f6f68;
-		color: white;
-		transform: translateY(-2px);
-	}
-
-	.hero-image {
-		flex: 1;
-		display: flex;
-		justify-content: center;
-		align-items: center;
-	}
-
-	.hero-banner {
-		max-width: 100%;
-		height: auto;
-		border-radius: 16px;
-		box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-	}
-
-	/* Benefits Section - Full Width Background */
-	.benefits-section {
-		width: 100%;
-		background: #3f6f68;
-		padding: 5rem 0;
-	}
-
-	.benefits-content {
-		max-width: 72rem;
-		margin: 0 auto;
-		padding: 0 1rem;
-	}
-
-	/* Responsive design for smaller screens */
-	@media (max-width: 1920px) {
-		.hero-content {
-			width: 100%;
-			padding: 10px 4rem;
-		}
-	}
-
-	@media (max-width: 1536px) {
-		.hero-content {
-			padding: 10px 3rem;
-		}
-		
-		.benefits-section {
-			padding: 4rem 0;
-		}
-	}
-
-	@media (max-width: 1280px) {
-		.hero-content {
-			padding: 10px 2.5rem;
-		}
-		
-		.benefits-section {
-			padding: 3.5rem 0;
-		}
-	}
-
-	@media (max-width: 1100px) {
-		.hero-content {
-			padding: 10px 2rem;
-		}
-		
-		.benefits-section {
-			padding: 3rem 0;
-		}
-		
-		.benefits-content {
-			padding: 0 3rem; /* 3rem padding on screens 1100px and less */
-		}
-	}
-
-	@media (max-width: 768px) {
-		.hero-section {
-			height: auto;
-			min-height: 640px;
-			padding: 2rem 0;
-		}
-
-		.hero-content {
-			flex-direction: column;
-			padding: 10px 2rem;
-			gap: 40px;
-			height: auto;
-		}
-
-		.hero-title {
-			font-size: 2.5rem;
-			text-align: center;
-		}
-
-		.hero-subtitle {
-			text-align: center;
-		}
-
-		.hero-buttons {
-			justify-content: center;
-		}
-
-		.hero-text {
-			text-align: center;
-		}
-
-		.benefits-section {
-			padding: 3rem 0;
-		}
-
-		.benefits-content {
-			padding: 0 3rem; /* Maintaining 3rem padding */
-		}
-	}
-
-	@media (max-width: 640px) {
-		.hero-content {
-			padding: 10px 1.5rem;
-		}
-		
-		.benefits-section {
-			padding: 2.5rem 0;
-		}
-		
-		.benefits-content {
-			padding: 0 3rem; /* Maintaining 3rem padding */
-		}
-	}
-
-	@media (max-width: 480px) {
-		.hero-content {
-			padding: 10px 1rem;
-			gap: 30px;
-		}
-
-		.hero-title {
-			font-size: 2rem;
-		}
-
-		.hero-subtitle {
-			font-size: 1.125rem;
-		}
-
-		.hero-button {
-			padding: 0.875rem 1.5rem;
-			font-size: 0.875rem;
-		}
-
-		.benefits-section {
-			padding: 2rem 0;
-		}
-		
-		.benefits-content {
-			padding: 0 3rem; /* Maintaining 3rem padding */
-		}
-		
-		/* Add margin to sections on small screens */
-		.mt-16 {
-			margin-top: 2rem;
-		}
-	}
-	
-	@media (max-width: 400px) {
-		.hero-content {
-			padding: 10px 1rem;
-		}
-		
-		.benefits-section {
-			padding: 1.5rem 0;
-		}
-		
-		.benefits-content {
-			padding: 0 3rem; /* Maintaining 3rem padding */
-		}
-		
-		/* Increase margin on very small screens */
-		.mt-16 {
-			margin-top: 2.5rem;
-		}
-	}
+	/* Removed unused CSS selectors */
 </style>

@@ -76,7 +76,6 @@
 	$: navigationLinks = $pageTranslations
 		? [
 				{ href: '/products', label: $pageTranslations.t('header.navigation.shop') },
-				{ href: '/categories', label: $pageTranslations.t('header.navigation.categories') },
 				{ href: '/about', label: $pageTranslations.t('header.navigation.about') },
 				{ href: '/contacts', label: $pageTranslations.t('header.navigation.contacts') },
 				{ href: '/blog', label: $pageTranslations.t('header.navigation.blog') }
@@ -140,6 +139,14 @@
 		// Always go to cart page, authentication will be required only at checkout
 		goto('/cart');
 	}
+	
+	// Add keyboard event handler for accessibility
+	function handleKeyDown(event: KeyboardEvent, action: () => void) {
+		if (event.key === 'Enter' || event.key === ' ') {
+			event.preventDefault();
+			action();
+		}
+	}
 </script>
 
 {#if $pageTranslations}
@@ -178,9 +185,12 @@
 				<!-- Action Icons -->
 				<div class="flex items-center space-x-2">
 					<!-- Person/Account Icon -->
-					<button
+					<div
 						class="flex cursor-pointer items-center justify-center transition-all duration-200 hover:scale-110"
-						on:click={handlePersonClick}
+						role="button"
+						tabindex="0"
+						onclick={handlePersonClick}
+						onkeydown={(e) => handleKeyDown(e, handlePersonClick)}
 						aria-label={$isAuthenticated ? 'Account menu' : 'Sign in'}
 					>
 						{#if $isAuthenticated}
@@ -199,68 +209,58 @@
 										/>
 									{:else}
 										<!-- Fallback to person icon -->
-										<img
-											src={personIcon}
-											alt="Account"
-											class="user-icon"
-										/>
+										<img src={personIcon} alt="Account" class="user-icon" />
 									{/if}
 								</div>
 							</div>
 						{:else}
-							<!-- Not logged in user -->
+							<!-- Guest user -->
 							<div class="user-icon-container logged-out" title="Sign in">
-								<img
-									src={personIcon}
-									alt="Account"
-									class="user-icon"
-								/>
+								<img src={personIcon} alt="Sign in" class="user-icon" />
 							</div>
 						{/if}
-					</button>
+					</div>
 
 					<!-- Cart Icon -->
-					<button
+					<div
 						class="cart-icon-button"
-						on:click={handleCartClick}
-						aria-label={$pageTranslations?.t('header.accessibility.shopping_cart') ||
-							'Shopping cart'}
+						role="button"
+						tabindex="0"
+						onclick={handleCartClick}
+						onkeydown={(e) => handleKeyDown(e, handleCartClick)}
+						aria-label="Shopping cart"
 					>
 						<div class="cart-icon-container">
-							<img
-								src={cartIcon}
-								alt="Cart"
-								class="cart-icon"
-							/>
+							<img src={cartIcon} alt="Shopping cart" class="cart-icon" />
 							{#if $cartItemCount > 0}
 								<span class="cart-badge">{$cartItemCount}</span>
 							{/if}
 						</div>
-					</button>
+					</div>
 				</div>
 			</div>
 		</div>
-	</header>
 
-	<!-- Logout Confirmation Dialog -->
-	{#if showLogoutDialog}
-		<div class="logout-dialog-overlay" on:click={handleLogoutCancel}>
-			<div class="logout-dialog" on:click|stopPropagation>
-				<h3 class="logout-dialog-title">Confirm Logout</h3>
-				<p class="logout-dialog-message">
-					Are you sure you want to sign out?
-				</p>
-				<div class="logout-dialog-buttons">
-					<button class="logout-cancel-btn" on:click={handleLogoutCancel}>
-						Cancel
-					</button>
-					<button class="logout-confirm-btn" on:click={handleLogoutConfirm}>
-						Sign Out
-					</button>
+		<!-- Logout Confirmation Dialog -->
+		{#if showLogoutDialog}
+			<div class="logout-dialog-overlay" onclick={handleLogoutCancel}>
+				<div class="logout-dialog" onclick={(e) => e.stopPropagation()}>
+					<h3 class="logout-dialog-title">Confirm Logout</h3>
+					<p class="logout-dialog-message">
+						Are you sure you want to sign out?
+					</p>
+					<div class="logout-dialog-buttons">
+						<button class="logout-cancel-btn" onclick={handleLogoutCancel}>
+							Cancel
+						</button>
+						<button class="logout-confirm-btn" onclick={handleLogoutConfirm}>
+							Sign Out
+						</button>
+					</div>
 				</div>
 			</div>
-		</div>
-	{/if}
+		{/if}
+	</header>
 {/if}
 
 <style>
@@ -418,7 +418,7 @@
 		padding: 24px;
 		min-width: 320px;
 		max-width: 400px;
-		box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+		box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -6px rgba(0, 0, 0, 0.04);
 		animation: slideIn 0.2s ease-out;
 	}
 
@@ -447,41 +447,34 @@
 		justify-content: center;
 	}
 
-	.logout-cancel-btn {
+	.logout-cancel-btn,
+	.logout-confirm-btn {
 		padding: 10px 20px;
-		border: 1px solid #D1D5DB;
-		background: white;
-		color: #374151;
 		border-radius: 8px;
 		font-family: 'Nunito', sans-serif;
 		font-size: 14px;
-		font-weight: 500;
+		font-weight: 600;
 		cursor: pointer;
 		transition: all 0.2s ease;
-		min-width: 80px;
+		border: none;
+	}
+
+	.logout-cancel-btn {
+		background: #f1f3f5;
+		color: #495057;
 	}
 
 	.logout-cancel-btn:hover {
-		background: #F9FAFB;
-		border-color: #9CA3AF;
+		background: #e9ecef;
 	}
 
 	.logout-confirm-btn {
-		padding: 10px 20px;
-		border: none;
-		background: #EF4444;
+		background: #ff4444;
 		color: white;
-		border-radius: 8px;
-		font-family: 'Nunito', sans-serif;
-		font-size: 14px;
-		font-weight: 500;
-		cursor: pointer;
-		transition: all 0.2s ease;
-		min-width: 80px;
 	}
 
 	.logout-confirm-btn:hover {
-		background: #DC2626;
+		background: #e03131;
 	}
 
 	@keyframes fadeIn {
@@ -495,12 +488,14 @@
 
 	@keyframes slideIn {
 		from {
-			transform: translateY(-10px);
 			opacity: 0;
+			transform: translateY(-20px) scale(0.95);
 		}
 		to {
-			transform: translateY(0);
 			opacity: 1;
+			transform: translateY(0) scale(1);
 		}
 	}
+
+	/* Removed the media query for small screens padding */
 </style>

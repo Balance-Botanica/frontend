@@ -16,11 +16,41 @@
 @import '@fontsource/nunito/600-italic.css';
 @import '@fontsource/nunito/700-italic.css';
 @import '@fontsource/nunito/800-italic.css';
-@import '@fontsource/nunito/900-italic.css';
 
 /* Smooth scrolling for anchor links */
 html {
 	scroll-behavior: smooth;
+}
+
+/* Mobile enhancements for touch devices */
+@media (hover: none) and (pointer: coarse) {
+	/* Remove hover effects on touch devices */
+	* {
+		--tw-ring-inset: var(--tw-empty,/*!*/ /*!*/);
+		--tw-ring-offset-width: 0px;
+		--tw-ring-offset-color: #fff;
+		--tw-ring-color: rgb(59 130 246 / 0.5);
+		--tw-ring-offset-shadow: 0 0 #0000;
+		--tw-ring-shadow: 0 0 #0000;
+		--tw-shadow: 0 0 #0000;
+		--tw-shadow-colored: 0 0 #0000;
+	}
+}
+
+/* Enhanced touch targets for mobile - only on small screens */
+@media (max-width: 767px) {
+	button, a, input, select, textarea {
+		min-height: 44px;
+		min-width: 44px;
+	}
+}
+
+/* Mobile-specific focus states for accessibility */
+@media (hover: none) and (pointer: coarse) {
+	button:focus, a:focus, input:focus, select:focus, textarea:focus {
+		outline: 2px solid var(--color-main);
+		outline-offset: 2px;
+	}
 }
 
 @theme {
@@ -58,4 +88,149 @@ html {
 	--font-size-3xl: 24px; /* H2 Text */
 	--font-size-4xl: 28px; /* H1 Text */
 	--font-size-5xl: 36px; /* H1-special Text */
+}
+
+/* Base styles */
+body {
+	font-family: 'Nunito', ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+	line-height: 1.6;
+	color: var(--color-text);
+	background-color: var(--color-background);
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+/* Responsive grid - only mobile enhancements */
+@media (max-width: 767px) {
+	/* Touch-friendly buttons for mobile */
+	.touch-button {
+		min-height: 44px;
+		min-width: 44px;
+		padding: var(--spacing-sm) var(--spacing-md);
+		border-radius: 8px;
+		font-weight: var(--font-weight-medium);
+		transition: all 0.2s ease;
+		cursor: pointer;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		text-align: center;
+	}
+
+	.touch-button:active {
+		transform: scale(0.98);
+	}
+
+	/* Mobile-specific form elements */
+	.mobile-input {
+		width: 100%;
+		padding: var(--spacing-md);
+		border: 1px solid var(--color-stroke);
+		border-radius: 8px;
+		font-size: var(--font-size-base);
+		min-height: 44px;
+	}
+
+	.mobile-input:focus {
+		outline: 2px solid var(--color-main);
+		outline-offset: 2px;
+		border-color: var(--color-main);
+	}
+
+	/* Mobile navigation styles */
+	.mobile-nav {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+		padding: var(--spacing-sm) var(--spacing-md);
+	}
+
+	/* App-like bottom navigation for mobile */
+	.bottom-nav {
+		position: fixed;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-around;
+		background-color: white;
+		border-top: 1px solid var(--color-stroke);
+		padding: var(--spacing-xs) 0;
+		z-index: 50;
+	}
+
+	.bottom-nav-item {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		padding: var(--spacing-xs);
+		min-height: 44px;
+		min-width: 44px;
+		text-decoration: none;
+		color: var(--color-text);
+		font-size: var(--font-size-xs);
+	}
+
+	.bottom-nav-item.active {
+		color: var(--color-main);
+	}
+
+	/* Mobile card styles */
+	.mobile-card {
+		background-color: white;
+		border-radius: 16px;
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+		overflow: hidden;
+		transition: all 0.2s ease;
+	}
+
+	.mobile-card:hover {
+		box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+		transform: translateY(-2px);
+	}
+	
+	/* Mobile grid styles */
+	.mobile-grid {
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: 1rem;
+		width: 100%;
+		max-width: 100%;
+		overflow-x: hidden;
+	}
+}
+
+/* Desktop styles - preserved for larger screens */
+@media (min-width: 768px) {
+	.touch-button {
+		/* Reset touch-specific styles for desktop */
+		min-height: auto;
+		min-width: auto;
+		transform: none;
+	}
+	
+	.touch-button:active {
+		transform: none;
+	}
+	
+	.mobile-card {
+		/* Reset mobile-specific styles for desktop */
+		box-shadow: none;
+		transform: none;
+	}
+	
+	.mobile-card:hover {
+		box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+		transform: translateY(-2px);
+	}
+	
+	.mobile-grid {
+		/* Reset mobile grid for desktop */
+		grid-template-columns: repeat(3, 1fr);
+		gap: 1.5rem;
+	}
 }

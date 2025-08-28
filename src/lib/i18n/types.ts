@@ -29,6 +29,25 @@ export const DEFAULT_LOCALE: SupportedLocale = 'uk-ua';
 
 // Типы для переводов (будут генерироваться автоматически)
 export interface TranslationKeys {
+	error: {
+		meta: {
+			title: string;
+			description: string;
+		};
+		not_found: {
+			title: string;
+			message: string;
+		};
+		server_error: {
+			title: string;
+			message: string;
+		};
+		default: {
+			title: string;
+			message: string;
+		};
+		return_home: string;
+	};
 	benefits: {
 		title: string;
 		golden_paste: {

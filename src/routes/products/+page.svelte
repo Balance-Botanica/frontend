@@ -13,6 +13,7 @@
 
 	// Handle search event
 	function handleSearch(event: CustomEvent) {
+		console.log('ProductsPage: handleSearch event received', event.detail);
 		const { searchTerm, category, size, flavor, minPrice, maxPrice } = event.detail;
 		
 		// Build query parameters
@@ -24,12 +25,16 @@
 		if (minPrice !== null) params.set('minPrice', minPrice.toString());
 		if (maxPrice !== null) params.set('maxPrice', maxPrice.toString());
 		
+		const url = `/products?${params.toString()}`;
+		console.log('ProductsPage: Navigating to URL:', url);
+		
 		// Navigate to the same page with new query parameters
-		goto(`/products?${params.toString()}`);
+		goto(url);
 	}
 
 	// Handle reset event
 	function handleReset() {
+		console.log('ProductsPage: handleReset called');
 		// Navigate to the base products page without query parameters
 		goto('/products');
 	}
@@ -82,9 +87,17 @@
 				<p class="text-gray-600">
 					{#if data.searchTerm || data.category || data.size || data.flavor || data.minPrice !== null || data.maxPrice !== null}
 						{#if $pageTranslations?.locale === 'uk-ua'}
-							Показано {data.totalProducts} з {data.allProductsCount} продуктів
+							{#if data.searchTerm}
+								Знайдено {data.totalProducts} {data.totalProducts === 1 ? 'продукт' : data.totalProducts < 5 ? 'продукти' : 'продуктів'} за запитом "{data.searchTerm}"
+							{:else}
+								Показано {data.totalProducts} з {data.allProductsCount} продуктів
+							{/if}
 						{:else}
-							{$pageTranslations?.t('products.search.results_info', { count: data.totalProducts, total: data.allProductsCount })}
+							{#if data.searchTerm}
+								Found {data.totalProducts} {data.totalProducts === 1 ? 'product' : 'products'} for "{data.searchTerm}"
+							{:else}
+								{$pageTranslations?.t('products.search.results_info', { count: data.totalProducts, total: data.allProductsCount })}
+							{/if}
 						{/if}
 					{:else}
 						{#if $pageTranslations?.locale === 'uk-ua'}

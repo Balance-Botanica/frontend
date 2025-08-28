@@ -423,6 +423,26 @@
 		}
 	},
 
+	"error": {
+		"meta": {
+			"title": "Error | Balance Botanica",
+			"description": "An error has occurred. We apologize for the inconvenience."
+		},
+		"not_found": {
+			"title": "Page Not Found",
+			"message": "The page you are looking for doesn't exist or has been moved."
+		},
+		"server_error": {
+			"title": "Server Error",
+			"message": "We're experiencing some problems on our server. Please try again later."
+		},
+		"default": {
+			"title": "Something went wrong",
+			"message": "We apologize for the inconvenience. Please try again later or return to the homepage."
+		},
+		"return_home": "Return to Homepage"
+	},
+
 	"cart": {
 		"title": "Shopping Cart",
 		"meta": {

@@ -39,13 +39,29 @@
 	function handleMouseLeave() {
 		isDropdownOpen = false;
 	}
+	
+	// Add focus and blur handlers for keyboard accessibility
+	function handleFocus() {
+		isDropdownOpen = true;
+	}
+	
+	function handleBlur() {
+		// Add a small delay to allow for clicking on dropdown items
+		setTimeout(() => {
+			isDropdownOpen = false;
+		}, 150);
+	}
 </script>
 
 <div 
 	class="language-switcher {className}"
 	on:mouseenter={handleMouseEnter}
 	on:mouseleave={handleMouseLeave}
+	on:focus={handleFocus}
+	on:blur={handleBlur}
 	bind:this={dropdownContainer}
+	role="button"
+	tabindex="0"
 >
 	<!-- Current Language Button -->
 	<div class="current-language">

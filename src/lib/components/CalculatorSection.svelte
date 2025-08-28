@@ -3,7 +3,7 @@
 	import PetCalculator from './PetCalculator.svelte';
 </script>
 
-<section id="calculator" class="relative w-full overflow-hidden py-20 md:py-28">
+<div id="calculator" class="relative w-full overflow-hidden py-20 md:py-28 bg-gray-50">
 	<!-- Background Image with Green Overlay -->
 	<div class="absolute inset-0">
 		<img
@@ -115,39 +115,39 @@
 			</div>
 		</div>
 	</div>
-</section>
+</div>
 
 <style>
 	@media (max-width: 1100px) {
-		section .relative.z-10.mx-auto.max-w-7xl {
+		div .relative.z-10.mx-auto.max-w-7xl {
 			padding-left: 3rem !important;
 			padding-right: 3rem !important;
 		}
 	}
 	
 	@media (max-width: 768px) {
-		section .relative.z-10.mx-auto.max-w-7xl {
+		div .relative.z-10.mx-auto.max-w-7xl {
 			padding-left: 3rem !important;
 			padding-right: 3rem !important;
 		}
 	}
 	
 	@media (max-width: 640px) {
-		section .relative.z-10.mx-auto.max-w-7xl {
+		div .relative.z-10.mx-auto.max-w-7xl {
 			padding-left: 3rem !important;
 			padding-right: 3rem !important;
 		}
 	}
 	
 	@media (max-width: 480px) {
-		section .relative.z-10.mx-auto.max-w-7xl {
+		div .relative.z-10.mx-auto.max-w-7xl {
 			padding-left: 3rem !important;
 			padding-right: 3rem !important;
 		}
 	}
 	
 	@media (max-width: 400px) {
-		section .relative.z-10.mx-auto.max-w-7xl {
+		div .relative.z-10.mx-auto.max-w-7xl {
 			padding-left: 3rem !important;
 			padding-right: 3rem !important;
 		}

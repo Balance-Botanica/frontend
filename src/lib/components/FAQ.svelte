@@ -46,10 +46,9 @@
 	}
 </script>
 
-<section class="faq-section">
-	<div class="faq-container">
-		<!-- Grey area inside with same border styling -->
-		<div class="faq-grey-area">
+<div id="faq" class="w-full py-12 md:py-16 lg:py-20">
+	<div class="w-full px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+		<div class="rounded-2xl bg-gray-50 p-6 md:p-12 shadow-sm ring-1 ring-black/5">
 			<!-- Section Header -->
 			<div class="mb-12 text-center">
 				<h2 class="mb-4 text-3xl font-bold text-gray-900" style="color: {colors.main}">
@@ -126,65 +125,5 @@
 			</div>
 		</div>
 	</div>
-</section>
+</div>
 
-<style>
-	.faq-section {
-		background: white;
-		padding: 6rem 0;
-		margin: 4rem 0;
-		width: 100%;
-	}
-
-	.faq-container {
-		max-width: 64rem;
-		margin: 0 auto;
-		padding: 0 1rem;
-	}
-
-	.faq-grey-area {
-		background: #f9fafb; /* bg-gray-50 equivalent */
-		border-radius: 1rem; /* rounded-2xl equivalent */
-		box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* shadow-sm equivalent */
-		box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05); /* ring-1 ring-black/5 equivalent */
-		padding: 3rem 2rem;
-		margin: 2rem 0;
-	}
-
-	/* Responsive adjustments */
-	@media (min-width: 640px) {
-		.faq-container {
-			padding: 0 1.5rem;
-		}
-	}
-
-	@media (min-width: 1024px) {
-		.faq-container {
-			padding: 0 2rem;
-		}
-	}
-
-	@media (max-width: 768px) {
-		.faq-section {
-			padding: 4rem 0;
-			margin: 2rem 0;
-		}
-
-		.faq-grey-area {
-			padding: 2rem 1.5rem;
-			margin: 1.5rem 0;
-		}
-	}
-
-	@media (max-width: 480px) {
-		.faq-section {
-			padding: 3rem 0;
-			margin: 1.5rem 0;
-		}
-
-		.faq-grey-area {
-			padding: 1.5rem 1rem;
-			margin: 1rem 0;
-		}
-	}
-</style>

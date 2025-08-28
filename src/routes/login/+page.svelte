@@ -50,6 +50,7 @@
 		/>
 	</div>
 </main>
+{/if}
 
 <style>
 	.login-page {

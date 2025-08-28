@@ -21,7 +21,7 @@
 <input
 	{type}
 	{placeholder}
-	{value}
+	bind:value
 	{disabled}
 	{required}
 	{name}
