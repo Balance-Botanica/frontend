@@ -2,6 +2,9 @@
 export interface User {
 	id: string;
 	email: string;
+	firstName?: string;
+	lastName?: string;
+	phoneNumber?: string;
 	createdAt: Date;
 }
 
@@ -27,6 +30,9 @@ export interface DeliveryAddress {
 // User creation data (without auto-generated fields)
 export interface CreateUserData {
 	email: string;
+	firstName?: string;
+	lastName?: string;
+	phoneNumber?: string;
 }
 
 // Delivery address creation data
@@ -60,12 +66,20 @@ export interface UpdateDeliveryAddressData {
 	useNovaPost?: boolean;
 }
 
+// User update data (partial)
+export interface UpdateUserData {
+	firstName?: string;
+	lastName?: string;
+	phoneNumber?: string;
+}
+
 // User repository interface - defines the contract for user data access
 export interface UserRepository {
 	// User operations
 	getUserById(id: string): Promise<User | null>;
 	getUserByEmail(email: string): Promise<User | null>;
 	createUser(data: CreateUserData): Promise<User | null>;
+	updateUser(id: string, data: UpdateUserData): Promise<User | null>;
 
 	// Delivery address operations
 	getDeliveryAddressesByUserId(userId: string): Promise<DeliveryAddress[]>;

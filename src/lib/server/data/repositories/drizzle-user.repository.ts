@@ -236,6 +236,31 @@ export class DrizzleUserRepository implements UserRepository {
 		}
 	}
 
+	async updateUser(id: string, data: Partial<User>): Promise<User | null> {
+		try {
+			console.log('[DrizzleUserRepository] Updating user', id, 'with data:', data);
+			const updateData: any = {};
+			const now = new Date();
+
+			if (data.firstName !== undefined) updateData.firstName = data.firstName;
+			if (data.lastName !== undefined) updateData.lastName = data.lastName;
+			if (data.phoneNumber !== undefined) updateData.phoneNumber = data.phoneNumber;
+
+			const updatedUser = await db
+				.update(users)
+				.set(updateData)
+				.where(eq(users.id, id))
+				.returning();
+
+			const user = updatedUser[0] ? this.mapUserToDomain(updatedUser[0]) : null;
+			console.log('[DrizzleUserRepository] User update result:', user ? 'Success' : 'Failed');
+			return user;
+		} catch (error) {
+			console.error('[DrizzleUserRepository] Error updating user in Drizzle:', error);
+			return null;
+		}
+	}
+
 	async setDefaultAddress(userId: string, addressId: string): Promise<boolean> {
 		try {
 			console.log(
@@ -270,6 +295,9 @@ export class DrizzleUserRepository implements UserRepository {
 		return {
 			id: dbUser.id,
 			email: dbUser.email,
+			firstName: dbUser.firstName,
+			lastName: dbUser.lastName,
+			phoneNumber: dbUser.phoneNumber,
 			createdAt: dbUser.createdAt
 		};
 	}

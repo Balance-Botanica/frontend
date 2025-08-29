@@ -221,6 +221,28 @@
 				"create_account": "Create Account"
 			},
 			"checkout_coming_soon": "Checkout functionality will be available soon"
+		},
+		"checkout": {
+			"title": "Checkout",
+			"customerInfo": "Customer Information",
+			"firstName": "First Name",
+			"lastName": "Last Name",
+			"phoneNumber": "Phone Number",
+			"deliveryAddress": "Delivery Address",
+			"selectAddress": "Select Delivery Address",
+			"addNewAddress": "Add New Address",
+			"paymentMethod": "Payment Method",
+			"googlePay": "Google Pay",
+			"applePay": "Apple Pay",
+			"orderSummary": "Order Summary",
+			"comingSoon": "Our operator will contact you soon to verify your order",
+			"completeOrder": "Complete Order",
+			"errors": {
+				"firstNameRequired": "First name is required",
+				"lastNameRequired": "Last name is required",
+				"phoneNumberRequired": "Phone number is required",
+				"addressRequired": "Delivery address is required"
+			}
 		}
 	},
 	

@@ -5,9 +5,22 @@
 	import { notificationStore } from '$lib/stores/notifications';
 	import { createPageTranslations } from '$lib/i18n/store';
 	import SEO from '$lib/components/SEO.svelte';
+	import NovaPoshtaSelector from '$lib/components/NovaPoshtaSelector.svelte';
+	import type { PageData } from './$types';
 
 	// Create page translations
 	const pageTranslations = createPageTranslations();
+
+	// Export data from server
+	export let data: PageData;
+
+	// User information fields
+	let firstName = '';
+	let lastName = '';
+	let phoneNumber = '';
+	let selectedAddress = null;
+	let deliveryAddresses = data?.deliveryAddresses || [];
+	let showAddressForm = false;
 
 	// Handle quantity changes
 	function updateQuantity(productId: string, newQuantity: number) {
@@ -54,10 +67,25 @@
 			return;
 		}
 		
-		// TODO: Implement actual checkout flow
-		if ($pageTranslations) {
-			notificationStore.success($pageTranslations.t('cart.notifications.checkout_coming_soon'));
+		// Check if all required fields are filled
+		if (!firstName || !lastName || !phoneNumber) {
+			if ($pageTranslations) {
+				notificationStore.error($pageTranslations.t('cart.checkout.errors.firstNameRequired') + ', ' + 
+					$pageTranslations.t('cart.checkout.errors.lastNameRequired') + ', ' + 
+					$pageTranslations.t('cart.checkout.errors.phoneNumberRequired'));
+			}
+			return;
 		}
+		
+		if (!selectedAddress) {
+			if ($pageTranslations) {
+				notificationStore.error($pageTranslations.t('cart.checkout.errors.addressRequired'));
+			}
+			return;
+		}
+		
+		// Navigate to checkout page
+		goto('/checkout');
 	}
 
 	// Continue shopping
@@ -68,6 +96,11 @@
 	// Format price in UAH
 	function formatPrice(kopiyky: number): string {
 		return `${(kopiyky / 100).toFixed(2)} ₴`;
+	}
+
+	$: {
+		// Update delivery addresses when data changes
+		deliveryAddresses = data?.deliveryAddresses || [];
 	}
 </script>
 
@@ -184,6 +217,74 @@
 							{/each}
 						</div>
 					</div>
+					
+					<!-- Customer Information and Address Picker -->
+					{#if $isAuthenticated}
+						<div class="customer-info-section">
+							<h2 class="section-title">{$pageTranslations.t('cart.checkout.customerInfo')}</h2>
+							<div class="customer-info-form">
+								<div class="form-row">
+									<div class="form-group">
+										<label for="firstName">{$pageTranslations.t('cart.checkout.firstName')}</label>
+										<input 
+											type="text" 
+											id="firstName" 
+											class="form-input"
+											bind:value={firstName}
+											placeholder={$pageTranslations.t('cart.checkout.firstName')}
+										/>
+									</div>
+									<div class="form-group">
+										<label for="lastName">{$pageTranslations.t('cart.checkout.lastName')}</label>
+										<input 
+											type="text" 
+											id="lastName" 
+											class="form-input"
+											bind:value={lastName}
+											placeholder={$pageTranslations.t('cart.checkout.lastName')}
+										/>
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="phoneNumber">{$pageTranslations.t('cart.checkout.phoneNumber')}</label>
+									<input 
+										type="tel" 
+										id="phoneNumber" 
+										class="form-input"
+										bind:value={phoneNumber}
+										placeholder={$pageTranslations.t('cart.checkout.phoneNumber')}
+									/>
+								</div>
+								
+								<div class="form-group">
+									<label for="deliveryAddress">{$pageTranslations.t('cart.checkout.deliveryAddress')}</label>
+									<select 
+										id="deliveryAddress" 
+										class="form-input"
+										bind:value={selectedAddress}
+									>
+										<option value="">{$pageTranslations.t('cart.checkout.selectAddress')}</option>
+										{#each deliveryAddresses as address}
+											<option value={address.id}>{address.name || address.npCityFullName}</option>
+										{/each}
+									</select>
+									<button 
+										type="button" 
+										class="add-address-btn"
+										on:click={() => showAddressForm = true}
+									>
+										{$pageTranslations.t('cart.checkout.addNewAddress')}
+									</button>
+								</div>
+								
+								{#if showAddressForm}
+									<div class="address-form-container">
+										<!-- Address form would go here -->
+									</div>
+								{/if}
+							</div>
+						</div>
+					{/if}
 				</div>
 				
 				<!-- Right Column: Order Summary (1/4) -->
@@ -256,6 +357,7 @@
 		{/if}
 	</div>
 </main>
+
 {:else}
 	<!-- Loading state while translations are initializing -->
 	<main class="cart-page">
@@ -555,6 +657,76 @@
 		transform: scale(1.1);
 	}
 
+	/* Customer Information Section */
+	.customer-info-section {
+		background: white;
+		border-radius: 16px;
+		box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+		margin-top: 32px;
+		overflow: hidden;
+	}
+
+	.customer-info-form {
+		padding: 24px;
+	}
+
+	.form-row {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 16px;
+	}
+
+	.form-group {
+		margin-bottom: 16px;
+	}
+
+	.form-group label {
+		display: block;
+		font-family: 'Nunito', sans-serif;
+		font-size: 14px;
+		font-weight: 500;
+		color: #666;
+		margin-bottom: 8px;
+	}
+
+	.form-input {
+		width: 100%;
+		padding: 12px 16px;
+		border: 2px solid #e0e0e0;
+		border-radius: 8px;
+		font-family: 'Nunito', sans-serif;
+		font-size: 16px;
+		color: #333;
+		transition: border 0.2s ease;
+	}
+
+	.form-input:focus {
+		outline: none;
+		border-color: #4B766E;
+	}
+
+	.add-address-btn {
+		margin-top: 8px;
+		background: none;
+		border: none;
+		color: #4B766E;
+		font-family: 'Nunito', sans-serif;
+		font-size: 14px;
+		font-weight: 600;
+		cursor: pointer;
+		text-decoration: underline;
+	}
+
+	.add-address-btn:hover {
+		color: #3a5d56;
+	}
+
+	.address-form-container {
+		margin-top: 16px;
+		padding-top: 16px;
+		border-top: 1px solid #eee;
+	}
+
 	/* Right Column - Summary (1/4) */
 	.cart-summary-column {
 		position: sticky;
@@ -732,6 +904,10 @@
 			flex-direction: row;
 			justify-content: space-between;
 			margin-top: 8px;
+		}
+
+		.form-row {
+			grid-template-columns: 1fr;
 		}
 	}
 </style>

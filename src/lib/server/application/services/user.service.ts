@@ -37,6 +37,29 @@ export class UserService {
 		}
 	}
 
+	async updateUserProfile(
+		userId: string,
+		profileData: { firstName?: string; lastName?: string; phoneNumber?: string }
+	) {
+		try {
+			console.log(
+				'[UserService] Updating user profile for user:',
+				userId,
+				'with data:',
+				profileData
+			);
+
+			// Update user profile
+			const result = await this.userRepository.updateUser(userId, profileData);
+
+			console.log('[UserService] User profile update result:', result ? 'Success' : 'Failed');
+			return result;
+		} catch (error) {
+			console.error('[UserService] Error updating user profile:', error);
+			return null;
+		}
+	}
+
 	/**
 	 * Get all delivery addresses for a user
 	 */

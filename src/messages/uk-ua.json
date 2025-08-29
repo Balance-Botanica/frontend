@@ -223,6 +223,28 @@
 				"create_account": "Створити обліковий запис"
 			},
 			"checkout_coming_soon": "Оформлення замовлень буде доступне найближчим часом"
+		},
+		"checkout": {
+			"title": "Оформлення замовлення",
+			"customerInfo": "Інформація про клієнта",
+			"firstName": "Ім'я",
+			"lastName": "Прізвище",
+			"phoneNumber": "Номер телефону",
+			"deliveryAddress": "Адреса доставки",
+			"selectAddress": "Оберіть адресу доставки",
+			"addNewAddress": "Додати нову адресу",
+			"paymentMethod": "Спосіб оплати",
+			"googlePay": "Google Pay",
+			"applePay": "Apple Pay",
+			"orderSummary": "Підсумок замовлення",
+			"comingSoon": "Наш оператор зв'яжеться з вами найближчим часом для підтвердження замовлення",
+			"completeOrder": "Завершити замовлення",
+			"errors": {
+				"firstNameRequired": "Потрібно вказати ім'я",
+				"lastNameRequired": "Потрібно вказати прізвище",
+				"phoneNumberRequired": "Потрібно вказати номер телефону",
+				"addressRequired": "Потрібно вибрати адресу доставки"
+			}
 		}
 	},
 	

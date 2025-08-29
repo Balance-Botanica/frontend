@@ -18,6 +18,9 @@ export const products = sqliteTable('products', {
 export const users = sqliteTable('users', {
 	id: text('id').primaryKey(),
 	email: text('email').notNull().unique(),
+	firstName: text('first_name'),
+	lastName: text('last_name'),
+	phoneNumber: text('phone_number'),
 	createdAt: integer('created_at', { mode: 'timestamp' }).$defaultFn(() => new Date())
 });
 
