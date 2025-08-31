@@ -30,9 +30,9 @@ export interface CartTotals {
 	itemCount: number;
 	subtotal: number; // in kopiyky
 	subtotalUAH: number; // in UAH (for display)
-	tax: number;
 	shipping: number;
 	total: number;
+	freeShippingThreshold: number; // UAH threshold for free shipping
 }
 
 // ================================
@@ -48,18 +48,20 @@ class CartService {
 		);
 		const subtotalUAH = subtotal / 100; // Convert kopiyky to UAH
 
-		// Business rules
-		const tax = Math.round(subtotal * 0.2); // 20% VAT
-		const shipping = subtotalUAH >= 1000 ? 0 : 5000; // Free shipping over 1000 UAH
-		const total = subtotal + tax + shipping;
+		// Business rules (no VAT)
+		const freeShippingThreshold = 800; // Free shipping over 800 UAH
+
+		const shouldBeFree = subtotalUAH >= freeShippingThreshold;
+		const shipping = shouldBeFree ? 0 : 0; // 0 means "carrier rates" - customer pays at post office
+		const total = subtotal + shipping;
 
 		return {
 			itemCount,
 			subtotal,
 			subtotalUAH,
-			tax,
 			shipping,
-			total
+			total,
+			freeShippingThreshold
 		};
 	}
 

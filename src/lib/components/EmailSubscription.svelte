@@ -61,7 +61,7 @@
 						class="hover:bg-main-dark rounded-lg bg-main px-6 py-3 font-medium text-white transition-colors duration-200 focus:ring-2 focus:ring-main focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
 					>
 						{isSubmitting
-							? t('email_subscription.subscribing_button')
+							? t('footer.newsletter.subscribing_button')
 							: t('footer.newsletter.button')}
 					</button>
 				</form>
@@ -76,7 +76,7 @@
 								clip-rule="evenodd"
 							/>
 						</svg>
-						<span>{t('email_subscription.benefits.exclusive_offers')}</span>
+						<span>{t('footer.newsletter.benefits.exclusive_offers')}</span>
 					</div>
 					<div class="flex items-center justify-center">
 						<svg class="mr-2 h-5 w-5 text-main" fill="currentColor" viewBox="0 0 20 20">
@@ -86,7 +86,7 @@
 								clip-rule="evenodd"
 							/>
 						</svg>
-						<span>{t('email_subscription.benefits.wellness_tips')}</span>
+						<span>{t('footer.newsletter.benefits.wellness_tips')}</span>
 					</div>
 					<div class="flex items-center justify-center">
 						<svg class="mr-2 h-5 w-5 text-main" fill="currentColor" viewBox="0 0 20 20">
@@ -96,15 +96,15 @@
 								clip-rule="evenodd"
 							/>
 						</svg>
-						<span>{t('email_subscription.benefits.new_products')}</span>
+						<span>{t('footer.newsletter.benefits.new_products')}</span>
 					</div>
 				</div>
 
 				<!-- Privacy Notice -->
 				<p class="mt-6 text-xs text-gray-400">
-					{t('email_subscription.privacy_notice')}
+					{t('footer.newsletter.privacy_notice')}
 					<a href="/privacy" class="text-main hover:underline"
-						>{t('email_subscription.privacy_policy')}</a
+						>{t('footer.newsletter.privacy_policy')}</a
 					>
 				</p>
 			</div>

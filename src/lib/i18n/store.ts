@@ -83,8 +83,10 @@ export async function switchLocale(newLocale: SupportedLocale): Promise<void> {
 
 // Функция для создания переводов страницы
 export function createPageTranslations() {
-	return derived([translations], ([$translations]) => {
-		if (!$translations.t) return null;
+	return derived([translations, i18nReady], ([$translations, $i18nReady]) => {
+		if (!$i18nReady || !$translations.t) {
+			return null;
+		}
 
 		const { t, locale } = $translations;
 

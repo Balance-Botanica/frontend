@@ -783,10 +783,14 @@ function createSupabaseAuthStore() {
 	// Create session token for server-side authentication
 	async function createSessionToken(userId: string) {
 		try {
+			console.log('🔐 [SESSION] Creating session token for user:', userId);
+
 			// Get user email from state
 			const currentState = get(supabaseAuthStore);
 			const email = currentState.user?.email || '';
+			console.log('🔐 [SESSION] User email:', email);
 
+			console.log('🔐 [SESSION] Making request to /auth/login...');
 			const response = await fetch('/auth/login', {
 				method: 'POST',
 				headers: {
@@ -795,12 +799,25 @@ function createSupabaseAuthStore() {
 				body: JSON.stringify({ userId, email })
 			});
 
+			console.log('🔐 [SESSION] Response status:', response.status);
+			console.log('🔐 [SESSION] Response ok:', response.ok);
+
 			const data = await response.json();
+			console.log('🔐 [SESSION] Response data:', data);
+
 			if (!data.success) {
-				console.error('Failed to create session token:', data.error);
+				console.error('❌ [SESSION] Failed to create session token:', data.error);
+				// Показываем пользователю уведомление об ошибке
+				console.error(
+					'🔴 [SESSION] Server-side authentication failed! Profile access may not work.'
+				);
+			} else {
+				console.log('✅ [SESSION] Session token created successfully!');
 			}
 		} catch (error) {
-			console.error('Error creating session token:', error);
+			console.error('❌ [SESSION] Error creating session token:', error);
+			console.error('🔴 [SESSION] Server-side authentication failed! Profile access may not work.');
+			// Не выбрасываем ошибку, чтобы не ломать основной flow аутентификации
 		}
 	}
 

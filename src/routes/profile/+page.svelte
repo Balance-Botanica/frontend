@@ -122,17 +122,71 @@
 		editingAddressId = '';
 	}
 
-	// Handle form enhancement for better UX
+	// Handle address save via API
+	async function saveAddress(formData: any) {
+		console.log('[Profile Page] Saving address via API');
+		isSaving = true;
+		saveSuccess = false;
+		saveError = '';
+
+		try {
+			const response = await fetch('/api/user/address', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
+					name: formData.name,
+					npCityName: formData.npCityName,
+					npCityFullName: formData.npCityFullName,
+					npWarehouse: formData.npWarehouse,
+					useNovaPost: true,
+					isDefault: formData.isDefault
+				})
+			});
+
+			const result = await response.json();
+
+			if (!response.ok) {
+				throw new Error(result.error || 'Failed to save address');
+			}
+
+			console.log('[Profile Page] Address saved successfully via API');
+			saveSuccess = true;
+			isAddingNew = false;
+			isEditing = false;
+
+			// Refresh the page to show updated data
+			setTimeout(() => {
+				window.location.reload();
+			}, 1000);
+		} catch (error) {
+			console.error('[Profile Page] Failed to save address:', error);
+			const errorMessage = error instanceof Error ? error.message : String(error);
+			if (errorMessage.includes('Unauthorized')) {
+				saveError = 'Your session has expired. Redirecting to login...';
+				setTimeout(() => {
+					goto('/login');
+				}, 2000);
+			} else {
+				saveError = errorMessage || 'Failed to save address. Please try again.';
+			}
+		} finally {
+			isSaving = false;
+		}
+	}
+
+	// Handle form enhancement for better UX (legacy support)
 	function enhanceForm({ form, data, cancel }: any) {
 		console.log('[Profile Page] Enhancing form submission');
 		isSaving = true;
 		saveSuccess = false;
 		saveError = '';
-		
+
 		return async ({ result }: any) => {
 			console.log('[Profile Page] Form submission result:', result);
 			isSaving = false;
-			
+
 			if (result.type === 'success') {
 				const responseData = result.data;
 				if (responseData?.success) {
@@ -140,7 +194,7 @@
 					saveSuccess = true;
 					isAddingNew = false;
 					isEditing = false;
-					
+
 					// Refresh the page to show updated data
 					setTimeout(() => {
 						window.location.reload();
@@ -220,21 +274,38 @@
 					<h2 class="section-title">{$pageTranslations.t('profile.userInformation')}</h2>
 					<div class="user-info-grid">
 						<div class="info-item">
-							<label class="info-label">{$pageTranslations.t('profile.email')}</label>
+							<span class="info-label">{$pageTranslations.t('profile.email')}</span>
 							<div class="info-value">{$user.email}</div>
 						</div>
 						{#if $user.name}
 							<div class="info-item">
-								<label class="info-label">{$pageTranslations.t('profile.name')}</label>
+								<span class="info-label">{$pageTranslations.t('profile.name')}</span>
 								<div class="info-value">{$user.name}</div>
 							</div>
 						{/if}
 						{#if $user.firstName || $user.lastName}
 							<div class="info-item">
-								<label class="info-label">{$pageTranslations.t('profile.fullName')}</label>
+								<span class="info-label">{$pageTranslations.t('profile.fullName')}</span>
 								<div class="info-value">{[$user.firstName, $user.lastName].filter(Boolean).join(' ')}</div>
 							</div>
 						{/if}
+					</div>
+				</section>
+
+				<!-- Orders Section -->
+				<section class="profile-section">
+					<h2 class="section-title">{$pageTranslations.t('profile.orders') || 'Orders'}</h2>
+					<div class="orders-section">
+						<p class="orders-description">
+							{$pageTranslations.t('profile.ordersDescription') || 'View your order history and track current orders'}
+						</p>
+						<a href="/orders" class="orders-button-link">
+							<Button
+								variant="primary"
+							>
+								{$pageTranslations.t('profile.viewOrders') || 'View My Orders'}
+							</Button>
+						</a>
 					</div>
 				</section>
 
@@ -333,11 +404,9 @@
 					
 					<!-- Address Form for Adding/Editing -->
 					{#if isAddingNew || isEditing}
-						<form 
-							class="address-form" 
-							method="POST" 
-							action="?/saveDeliveryAddress"
-							use:enhance={enhanceForm}
+						<form
+							class="address-form"
+							on:submit|preventDefault={() => saveAddress(deliveryAddress)}
 						>
 							<!-- Address Name -->
 							<div class="form-group">
@@ -475,6 +544,35 @@
 	.profile-section:last-child {
 		margin-bottom: 0;
 	}
+
+	.orders-section {
+		padding: 24px;
+		background: #f8f9fa;
+		border-radius: 8px;
+		border: 1px solid #e0e0e0;
+		text-align: center;
+	}
+
+	.orders-description {
+		font-family: 'Nunito', sans-serif;
+		font-size: 14px;
+		color: #666;
+		margin-bottom: 16px;
+		line-height: 1.5;
+	}
+
+	.orders-button-link {
+		text-decoration: none;
+		display: inline-block;
+		margin: 0 auto;
+		transition: opacity 0.2s ease;
+	}
+
+	.orders-button-link:hover {
+		opacity: 0.9;
+	}
+
+
 	
 	.section-header {
 		display: flex;
@@ -750,18 +848,13 @@
 			gap: 16px;
 		}
 
-		.form-grid {
-			grid-template-columns: 1fr;
-		}
+
 
 		.user-info-grid {
 			grid-template-columns: 1fr;
 		}
 		
-		.delivery-method-options {
-			flex-direction: column;
-			gap: 10px;
-		}
+
 		
 		.form-actions {
 			flex-direction: column;

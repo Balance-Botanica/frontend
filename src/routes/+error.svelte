@@ -89,13 +89,12 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		height: 100vh;
+		min-height: calc(100vh - 300px); /* Account for header and footer */
 		width: 100%;
 		background-color: #f9f9f9;
-		position: fixed;
-		top: 0;
-		left: 0;
-		z-index: 1000;
+		padding: 4rem 2rem;
+		margin-top: 2rem; /* Space from header */
+		margin-bottom: 2rem; /* Space from footer */
 	}
 
 	.error-content {
@@ -105,7 +104,7 @@
 		background: white;
 		border-radius: 1.5rem;
 		box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-		animation: float 6s ease-in-out infinite;
+		/* Removed float animation - now static */
 	}
 
 	.error-icon {
@@ -166,23 +165,17 @@
 		transform: translateY(-1px);
 	}
 
-	@keyframes float {
-		0% {
-			transform: translateY(0px);
-			box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-		}
-		50% {
-			transform: translateY(-10px);
-			box-shadow: 0 25px 45px rgba(0, 0, 0, 0.08);
-		}
-		100% {
-			transform: translateY(0px);
-			box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-		}
-	}
+	/* Removed float animation - now static */
 
 	/* Responsive adjustments */
 	@media (max-width: 768px) {
+		.error-container {
+			min-height: calc(100vh - 400px); /* More space on mobile for header/footer */
+			padding: 2rem 1rem;
+			margin-top: 1rem;
+			margin-bottom: 1rem;
+		}
+
 		.error-content {
 			padding: 3rem 2rem;
 			margin: 0 1.5rem;
@@ -202,6 +195,16 @@
 	}
 
 	@media (max-width: 480px) {
+		.error-container {
+			min-height: calc(100vh - 450px); /* Even more space on small screens */
+			padding: 1rem;
+		}
+
+		.error-content {
+			padding: 2rem 1rem;
+			margin: 0 0.5rem;
+		}
+
 		.error-icon {
 			width: 80px;
 			height: 80px;
@@ -215,10 +218,6 @@
 		.error-title {
 			font-size: 1.5rem;
 			margin: 1rem 0 1.5rem;
-		}
-
-		.error-content {
-			padding: 2.5rem 1.5rem;
 		}
 	}
 </style>

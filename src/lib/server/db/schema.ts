@@ -52,7 +52,30 @@ export const sessions = sqliteTable('sessions', {
 	expiresAt: integer('expires_at', { mode: 'timestamp' }).notNull()
 });
 
+export const orders = sqliteTable('orders', {
+	id: text('id').primaryKey(), // 6-digit order code (e.g., "123456")
+	userId: text('user_id')
+		.notNull()
+		.references(() => users.id),
+	items: text('items').notNull(), // JSON string of cart items
+	total: integer('total').notNull(), // Total in kopiyky
+	status: text('status').notNull().default('pending'), // pending, confirmed, shipped, delivered, cancelled
+	deliveryAddress: text('delivery_address'), // JSON string of delivery address
+	notes: text('notes'), // Customer notes
+
+	// Customer information (for Google Sheets sync)
+	customerName: text('customer_name'), // Full name (First + Last)
+	customerPhone: text('customer_phone'), // Phone number
+
+	// User email for Google Sheets sync
+	userEmail: text('user_email'),
+
+	createdAt: integer('created_at', { mode: 'timestamp' }).$defaultFn(() => new Date()),
+	updatedAt: integer('updated_at', { mode: 'timestamp' }).$defaultFn(() => new Date())
+});
+
 export type Session = typeof sessions.$inferSelect;
 export type User = typeof users.$inferSelect;
 export type DeliveryAddress = typeof deliveryAddresses.$inferSelect;
 export type Product = typeof products.$inferSelect;
+export type Order = typeof orders.$inferSelect;

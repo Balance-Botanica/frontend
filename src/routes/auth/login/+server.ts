@@ -4,10 +4,10 @@ import { userService } from '$lib/server/application/services/user.service';
 import type { RequestHandler } from './$types';
 
 export const POST: RequestHandler = async ({ request, cookies }) => {
-	console.log('[Login Server] Received login request');
+	console.log('🚀 [Login Server] Received login request from client');
 	try {
 		const { userId, email } = await request.json();
-		console.log('[Login Server] Login data - User ID:', userId, 'Email:', email);
+		console.log('📨 [Login Server] Login data - User ID:', userId, 'Email:', email);
 
 		if (!userId) {
 			console.log('[Login Server] User ID is required but missing');

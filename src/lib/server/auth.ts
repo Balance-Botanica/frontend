@@ -1,5 +1,5 @@
 import type { RequestEvent } from '@sveltejs/kit';
-import { eq } from 'drizzle-orm';
+import { eq, lt } from 'drizzle-orm';
 import { sha256 } from '@oslojs/crypto/sha2';
 import { encodeBase64url, encodeHexLowerCase } from '@oslojs/encoding';
 import { db } from '$lib/server/db';
@@ -19,6 +19,32 @@ export function generateSessionToken() {
 export async function createSession(token: string, userId: string) {
 	const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
 	console.log('[Auth] Creating session for user:', userId, 'with session ID:', sessionId);
+
+	// Проверить, есть ли уже активная сессия для этого пользователя
+	const existingSessions = await db
+		.select()
+		.from(table.sessions)
+		.where(eq(table.sessions.userId, userId));
+
+	const now = Date.now();
+	const activeSessions = existingSessions.filter((session) => session.expiresAt.getTime() > now);
+
+	// Если есть активная сессия, продлим её вместо создания новой
+	if (activeSessions.length > 0) {
+		console.log('[Auth] Found existing active session, extending it instead of creating new one');
+		const latestSession = activeSessions[0];
+		const newExpiresAt = new Date(Date.now() + DAY_IN_MS * 30);
+
+		await db
+			.update(table.sessions)
+			.set({ expiresAt: newExpiresAt })
+			.where(eq(table.sessions.id, latestSession.id));
+
+		console.log('[Auth] Extended existing session:', latestSession.id);
+		return { ...latestSession, expiresAt: newExpiresAt };
+	}
+
+	// Создаем новую сессию только если активных нет
 	const expiresAt = new Date(Date.now() + DAY_IN_MS * 30);
 	const session = {
 		id: sessionId,
@@ -26,14 +52,54 @@ export async function createSession(token: string, userId: string) {
 		expiresAt
 	};
 	await db.insert(table.sessions).values(session);
-	console.log('[Auth] Session created successfully');
+	console.log('[Auth] New session created successfully');
 	return session;
 }
 
 export async function validateSessionToken(token: string) {
+	// Валидация входных данных
+	if (!token || typeof token !== 'string' || token.length < 10) {
+		console.warn('[Auth] Invalid session token format');
+		return { session: null, user: null };
+	}
+
 	console.log('[Auth] Validating session token');
 	const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
+
+	// Валидация sessionId (должен быть hex)
+	if (!/^[a-f0-9]{64}$/.test(sessionId)) {
+		console.warn('[Auth] Invalid session ID format:', sessionId);
+		return { session: null, user: null };
+	}
+
 	console.log('[Auth] Session ID from token:', sessionId);
+
+	// Автоматическая очистка истекших сессий (выполняем редко, чтобы не нагружать БД)
+	if (Math.random() < 0.1) {
+		// 10% шанс выполнения
+		console.log('[Auth] Running automatic cleanup of expired sessions...');
+		try {
+			const now = Date.now();
+			const result = await db
+				.delete(table.sessions)
+				.where(lt(table.sessions.expiresAt, new Date(now)));
+			if (result.changes > 0) {
+				console.log(`[Auth] Cleaned up ${result.changes} expired sessions`);
+			}
+
+			// Также очищаем очень старые сессии (старше 90 дней)
+			const ninetyDaysAgo = new Date(now - 90 * 24 * 60 * 60 * 1000);
+			const oldResult = await db
+				.delete(table.sessions)
+				.where(lt(table.sessions.createdAt, ninetyDaysAgo));
+
+			if (oldResult.changes > 0) {
+				console.log(`[Auth] Cleaned up ${oldResult.changes} very old sessions (>90 days)`);
+			}
+		} catch (error) {
+			console.warn('[Auth] Failed to cleanup expired sessions:', error);
+		}
+	}
 
 	const [result] = await db
 		.select({
@@ -47,6 +113,14 @@ export async function validateSessionToken(token: string) {
 
 	if (!result) {
 		console.log('[Auth] No session found for session ID:', sessionId);
+
+		// Логируем подозрительную активность (несуществующий session ID)
+		console.warn('[Security] Attempt to access non-existent session:', {
+			sessionId: sessionId.substring(0, 8) + '...', // Не логируем полный ID
+			timestamp: new Date().toISOString(),
+			action: 'session_not_found'
+		});
+
 		return { session: null, user: null };
 	}
 
@@ -86,13 +160,20 @@ export function setSessionTokenCookie(event: RequestEvent, token: string, expire
 	console.log('[Auth] Setting session token cookie, expires at:', expiresAt);
 	event.cookies.set(sessionCookieName, token, {
 		expires: expiresAt,
-		path: '/'
+		path: '/',
+		httpOnly: true, // Защита от XSS - куки недоступны из JavaScript
+		secure: true, // Только HTTPS в продакшене
+		sameSite: 'lax', // Защита от CSRF атак
+		maxAge: 30 * 24 * 60 * 60 * 1000 // 30 дней в миллисекундах
 	});
 }
 
 export function deleteSessionTokenCookie(event: RequestEvent) {
 	console.log('[Auth] Deleting session token cookie');
 	event.cookies.delete(sessionCookieName, {
-		path: '/'
+		path: '/',
+		httpOnly: true,
+		secure: true,
+		sameSite: 'lax'
 	});
 }

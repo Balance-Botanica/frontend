@@ -1,39 +1,72 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
+	import { page } from '$app/stores';
 	import { createPageTranslations } from '$lib/i18n/store';
 	import SEO from '$lib/components/SEO.svelte';
 	import { isAuthenticated } from '$lib/auth/supabase-store';
+	import { browser } from '$app/environment';
+	import { cartStore } from '$lib/stores/cart.store';
+
+	// State for order success
+	let orderSuccess = false;
+	let lastOrder: any = null;
 
 	// Create page translations
 	const pageTranslations = createPageTranslations();
 
-	// Redirect to cart if not authenticated
+	// Check for success parameter and load order data
 	onMount(() => {
+		// Check if user is authenticated
 		if (!$isAuthenticated) {
 			goto('/cart');
+			return;
+		}
+
+		// Check for success parameter
+		const urlParams = new URLSearchParams($page.url.search);
+		orderSuccess = urlParams.get('success') === 'true';
+
+		// Clear cart only after successful order and when user reaches checkout page
+		if (orderSuccess) {
+			console.log('[CHECKOUT] Order successful, clearing cart...');
+			cartStore.clear();
+		}
+
+		// Load last order data if success
+		if (orderSuccess && browser) {
+			try {
+				const storedOrder = localStorage.getItem('lastOrder');
+				if (storedOrder) {
+					const orderData = JSON.parse(storedOrder);
+
+					// Check if order is recent (within last 24 hours)
+					const orderTime = orderData.timestamp;
+					const currentTime = Date.now();
+					const timeDiff = currentTime - orderTime;
+
+					if (timeDiff < 24 * 60 * 60 * 1000) { // 24 hours
+						lastOrder = orderData.orderData;
+					} else {
+						// Old order data, remove it
+						localStorage.removeItem('lastOrder');
+					}
+				}
+			} catch (error) {
+				console.error('Failed to load order data:', error);
+				localStorage.removeItem('lastOrder');
+			}
 		}
 	});
-
-	// Handle Google Pay
-	function handleGooglePay() {
-		// TODO: Implement Google Pay integration
-		if ($pageTranslations) {
-			alert($pageTranslations.t('cart.checkout.comingSoon'));
-		}
-	}
-
-	// Handle Apple Pay
-	function handleApplePay() {
-		// TODO: Implement Apple Pay integration
-		if ($pageTranslations) {
-			alert($pageTranslations.t('cart.checkout.comingSoon'));
-		}
-	}
 
 	// Go back to cart
 	function goBackToCart() {
 		goto('/cart');
+	}
+
+	// Format price helper
+	function formatPrice(kopiyky: number): string {
+		return `${(kopiyky / 100).toFixed(2)} ₴`;
 	}
 </script>
 
@@ -46,74 +79,64 @@
 
 <main class="checkout-page">
 	<div class="checkout-container">
-		<h1 class="checkout-title">{$pageTranslations.t('cart.checkout.title')}</h1>
-		
-		<div class="checkout-layout">
-			<!-- Left Column: Order Summary -->
-			<div class="checkout-summary-column">
-				<div class="checkout-summary-container">
-					<h2 class="summary-title">{$pageTranslations.t('cart.checkout.orderSummary')}</h2>
-					
-					<!-- Order items would be listed here -->
-					<div class="order-items">
-						<p>Order summary details would appear here...</p>
-					</div>
-					
-					<!-- Payment Method -->
-					<div class="payment-method-section">
-						<h3 class="section-title">{$pageTranslations.t('cart.checkout.paymentMethod')}</h3>
-						
-						<div class="payment-buttons">
-							<button class="payment-btn google-pay" on:click={handleGooglePay}>
-								<div class="payment-icon">
-									<svg width="24" height="24" viewBox="0 0 24 24">
-										<path fill="#fff" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
-										<path fill="#fff" d="M12 6c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zm0 10c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4z"/>
-										<circle fill="#fff" cx="12" cy="12" r="2"/>
-									</svg>
-								</div>
-								<span>{$pageTranslations.t('cart.checkout.googlePay')}</span>
-							</button>
-							
-							<button class="payment-btn apple-pay" on:click={handleApplePay}>
-								<div class="payment-icon">
-									<svg width="24" height="24" viewBox="0 0 24 24">
-										<path fill="#fff" d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
-									</svg>
-								</div>
-								<span>{$pageTranslations.t('cart.checkout.applePay')}</span>
-							</button>
-						</div>
-						
-						<div class="coming-soon-message">
-							<p>{$pageTranslations.t('cart.checkout.comingSoon')}</p>
-						</div>
+		{#if orderSuccess && lastOrder}
+			<!-- Order Success with Details -->
+			<div class="success-message">
+				<div class="success-icon">
+					<svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+						<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+						<polyline points="22,4 12,14.01 9,11.01"></polyline>
+					</svg>
+				</div>
+
+				<h1 class="success-title">{$pageTranslations?.t('cart.checkout.successTitle') || 'Thank you for your order!'}</h1>
+
+				<p class="success-description">
+					{$pageTranslations?.t('cart.checkout.successMessage') || 'We have received your order and will contact you shortly to confirm the details.'}
+				</p>
+
+				<!-- Order Details -->
+				<div class="order-details">
+					<div class="order-info">
+						<h3>Order #{lastOrder.id}</h3>
+						<p>Total: {formatPrice(lastOrder.total)}</p>
+						<p>Items: {lastOrder.items?.length || 0}</p>
 					</div>
 				</div>
+
+				<div class="success-actions">
+					<button class="primary-btn" on:click={() => goto('/products')}>
+						{$pageTranslations?.t('cart.checkout.continueShopping') || 'Continue Shopping'}
+					</button>
+					<a href="/orders" class="secondary-btn">
+						{$pageTranslations?.t('cart.checkout.viewOrders') || 'View My Orders'}
+					</a>
+				</div>
 			</div>
-			
-			<!-- Right Column: Customer Information -->
-			<div class="checkout-info-column">
-				<div class="checkout-info-container">
-					<h2 class="info-title">{$pageTranslations.t('cart.checkout.customerInfo')}</h2>
-					
-					<!-- Customer details would be displayed here -->
-					<div class="customer-details">
-						<p>Customer information would appear here...</p>
-					</div>
-					
-					<!-- Delivery address would be displayed here -->
-					<div class="delivery-details">
-						<h3 class="section-title">{$pageTranslations.t('cart.checkout.deliveryAddress')}</h3>
-						<p>Delivery address details would appear here...</p>
-					</div>
-					
-					<button class="back-btn" on:click={goBackToCart}>
-						← {$pageTranslations.t('cart.summary.continue_shopping')}
+		{:else}
+			<!-- Regular Checkout Page (redirect to cart if accessed directly) -->
+			<div class="success-message">
+				<div class="error-icon">
+					<svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+						<circle cx="12" cy="12" r="10"></circle>
+						<line x1="12" y1="8" x2="12" y2="12"></line>
+						<line x1="12" y1="16" x2="12.01" y2="16"></line>
+					</svg>
+				</div>
+
+				<h1 class="success-title">Access Denied</h1>
+
+				<p class="success-description">
+					This page is only accessible after completing an order. Please go back to your cart.
+				</p>
+
+				<div class="success-actions">
+					<button class="primary-btn" on:click={() => goto('/cart')}>
+						Return to Cart
 					</button>
 				</div>
 			</div>
-		</div>
+		{/if}
 	</div>
 </main>
 {:else}
@@ -130,12 +153,122 @@
 		min-height: calc(100vh - 160px);
 		background: #f8f9fa;
 		padding: 32px 0;
+		display: flex;
+		align-items: center;
+		justify-content: center;
 	}
 
 	.checkout-container {
-		max-width: 1200px;
+		max-width: 600px;
 		margin: 0 auto;
 		padding: 0 20px;
+	}
+
+	.success-message {
+		background: white;
+		border-radius: 16px;
+		padding: 48px 32px;
+		box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+		text-align: center;
+	}
+
+	.success-icon {
+		margin-bottom: 24px;
+		display: flex;
+		justify-content: center;
+	}
+
+	.success-icon svg {
+		color: #4B766E;
+	}
+
+	.success-title {
+		font-family: 'Nunito', sans-serif;
+		font-size: 28px;
+		font-weight: 700;
+		color: #1a1a1a;
+		margin-bottom: 16px;
+	}
+
+	.success-description {
+		font-family: 'Nunito', sans-serif;
+		font-size: 16px;
+		color: #666;
+		margin-bottom: 32px;
+		line-height: 1.5;
+	}
+
+	.success-actions {
+		display: flex;
+		gap: 16px;
+		justify-content: center;
+		flex-wrap: wrap;
+	}
+
+	.order-details {
+		margin: 24px 0;
+		padding: 16px;
+		background: #f8f9fa;
+		border-radius: 8px;
+		border: 1px solid #e0e0e0;
+	}
+
+	.order-info h3 {
+		font-family: 'Nunito', sans-serif;
+		font-size: 18px;
+		font-weight: 600;
+		color: #4B766E;
+		margin: 0 0 8px 0;
+	}
+
+	.order-info p {
+		font-family: 'Nunito', sans-serif;
+		font-size: 14px;
+		color: #666;
+		margin: 4px 0;
+	}
+
+	.error-icon {
+		margin-bottom: 24px;
+		display: flex;
+		justify-content: center;
+		color: #dc3545;
+	}
+
+	.primary-btn, .secondary-btn {
+		font-family: 'Nunito', sans-serif;
+		font-size: 16px;
+		font-weight: 600;
+		padding: 12px 24px;
+		border-radius: 8px;
+		border: none;
+		cursor: pointer;
+		transition: all 0.2s ease;
+		text-decoration: none;
+		display: inline-block;
+	}
+
+	.primary-btn {
+		background: #4B766E;
+		color: white;
+		box-shadow: 0 4px 12px rgba(75, 118, 110, 0.3);
+	}
+
+	.primary-btn:hover {
+		background: #3a5d56;
+		transform: translateY(-2px);
+	}
+
+	.secondary-btn {
+		background: #f5f5f5;
+		color: #4B766E;
+		border: 2px solid #4B766E;
+	}
+
+	.secondary-btn:hover {
+		background: #4B766E;
+		color: white;
+		text-decoration: none;
 	}
 
 	.checkout-title {
@@ -283,6 +416,66 @@
 		padding: 16px;
 		background: #f8f9fa;
 		border-radius: 8px;
+	}
+
+	.form-group {
+		margin-bottom: 16px;
+	}
+
+	label {
+		display: block;
+		font-family: 'Nunito', sans-serif;
+		font-size: 14px;
+		font-weight: 600;
+		color: #4a4a4a;
+		margin-bottom: 6px;
+	}
+
+	.form-input, .form-select {
+		width: 100%;
+		padding: 12px;
+		border: 1px solid #ddd;
+		border-radius: 8px;
+		font-family: 'Nunito', sans-serif;
+		font-size: 14px;
+		color: #333;
+		transition: border-color 0.2s;
+	}
+
+	.form-input:focus, .form-select:focus {
+		border-color: #4B766E;
+		outline: none;
+	}
+
+	.selected-address, .new-address-form, .no-address {
+		margin-top: 16px;
+		padding: 12px;
+		background: white;
+		border-radius: 8px;
+		border: 1px solid #e0e0e0;
+	}
+
+	.selected-address h4, .new-address-form h4 {
+		font-family: 'Nunito', sans-serif;
+		font-size: 16px;
+		font-weight: 600;
+		color: #333;
+		margin: 0 0 12px 0;
+	}
+
+	.address-summary {
+		padding: 10px;
+		background: #f0f8ff;
+		border-radius: 6px;
+		font-size: 14px;
+	}
+
+	.no-address p {
+		font-family: 'Nunito', sans-serif;
+		font-size: 14px;
+		color: #666;
+		margin: 0;
+		text-align: center;
 	}
 
 	.back-btn {

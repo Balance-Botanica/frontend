@@ -108,7 +108,7 @@
 	},
 
 	"subheader": {
-		"delivery_message": "Orders from 1000 UAH are delivered free of charge 📦"
+		"delivery_message": "Orders from 800 UAH are delivered free of charge 📦"
 	},
 
 	"footer": {
@@ -124,6 +124,7 @@
 			"description": "Subscribe to our newsletter for exclusive offers, wellness tips, and the latest CBD product updates. Join our community of health-conscious individuals.",
 			"placeholder": "Email Address",
 			"button": "Subscribe",
+			"subscribing_button": "Subscribing...",
 			"benefits": {
 				"exclusive_offers": "Exclusive offers and discounts",
 				"wellness_tips": "Wellness tips and pet care advice",
@@ -185,7 +186,7 @@
 	"cart": {
 		"meta": {
 			"title": "Shopping Cart | Balance Botanica",
-			"description": "Review your selected CBD products and proceed to checkout. Free shipping on orders over 1000 UAH."
+			"description": "Review your selected CBD products and proceed to checkout. Free shipping on orders over 800 UAH."
 		},
 		"title": "Shopping Cart",
 		"empty": {
@@ -207,6 +208,7 @@
 			"subtotal": "Subtotal",
 			"shipping": "Shipping",
 			"shipping_free": "Free",
+			"shipping_carrier": "Carrier rates",
 			"total": "Total",
 			"checkout_authenticated": "Proceed to Checkout",
 			"checkout_sign_in": "Sign In to Checkout",
@@ -222,26 +224,73 @@
 			},
 			"checkout_coming_soon": "Checkout functionality will be available soon"
 		},
+		"orders": {
+			"meta": {
+				"title": "My Orders | Balance Botanica",
+				"description": "View your order history and track current orders"
+			},
+			"title": "My Orders",
+			"loading": "Loading orders...",
+			"error": {
+				"title": "Error",
+				"retry": "Try Again"
+			},
+			"empty": {
+				"title": "No orders yet",
+				"message": "You haven't placed any orders yet. Start shopping to see your orders here.",
+				"shopNow": "Shop Now"
+			},
+			"items": "Items",
+			"total": "Total",
+			"deliveryAddress": "Delivery Address",
+			"orderNumber": "Order #",
+			"loadingPage": "Loading...",
+			"quantityPrice": "{quantity} × {price}",
+			"statuses": {
+				"pending": "Pending confirmation",
+				"confirmed": "Confirmed",
+				"shipped": "Shipped",
+				"delivered": "Delivered",
+				"cancelled": "Cancelled"
+			},
+			"cancelOrder": "Cancel Order",
+			"cancelling": "Cancelling...",
+			"confirmCancel": "Are you sure you want to cancel this order?",
+			"cancelledSuccess": "Order cancelled successfully",
+			"cancelledError": "Failed to cancel order. Please try again."
+
+		},
 		"checkout": {
 			"title": "Checkout",
-			"customerInfo": "Customer Information",
+			"customerInfo": "Delivery Information",
 			"firstName": "First Name",
 			"lastName": "Last Name",
 			"phoneNumber": "Phone Number",
 			"deliveryAddress": "Delivery Address",
 			"selectAddress": "Select Delivery Address",
 			"addNewAddress": "Add New Address",
+			"noAddressesAvailable": "No delivery addresses available",
+			"addressSummary": "Selected Address",
+			"noAddressSelected": "No address selected",
+			"setupAddress": "Set up delivery address",
 			"paymentMethod": "Payment Method",
 			"googlePay": "Google Pay",
 			"applePay": "Apple Pay",
 			"orderSummary": "Order Summary",
 			"comingSoon": "Our operator will contact you soon to verify your order",
 			"completeOrder": "Complete Order",
+			"successTitle": "Thank you for your order!",
+			"successMessage": "We have received your order and will contact you shortly to confirm the details.",
+			"continueShopping": "Continue Shopping",
+			"viewProfile": "View Profile",
+			"viewOrders": "View My Orders",
 			"errors": {
 				"firstNameRequired": "First name is required",
 				"lastNameRequired": "Last name is required",
 				"phoneNumberRequired": "Phone number is required",
-				"addressRequired": "Delivery address is required"
+				"addressRequired": "Delivery address is required",
+				"fillRequiredFields": "Please fill in all required fields",
+				"profileUpdateFailed": "Failed to save profile information. Please try again."
 			}
 		}
 	},
@@ -253,6 +302,9 @@
 		},
 		"title": "My Profile",
 		"userInformation": "User Information",
+		"orders": "Orders",
+		"ordersDescription": "View your order history and track current orders",
+		"viewOrders": "View My Orders",
 		"email": "Email",
 		"name": "Name",
 		"fullName": "Full Name",
@@ -418,9 +470,33 @@
 				"question": "Are there any side effects of CBD?",
 				"answer": "CBD is generally well-tolerated, but some pets may experience drowsiness, changes in appetite, or mild digestive upset. These effects are usually temporary and resolve with dose adjustment."
 			}
+		},
+		"benefits": {
+			"question": "What are the benefits of CBD for pets?",
+			"answer": "CBD can help with anxiety, pain relief, inflammation reduction, improved sleep, and overall wellness for pets. It's particularly beneficial for dogs and cats with arthritis, anxiety, or digestive issues."
+		},
+		"choosing": {
+			"question": "How do I choose the right CBD product for my pet?",
+			"answer": "Consider your pet's size, condition, and preferences. Start with a lower concentration and gradually increase. Consult our dosage calculator or your veterinarian for personalized recommendations."
+		},
+		"testing": {
+			"question": "How do I know if the CBD is working for my pet?",
+			"answer": "Monitor your pet's behavior, energy levels, and any symptoms they're experiencing. Keep a journal of their progress. Effects are usually noticeable within 30-60 minutes, but full benefits may take 1-2 weeks of consistent use."
+		},
+		"spectrum": {
+			"question": "What's the difference between full-spectrum, broad-spectrum, and CBD isolate?",
+			"answer": "Full-spectrum contains all cannabinoids including trace THC, broad-spectrum has most cannabinoids but no THC, and isolate is pure CBD. Full-spectrum may provide enhanced benefits through the entourage effect."
+		},
+		"effects": {
+			"question": "What are the potential side effects of CBD for pets?",
+			"answer": "CBD is generally well-tolerated, but possible side effects include drowsiness, dry mouth, or mild digestive upset. These are usually temporary and resolve with dose adjustment. Always start with low doses."
+		},
+		"cta": {
+			"text": "Still have questions? Contact our experts for personalized advice.",
+			"button": "Contact Us"
 		}
 	},
-	
+
 	"contacts": {
 		"title": "Contacts",
 		"subtitle": "Contact us for additional information",
@@ -443,6 +519,25 @@
 			"sending": "Sending...",
 			"success": "Message sent successfully!",
 			"error": "Error sending message. Please try again."
+		}
+	},
+	
+	"error": {
+		"not_found": {
+			"title": "Page Not Found",
+			"message": "Sorry, we couldn't find the page you're looking for. It may have been moved or deleted."
+		},
+		"server_error": {
+			"title": "Server Error",
+			"message": "We're experiencing technical difficulties. Please try again later."
+		},
+		"default": {
+			"title": "Something Went Wrong",
+			"message": "An unexpected error has occurred. Please try again later."
+		},
+		"return_home": "Return to Homepage",
+		"meta": {
+			"description": "An error has occurred on this page"
 		}
 	}
 }

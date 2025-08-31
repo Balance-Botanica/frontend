@@ -55,7 +55,6 @@ export interface TranslationKeys {
 	};
 	error: {
 		meta: {
-			title: string;
 			description: string;
 		};
 		not_found: {

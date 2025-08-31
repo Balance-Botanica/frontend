@@ -22,6 +22,27 @@
       "when": 1756387140973,
       "tag": "0002_wealthy_ser_duncan",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1756655717374,
+      "tag": "0003_bitter_hairball",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1756668721295,
+      "tag": "0004_third_runaways",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "6",
+      "when": 1756679757002,
+      "tag": "0005_sweet_kid_colt",
+      "breakpoints": true
     }
   ]
 }

@@ -74,6 +74,47 @@ try {
 	).run();
 	console.log('✅ Created users table');
 
+	// Add missing columns to users table
+	try {
+		// Check and add first_name column
+		const firstNameExists = db.prepare(`
+			SELECT COUNT(*) as count
+			FROM pragma_table_info('users')
+			WHERE name = 'first_name'
+		`).get();
+
+		if (firstNameExists.count === 0) {
+			db.prepare('ALTER TABLE users ADD COLUMN first_name TEXT').run();
+			console.log('✅ Added first_name column to users table');
+		}
+
+		// Check and add last_name column
+		const lastNameExists = db.prepare(`
+			SELECT COUNT(*) as count
+			FROM pragma_table_info('users')
+			WHERE name = 'last_name'
+		`).get();
+
+		if (lastNameExists.count === 0) {
+			db.prepare('ALTER TABLE users ADD COLUMN last_name TEXT').run();
+			console.log('✅ Added last_name column to users table');
+		}
+
+		// Check and add phone_number column
+		const phoneExists = db.prepare(`
+			SELECT COUNT(*) as count
+			FROM pragma_table_info('users')
+			WHERE name = 'phone_number'
+		`).get();
+
+		if (phoneExists.count === 0) {
+			db.prepare('ALTER TABLE users ADD COLUMN phone_number TEXT').run();
+			console.log('✅ Added phone_number column to users table');
+		}
+	} catch (error) {
+		console.error('❌ Error adding columns to users table:', error);
+	}
+
 	// Create sessions table
 	db.prepare(
 		`

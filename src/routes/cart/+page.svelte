@@ -4,8 +4,11 @@
 	import { goto } from '$app/navigation';
 	import { notificationStore } from '$lib/stores/notifications';
 	import { createPageTranslations } from '$lib/i18n/store';
+	import { browser } from '$app/environment';
+	import { onMount } from 'svelte';
 	import SEO from '$lib/components/SEO.svelte';
 	import NovaPoshtaSelector from '$lib/components/NovaPoshtaSelector.svelte';
+	import AddressModal from '$lib/components/AddressModal.svelte';
 	import type { PageData } from './$types';
 
 	// Create page translations
@@ -18,9 +21,23 @@
 	let firstName = '';
 	let lastName = '';
 	let phoneNumber = '';
-	let selectedAddress = null;
+	let selectedAddress: any = null;
 	let deliveryAddresses = data?.deliveryAddresses || [];
-	let showAddressForm = false;
+
+	console.log('[Cart Page Client] Server data received:', {
+		deliveryAddressesCount: deliveryAddresses.length,
+		deliveryAddresses: deliveryAddresses.map(addr => ({ id: addr.id, name: addr.name }))
+	});
+
+	let showAddressModal = false;
+
+	// Validation state
+	let validationErrors = {
+		firstName: false,
+		lastName: false,
+		phoneNumber: false,
+		selectedAddress: false
+	};
 
 	// Handle quantity changes
 	function updateQuantity(productId: string, newQuantity: number) {
@@ -42,8 +59,18 @@
 		}
 	}
 
+	// Reset validation errors
+	function resetValidationErrors() {
+		validationErrors = {
+			firstName: false,
+			lastName: false,
+			phoneNumber: false,
+			selectedAddress: false
+		};
+	}
+
 	// Handle checkout
-	function handleCheckout() {
+	async function handleCheckout() {
 		if (!$isAuthenticated) {
 			// Show notification and redirect to login
 			if ($pageTranslations) {
@@ -66,26 +93,57 @@
 			}
 			return;
 		}
-		
-		// Check if all required fields are filled
-		if (!firstName || !lastName || !phoneNumber) {
-			if ($pageTranslations) {
-				notificationStore.error($pageTranslations.t('cart.checkout.errors.firstNameRequired') + ', ' + 
-					$pageTranslations.t('cart.checkout.errors.lastNameRequired') + ', ' + 
-					$pageTranslations.t('cart.checkout.errors.phoneNumberRequired'));
-			}
-			return;
+
+		// Reset previous validation errors
+		resetValidationErrors();
+
+		// Validate fields and set error states
+		let hasErrors = false;
+
+		if (!firstName.trim()) {
+			validationErrors.firstName = true;
+			hasErrors = true;
 		}
-		
+
+		if (!lastName.trim()) {
+			validationErrors.lastName = true;
+			hasErrors = true;
+		}
+
+		if (!phoneNumber.trim()) {
+			validationErrors.phoneNumber = true;
+			hasErrors = true;
+		}
+
 		if (!selectedAddress) {
+			validationErrors.selectedAddress = true;
+			hasErrors = true;
+		}
+
+		if (hasErrors) {
 			if ($pageTranslations) {
-				notificationStore.error($pageTranslations.t('cart.checkout.errors.addressRequired'));
+				notificationStore.error($pageTranslations.t('cart.checkout.errors.fillRequiredFields'));
 			}
 			return;
 		}
-		
-		// Navigate to checkout page
-		goto('/checkout');
+
+		// Update user profile with form data
+		const profileUpdated = await updateUserProfile();
+		if (!profileUpdated) {
+			return; // Error message already shown in updateUserProfile
+		}
+
+		// Create order
+		const orderCreated = await createOrder();
+		if (!orderCreated) {
+			return; // Error message already shown in createOrder
+		}
+
+		// Clear saved form data after successful checkout
+		clearFormData();
+
+		// Navigate to checkout page with order success flag
+		goto('/checkout?success=true');
 	}
 
 	// Continue shopping
@@ -93,15 +151,235 @@
 		goto('/products');
 	}
 
+	// Handle field changes to clear validation errors
+	function handleFieldChange(field: keyof typeof validationErrors) {
+		if (validationErrors[field]) {
+			validationErrors = { ...validationErrors, [field]: false };
+		}
+		// Save form data to localStorage
+		saveFormData();
+	}
+
+	// Save form data to localStorage
+	function saveFormData() {
+		if (browser) {
+			const formData = {
+				firstName,
+				lastName,
+				phoneNumber,
+				selectedAddress,
+				timestamp: Date.now()
+			};
+			localStorage.setItem('cart-form-data', JSON.stringify(formData));
+		}
+	}
+
+	// Load form data from localStorage
+	function loadFormData() {
+		if (browser) {
+			try {
+				const saved = localStorage.getItem('cart-form-data');
+				if (saved) {
+					const formData = JSON.parse(saved);
+					// Only load data if it's less than 24 hours old
+					if (Date.now() - formData.timestamp < 24 * 60 * 60 * 1000) {
+						firstName = formData.firstName || '';
+						lastName = formData.lastName || '';
+						phoneNumber = formData.phoneNumber || '';
+						selectedAddress = formData.selectedAddress || null;
+					} else {
+						// Clear old data
+						localStorage.removeItem('cart-form-data');
+					}
+				}
+			} catch (error) {
+				console.warn('Failed to load cart form data:', error);
+				localStorage.removeItem('cart-form-data');
+			}
+		}
+	}
+
+	// Clear saved form data
+	function clearFormData() {
+		if (browser) {
+			localStorage.removeItem('cart-form-data');
+		}
+	}
+
+	// Handle address modal open
+	function openAddressModal() {
+		showAddressModal = true;
+	}
+
+	// Handle address modal close
+	function handleAddressModalClose() {
+		showAddressModal = false;
+	}
+
+
+
+
+
+	// Create order from cart
+	async function createOrder(): Promise<boolean> {
+		try {
+			// Find selected delivery address
+			const selectedAddressData = deliveryAddresses.find(addr => addr.id === selectedAddress);
+
+			// Prepare order items from cart
+			const orderItems = $cartItems.map(item => ({
+				productId: item.product.id.getValue(),
+				productName: item.product.name.getUkrainian(),
+				quantity: item.quantity,
+				price: item.product.price.getKopiyky(),
+				total: item.product.price.getKopiyky() * item.quantity,
+				size: item.product.size,
+				flavor: item.product.flavor
+			}));
+
+			const orderData = {
+				items: orderItems,
+				total: $cartTotals.total,
+				deliveryAddress: selectedAddressData || null,
+				notes: '', // Can be extended later for customer notes
+				// Customer information
+				customerName: `${firstName.trim()} ${lastName.trim()}`.trim(),
+				customerPhone: phoneNumber.trim()
+			};
+
+			console.log('[CART] Creating order:', orderData);
+
+			const response = await fetch('/api/orders', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(orderData)
+			});
+
+			const result = await response.json();
+
+			if (!response.ok) {
+				throw new Error(result.error || 'Failed to create order');
+			}
+
+			console.log('[CART] Order created successfully:', result.data);
+
+			// Store order info in localStorage for checkout page
+			if (browser) {
+				localStorage.setItem('lastOrder', JSON.stringify({
+					orderId: result.data.id,
+					orderData: result.data,
+					timestamp: Date.now()
+				}));
+			}
+
+			return true;
+		} catch (error) {
+			console.error('[CART] Failed to create order:', error);
+			if ($pageTranslations) {
+				notificationStore.error($pageTranslations.t('cart.checkout.errors.orderCreationFailed') || 'Failed to create order. Please try again.');
+			}
+			return false;
+		}
+	}
+
+	// Handle address save
+	async function handleAddressSave(event: CustomEvent<{ addressData: any }>) {
+		const { addressData } = event.detail;
+
+		try {
+			const response = await fetch('/api/user/address', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(addressData)
+			});
+
+			const result = await response.json();
+
+			if (!response.ok) {
+				throw new Error(result.error || 'Failed to save address');
+			}
+
+			// Refresh delivery addresses
+			const updatedAddresses = [...deliveryAddresses, result.address];
+			deliveryAddresses = updatedAddresses;
+
+			// Auto-select the new address if it's the first one or marked as default
+			if (updatedAddresses.length === 1 || addressData.isDefault) {
+				selectedAddress = result.address.id;
+				saveFormData();
+			}
+
+			showAddressModal = false;
+
+			if ($pageTranslations) {
+				notificationStore.success($pageTranslations.t('profile.addressSaved'));
+			}
+		} catch (error) {
+			console.error('Failed to save address:', error);
+			if ($pageTranslations) {
+				notificationStore.error($pageTranslations.t('profile.address.saveError') || 'Failed to save address. Please try again.');
+			}
+		}
+	}
+
+	// Update user profile with form data
+	async function updateUserProfile() {
+		try {
+			const response = await fetch('/api/user/profile', {
+				method: 'PUT',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
+					firstName,
+					lastName,
+					phoneNumber
+				})
+			});
+
+			const result = await response.json();
+
+			if (!response.ok) {
+				throw new Error(result.error || 'Failed to update profile');
+			}
+
+			console.log('User profile updated successfully');
+			return true;
+		} catch (error) {
+			console.error('Failed to update user profile:', error);
+			if ($pageTranslations) {
+				notificationStore.error($pageTranslations.t('cart.checkout.errors.profileUpdateFailed'));
+			}
+			return false;
+		}
+	}
+
 	// Format price in UAH
 	function formatPrice(kopiyky: number): string {
 		return `${(kopiyky / 100).toFixed(2)} ₴`;
 	}
 
+	// Load form data on component mount
+	onMount(() => {
+		loadFormData();
+	});
+
 	$: {
 		// Update delivery addresses when data changes
 		deliveryAddresses = data?.deliveryAddresses || [];
+
+		// Auto-select address if there's only one and none selected
+		if (deliveryAddresses.length === 1 && !selectedAddress) {
+			selectedAddress = deliveryAddresses[0].id;
+			saveFormData(); // Save the auto-selected address
+		}
 	}
+
+
 </script>
 
 {#if $pageTranslations}
@@ -131,6 +409,8 @@
 			</div>
 		{:else}
 			<!-- Cart Layout: 3/4 Products + 1/4 Summary -->
+
+
 			<div class="cart-layout">
 				<!-- Left Column: Cart Items (3/4) -->
 				<div class="cart-items-column">
@@ -165,8 +445,7 @@
 									
 									<!-- Quantity Controls -->
 									<div class="item-quantity">
-										<label class="quantity-label">{$pageTranslations.t('cart.items.quantity_label')}</label>
-										<div class="quantity-controls">
+										<div class="quantity-controls" role="group" aria-label={$pageTranslations.t('cart.items.quantity_label') || 'Quantity controls'}>
 											<button 
 												class="quantity-btn decrease" 
 												on:click={() => updateQuantity(item.product.id.getValue(), item.quantity - 1)}
@@ -204,10 +483,11 @@
 									</div>
 									
 									<!-- Remove Button -->
-									<button 
-										class="remove-btn" 
+									<button
+										class="remove-btn"
 										on:click={() => removeItem(item.product.id.getValue())}
 										title={$pageTranslations.t('cart.items.remove_item')}
+										aria-label={$pageTranslations.t('cart.items.remove_item') || 'Remove item'}
 									>
 										<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
 											<path d="M18 6L6 18M6 6l12 12"></path>
@@ -226,62 +506,82 @@
 								<div class="form-row">
 									<div class="form-group">
 										<label for="firstName">{$pageTranslations.t('cart.checkout.firstName')}</label>
-										<input 
-											type="text" 
-											id="firstName" 
+										<input
+											type="text"
+											id="firstName"
 											class="form-input"
+											class:error={validationErrors.firstName}
 											bind:value={firstName}
 											placeholder={$pageTranslations.t('cart.checkout.firstName')}
+											on:input={() => handleFieldChange('firstName')}
 										/>
 									</div>
 									<div class="form-group">
 										<label for="lastName">{$pageTranslations.t('cart.checkout.lastName')}</label>
-										<input 
-											type="text" 
-											id="lastName" 
+										<input
+											type="text"
+											id="lastName"
 											class="form-input"
+											class:error={validationErrors.lastName}
 											bind:value={lastName}
 											placeholder={$pageTranslations.t('cart.checkout.lastName')}
+											on:input={() => handleFieldChange('lastName')}
 										/>
 									</div>
 								</div>
 								<div class="form-group">
 									<label for="phoneNumber">{$pageTranslations.t('cart.checkout.phoneNumber')}</label>
-									<input 
-										type="tel" 
-										id="phoneNumber" 
+									<input
+										type="tel"
+										id="phoneNumber"
 										class="form-input"
+										class:error={validationErrors.phoneNumber}
 										bind:value={phoneNumber}
 										placeholder={$pageTranslations.t('cart.checkout.phoneNumber')}
+										on:input={() => handleFieldChange('phoneNumber')}
 									/>
 								</div>
 								
 								<div class="form-group">
 									<label for="deliveryAddress">{$pageTranslations.t('cart.checkout.deliveryAddress')}</label>
-									<select 
-										id="deliveryAddress" 
-										class="form-input"
-										bind:value={selectedAddress}
-									>
-										<option value="">{$pageTranslations.t('cart.checkout.selectAddress')}</option>
-										{#each deliveryAddresses as address}
-											<option value={address.id}>{address.name || address.npCityFullName}</option>
-										{/each}
-									</select>
-									<button 
-										type="button" 
-										class="add-address-btn"
-										on:click={() => showAddressForm = true}
-									>
-										{$pageTranslations.t('cart.checkout.addNewAddress')}
-									</button>
+
+									{#if deliveryAddresses.length > 0}
+										<select
+											id="deliveryAddress"
+											class="form-input"
+											class:error={validationErrors.selectedAddress}
+											bind:value={selectedAddress}
+											on:change={() => handleFieldChange('selectedAddress')}
+										>
+											{#each deliveryAddresses as address}
+												<option value={address.id}>{address.name || address.npCityFullName}</option>
+											{/each}
+										</select>
+									{:else}
+										<div class="no-address-message">
+											<p>{$pageTranslations.t('cart.checkout.noAddressesAvailable')}</p>
+											<button
+												type="button"
+												class="add-address-btn primary"
+												on:click={() => { console.log('Primary button clicked'); openAddressModal(); }}
+											>
+												{$pageTranslations.t('cart.checkout.addNewAddress')}
+											</button>
+										</div>
+									{/if}
+
+									{#if deliveryAddresses.length > 0}
+										<button
+											type="button"
+											class="add-address-btn"
+											on:click={() => { console.log('Secondary button clicked'); openAddressModal(); }}
+										>
+											{$pageTranslations.t('cart.checkout.addNewAddress')}
+										</button>
+									{/if}
 								</div>
 								
-								{#if showAddressForm}
-									<div class="address-form-container">
-										<!-- Address form would go here -->
-									</div>
-								{/if}
+
 							</div>
 						</div>
 					{/if}
@@ -309,21 +609,21 @@
 							<div class="summary-line">
 								<span class="summary-label">{$pageTranslations.t('cart.summary.shipping')}:</span>
 								<span class="summary-value">
-									{#if $cartTotals.shipping === 0}
+									{#if $cartTotals.subtotalUAH >= $cartTotals.freeShippingThreshold}
 										<span class="free-label">{$pageTranslations.t('cart.summary.shipping_free')}</span>
 									{:else}
-										{formatPrice($cartTotals.shipping)}
+										<span class="carrier-label">{$pageTranslations.t('cart.summary.shipping_carrier')}</span>
 									{/if}
 								</span>
 							</div>
 							
-							{#if $cartTotals.subtotalUAH < 1000}
+							{#if $cartTotals.subtotalUAH < $cartTotals.freeShippingThreshold}
 								<div class="free-shipping-notice">
 									<p class="notice-text">
 										{#if $pageTranslations.locale === 'en'}
-											💡 Add <strong>{formatPrice((1000 - $cartTotals.subtotalUAH) * 100)}</strong> more for <strong>free shipping!</strong>
+											💡 Free shipping on orders over <strong>$800</strong>!
 										{:else}
-											💡 Додайте ще <strong>{formatPrice((1000 - $cartTotals.subtotalUAH) * 100)}</strong> для <strong>безкоштовної доставки!</strong>
+											💡 Безкоштовна доставка від <strong>800₴</strong>!
 										{/if}
 									</p>
 								</div>
@@ -334,6 +634,7 @@
 							<div class="summary-total">
 								<span class="total-label">{$pageTranslations.t('cart.summary.total')}:</span>
 								<span class="total-value">{formatPrice($cartTotals.total)}</span>
+
 							</div>
 						</div>
 						
@@ -355,8 +656,8 @@
 				</div>
 			</div>
 		{/if}
-	</div>
-</main>
+			</div>
+	</main>
 
 {:else}
 	<!-- Loading state while translations are initializing -->
@@ -366,6 +667,13 @@
 		</div>
 	</main>
 {/if}
+
+<!-- Address Modal -->
+<AddressModal
+	show={showAddressModal}
+	on:save={handleAddressSave}
+	on:close={handleAddressModalClose}
+/>
 
 <style>
 	/* Base Page Styles */
@@ -553,12 +861,7 @@
 		gap: 8px;
 	}
 
-	.quantity-label {
-		font-size: 12px;
-		color: #666;
-		font-weight: 500;
-		text-transform: uppercase;
-	}
+
 
 	.quantity-controls {
 		display: flex;
@@ -705,6 +1008,15 @@
 		border-color: #4B766E;
 	}
 
+	.form-input.error {
+		border-color: #dc3545;
+		background-color: #fff5f5;
+	}
+
+	.form-input.error:focus {
+		border-color: #dc3545;
+	}
+
 	.add-address-btn {
 		margin-top: 8px;
 		background: none;
@@ -721,11 +1033,38 @@
 		color: #3a5d56;
 	}
 
-	.address-form-container {
-		margin-top: 16px;
-		padding-top: 16px;
-		border-top: 1px solid #eee;
+	.add-address-btn.primary {
+		background: #4B766E;
+		color: white;
+		padding: 10px 16px;
+		border-radius: 6px;
+		text-decoration: none;
+		margin-top: 12px;
+		font-size: 14px;
+		border: 1px solid #4B766E;
+		transition: all 0.2s ease;
 	}
+
+	.add-address-btn.primary:hover {
+		background: #3a5d56;
+		border-color: #3a5d56;
+	}
+
+	.no-address-message {
+		padding: 16px;
+		background: #f8f9fa;
+		border: 1px solid #e0e0e0;
+		border-radius: 8px;
+		text-align: center;
+	}
+
+	.no-address-message p {
+		margin: 0 0 12px 0;
+		color: #666;
+		font-size: 14px;
+	}
+
+
 
 	/* Right Column - Summary (1/4) */
 	.cart-summary-column {
@@ -772,6 +1111,12 @@
 		font-weight: 600;
 		text-transform: uppercase;
 		font-size: 12px;
+	}
+
+	.carrier-label {
+		color: #6c757d;
+		font-weight: 500;
+		font-size: 14px;
 	}
 
 	.free-shipping-notice {
@@ -870,6 +1215,8 @@
 		font-size: 16px;
 		font-weight: 600;
 	}
+
+
 
 	/* Responsive Design - 700px Breakpoint */
 	@media (max-width: 700px) {

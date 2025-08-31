@@ -1,107 +1,69 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { goto } from '$app/navigation';
-	import { supabaseAuthStore, user, isAuthenticated } from '$lib/auth/supabase-store';
+	import { supabaseAuthStore } from '$lib/auth/supabase-store';
 
-	// Example OAuth tokens for testing (NOT real tokens)
-	const oauthTokens = `access_token=dummy_access_token_example&expires_at=1234567890&expires_in=3600&provider_refresh_token=dummy_refresh_token&provider_token=dummy_provider_token&refresh_token=dummy_refresh&token_type=bearer`;
+	let isLoading = false;
+	let error = '';
 
-	let authStatus = 'Checking...';
+	async function testGoogleOAuth() {
+		try {
+			isLoading = true;
+			error = '';
+			console.log('🔄 Starting Google OAuth test...');
+
+			await supabaseAuthStore.signInWithGoogle();
+		} catch (err) {
+			console.error('❌ OAuth test failed:', err);
+			error = err instanceof Error ? err.message : 'Unknown error';
+		} finally {
+			isLoading = false;
+		}
+	}
 
 	onMount(() => {
-		// Initialize auth store
-		supabaseAuthStore.initialize();
-		
-		// Listen for auth state changes
-		const unsubscribe = supabaseAuthStore.subscribe(state => {
-			if (state.isLoading) {
-				authStatus = 'Loading...';
-			} else if (state.user) {
-				authStatus = `Authenticated as ${state.user.email}`;
-			} else if (state.error) {
-				authStatus = `Error: ${state.error}`;
-			} else {
-				authStatus = 'Not authenticated';
-			}
-		});
-		
-		return unsubscribe;
+		console.log('✅ OAuth test page loaded');
+		console.log('🔍 Current URL:', window.location.href);
 	});
-
-	function simulateOAuthCallback() {
-		// Redirect to callback page with the OAuth tokens in the hash
-		goto(`/auth/callback#${oauthTokens}`);
-	}
-	
-	function signOut() {
-		supabaseAuthStore.signOut();
-	}
 </script>
 
-<svelte:head>
-	<title>OAuth Test | Balance Botanica</title>
-</svelte:head>
-
 <div class="min-h-screen flex items-center justify-center bg-gray-50">
-	<div class="max-w-md w-full text-center">
-		<div class="mb-8">
-			<h1 class="text-3xl font-bold text-gray-900 mb-4">OAuth Callback Test</h1>
-			<p class="text-gray-600 mb-6">
-				This page tests the OAuth callback with the updated GoTrue library and singleton pattern.
-			</p>
-			
-			<!-- Current Auth Status -->
-			<div class="mb-6 p-4 bg-gray-100 rounded-lg">
-				<h3 class="font-semibold text-gray-800 mb-2">🔍 Current Auth Status:</h3>
-				<p class="text-sm">{authStatus}</p>
-				{#if $isAuthenticated}
-					<div class="mt-2 text-green-600">
-						<p>✅ User: {$user?.name}</p>
-						<p>✅ Email: {$user?.email}</p>
-					</div>
+	<div class="max-w-md w-full bg-white rounded-lg shadow-lg p-8">
+		<h1 class="text-2xl font-bold text-center mb-8 text-gray-900">
+			OAuth Test Page
+		</h1>
+
+		<div class="space-y-4">
+			<button
+				on:click={testGoogleOAuth}
+				disabled={isLoading}
+				class="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-medium py-3 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center gap-3"
+			>
+				{#if isLoading}
+					<div class="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
 				{/if}
-			</div>
-			
-			<div class="space-y-3">
-				<button 
-					on:click={simulateOAuthCallback}
-					class="w-full bg-green-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-green-700 transition-colors"
-				>
-					🧪 Test OAuth Callback (Dummy Tokens)
-				</button>
-				
-				{#if $isAuthenticated}
-					<button 
-						on:click={signOut}
-						class="w-full bg-red-500 text-white py-3 px-4 rounded-lg font-semibold hover:bg-red-600 transition-colors"
-					>
-						🚪 Sign Out
-					</button>
-				{/if}
-			</div>
-			
-			<div class="mt-6 text-sm text-gray-500">
-				<p>This will redirect to <code>/auth/callback</code> with OAuth tokens.</p>
-				<p>The new GoTrue ^2.46.1 + singleton pattern should handle URL cleanup automatically.</p>
-			</div>
+				<svg class="w-5 h-5" viewBox="0 0 24 24">
+					<path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+					<path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+					<path fill="currentColor" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+					<path fill="currentColor" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+				</svg>
+				Test Google OAuth
+			</button>
+
+			{#if error}
+				<div class="bg-red-50 border border-red-200 rounded-lg p-4">
+					<p class="text-red-800 font-medium">Error:</p>
+					<p class="text-red-600 text-sm mt-1">{error}</p>
+				</div>
+			{/if}
 		</div>
 
-		<!-- Fixes Applied -->
-		<div class="mt-8 bg-green-50 rounded-lg p-6">
-			<h2 class="text-xl font-semibold text-green-800 mb-4">✅ Fixes Applied</h2>
-			<ul class="list-disc list-inside space-y-2 text-green-700">
-				<li>Installed GoTrue ^2.46.1 to fix URL cleanup issue</li>
-				<li>Implemented singleton pattern for Supabase client</li>
-				<li>Enhanced auth state change listener</li>
-				<li>Simplified callback page to rely on automatic OAuth handling</li>
-				<li>Added auto-initialization of auth store</li>
+		<div class="mt-8 text-sm text-gray-600">
+			<p class="mb-2"><strong>Environment Variables:</strong></p>
+			<ul class="space-y-1">
+				<li>VITE_PUBLIC_SUPABASE_URL: {typeof import.meta.env.VITE_PUBLIC_SUPABASE_URL !== 'undefined' ? '✅ Set' : '❌ Missing'}</li>
+				<li>VITE_PUBLIC_SUPABASE_ANON_KEY: {typeof import.meta.env.VITE_PUBLIC_SUPABASE_ANON_KEY !== 'undefined' ? '✅ Set' : '❌ Missing'}</li>
 			</ul>
-		</div>
-
-		<!-- Navigation -->
-		<div class="mt-8 space-y-2">
-			<a href="/login" class="block text-green-600 hover:text-green-700">← Back to Login</a>
-			<a href="/" class="block text-gray-500 hover:text-gray-700">Home</a>
 		</div>
 	</div>
 </div>

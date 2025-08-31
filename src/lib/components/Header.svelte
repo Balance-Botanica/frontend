@@ -82,15 +82,17 @@
 			]
 		: [];
 
-	async function handlePersonClick() {
+		async function handlePersonClick() {
 		console.log('👤 [HEADER] Person icon clicked, auth state:', {
 			isAuthenticated: $isAuthenticated,
 			userEmail: $user?.email
 		});
-		
+
 		if ($isAuthenticated) {
 			console.log('🔓 [HEADER] User is authenticated, navigating to profile...');
-			// Go to profile page
+
+			// TEMPORARILY SKIP SESSION CHECK - server-side auth disabled
+			console.log('✅ [HEADER] Skipping session check, going directly to profile');
 			goto('/profile');
 		} else {
 			console.log('🔗 [HEADER] User not authenticated, redirecting to login...');
@@ -118,6 +120,38 @@
 	function handleLogoutCancel() {
 		console.log('🙅 [HEADER] Logout cancelled');
 		showLogoutDialog = false;
+	}
+
+	// Force logout - clear all sessions and cookies
+	async function forceLogout() {
+		console.log('💥 [HEADER] Force logout initiated');
+
+		try {
+			// Sign out from Supabase
+			await supabaseAuthStore.signOut();
+
+			// Clear all cookies
+			document.cookie.split(";").forEach((c) => {
+				document.cookie = c
+					.replace(/^ +/, "")
+					.replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+			});
+
+			console.log('🧹 [HEADER] All cookies cleared');
+
+			// Redirect to home page
+			goto('/');
+
+			// Reload page to ensure clean state
+			setTimeout(() => {
+				window.location.reload();
+			}, 100);
+
+		} catch (error) {
+			console.error('❌ [HEADER] Error during force logout:', error);
+			// Still redirect even if there's an error
+			goto('/');
+		}
 	}
 
 	// Function to get user display name, prioritizing Google account data
@@ -184,6 +218,19 @@
 
 				<!-- Action Icons -->
 				<div class="flex items-center space-x-2">
+					{#if $isAuthenticated}
+						<!-- Force Logout Button (temporary fix for redirect loop) -->
+						<button
+							class="force-logout-btn transition-transform duration-200 hover:scale-110"
+							onclick={forceLogout}
+							onkeydown={(e) => handleKeyDown(e, forceLogout)}
+							tabindex="0"
+							title={$pageTranslations?.t('header_force_logout_title') ?? "Force logout (clears all sessions)"}
+							aria-label={$pageTranslations?.t('header_force_logout_aria') ?? "Force logout"}
+						>
+							🚪
+						</button>
+					{/if}
 					<!-- Person/Account Icon -->
 					<div
 						class="flex cursor-pointer items-center justify-center transition-all duration-200 hover:scale-110"
@@ -515,6 +562,33 @@
 			opacity: 1;
 			transform: translateY(0) scale(1);
 		}
+	}
+
+	/* Force logout button */
+	.force-logout-btn {
+		background: #ff6b6b;
+		color: white;
+		border: none;
+		border-radius: 50%;
+		width: 32px;
+		height: 32px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		cursor: pointer;
+		font-size: 16px;
+		transition: all 0.2s ease;
+		margin-right: 8px;
+	}
+
+	.force-logout-btn:hover {
+		background: #ff5252;
+		transform: scale(1.1);
+		box-shadow: 0 2px 8px rgba(255, 107, 107, 0.3);
+	}
+
+	.force-logout-btn:active {
+		transform: scale(0.95);
 	}
 
 	/* Removed the media query for small screens padding */
