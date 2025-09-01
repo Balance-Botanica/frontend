@@ -279,10 +279,10 @@ function createSupabaseAuthStore() {
 				setTimeout(() => reject(new Error('Profile query timeout')), 5000)
 			);
 
-			const result = await Promise.race([
-				profilePromise,
-				timeoutPromise
-			]) as { data: any; error: any } | null;
+			const result = (await Promise.race([profilePromise, timeoutPromise])) as {
+				data: any;
+				error: any;
+			} | null;
 
 			const { data: profile, error } = result || { data: null, error: null };
 
@@ -746,8 +746,8 @@ function createSupabaseAuthStore() {
 			const needsNewSessionToken =
 				!currentState.session ||
 				currentState.user?.id !== user.id ||
-				!currentState.session.expiresAt ||
-				new Date(currentState.session.expiresAt * 1000) < new Date(Date.now() + 5 * 60 * 1000); // Expires in < 5 minutes
+				!currentState.session.expires_at ||
+				(currentState.session.expires_at * 1000) < (Date.now() + 5 * 60 * 1000); // Expires in < 5 minutes
 
 			if (needsNewSessionToken) {
 				console.log('🔐 [SESSION] Creating session token for user:', user.id);
@@ -1334,8 +1334,8 @@ function isSessionStateValid(session: any): boolean {
 	const sessionMatches =
 		currentState.user.id === session.user.id &&
 		currentState.user.email === session.user.email &&
-		currentState.session.accessTokenPresent === !!session.access_token &&
-		currentState.session.refreshTokenPresent === !!session.refresh_token;
+		!!currentState.session.access_token === !!session.access_token &&
+		!!currentState.session.refresh_token === !!session.refresh_token;
 
 	if (!sessionMatches) {
 		logAuth(LOG_LEVEL.DEBUG, '🔄 [AUTH] Session data changed, needs reprocessing');
@@ -1344,8 +1344,8 @@ function isSessionStateValid(session: any): boolean {
 
 	// Check if session is still valid (not expired)
 	const now = Date.now();
-	const expiresAt = currentState.session.expiresAt * 1000; // Convert to milliseconds
-	const isExpired = expiresAt < now;
+	const expiresAt = currentState.session.expires_at;
+	const isExpired = expiresAt ? expiresAt * 1000 < now : true; // If no expiry, consider expired
 
 	if (isExpired) {
 		logAuth(LOG_LEVEL.DEBUG, '🔄 [AUTH] Session expired, needs refresh');
