@@ -72,13 +72,13 @@ export const load: PageServerLoad = async ({ url, cookies, getClientAddress }) =
 
 		// Разрешаем редирект на тот же хост или на localhost в режиме разработки
 		const isSameHost = nextUrl.host === url.host;
-		const isLocalhostRedirect = isDevelopment && (
-			nextUrl.host === 'localhost:5173' ||
-			nextUrl.host === '127.0.0.1:5173' ||
-			nextUrl.host.startsWith('192.168.') ||
-			nextUrl.host.startsWith('10.') ||
-			nextUrl.host.startsWith('172.')
-		);
+		const isLocalhostRedirect =
+			isDevelopment &&
+			(nextUrl.host === 'localhost:5173' ||
+				nextUrl.host === '127.0.0.1:5173' ||
+				nextUrl.host.startsWith('192.168.') ||
+				nextUrl.host.startsWith('10.') ||
+				nextUrl.host.startsWith('172.'));
 
 		if (!isSameHost && !isLocalhostRedirect) {
 			console.warn('🚫 [OAuth] Suspicious redirect URL:', next, 'from host:', nextUrl.host);
