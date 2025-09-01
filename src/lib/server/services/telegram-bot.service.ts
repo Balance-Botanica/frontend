@@ -920,10 +920,16 @@ export class TelegramBotService {
 
 	// Метод для отправки уведомления о новом заказе
 	async notifyNewOrder(order: Order): Promise<void> {
+		console.log('[TelegramBot] notifyNewOrder called for order:', order.id);
+		console.log('[TelegramBot] Current adminChatId:', this.adminChatId);
+
 		if (!this.adminChatId) {
-			console.log('[TelegramBot] Admin chat ID not set, skipping notification');
+			console.log('[TelegramBot] ❌ Admin chat ID not set, skipping notification');
+			console.log('[TelegramBot] 💡 Make sure to send /start to the bot first');
 			return;
 		}
+
+		console.log('[TelegramBot] ✅ Admin chat ID found, sending notification...');
 
 		const total = (order.total / 100).toFixed(2);
 		const createDate = new Date(order.createdAt).toLocaleString('uk-UA');
@@ -980,12 +986,24 @@ export class TelegramBotService {
 		};
 
 		try {
-			await this.bot.sendMessage(this.adminChatId, message, {
+			const result = await this.bot.sendMessage(this.adminChatId, message, {
 				parse_mode: 'Markdown',
 				reply_markup: inlineKeyboard
 			});
+			console.log('[TelegramBot] ✅ Notification sent successfully to chat:', this.adminChatId);
+			console.log('[TelegramBot] 📨 Message details:', {
+				messageId: result.message_id,
+				chatId: result.chat.id,
+				orderId: order.id
+			});
 		} catch (error) {
-			console.error('Failed to send new order notification:', error);
+			console.error('[TelegramBot] ❌ Failed to send new order notification:', error);
+			console.error('[TelegramBot] 🔍 Error details:', {
+				adminChatId: this.adminChatId,
+				orderId: order.id,
+				messageLength: message.length,
+				error: error instanceof Error ? error.message : String(error)
+			});
 		}
 	}
 
@@ -1000,6 +1018,54 @@ export class TelegramBotService {
 	// Метод для получения ID чата админа
 	getAdminChatId(): string | null {
 		return this.adminChatId;
+	}
+
+	// Метод для проверки статуса бота
+	getBotStatus(): object {
+		return {
+			adminChatId: this.adminChatId,
+			botToken: this.bot ? '✅ Set' : '❌ Not set',
+			isPolling: false, // В нашем случае polling управляется снаружи
+			fileExists: this.checkAdminChatIdFile()
+		};
+	}
+
+	// Проверка существования файла с adminChatId
+	private checkAdminChatIdFile(): boolean {
+		try {
+			const { readFileSync } = require('fs');
+			const { join } = require('path');
+			const filePath = join(process.cwd(), 'admin-chat-id.json');
+			readFileSync(filePath);
+			return true;
+		} catch {
+			return false;
+		}
+	}
+
+	// Метод для тестирования отправки сообщения
+	async testNotification(): Promise<boolean> {
+		console.log('[TelegramBot] 🧪 Testing notification...');
+
+		if (!this.adminChatId) {
+			console.log('[TelegramBot] ❌ Cannot test: adminChatId not set');
+			return false;
+		}
+
+		try {
+			const testMessage = `🧪 *ТЕСТОВОЕ УВЕДОМЛЕНИЕ*\n\nВремя: ${new Date().toLocaleString('uk-UA')}\n\nЭто тестовое сообщение для проверки работы бота.`;
+
+			const result = await this.bot.sendMessage(this.adminChatId, testMessage, {
+				parse_mode: 'Markdown'
+			});
+
+			console.log('[TelegramBot] ✅ Test notification sent successfully!');
+			console.log('[TelegramBot] 📨 Test message ID:', result.message_id);
+			return true;
+		} catch (error) {
+			console.error('[TelegramBot] ❌ Test notification failed:', error);
+			return false;
+		}
 	}
 
 	// Сохраняем adminChatId в файл
