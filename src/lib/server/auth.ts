@@ -68,15 +68,15 @@ export async function validateSessionToken(token: string) {
 				console.log(`[Auth] Cleaned up ${result.changes} expired sessions`);
 			}
 
-			// Также очищаем очень старые сессии (старше 90 дней)
-			const ninetyDaysAgo = new Date(now - 90 * 24 * 60 * 60 * 1000);
-			const oldResult = await db
-				.delete(table.sessions)
-				.where(lt(table.sessions.createdAt, ninetyDaysAgo));
-
-			if (oldResult.changes > 0) {
-				console.log(`[Auth] Cleaned up ${oldResult.changes} very old sessions (>90 days)`);
-			}
+			// Также очищаем очень старые сессии (старше 90 дней) - пока отключено (нет поля createdAt)
+			// const ninetyDaysAgo = new Date(now - 90 * 24 * 60 * 60 * 1000);
+			// const oldResult = await db
+			// 	.delete(table.sessions)
+			// 	.where(lt(table.sessions.createdAt, ninetyDaysAgo));
+			//
+			// if (oldResult.changes > 0) {
+			// 	console.log(`[Auth] Cleaned up ${oldResult.changes} very old sessions (>90 days)`);
+			// }
 		} catch (error) {
 			console.warn('[Auth] Failed to cleanup expired sessions:', error);
 		}
