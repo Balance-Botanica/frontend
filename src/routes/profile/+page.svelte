@@ -35,6 +35,7 @@
 	let isSaving = false;
 	let saveSuccess = false;
 	let saveError = '';
+	let isLoggingOut = false;
 
 	// Load data from server
 	export let data: PageData;
@@ -46,8 +47,8 @@
 		console.log('[Profile Page] Supabase auth store initialized');
 	});
 
-	// Redirect to login if not authenticated
-	$: if (!$isAuthenticated && !$isLoading) {
+	// Redirect to login if not authenticated (but not during logout)
+	$: if (!$isAuthenticated && !$isLoading && !isLoggingOut) {
 		console.log('[Profile Page] User not authenticated and not loading, redirecting to login');
 		goto('/login');
 	}
@@ -233,16 +234,24 @@
 	async function handleLogout() {
 		try {
 			console.log('🚪 Initiating logout...');
+
+			// Temporarily disable the auth redirect to prevent showing login page
+			isLoggingOut = true;
+
 			await supabaseAuthStore.signOut();
 			console.log('✅ Logout successful, redirecting to home page...');
-			// Add a small delay to ensure the auth state is properly updated
-			setTimeout(() => {
-				goto('/');
-			}, 100);
+
+			// Immediately redirect to home page without showing login
+			goto('/', { replaceState: true });
 		} catch (error) {
 			console.error('❌ Error during logout:', error);
 			// Even if there's an error, still redirect to home page
-			goto('/');
+			goto('/', { replaceState: true });
+		} finally {
+			// Reset the flag after a short delay
+			setTimeout(() => {
+				isLoggingOut = false;
+			}, 1000);
 		}
 	}
 </script>

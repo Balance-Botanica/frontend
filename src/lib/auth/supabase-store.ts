@@ -747,7 +747,7 @@ function createSupabaseAuthStore() {
 				!currentState.session ||
 				currentState.user?.id !== user.id ||
 				!currentState.session.expires_at ||
-				(currentState.session.expires_at * 1000) < (Date.now() + 5 * 60 * 1000); // Expires in < 5 minutes
+				currentState.session.expires_at * 1000 < Date.now() + 5 * 60 * 1000; // Expires in < 5 minutes
 
 			if (needsNewSessionToken) {
 				console.log('🔐 [SESSION] Creating session token for user:', user.id);
