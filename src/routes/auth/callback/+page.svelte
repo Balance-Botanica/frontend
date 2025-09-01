@@ -38,33 +38,24 @@
 				});
 
 				if (sessionData.session) {
-					console.log('✅ [OAuth] Session found, redirecting to home in 2 seconds...');
+					console.log('✅ [OAuth] Session found, instant redirect to home...');
 
-					// Показываем сообщение пользователю
-					setTimeout(() => {
-						console.log('🚀 [OAuth] Redirecting to home page...');
-						goto('/', { replaceState: true });
-					}, 2000);
+					// Моментальный редирект
+					goto('/', { replaceState: true });
 
 				} else {
-					console.log('⚠️ [OAuth] No session found, redirecting to login...');
-					setTimeout(() => {
-						goto('/login?error=No session', { replaceState: true });
-					}, 2000);
+					console.log('⚠️ [OAuth] No session found, instant redirect to login...');
+					goto('/login?error=No session', { replaceState: true });
 				}
 
 			} catch (error) {
 				console.error('❌ [OAuth] Error processing OAuth:', error);
-				setTimeout(() => {
-					goto('/login?error=Processing error', { replaceState: true });
-				}, 2000);
+				goto('/login?error=Processing error', { replaceState: true });
 			}
 
 		} else {
-			console.log('⚠️ [OAuth] No OAuth tokens found, redirecting to login...');
-			setTimeout(() => {
-				goto('/login?error=No OAuth data', { replaceState: true });
-			}, 2000);
+			console.log('⚠️ [OAuth] No OAuth tokens found, instant redirect to login...');
+			goto('/login?error=No OAuth data', { replaceState: true });
 		}
 	});
 </script>
@@ -72,18 +63,13 @@
 <div class="min-h-screen flex items-center justify-center bg-gray-50">
 	<div class="max-w-md w-full space-y-8">
 		<div class="text-center">
-			<div class="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto"></div>
-			<h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
-				Authentication Successful!
+			<div class="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600 mx-auto"></div>
+			<h2 class="mt-4 text-center text-xl font-semibold text-gray-900">
+				Redirecting...
 			</h2>
-			<p class="mt-2 text-center text-sm text-gray-600">
-				Redirecting you to the home page...
+			<p class="mt-1 text-center text-xs text-gray-500">
+				Completing authentication
 			</p>
-			<div class="mt-4 text-center">
-				<p class="text-xs text-gray-500">
-					If you are not redirected automatically, <a href="/" class="text-blue-600 hover:text-blue-500">click here</a>
-				</p>
-			</div>
 		</div>
 	</div>
 </div>
