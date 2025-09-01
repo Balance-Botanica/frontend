@@ -20,39 +20,20 @@ export async function createSession(token: string, userId: string) {
 	const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
 	console.log('[Auth] Creating session for user:', userId, 'with session ID:', sessionId);
 
-	// Проверить, есть ли уже активная сессия для этого пользователя
-	const existingSessions = await db
-		.select()
-		.from(table.sessions)
-		.where(eq(table.sessions.userId, userId));
+	// Удаляем все старые сессии для этого пользователя
+	await db.delete(table.sessions).where(eq(table.sessions.userId, userId));
+	console.log('[Auth] Cleaned up old sessions for user:', userId);
 
-	const now = Date.now();
-	const activeSessions = existingSessions.filter((session) => session.expiresAt.getTime() > now);
-
-	// Если есть активная сессия, продлим её вместо создания новой
-	if (activeSessions.length > 0) {
-		console.log('[Auth] Found existing active session, extending it instead of creating new one');
-		const latestSession = activeSessions[0];
-		const newExpiresAt = new Date(Date.now() + DAY_IN_MS * 30);
-
-		await db
-			.update(table.sessions)
-			.set({ expiresAt: newExpiresAt })
-			.where(eq(table.sessions.id, latestSession.id));
-
-		console.log('[Auth] Extended existing session:', latestSession.id);
-		return { ...latestSession, expiresAt: newExpiresAt };
-	}
-
-	// Создаем новую сессию только если активных нет
+	// Создаем новую сессию
 	const expiresAt = new Date(Date.now() + DAY_IN_MS * 30);
 	const session = {
 		id: sessionId,
 		userId,
 		expiresAt
 	};
+
 	await db.insert(table.sessions).values(session);
-	console.log('[Auth] New session created successfully');
+	console.log('[Auth] New session created successfully:', sessionId);
 	return session;
 }
 

@@ -87,6 +87,7 @@ const handleAuth: Handle = async ({ event, resolve }) => {
 	}
 
 	console.log('[Hooks] Validating session token');
+	console.log('[Hooks] Session token value (first 10 chars):', sessionToken.substring(0, 10) + '...');
 	const { session, user } = await auth.validateSessionToken(sessionToken);
 	console.log(
 		'[Hooks] Session validation result - Session:',
@@ -94,6 +95,9 @@ const handleAuth: Handle = async ({ event, resolve }) => {
 		'User:',
 		user ? 'Authenticated' : 'Not authenticated'
 	);
+	if (user) {
+		console.log('[Hooks] User found:', user.email);
+	}
 
 	if (session) {
 		console.log('[Hooks] Setting session token cookie with renewed expiration');
