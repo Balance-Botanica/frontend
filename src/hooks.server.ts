@@ -43,7 +43,16 @@ const handleAuth: Handle = async ({ event, resolve }) => {
 
 	// Rate limiting для защиты от brute force (отключаем для разработки)
 	const isDevelopment = process.env.NODE_ENV !== 'production';
-	const clientIP = event.getClientAddress();
+
+	// Получаем IP адрес с обработкой ошибок
+	let clientIP: string;
+	try {
+		clientIP = event.getClientAddress();
+	} catch (error) {
+		console.log('🔓 [Rate Limit] Could not determine client address, skipping rate limiting');
+		return resolve(event);
+	}
+
 	const isLocalhost =
 		clientIP === '::1' ||
 		clientIP === '127.0.0.1' ||
@@ -140,7 +149,15 @@ const handleSecurityHeaders: Handle = async ({ event, resolve }) => {
 // Suspicious activity detection
 const handleSuspiciousActivity: Handle = async ({ event, resolve }) => {
 	const userAgent = event.request.headers.get('user-agent') || '';
-	const clientIP = event.getClientAddress();
+
+	// Получаем IP адрес с обработкой ошибок
+	let clientIP: string;
+	try {
+		clientIP = event.getClientAddress();
+	} catch (error) {
+		console.log('🔓 [Security] Could not determine client address, skipping suspicious activity check');
+		return resolve(event);
+	}
 
 	// Пропускаем проверку для localhost в режиме разработки
 	const isDevelopment = process.env.NODE_ENV !== 'production';
