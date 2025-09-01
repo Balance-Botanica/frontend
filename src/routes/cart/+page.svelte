@@ -6,6 +6,7 @@
 	import { createPageTranslations } from '$lib/i18n/store';
 	import { browser } from '$app/environment';
 	import { onMount, onDestroy } from 'svelte';
+	import { page } from '$app/stores';
 	import SEO from '$lib/components/SEO.svelte';
 	import NovaPoshtaSelector from '$lib/components/NovaPoshtaSelector.svelte';
 	import AddressModal from '$lib/components/AddressModal.svelte';
@@ -154,6 +155,9 @@
 	// Debounce timer for localStorage saves
 	let saveTimer: number | null = null;
 
+	// Prevent multiple load calls
+	let isLoadingData = false;
+
 	// Handle field changes to clear validation errors
 	function handleFieldChange(field: keyof typeof validationErrors) {
 		if (validationErrors[field]) {
@@ -204,16 +208,22 @@
 
 	// Load form data from localStorage
 	function loadFormData() {
-		if (browser) {
-			try {
-				const saved = localStorage.getItem('cart-form-data');
-				if (saved) {
-					const formData = JSON.parse(saved);
-					const age = Date.now() - formData.timestamp;
-					const maxAge = 24 * 60 * 60 * 1000; // 24 hours
+		if (!browser || isLoadingData) {
+			return; // Prevent multiple simultaneous loads
+		}
 
-					if (age < maxAge) {
-						// Load saved data
+		isLoadingData = true;
+
+		try {
+			const saved = localStorage.getItem('cart-form-data');
+			if (saved) {
+				const formData = JSON.parse(saved);
+				const age = Date.now() - formData.timestamp;
+				const maxAge = 24 * 60 * 60 * 1000; // 24 hours
+
+				if (age < maxAge) {
+					// Load saved data with small delay to ensure reactivity
+					setTimeout(() => {
 						firstName = formData.firstName || '';
 						lastName = formData.lastName || '';
 						phoneNumber = formData.phoneNumber || '';
@@ -226,18 +236,23 @@
 							selectedAddress: !!selectedAddress,
 							age: Math.round(age / 1000 / 60) + ' minutes ago'
 						});
-					} else {
-						// Clear old data
-						localStorage.removeItem('cart-form-data');
-						console.log('[Cart] Old form data cleared (was', Math.round(age / 1000 / 60 / 60), 'hours old)');
-					}
+
+						isLoadingData = false;
+					}, 50); // Small delay for reactivity
 				} else {
-					console.log('[Cart] No saved form data found');
+					// Clear old data
+					localStorage.removeItem('cart-form-data');
+					console.log('[Cart] Old form data cleared (was', Math.round(age / 1000 / 60 / 60), 'hours old)');
+					isLoadingData = false;
 				}
-			} catch (error) {
-				console.warn('[Cart] Failed to load cart form data:', error);
-				localStorage.removeItem('cart-form-data');
+			} else {
+				console.log('[Cart] No saved form data found');
+				isLoadingData = false;
 			}
+		} catch (error) {
+			console.warn('[Cart] Failed to load cart form data:', error);
+			localStorage.removeItem('cart-form-data');
+			isLoadingData = false;
 		}
 	}
 
@@ -245,7 +260,19 @@
 	function clearFormData() {
 		if (browser) {
 			localStorage.removeItem('cart-form-data');
+			// Reset form fields
+			firstName = '';
+			lastName = '';
+			phoneNumber = '';
+			selectedAddress = null;
+			console.log('[Cart] Form data cleared');
 		}
+	}
+
+	// Force refresh form data (for debugging)
+	function refreshFormData() {
+		console.log('[Cart] Forcing form data refresh...');
+		loadFormData();
 	}
 
 	// Handle address modal open
@@ -405,10 +432,31 @@
 		return `${(kopiyky / 100).toFixed(2)} ₴`;
 	}
 
-	// Load form data on component mount
+	// Load form data on component mount and page navigation
 	onMount(() => {
 		loadFormData();
 	});
+
+	// Reactive block to reload data when navigating to this page
+	$: {
+		// This will trigger when the page store changes (navigation)
+		$page.url.pathname;
+		loadFormData();
+	}
+
+	// Reactive block to ensure form fields update in UI
+	$: {
+		// Force reactivity update for form fields
+		firstName, lastName, phoneNumber, selectedAddress;
+
+		// This will trigger whenever any form field changes
+		console.log('[Cart] Form fields updated:', {
+			firstName: !!firstName,
+			lastName: !!lastName,
+			phoneNumber: !!phoneNumber,
+			selectedAddress: !!selectedAddress
+		});
+	}
 
 	// Cleanup timer on component destroy
 	onDestroy(() => {
