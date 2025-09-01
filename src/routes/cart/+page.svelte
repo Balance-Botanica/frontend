@@ -5,7 +5,7 @@
 	import { notificationStore } from '$lib/stores/notifications';
 	import { createPageTranslations } from '$lib/i18n/store';
 	import { browser } from '$app/environment';
-	import { onMount } from 'svelte';
+	import { onMount, onDestroy } from 'svelte';
 	import SEO from '$lib/components/SEO.svelte';
 	import NovaPoshtaSelector from '$lib/components/NovaPoshtaSelector.svelte';
 	import AddressModal from '$lib/components/AddressModal.svelte';
@@ -151,17 +151,44 @@
 		goto('/products');
 	}
 
+	// Debounce timer for localStorage saves
+	let saveTimer: number | null = null;
+
 	// Handle field changes to clear validation errors
 	function handleFieldChange(field: keyof typeof validationErrors) {
 		if (validationErrors[field]) {
 			validationErrors = { ...validationErrors, [field]: false };
 		}
-		// Save form data to localStorage
+		// Save form data to localStorage with debouncing
 		saveFormData();
 	}
 
-	// Save form data to localStorage
+	// Save form data to localStorage with debouncing
 	function saveFormData() {
+		if (browser) {
+			// Clear existing timer
+			if (saveTimer) {
+				clearTimeout(saveTimer);
+			}
+
+			// Debounce localStorage writes to avoid excessive calls
+			saveTimer = setTimeout(() => {
+				const formData = {
+					firstName,
+					lastName,
+					phoneNumber,
+					selectedAddress,
+					timestamp: Date.now()
+				};
+				localStorage.setItem('cart-form-data', JSON.stringify(formData));
+				console.log('[Cart] Form data saved to localStorage');
+				saveTimer = null;
+			}, 300); // 300ms debounce
+		}
+	}
+
+	// Save immediately on critical field changes
+	function saveFormDataImmediate() {
 		if (browser) {
 			const formData = {
 				firstName,
@@ -171,6 +198,7 @@
 				timestamp: Date.now()
 			};
 			localStorage.setItem('cart-form-data', JSON.stringify(formData));
+			console.log('[Cart] Form data saved immediately to localStorage');
 		}
 	}
 
@@ -181,19 +209,33 @@
 				const saved = localStorage.getItem('cart-form-data');
 				if (saved) {
 					const formData = JSON.parse(saved);
-					// Only load data if it's less than 24 hours old
-					if (Date.now() - formData.timestamp < 24 * 60 * 60 * 1000) {
+					const age = Date.now() - formData.timestamp;
+					const maxAge = 24 * 60 * 60 * 1000; // 24 hours
+
+					if (age < maxAge) {
+						// Load saved data
 						firstName = formData.firstName || '';
 						lastName = formData.lastName || '';
 						phoneNumber = formData.phoneNumber || '';
 						selectedAddress = formData.selectedAddress || null;
+
+						console.log('[Cart] Form data loaded from localStorage:', {
+							firstName: !!firstName,
+							lastName: !!lastName,
+							phoneNumber: !!phoneNumber,
+							selectedAddress: !!selectedAddress,
+							age: Math.round(age / 1000 / 60) + ' minutes ago'
+						});
 					} else {
 						// Clear old data
 						localStorage.removeItem('cart-form-data');
+						console.log('[Cart] Old form data cleared (was', Math.round(age / 1000 / 60 / 60), 'hours old)');
 					}
+				} else {
+					console.log('[Cart] No saved form data found');
 				}
 			} catch (error) {
-				console.warn('Failed to load cart form data:', error);
+				console.warn('[Cart] Failed to load cart form data:', error);
 				localStorage.removeItem('cart-form-data');
 			}
 		}
@@ -368,6 +410,13 @@
 		loadFormData();
 	});
 
+	// Cleanup timer on component destroy
+	onDestroy(() => {
+		if (saveTimer) {
+			clearTimeout(saveTimer);
+		}
+	});
+
 	$: {
 		// Update delivery addresses when data changes
 		deliveryAddresses = data?.deliveryAddresses || [];
@@ -375,7 +424,7 @@
 		// Auto-select address if there's only one and none selected
 		if (deliveryAddresses.length === 1 && !selectedAddress) {
 			selectedAddress = deliveryAddresses[0].id;
-			saveFormData(); // Save the auto-selected address
+			saveFormDataImmediate(); // Save the auto-selected address immediately
 		}
 	}
 
@@ -513,7 +562,9 @@
 											class:error={validationErrors.firstName}
 											bind:value={firstName}
 											placeholder={$pageTranslations.t('cart.checkout.firstName')}
-											on:input={() => handleFieldChange('firstName')}
+											on:input={() => { handleFieldChange('firstName'); saveFormData(); }}
+											on:change={saveFormDataImmediate}
+											on:blur={saveFormDataImmediate}
 										/>
 									</div>
 									<div class="form-group">
@@ -525,7 +576,9 @@
 											class:error={validationErrors.lastName}
 											bind:value={lastName}
 											placeholder={$pageTranslations.t('cart.checkout.lastName')}
-											on:input={() => handleFieldChange('lastName')}
+											on:input={() => { handleFieldChange('lastName'); saveFormData(); }}
+											on:change={saveFormDataImmediate}
+											on:blur={saveFormDataImmediate}
 										/>
 									</div>
 								</div>
@@ -538,7 +591,9 @@
 										class:error={validationErrors.phoneNumber}
 										bind:value={phoneNumber}
 										placeholder={$pageTranslations.t('cart.checkout.phoneNumber')}
-										on:input={() => handleFieldChange('phoneNumber')}
+										on:input={() => { handleFieldChange('phoneNumber'); saveFormData(); }}
+										on:change={saveFormDataImmediate}
+										on:blur={saveFormDataImmediate}
 									/>
 								</div>
 								
@@ -551,7 +606,7 @@
 											class="form-input"
 											class:error={validationErrors.selectedAddress}
 											bind:value={selectedAddress}
-											on:change={() => handleFieldChange('selectedAddress')}
+											on:change={() => { handleFieldChange('selectedAddress'); saveFormDataImmediate(); }}
 										>
 											{#each deliveryAddresses as address}
 												<option value={address.id}>{address.name || address.npCityFullName}</option>
