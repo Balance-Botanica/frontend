@@ -5,7 +5,7 @@ import type { PageServerLoad, Actions } from '../../../.svelte-kit/types/src/rou
 
 // Load user delivery addresses
 export const load: PageServerLoad = async ({ locals }) => {
-	console.log('[Profile Load] Starting profile load, checking user authentication');
+	console.log('[Profile Load] Starting profile load');
 
 	// Check if user is authenticated
 	if (!locals.user?.id) {
@@ -15,15 +15,10 @@ export const load: PageServerLoad = async ({ locals }) => {
 
 	const userId = locals.user.id;
 	console.log('[Profile Load] ✅ User authenticated:', locals.user.email);
-	console.log('[Profile Load] Fetching delivery addresses for user:', userId);
 
 	try {
 		const deliveryAddresses = await userService.getDeliveryAddressesByUserId(userId);
-		console.log(
-			'[Profile Load] Successfully loaded',
-			deliveryAddresses.length,
-			'delivery addresses'
-		);
+		console.log('[Profile Load] Successfully loaded', deliveryAddresses.length, 'delivery addresses');
 		return {
 			deliveryAddresses
 		};
