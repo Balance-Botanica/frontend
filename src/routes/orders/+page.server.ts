@@ -3,19 +3,23 @@ import { redirect } from '@sveltejs/kit';
 import { OrderService } from '../../lib/server/application/services/order.service';
 
 export const load: PageServerLoad = async ({ locals }) => {
-	// TEMPORARILY DISABLE AUTH CHECK TO FIX REDIRECT LOOP
-	// TODO: Re-enable after fixing session synchronization
-	console.log('[Orders Page] ⚠️ AUTH CHECK DISABLED - allowing all access');
+	// Check if user is authenticated
+	if (!locals.user) {
+		console.log('[Orders Page] ❌ User not authenticated, redirecting to login');
+		throw redirect(302, '/login?redirect=/orders');
+	}
+
+	console.log('[Orders Page] ✅ User authenticated:', locals.user.email);
 
 	// Initialize services
 	const orderService = new OrderService();
-	const user = locals.user;
+	const userId = locals.user.id;
 
 	try {
-		// TEMPORARILY GET ALL ORDERS since auth is disabled
-		console.log('[Orders Page] Getting all orders (auth disabled)');
-		const orders = await orderService.getAllOrders();
-		console.log(`[Orders Page] Found ${orders.length} orders in database`);
+		// Get orders for the authenticated user
+		console.log('[Orders Page] Getting orders for user:', userId);
+		const orders = await orderService.getOrdersByUserId(userId);
+		console.log(`[Orders Page] Found ${orders.length} orders for user`);
 
 		return {
 			orders

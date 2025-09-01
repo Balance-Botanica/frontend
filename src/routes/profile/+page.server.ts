@@ -7,35 +7,26 @@ import type { PageServerLoad, Actions } from '../../../.svelte-kit/types/src/rou
 export const load: PageServerLoad = async ({ locals }) => {
 	console.log('[Profile Load] Starting profile load, checking user authentication');
 
-	// TEMPORARILY DISABLE AUTH CHECK TO FIX REDIRECT LOOP
-	// TODO: Re-enable after fixing session synchronization
-	console.log('[Profile Load] ⚠️ AUTH CHECK DISABLED - allowing all access');
-	/*
+	// Check if user is authenticated
 	if (!locals.user?.id) {
-		console.log('[Profile Load] User not authenticated, redirecting to login');
-		throw redirect(302, '/login');
+		console.log('[Profile Load] ❌ User not authenticated, redirecting to login');
+		throw redirect(302, '/login?redirect=/profile');
 	}
-	*/
 
-	const userId = locals.user?.id || 'anonymous';
-	console.log('[Profile Load] User authenticated, fetching delivery addresses for user:', userId);
+	const userId = locals.user.id;
+	console.log('[Profile Load] ✅ User authenticated:', locals.user.email);
+	console.log('[Profile Load] Fetching delivery addresses for user:', userId);
+
 	try {
-		if (userId !== 'anonymous') {
-			const deliveryAddresses = await userService.getDeliveryAddressesByUserId(userId);
-			console.log(
-				'[Profile Load] Successfully loaded',
-				deliveryAddresses.length,
-				'delivery addresses'
-			);
-			return {
-				deliveryAddresses
-			};
-		} else {
-			console.log('[Profile Load] Anonymous user - returning empty delivery addresses');
-			return {
-				deliveryAddresses: []
-			};
-		}
+		const deliveryAddresses = await userService.getDeliveryAddressesByUserId(userId);
+		console.log(
+			'[Profile Load] Successfully loaded',
+			deliveryAddresses.length,
+			'delivery addresses'
+		);
+		return {
+			deliveryAddresses
+		};
 	} catch (err) {
 		console.error('[Profile Load] Error loading delivery addresses:', err);
 		return {
@@ -48,23 +39,17 @@ export const load: PageServerLoad = async ({ locals }) => {
 export const actions: Actions = {
 	saveDeliveryAddress: async ({ request, locals }) => {
 		console.log('[Save Delivery Address] Starting save delivery address action');
-		console.log(
-			'[Save Delivery Address] User authentication status:',
-			locals.user?.id ? 'Authenticated' : 'Not authenticated'
-		);
 
-		// TEMPORARILY DISABLE AUTH CHECK
-		// TODO: Re-enable after fixing session synchronization
-		console.log('[Save Delivery Address] ⚠️ AUTH CHECK DISABLED');
-		/*
+		// Check if user is authenticated
 		if (!locals.user?.id) {
-			console.log('[Save Delivery Address] Authentication failed - no user ID in locals');
-			return {
+			console.log('[Save Delivery Address] ❌ Authentication failed - no user ID in locals');
+			return fail(401, {
 				success: false,
 				error: 'User not authenticated'
-			};
+			});
 		}
-		*/
+
+		console.log('[Save Delivery Address] ✅ User authenticated:', locals.user.email);
 
 		try {
 			const formData = await request.formData();
@@ -112,17 +97,7 @@ export const actions: Actions = {
 				};
 			}
 
-			// TEMPORARILY DISABLE AUTH CHECK
-			console.log('[Save Delivery Address] ⚠️ AUTH CHECK DISABLED');
-			const userId = locals.user?.id || 'anonymous';
-			if (userId === 'anonymous') {
-				console.log('[Save Delivery Address] Anonymous user - cannot save address');
-				return {
-					success: false,
-					error: 'User not authenticated'
-				};
-			}
-
+			const userId = locals.user.id;
 			console.log('[Save Delivery Address] Processing delivery address data:', deliveryAddressData);
 			const result = await userService.saveDeliveryAddress(userId, deliveryAddressData);
 
@@ -136,29 +111,30 @@ export const actions: Actions = {
 				console.log(
 					'[Save Delivery Address] Failed to save delivery address - service returned null'
 				);
-				return {
+				return fail(500, {
 					success: false,
 					error: 'Failed to save delivery address'
-				};
+				});
 			}
 		} catch (err) {
 			console.error('[Save Delivery Address] Error saving delivery address:', err);
-			return {
+			return fail(500, {
 				success: false,
 				error: 'Failed to save delivery address'
-			};
+			});
 		}
 	},
 
 	setDefaultAddress: async ({ request, locals }) => {
 		console.log('[Set Default Address] Starting set default address action');
-		console.log(
-			'[Set Default Address] User authentication status:',
-			locals.user?.id ? 'Authenticated' : 'Not authenticated'
-		);
 
-		// TEMPORARILY DISABLE AUTH CHECK
-		console.log('[Set Default Address] ⚠️ AUTH CHECK DISABLED');
+		// Check if user is authenticated
+		if (!locals.user?.id) {
+			console.log('[Set Default Address] ❌ User not authenticated');
+			return fail(401, { success: false, error: 'User not authenticated' });
+		}
+
+		console.log('[Set Default Address] ✅ User authenticated:', locals.user.email);
 
 		try {
 			const formData = await request.formData();
@@ -173,19 +149,11 @@ export const actions: Actions = {
 				'[Set Default Address] Setting address',
 				addressId,
 				'as default for user',
-				locals.user?.id ?? 'unknown'
+				locals.user.id
 			);
 
-			// TEMPORARILY DISABLE AUTH CHECK
-			console.log('[Set Default Address] ⚠️ AUTH CHECK DISABLED');
-			const userId = locals.user?.id || 'anonymous';
-			if (userId === 'anonymous') {
-				console.log('[Set Default Address] Anonymous user - cannot set default address');
-				return fail(401, { success: false, error: 'User not authenticated' });
-			}
-
 			const repository = new DrizzleUserRepository();
-			const success = await repository.setDefaultAddress(userId, addressId);
+			const success = await repository.setDefaultAddress(locals.user.id, addressId);
 
 			if (success) {
 				console.log('[Set Default Address] Successfully set default address');
@@ -202,13 +170,14 @@ export const actions: Actions = {
 
 	deleteAddress: async ({ request, locals }) => {
 		console.log('[Delete Address] Starting delete address action');
-		console.log(
-			'[Delete Address] User authentication status:',
-			locals.user?.id ? 'Authenticated' : 'Not authenticated'
-		);
 
-		// TEMPORARILY DISABLE AUTH CHECK
-		console.log('[Delete Address] ⚠️ AUTH CHECK DISABLED');
+		// Check if user is authenticated
+		if (!locals.user?.id) {
+			console.log('[Delete Address] ❌ User not authenticated');
+			return fail(401, { success: false, error: 'User not authenticated' });
+		}
+
+		console.log('[Delete Address] ✅ User authenticated:', locals.user.email);
 
 		try {
 			const formData = await request.formData();
@@ -219,7 +188,10 @@ export const actions: Actions = {
 				return fail(400, { success: false, error: 'Address ID is required' });
 			}
 
-			console.log('[Delete Address] Deleting address:', addressId);
+			console.log('[Delete Address] Deleting address:', addressId, 'for user:', locals.user.id);
+
+			// Note: We might want to add a check here to ensure the address belongs to the user
+			// For now, we'll rely on the service to handle this
 			const success = await userService.deleteDeliveryAddress(addressId);
 
 			if (success) {
