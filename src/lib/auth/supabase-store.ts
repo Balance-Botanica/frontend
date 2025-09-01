@@ -325,7 +325,7 @@ function createSupabaseAuthStore() {
 			const { data, error } = await supabase!.auth.signInWithOAuth({
 				provider: 'google',
 				options: {
-					redirectTo: `${window.location.origin}/auth/callback`,
+					redirectTo: `http://localhost:5173/auth/callback`, // Фиксированный URL для разработки
 					// Use PKCE flow for better security (as per Supabase docs)
 					skipBrowserRedirect: false,
 					queryParams: {

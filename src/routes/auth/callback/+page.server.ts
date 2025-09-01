@@ -6,24 +6,34 @@ import { userService } from '$lib/server/application/services/user.service';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ url, cookies, getClientAddress }) => {
-	// Rate limiting для OAuth callback
-	const clientIP = getClientAddress();
-	const rateLimitKey = `oauth_callback_${clientIP}`;
-
-	// Простая rate limiting для OAuth (5 попыток в минуту)
-	const attempts = (global as any).oauthAttempts || {};
-	const now = Date.now();
-
-	if (!attempts[rateLimitKey] || now - attempts[rateLimitKey].timestamp > 60000) {
-		attempts[rateLimitKey] = { count: 1, timestamp: now };
-	} else if (attempts[rateLimitKey].count >= 5) {
-		console.warn('🚫 [OAuth] Rate limit exceeded for IP:', clientIP);
-		throw redirect(302, '/login?error=Too many requests');
-	} else {
-		attempts[rateLimitKey].count++;
+	// Получаем IP адрес с обработкой ошибок
+	let clientIP: string;
+	try {
+		clientIP = getClientAddress();
+	} catch (error) {
+		console.log('🔓 [OAuth] Could not determine client address, skipping rate limiting');
+		clientIP = 'unknown';
 	}
 
-	(global as any).oauthAttempts = attempts;
+	// Rate limiting для OAuth callback (только для известных IP)
+	if (clientIP !== 'unknown') {
+		const rateLimitKey = `oauth_callback_${clientIP}`;
+
+		// Простая rate limiting для OAuth (5 попыток в минуту)
+		const attempts = (global as any).oauthAttempts || {};
+		const now = Date.now();
+
+		if (!attempts[rateLimitKey] || now - attempts[rateLimitKey].timestamp > 60000) {
+			attempts[rateLimitKey] = { count: 1, timestamp: now };
+		} else if (attempts[rateLimitKey].count >= 5) {
+			console.warn('🚫 [OAuth] Rate limit exceeded for IP:', clientIP);
+			throw redirect(302, '/login?error=Too many requests');
+		} else {
+			attempts[rateLimitKey].count++;
+		}
+
+		(global as any).oauthAttempts = attempts;
+	}
 
 	const code = url.searchParams.get('code');
 	const next = url.searchParams.get('next') ?? '/';
@@ -52,11 +62,30 @@ export const load: PageServerLoad = async ({ url, cookies, getClientAddress }) =
 	}
 
 	// Валидация next URL (защита от open redirect)
-	const allowedHosts = ['localhost:5173', 'yourdomain.com'];
-	const nextUrl = new URL(next, url.origin);
+	const isDevelopment = process.env.NODE_ENV !== 'production';
+	const allowedHosts = isDevelopment
+		? ['localhost:5173', '127.0.0.1:5173', '192.168.', '10.', '172.']
+		: ['yourdomain.com']; // Заменить на реальный домен в продакшене
 
-	if (nextUrl.host !== url.host && !allowedHosts.some((host) => nextUrl.host.includes(host))) {
-		console.warn('🚫 [OAuth] Suspicious redirect URL:', next);
+	try {
+		const nextUrl = new URL(next, url.origin);
+
+		// Разрешаем редирект на тот же хост или на localhost в режиме разработки
+		const isSameHost = nextUrl.host === url.host;
+		const isLocalhostRedirect = isDevelopment && (
+			nextUrl.host === 'localhost:5173' ||
+			nextUrl.host === '127.0.0.1:5173' ||
+			nextUrl.host.startsWith('192.168.') ||
+			nextUrl.host.startsWith('10.') ||
+			nextUrl.host.startsWith('172.')
+		);
+
+		if (!isSameHost && !isLocalhostRedirect) {
+			console.warn('🚫 [OAuth] Suspicious redirect URL:', next, 'from host:', nextUrl.host);
+			throw redirect(302, '/');
+		}
+	} catch (error) {
+		console.warn('🚫 [OAuth] Invalid redirect URL:', next);
 		throw redirect(302, '/');
 	}
 
@@ -77,11 +106,13 @@ export const load: PageServerLoad = async ({ url, cookies, getClientAddress }) =
 
 			if (data.session) {
 				// Set the session cookies for SSR with enhanced security
+				const isDevelopment = process.env.NODE_ENV !== 'production';
+
 				cookies.set('sb-access-token', data.session.access_token, {
 					path: '/',
 					maxAge: data.session.expires_in,
 					httpOnly: true, // Защита от XSS
-					secure: true, // Только HTTPS
+					secure: !isDevelopment, // HTTPS только в продакшене
 					sameSite: 'strict' // Строгая защита от CSRF
 				});
 
@@ -89,7 +120,7 @@ export const load: PageServerLoad = async ({ url, cookies, getClientAddress }) =
 					path: '/',
 					maxAge: 60 * 60 * 24 * 30, // 30 days
 					httpOnly: true, // Защита от XSS
-					secure: true, // Только HTTPS
+					secure: !isDevelopment, // HTTPS только в продакшене
 					sameSite: 'strict' // Строгая защита от CSRF
 				});
 
@@ -102,7 +133,7 @@ export const load: PageServerLoad = async ({ url, cookies, getClientAddress }) =
 				console.log('🔐 [Security Audit] OAuth login attempt:', {
 					supabaseUserId,
 					userEmail: userEmail ? userEmail.replace(/(.{2}).*(@.*)/, '$1***$2') : 'no-email',
-					ip: getClientAddress(),
+					ip: clientIP,
 					timestamp: new Date().toISOString(),
 					userAgent: 'OAuth callback'
 				});
