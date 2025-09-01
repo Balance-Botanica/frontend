@@ -323,21 +323,27 @@ function createSupabaseAuthStore() {
 			update((state) => ({ ...state, isLoading: true, error: null }));
 
 			console.log('🔗 [AUTH] Starting Google OAuth flow...');
+			console.log('🔗 [AUTH] Current window location:', window.location.href);
 			console.log('🔗 [AUTH] Redirect URL will be:', `http://localhost:5173/auth/callback`);
 
-			const { data, error } = await supabase!.auth.signInWithOAuth({
-				provider: 'google',
+			const oauthOptions = {
+				provider: 'google' as const,
 				options: {
 					redirectTo: `http://localhost:5173/auth/callback`, // Фиксированный URL для разработки
 					// Use PKCE flow for better security (as per Supabase docs)
 					skipBrowserRedirect: false,
 					queryParams: {
 						access_type: 'offline',
-						prompt: 'consent'
-						// Remove response_type to let Supabase handle the flow type automatically
+						prompt: 'consent',
+						// Explicitly set response type to ensure we get the right flow
+						response_type: 'code'
 					}
 				}
-			});
+			};
+
+			console.log('🔗 [AUTH] OAuth options:', JSON.stringify(oauthOptions, null, 2));
+
+			const { data, error } = await supabase!.auth.signInWithOAuth(oauthOptions);
 
 			console.log('🔗 [AUTH] OAuth request result:', {
 				hasData: !!data,

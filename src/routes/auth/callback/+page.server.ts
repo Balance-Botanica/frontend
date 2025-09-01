@@ -38,7 +38,11 @@ export const load: PageServerLoad = async ({ url, cookies, getClientAddress }) =
 	// Debug all URL parameters
 	console.log('🔍 [OAuth] Full URL:', url.toString());
 	console.log('🔍 [OAuth] Search params:', Array.from(url.searchParams.entries()));
-	console.log('🔍 [OAuth] Hash:', url.hash);
+
+	// Get hash from request URL (not from url.hash which doesn't work in SSR)
+	const requestUrl = new URL(event.request.url);
+	console.log('🔍 [OAuth] Request URL:', requestUrl.toString());
+	console.log('🔍 [OAuth] Request hash:', requestUrl.hash);
 
 	// Check for code in search params first, then in hash
 	let code = url.searchParams.get('code');
@@ -47,9 +51,9 @@ export const load: PageServerLoad = async ({ url, cookies, getClientAddress }) =
 	const errorDescription = url.searchParams.get('error_description');
 
 	// If no code in search params, check hash (for implicit flow)
-	if (!code && url.hash) {
+	if (!code && requestUrl.hash) {
 		console.log('🔍 [OAuth] No code in search params, checking hash...');
-		const hashParams = new URLSearchParams(url.hash.substring(1));
+		const hashParams = new URLSearchParams(requestUrl.hash.substring(1));
 		code = hashParams.get('code') || hashParams.get('access_token');
 		console.log('🔍 [OAuth] Code from hash:', code ? 'FOUND' : 'NOT FOUND');
 	}
@@ -186,12 +190,12 @@ export const load: PageServerLoad = async ({ url, cookies, getClientAddress }) =
 		// Handle implicit flow (tokens in hash)
 		console.log('🔄 [OAuth] No authorization code found, checking for tokens in hash...');
 
-		if (url.hash && url.hash.includes('access_token=')) {
+		if (requestUrl.hash && requestUrl.hash.includes('access_token=')) {
 			try {
 				console.log('🔄 [OAuth] Found tokens in hash, attempting to set session...');
 
 				// Parse hash parameters
-				const hashParams = new URLSearchParams(url.hash.substring(1));
+				const hashParams = new URLSearchParams(requestUrl.hash.substring(1));
 				const accessToken = hashParams.get('access_token');
 				const refreshToken = hashParams.get('refresh_token');
 
