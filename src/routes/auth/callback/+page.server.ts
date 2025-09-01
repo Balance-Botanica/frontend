@@ -5,9 +5,10 @@ export const load = async ({ url }) => {
 	console.log('🔍 [OAuth] Server received URL:', url.toString());
 
 	// Проверяем, есть ли OAuth параметры в URL
-	const hasOAuthTokens = url.toString().includes('access_token=') ||
-	                      url.toString().includes('#access_token=') ||
-	                      url.toString().includes('?code=');
+	const hasOAuthTokens =
+		url.toString().includes('access_token=') ||
+		url.toString().includes('#access_token=') ||
+		url.toString().includes('?code=');
 
 	console.log('🔍 [OAuth] Has OAuth tokens:', hasOAuthTokens);
 
