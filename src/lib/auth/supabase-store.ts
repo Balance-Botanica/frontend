@@ -1,7 +1,7 @@
 import { writable, derived } from 'svelte/store';
 import { get } from 'svelte/store';
 import { browser } from '$app/environment';
-import { replaceState } from '$app/navigation';
+// import { replaceState } from '$app/navigation'; // Not used
 import { supabase } from '$lib/supabase/client';
 import {
 	AuthEvent,
@@ -9,8 +9,8 @@ import {
 	type User,
 	type Session,
 	type AuthState,
-	type LoginCredentials,
-	type OAuthProvider
+	type LoginCredentials
+	// type OAuthProvider // Not used
 } from './types';
 
 /**
@@ -279,10 +279,12 @@ function createSupabaseAuthStore() {
 				setTimeout(() => reject(new Error('Profile query timeout')), 5000)
 			);
 
-			const { data: profile, error } = (await Promise.race([
+			const result = await Promise.race([
 				profilePromise,
 				timeoutPromise
-			])) as any;
+			]) as { data: any; error: any } | null;
+
+			const { data: profile, error } = result || { data: null, error: null };
 
 			if (error) {
 				console.log(
@@ -739,8 +741,20 @@ function createSupabaseAuthStore() {
 
 			set({ user, session: adaptedSession, isLoading: false, error: null });
 
-			// Create session token for server-side authentication
-			await createSessionToken(user.id);
+			// Create session token for server-side authentication (only if needed)
+			const currentState = get(supabaseAuthStore);
+			const needsNewSessionToken =
+				!currentState.session ||
+				currentState.user?.id !== user.id ||
+				!currentState.session.expiresAt ||
+				new Date(currentState.session.expiresAt * 1000) < new Date(Date.now() + 5 * 60 * 1000); // Expires in < 5 minutes
+
+			if (needsNewSessionToken) {
+				console.log('🔐 [SESSION] Creating session token for user:', user.id);
+				await createSessionToken(user.id);
+			} else {
+				console.log('🔐 [SESSION] Session token still valid, skipping creation');
+			}
 
 			console.log('🎉 [AUTH] ⭐⭐⭐ AUTH STATE UPDATED SUCCESSFULLY! Store should now show:');
 			console.log('   🔐 isAuthenticated: true');
@@ -771,7 +785,7 @@ function createSupabaseAuthStore() {
 			// 	Promise.resolve().then(async () => {
 			// 		try {
 			// 			console.log('🔗 [AUTH] Background: Attempting to auto-link accounts...');
-			// 			await autoLinkAccounts(session.user);
+			// 			await autoLinkAccounts(session.user); // Function not implemented
 			// 			console.log('✅ [AUTH] Background: Auto-link completed');
 			// 		} catch (error) {
 			// 			console.warn('⚠️ [AUTH] Background: Auto-link failed:', error);
@@ -840,7 +854,8 @@ function createSupabaseAuthStore() {
 	 * 🔗 Автоматическая линковка аккаунтов
 	 * Если email совпадает, связываем аккаунты
 	 */
-	async function autoLinkAccounts(currentUser: any) {
+	/*
+	// async function autoLinkAccounts(currentUser: any) { // Not used
 		try {
 			if (!currentUser.email) return;
 
@@ -864,6 +879,7 @@ function createSupabaseAuthStore() {
 			console.error('❌ Failed to auto-link accounts:', error);
 		}
 	}
+	*/
 
 	/**
 	 * 🚪 Sign out from system
@@ -960,7 +976,7 @@ function createSupabaseAuthStore() {
 	 * Handles all auth state changes using proper enum-based events
 	 */
 	async function handleAuthStateChange(event: string, session: any): Promise<void> {
-		console.log('🔄 [AUTH] Auth state change detected:', {
+		logAuth(LOG_LEVEL.DEBUG, '🔄 [AUTH] Auth state change detected:', {
 			event,
 			hasSession: !!session,
 			userEmail: session?.user?.email
@@ -973,7 +989,8 @@ function createSupabaseAuthStore() {
 			return;
 		}
 
-		console.log(
+		logAuth(
+			LOG_LEVEL.INFO,
 			'🔄 [AUTH] Processing auth event:',
 			authEvent,
 			AuthEventUtils.getEventDescription(authEvent),
@@ -984,7 +1001,10 @@ function createSupabaseAuthStore() {
 		switch (authEvent) {
 			case AuthEvent.INITIAL_SESSION:
 				if (session) {
-					console.log('🏁 [AUTH] Initial session loaded, checking if already authenticated...');
+					logAuth(
+						LOG_LEVEL.DEBUG,
+						'🏁 [AUTH] Initial session loaded, checking if already authenticated...'
+					);
 					// Check if we're already authenticated to prevent overriding SIGNED_IN state
 					const currentState = get(supabaseAuthStore);
 					if (
@@ -992,12 +1012,13 @@ function createSupabaseAuthStore() {
 						currentState.session &&
 						currentState.user.email === session.user.email
 					) {
-						console.log(
+						logAuth(
+							LOG_LEVEL.INFO,
 							'✅ [AUTH] Already authenticated with same user, skipping INITIAL_SESSION processing'
 						);
 						return;
 					}
-					console.log('🏁 [AUTH] Processing initial session...');
+					logAuth(LOG_LEVEL.DEBUG, '🏁 [AUTH] Processing initial session...');
 					await handleSuccessfulAuth(session);
 				} else {
 					console.log('ℹ️ [AUTH] No initial session found');
@@ -1007,7 +1028,36 @@ function createSupabaseAuthStore() {
 
 			case AuthEvent.SIGNED_IN:
 				if (session) {
-					console.log('✅ [AUTH] User signed in, updating auth state...');
+					// Check for duplicate events
+					if (shouldSkipDuplicateEvent(event, session)) {
+						break;
+					}
+
+					// Check if session state is already valid
+					if (isSessionStateValid(session)) {
+						logAuth(
+							LOG_LEVEL.INFO,
+							'✅ [AUTH] Session state is valid, skipping SIGNED_IN processing'
+						);
+						break;
+					}
+
+					// Check if we're already authenticated with the same user
+					const currentState = get(supabaseAuthStore);
+					if (
+						currentState.user &&
+						currentState.session &&
+						currentState.user.id === session.user.id &&
+						currentState.user.email === session.user.email
+					) {
+						logAuth(
+							LOG_LEVEL.INFO,
+							'✅ [AUTH] Already authenticated with same user, skipping SIGNED_IN processing'
+						);
+						break;
+					}
+
+					logAuth(LOG_LEVEL.INFO, '✅ [AUTH] User signed in, updating auth state...');
 					await handleSuccessfulAuth(session);
 				} else {
 					console.warn('⚠️ [AUTH] SIGNED_IN event but no session provided');
@@ -1205,6 +1255,105 @@ function adaptSupabaseSession(supabaseSession: any): Session {
 			updatedAt: supabaseSession.user.updated_at
 		}
 	};
+}
+
+// Auth event deduplication cache
+let lastProcessedEvent: {
+	event: string;
+	sessionId: string | null;
+	timestamp: number;
+} | null = null;
+
+const EVENT_DEDUPLICATION_TIME = 30000; // 30 seconds
+
+// Logging configuration
+const LOG_LEVEL = {
+	ERROR: 0,
+	WARN: 1,
+	INFO: 2,
+	DEBUG: 3
+};
+
+const CURRENT_LOG_LEVEL = LOG_LEVEL.INFO; // Set to INFO to reduce spam, DEBUG for development
+
+/**
+ * Smart logging function that respects log levels
+ */
+function logAuth(level: number, ...args: any[]) {
+	if (level <= CURRENT_LOG_LEVEL) {
+		console.log(...args);
+	}
+}
+
+/**
+ * Checks if we should skip processing a duplicate auth event
+ */
+function shouldSkipDuplicateEvent(event: string, session: any): boolean {
+	if (!session?.user?.id) return false;
+
+	const currentEvent = {
+		event,
+		sessionId: session.user.id,
+		timestamp: Date.now()
+	};
+
+	// If we processed the same event recently, skip it
+	if (
+		lastProcessedEvent &&
+		lastProcessedEvent.event === event &&
+		lastProcessedEvent.sessionId === currentEvent.sessionId &&
+		Date.now() - lastProcessedEvent.timestamp < EVENT_DEDUPLICATION_TIME
+	) {
+		logAuth(
+			LOG_LEVEL.DEBUG,
+			'🔄 [AUTH] Skipping duplicate event:',
+			event,
+			'for user:',
+			session.user.email
+		);
+		return true;
+	}
+
+	// Update last processed event
+	lastProcessedEvent = currentEvent;
+	return false;
+}
+
+/**
+ * Validates current session state to prevent unnecessary reprocessing
+ */
+function isSessionStateValid(session: any): boolean {
+	const currentState = get(supabaseAuthStore);
+
+	// If we have no current state, we need to process
+	if (!currentState.user || !currentState.session) {
+		return false;
+	}
+
+	// Check if the session data matches
+	const sessionMatches =
+		currentState.user.id === session.user.id &&
+		currentState.user.email === session.user.email &&
+		currentState.session.accessTokenPresent === !!session.access_token &&
+		currentState.session.refreshTokenPresent === !!session.refresh_token;
+
+	if (!sessionMatches) {
+		logAuth(LOG_LEVEL.DEBUG, '🔄 [AUTH] Session data changed, needs reprocessing');
+		return false;
+	}
+
+	// Check if session is still valid (not expired)
+	const now = Date.now();
+	const expiresAt = currentState.session.expiresAt * 1000; // Convert to milliseconds
+	const isExpired = expiresAt < now;
+
+	if (isExpired) {
+		logAuth(LOG_LEVEL.DEBUG, '🔄 [AUTH] Session expired, needs refresh');
+		return false;
+	}
+
+	logAuth(LOG_LEVEL.DEBUG, '✅ [AUTH] Session state is valid, no reprocessing needed');
+	return true;
 }
 
 /**
