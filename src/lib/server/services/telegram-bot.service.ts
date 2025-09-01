@@ -7,6 +7,8 @@ import TelegramBot from 'node-telegram-bot-api';
 import { OrderService } from '../application/services/order.service';
 import { GoogleSheetsService } from './google-sheets.service';
 import type { Order, OrderStatus } from '../domain/interfaces/order.interface';
+import { readFileSync, writeFileSync } from 'fs';
+import { join } from 'path';
 
 interface UserState {
 	awaitingOrderId: boolean;
@@ -33,6 +35,9 @@ export class TelegramBotService {
 		this.bot = new TelegramBot(botToken, { polling: false }); // Отключаем авто-polling
 		this.orderService = new OrderService();
 		this.sheetsService = new GoogleSheetsService();
+
+		// Загружаем сохраненный adminChatId
+		this.loadAdminChatId();
 
 		this.setupCommands();
 		this.setupCallbacks();
@@ -988,10 +993,39 @@ export class TelegramBotService {
 	setAdminChatId(chatId: string): void {
 		this.adminChatId = chatId;
 		console.log('Admin chat ID set:', chatId);
+		// Сохраняем в файл
+		this.saveAdminChatId(chatId);
 	}
 
 	// Метод для получения ID чата админа
 	getAdminChatId(): string | null {
 		return this.adminChatId;
+	}
+
+	// Сохраняем adminChatId в файл
+	private saveAdminChatId(chatId: string): void {
+		try {
+			const filePath = join(process.cwd(), 'admin-chat-id.json');
+			writeFileSync(filePath, JSON.stringify({ adminChatId: chatId }, null, 2));
+			console.log('[TelegramBot] Admin chat ID saved to file');
+		} catch (error) {
+			console.error('[TelegramBot] Failed to save admin chat ID:', error);
+		}
+	}
+
+	// Загружаем adminChatId из файла
+	private loadAdminChatId(): void {
+		try {
+			const filePath = join(process.cwd(), 'admin-chat-id.json');
+			const data = readFileSync(filePath, 'utf8');
+			const parsed = JSON.parse(data);
+			if (parsed.adminChatId) {
+				this.adminChatId = parsed.adminChatId;
+				console.log('[TelegramBot] Admin chat ID loaded from file:', this.adminChatId);
+			}
+		} catch (error) {
+			// Файл не существует или поврежден - это нормально для первого запуска
+			console.log('[TelegramBot] No saved admin chat ID found (this is normal)');
+		}
 	}
 }

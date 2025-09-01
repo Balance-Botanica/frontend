@@ -18,7 +18,11 @@ export const load: PageServerLoad = async ({ locals }) => {
 
 	try {
 		const deliveryAddresses = await userService.getDeliveryAddressesByUserId(userId);
-		console.log('[Profile Load] Successfully loaded', deliveryAddresses.length, 'delivery addresses');
+		console.log(
+			'[Profile Load] Successfully loaded',
+			deliveryAddresses.length,
+			'delivery addresses'
+		);
 		return {
 			deliveryAddresses
 		};

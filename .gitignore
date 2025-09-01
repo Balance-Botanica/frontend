@@ -120,3 +120,6 @@ public
 # Temporary folders
 tmp/
 temp/
+
+# Telegram bot data
+admin-chat-id.json

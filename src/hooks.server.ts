@@ -87,7 +87,10 @@ const handleAuth: Handle = async ({ event, resolve }) => {
 	}
 
 	console.log('[Hooks] Validating session token');
-	console.log('[Hooks] Session token value (first 10 chars):', sessionToken.substring(0, 10) + '...');
+	console.log(
+		'[Hooks] Session token value (first 10 chars):',
+		sessionToken.substring(0, 10) + '...'
+	);
 	const { session, user } = await auth.validateSessionToken(sessionToken);
 	console.log(
 		'[Hooks] Session validation result - Session:',
@@ -159,7 +162,9 @@ const handleSuspiciousActivity: Handle = async ({ event, resolve }) => {
 	try {
 		clientIP = event.getClientAddress();
 	} catch (error) {
-		console.log('🔓 [Security] Could not determine client address, skipping suspicious activity check');
+		console.log(
+			'🔓 [Security] Could not determine client address, skipping suspicious activity check'
+		);
 		return resolve(event);
 	}
 
