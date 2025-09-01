@@ -68,7 +68,8 @@ export const load: PageServerLoad = async ({ url, cookies, getClientAddress }) =
 	const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
 		auth: {
 			autoRefreshToken: false,
-			persistSession: false
+			persistSession: false,
+			detectSessionInUrl: false // Отключаем авто-детект в server-side callback
 		}
 	});
 

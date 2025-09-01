@@ -333,8 +333,8 @@ function createSupabaseAuthStore() {
 					skipBrowserRedirect: false,
 					queryParams: {
 						access_type: 'offline',
-						prompt: 'consent',
-						response_type: 'code' // Явно указываем code flow
+						prompt: 'consent'
+						// Remove response_type to let Supabase handle the flow type automatically
 					}
 				}
 			});
