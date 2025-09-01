@@ -322,6 +322,9 @@ function createSupabaseAuthStore() {
 		try {
 			update((state) => ({ ...state, isLoading: true, error: null }));
 
+			console.log('🔗 [AUTH] Starting Google OAuth flow...');
+			console.log('🔗 [AUTH] Redirect URL will be:', `http://localhost:5173/auth/callback`);
+
 			const { data, error } = await supabase!.auth.signInWithOAuth({
 				provider: 'google',
 				options: {
@@ -330,10 +333,16 @@ function createSupabaseAuthStore() {
 					skipBrowserRedirect: false,
 					queryParams: {
 						access_type: 'offline',
-						prompt: 'consent'
-						// Removed response_type to let Supabase handle the flow type
+						prompt: 'consent',
+						response_type: 'code' // Явно указываем code flow
 					}
 				}
+			});
+
+			console.log('🔗 [AUTH] OAuth request result:', {
+				hasData: !!data,
+				hasError: !!error,
+				errorMessage: error?.message
 			});
 
 			if (error) throw error;

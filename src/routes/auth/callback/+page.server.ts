@@ -35,8 +35,30 @@ export const load: PageServerLoad = async ({ url, cookies, getClientAddress }) =
 		(global as any).oauthAttempts = attempts;
 	}
 
-	const code = url.searchParams.get('code');
+	// Debug all URL parameters
+	console.log('🔍 [OAuth] Full URL:', url.toString());
+	console.log('🔍 [OAuth] Search params:', Array.from(url.searchParams.entries()));
+	console.log('🔍 [OAuth] Hash:', url.hash);
+
+	// Check for code in search params first, then in hash
+	let code = url.searchParams.get('code');
 	const next = url.searchParams.get('next') ?? '/';
+	const error = url.searchParams.get('error');
+	const errorDescription = url.searchParams.get('error_description');
+
+	// If no code in search params, check hash (for implicit flow)
+	if (!code && url.hash) {
+		console.log('🔍 [OAuth] No code in search params, checking hash...');
+		const hashParams = new URLSearchParams(url.hash.substring(1));
+		code = hashParams.get('code') || hashParams.get('access_token');
+		console.log('🔍 [OAuth] Code from hash:', code ? 'FOUND' : 'NOT FOUND');
+	}
+
+	// Log OAuth response details
+	console.log('🔍 [OAuth] Code parameter:', code ? 'PRESENT' : 'MISSING');
+	console.log('🔍 [OAuth] Error parameter:', error || 'NONE');
+	console.log('🔍 [OAuth] Error description:', errorDescription || 'NONE');
+	console.log('🔍 [OAuth] Next parameter:', next);
 
 	// Create server-side Supabase client for OAuth using SvelteKit env
 	console.log('🔧 [OAuth] Using SvelteKit env variables');
@@ -91,6 +113,8 @@ export const load: PageServerLoad = async ({ url, cookies, getClientAddress }) =
 
 	if (code) {
 		try {
+			console.log('🔄 [OAuth] Processing authorization code...');
+
 			// Exchange the code for a session with timeout
 			const exchangePromise = supabase.auth.exchangeCodeForSession(code);
 			const timeoutPromise = new Promise((_, reject) =>
@@ -156,6 +180,90 @@ export const load: PageServerLoad = async ({ url, cookies, getClientAddress }) =
 		} catch (error) {
 			console.error('❌ OAuth callback error:', error);
 			throw redirect(303, `/login?error=${encodeURIComponent('Authentication failed')}`);
+		}
+	} else {
+		// Handle implicit flow (tokens in hash)
+		console.log('🔄 [OAuth] No authorization code found, checking for tokens in hash...');
+
+		if (url.hash && url.hash.includes('access_token=')) {
+			try {
+				console.log('🔄 [OAuth] Found tokens in hash, attempting to set session...');
+
+				// Parse hash parameters
+				const hashParams = new URLSearchParams(url.hash.substring(1));
+				const accessToken = hashParams.get('access_token');
+				const refreshToken = hashParams.get('refresh_token');
+
+				if (accessToken && refreshToken) {
+					console.log('🔄 [OAuth] Setting session with tokens from hash...');
+
+					const { data, error } = await supabase.auth.setSession({
+						access_token: accessToken,
+						refresh_token: refreshToken
+					});
+
+					if (error) {
+						console.error('❌ OAuth setSession error:', error);
+						throw redirect(303, `/login?error=${encodeURIComponent(error.message)}`);
+					}
+
+					if (data.session) {
+						console.log('✅ [OAuth] Session set successfully from hash tokens');
+
+						// Set cookies and create user session (same logic as code flow)
+						const isDevelopment = process.env.NODE_ENV !== 'production';
+						cookies.set('sb-access-token', data.session.access_token, {
+							path: '/',
+							maxAge: data.session.expires_in,
+							httpOnly: true,
+							secure: !isDevelopment,
+							sameSite: 'strict'
+						});
+
+						cookies.set('sb-refresh-token', data.session.refresh_token, {
+							path: '/',
+							maxAge: 60 * 60 * 24 * 30,
+							httpOnly: true,
+							secure: !isDevelopment,
+							sameSite: 'strict'
+						});
+
+						const supabaseUserId = data.user.id;
+						const userEmail = data.user.email || '';
+
+						console.log('🔐 [Security Audit] OAuth login attempt (implicit flow):', {
+							supabaseUserId,
+							userEmail: userEmail ? userEmail.replace(/(.{2}).*(@.*)/, '$1***$2') : 'no-email',
+							ip: clientIP,
+							timestamp: new Date().toISOString(),
+							userAgent: 'OAuth callback (implicit)'
+						});
+
+						console.log('[OAuth Callback] Getting or creating user in database (implicit flow)');
+						const user = await userService.getOrCreateUser(supabaseUserId, userEmail);
+
+						if (!user) {
+							console.error('❌ Failed to create user in database');
+							throw redirect(303, `/login?error=${encodeURIComponent('Failed to create user')}`);
+						}
+
+						const sessionToken = auth.generateSessionToken();
+						const session = await auth.createSession(sessionToken, user.id);
+						auth.setSessionTokenCookie({ cookies } as any, sessionToken, session.expiresAt);
+
+						console.log('✅ OAuth implicit flow login successful for:', data.user?.email);
+					}
+				} else {
+					console.log('❌ [OAuth] Missing access_token or refresh_token in hash');
+					throw redirect(303, `/login?error=${encodeURIComponent('Invalid token response')}`);
+				}
+			} catch (error) {
+				console.error('❌ OAuth implicit flow error:', error);
+				throw redirect(303, `/login?error=${encodeURIComponent('Authentication failed')}`);
+			}
+		} else {
+			console.log('❌ [OAuth] No authorization code or tokens found in callback');
+			throw redirect(303, `/login?error=${encodeURIComponent('No authorization data received')}`);
 		}
 	}
 
