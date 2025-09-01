@@ -1,11 +1,10 @@
 import { redirect } from '@sveltejs/kit';
 
 export const load = async ({ url }) => {
-	// Просто логируем и редиректим на главную
-	// OAuth будет обработан на клиенте через auth store
-	console.log('🔄 [OAuth] Server callback loaded, redirecting to home for client-side processing');
+	// Просто логируем - OAuth будет полностью обработан на клиенте
+	console.log('🔄 [OAuth] Server callback loaded, delegating to client-side processing');
 	console.log('🔍 [OAuth] Server received URL:', url.toString());
-	console.log('🔍 [OAuth] Server received hash:', url.hash);
 
-	throw redirect(302, '/');
+	// Никакого редиректа на сервере - пусть клиент сам разберется
+	return {};
 };
