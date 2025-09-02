@@ -132,6 +132,7 @@ export class TelegramBotService {
 🔹 /shipped - Відправлені замовлення
 🔹 /delivered - Доставлені замовлення
 🔹 /cancelled - Скасовані замовлення
+🔹 /menu - Оновити головне меню (якщо кнопки не відображаються)
 
 🔹 /status [ID] [статус] - Оновити статус замовлення
    *Приклади:*
@@ -156,6 +157,7 @@ export class TelegramBotService {
 • Використовуй inline кнопки для швидкого керування
 • Всі зміни синхронізуються з Google Sheets
 • Нові замовлення приходять автоматично
+• Якщо кнопки не відображаються, використовуйте /menu
 			`;
 
 			this.bot.sendMessage(chatId, helpMessage, { parse_mode: 'Markdown' });
@@ -275,6 +277,19 @@ export class TelegramBotService {
 
 			this.userStates.delete(chatId);
 			this.bot.sendMessage(chatId, '❌ Операція скасована.');
+		});
+
+		// Команда /menu для оновлення головного меню
+		this.bot.onText(/\/menu/, (msg: TelegramBot.Message) => {
+			const chatId = msg.chat.id;
+			const username = msg.from?.username;
+
+			if (username !== 'qq5756853') {
+				this.bot.sendMessage(chatId, '❌ Доступ заборонено.');
+				return;
+			}
+
+			this.sendMainMenu(chatId);
 		});
 	}
 
