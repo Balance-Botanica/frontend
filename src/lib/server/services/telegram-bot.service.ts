@@ -95,6 +95,7 @@ export class TelegramBotService {
 						{ text: '⏳ Очікують', callback_data: 'status_pending' },
 						{ text: '✅ Підтверджені', callback_data: 'status_confirmed' }
 					],
+					[{ text: '🎫 Промокоди', callback_data: 'promo_menu' }],
 					[
 						{ text: '📦 Відправлені', callback_data: 'status_shipped' },
 						{ text: '🚚 Доставлені', callback_data: 'status_delivered' }
