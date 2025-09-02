@@ -1161,9 +1161,7 @@ export class TelegramBotService {
 					{ text: '🗑️ Видалити промокод', callback_data: 'delete_promo' },
 					{ text: '📊 Статистика', callback_data: 'promo_stats' }
 				],
-				[
-					{ text: '⬅️ Назад', callback_data: 'back_menu' }
-				]
+				[{ text: '⬅️ Назад', callback_data: 'back_menu' }]
 			]
 		};
 
@@ -1365,11 +1363,12 @@ export class TelegramBotService {
 			const inlineKeyboard: any[][] = [];
 
 			for (const promo of promoCodes) {
-				const discount = promo.discountType === 'percentage'
-					? `${promo.discountValue}%`
-					: promo.discountType === 'fixed'
-						? `₴${promo.discountValue}`
-						: 'Безкоштовна доставка';
+				const discount =
+					promo.discountType === 'percentage'
+						? `${promo.discountValue}%`
+						: promo.discountType === 'fixed'
+							? `₴${promo.discountValue}`
+							: 'Безкоштовна доставка';
 
 				message += `• *${promo.code}* - ${discount}`;
 				if (promo.usageCount && promo.usageCount > 0) {
@@ -1391,7 +1390,6 @@ export class TelegramBotService {
 				parse_mode: 'Markdown',
 				reply_markup: { inline_keyboard: inlineKeyboard }
 			});
-
 		} catch (error) {
 			console.error('Error sending delete promo list:', error);
 			this.bot.sendMessage(chatId, '❌ Помилка завантаження списку промокодів');
@@ -1412,11 +1410,12 @@ export class TelegramBotService {
 				return;
 			}
 
-			const discount = promo.discountType === 'percentage'
-				? `${promo.discountValue}%`
-				: promo.discountType === 'fixed'
-					? `₴${promo.discountValue}`
-					: 'Безкоштовна доставка';
+			const discount =
+				promo.discountType === 'percentage'
+					? `${promo.discountValue}%`
+					: promo.discountType === 'fixed'
+						? `₴${promo.discountValue}`
+						: 'Безкоштовна доставка';
 
 			let confirmMessage = `⚠️ *ВИ СИГУРНІ, ЩО ХОЧЕТЕ ВИДАЛИТИ ПРОМОКОД?*\n\n`;
 			confirmMessage += `🎫 Код: *${promo.code}*\n`;
@@ -1445,7 +1444,6 @@ export class TelegramBotService {
 				parse_mode: 'Markdown',
 				reply_markup: confirmKeyboard
 			});
-
 		} catch (error) {
 			console.error('Error confirming delete promo:', error);
 			this.bot.sendMessage(chatId, '❌ Помилка підтвердження видалення промокоду');
@@ -1474,7 +1472,6 @@ export class TelegramBotService {
 					}
 				});
 			}
-
 		} catch (error) {
 			console.error('Error deleting promo code:', error);
 			this.bot.sendMessage(chatId, `❌ Помилка видалення промокоду *${promoCode}*`, {
