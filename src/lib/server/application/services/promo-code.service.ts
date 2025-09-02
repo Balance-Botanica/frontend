@@ -163,6 +163,13 @@ export class PromoCodeService {
 	}
 
 	/**
+	 * Get promo code by code (admin function)
+	 */
+	async getPromoCodeByCode(code: string): Promise<PromoCode | null> {
+		return await this.promoCodeRepository.findByCode(code);
+	}
+
+	/**
 	 * Update promo code (admin function)
 	 */
 	async updatePromoCode(id: string, data: Partial<CreatePromoCodeData>): Promise<PromoCode> {
@@ -174,6 +181,23 @@ export class PromoCodeService {
 	 */
 	async deletePromoCode(id: string): Promise<void> {
 		await this.promoCodeRepository.delete(id);
+	}
+
+	/**
+	 * Delete promo code by code (admin function)
+	 */
+	async deletePromoCodeByCode(code: string): Promise<boolean> {
+		try {
+			const promoCode = await this.promoCodeRepository.findByCode(code);
+			if (!promoCode) {
+				return false;
+			}
+			await this.promoCodeRepository.delete(promoCode.id);
+			return true;
+		} catch (error) {
+			console.error('Error deleting promo code by code:', error);
+			return false;
+		}
 	}
 
 	/**

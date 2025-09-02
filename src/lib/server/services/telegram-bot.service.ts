@@ -150,6 +150,7 @@ export class TelegramBotService {
 • Використовуйте кнопку "🎫 Промокоди" в головному меню
 • Створюйте промокоди різних типів: відсоткова знижка, фіксована сума, безкоштовна доставка
 • Переглядайте статистику використання та список активних промокодів
+• Видаляйте непотрібні промокоди з підтвердженням
 
 💡 *Поради:*
 • Використовуй inline кнопки для швидкого керування
@@ -316,13 +317,25 @@ export class TelegramBotService {
 							awaitingPromoData: true,
 							action: 'create_promo'
 						});
-						this.bot.sendMessage(chatId, '🎫 Введіть дані промокоду у форматі:\n\nКод,Тип,Значення[,Мін.сума][,Ліміт][,Дедлайн]\n\nПриклади:\nWELCOME10,percentage,10\nSAVE50,fixed,50,500\nFREESHIP,free_shipping,0\n\nТипи: percentage, fixed, free_shipping');
+						this.bot.sendMessage(
+							chatId,
+							'🎫 Введіть дані промокоду у форматі:\n\nКод,Тип,Значення[,Мін.сума][,Ліміт][,Дедлайн]\n\nПриклади:\nWELCOME10,percentage,10\nSAVE50,fixed,50,500\nFREESHIP,free_shipping,0\n\nТипи: percentage, fixed, free_shipping'
+						);
 						break;
 					case 'list_promos':
 						await this.sendPromoList(chatId);
 						break;
 					case 'promo_stats':
 						await this.sendPromoStats(chatId);
+						break;
+					case 'delete_promo':
+						await this.sendDeletePromoList(chatId);
+						break;
+					case 'confirm_delete':
+						await this.confirmDeletePromo(chatId, param1);
+						break;
+					case 'delete_confirmed':
+						await this.deletePromoCode(chatId, param1);
 						break;
 					case 'all':
 						if (param1 === 'orders') {
@@ -428,8 +441,12 @@ export class TelegramBotService {
 			}
 
 			// Якщо користувач чекає ID замовлення
-			if (userState.awaitingOrderId && userState.action) {
-				await this.processOrderId(chatId, text.trim(), userState.action);
+			if (userState.awaitingOrderId && userState.action && userState.action !== 'create_promo') {
+				await this.processOrderId(
+					chatId,
+					text.trim(),
+					userState.action as 'confirm' | 'cancel' | 'ship' | 'deliver'
+				);
 				return;
 			}
 
@@ -936,9 +953,7 @@ export class TelegramBotService {
 					{ text: '⏳ Очікують', callback_data: 'status_pending' },
 					{ text: '✅ Підтверджені', callback_data: 'status_confirmed' }
 				],
-				[
-					{ text: '🎫 Промокоди', callback_data: 'promo_menu' }
-				],
+				[{ text: '🎫 Промокоди', callback_data: 'promo_menu' }],
 				[
 					{ text: '📦 Відправлені', callback_data: 'status_shipped' },
 					{ text: '🚚 Доставлені', callback_data: 'status_delivered' }
@@ -1143,7 +1158,10 @@ export class TelegramBotService {
 					{ text: '📋 Список промокодів', callback_data: 'list_promos' }
 				],
 				[
-					{ text: '📊 Статистика', callback_data: 'promo_stats' },
+					{ text: '🗑️ Видалити промокод', callback_data: 'delete_promo' },
+					{ text: '📊 Статистика', callback_data: 'promo_stats' }
+				],
+				[
 					{ text: '⬅️ Назад', callback_data: 'back_menu' }
 				]
 			]
@@ -1172,11 +1190,12 @@ export class TelegramBotService {
 
 			for (const [index, promo] of promoCodes.entries()) {
 				const status = promo.isActive ? '✅' : '❌';
-				const discount = promo.discountType === 'percentage'
-					? `${promo.discountValue}%`
-					: promo.discountType === 'fixed'
-					? `₴${promo.discountValue}`
-					: 'Безкоштовна доставка';
+				const discount =
+					promo.discountType === 'percentage'
+						? `${promo.discountValue}%`
+						: promo.discountType === 'fixed'
+							? `₴${promo.discountValue}`
+							: 'Безкоштовна доставка';
 
 				message += `${index + 1}. *${promo.code}* ${status}\n`;
 				message += `   Знижка: ${discount}\n`;
@@ -1203,7 +1222,6 @@ export class TelegramBotService {
 				parse_mode: 'Markdown',
 				reply_markup: keyboard
 			});
-
 		} catch (error) {
 			console.error('Error sending promo list:', error);
 			this.bot.sendMessage(chatId, '❌ Помилка завантаження списку промокодів');
@@ -1215,9 +1233,11 @@ export class TelegramBotService {
 			const promoCodes = await this.promoCodeService.getAllPromoCodes();
 
 			let totalCodes = promoCodes.length;
-			let activeCodes = promoCodes.filter(p => p.isActive).length;
+			let activeCodes = promoCodes.filter((p) => p.isActive).length;
 			let totalUsage = promoCodes.reduce((sum, p) => sum + (p.usageCount || 0), 0);
-			let expiredCodes = promoCodes.filter(p => p.expiresAt && new Date(p.expiresAt) < new Date()).length;
+			let expiredCodes = promoCodes.filter(
+				(p) => p.expiresAt && new Date(p.expiresAt) < new Date()
+			).length;
 
 			let message = '📊 *Статистика промокодів*\n\n';
 			message += `📋 Загальна кількість: ${totalCodes}\n`;
@@ -1242,7 +1262,6 @@ export class TelegramBotService {
 					inline_keyboard: [[{ text: '⬅️ Назад', callback_data: 'promo_menu' }]]
 				}
 			});
-
 		} catch (error) {
 			console.error('Error sending promo stats:', error);
 			this.bot.sendMessage(chatId, '❌ Помилка завантаження статистики');
@@ -1255,10 +1274,13 @@ export class TelegramBotService {
 			this.userStates.delete(chatId);
 
 			// Parse promo data: Code,Type,Value[,MinAmount][,Limit][,Deadline]
-			const parts = text.split(',').map(p => p.trim());
+			const parts = text.split(',').map((p) => p.trim());
 
 			if (parts.length < 3) {
-				this.bot.sendMessage(chatId, '❌ Неправильний формат. Використовуйте: Код,Тип,Значення[,Мін.сума][,Ліміт][,Дедлайн]');
+				this.bot.sendMessage(
+					chatId,
+					'❌ Неправильний формат. Використовуйте: Код,Тип,Значення[,Мін.сума][,Ліміт][,Дедлайн]'
+				);
 				return;
 			}
 
@@ -1266,7 +1288,10 @@ export class TelegramBotService {
 
 			// Validate type
 			if (!['percentage', 'fixed', 'free_shipping'].includes(type)) {
-				this.bot.sendMessage(chatId, '❌ Неправильний тип. Доступні: percentage, fixed, free_shipping');
+				this.bot.sendMessage(
+					chatId,
+					'❌ Неправильний тип. Доступні: percentage, fixed, free_shipping'
+				);
 				return;
 			}
 
@@ -1313,10 +1338,148 @@ export class TelegramBotService {
 					]
 				}
 			});
-
 		} catch (error) {
 			console.error('Error processing promo data:', error);
-			this.bot.sendMessage(chatId, '❌ Помилка створення промокоду. Перевірте дані та спробуйте ще раз.');
+			this.bot.sendMessage(
+				chatId,
+				'❌ Помилка створення промокоду. Перевірте дані та спробуйте ще раз.'
+			);
+		}
+	}
+
+	private async sendDeletePromoList(chatId: number): Promise<void> {
+		try {
+			const promoCodes = await this.promoCodeService.getAllPromoCodes();
+
+			if (promoCodes.length === 0) {
+				this.bot.sendMessage(chatId, '📭 Немає промокодів для видалення', {
+					reply_markup: {
+						inline_keyboard: [[{ text: '⬅️ Назад', callback_data: 'promo_menu' }]]
+					}
+				});
+				return;
+			}
+
+			let message = '🗑️ *Видалення промокодів*\n\nОберіть промокод для видалення:\n\n';
+
+			const inlineKeyboard: any[][] = [];
+
+			for (const promo of promoCodes) {
+				const discount = promo.discountType === 'percentage'
+					? `${promo.discountValue}%`
+					: promo.discountType === 'fixed'
+						? `₴${promo.discountValue}`
+						: 'Безкоштовна доставка';
+
+				message += `• *${promo.code}* - ${discount}`;
+				if (promo.usageCount && promo.usageCount > 0) {
+					message += ` (${promo.usageCount} використань)`;
+				}
+				message += '\n';
+
+				inlineKeyboard.push([
+					{
+						text: `🗑️ ${promo.code}`,
+						callback_data: `confirm_delete_${promo.code}`
+					}
+				]);
+			}
+
+			inlineKeyboard.push([{ text: '⬅️ Назад', callback_data: 'promo_menu' }]);
+
+			this.bot.sendMessage(chatId, message, {
+				parse_mode: 'Markdown',
+				reply_markup: { inline_keyboard: inlineKeyboard }
+			});
+
+		} catch (error) {
+			console.error('Error sending delete promo list:', error);
+			this.bot.sendMessage(chatId, '❌ Помилка завантаження списку промокодів');
+		}
+	}
+
+	private async confirmDeletePromo(chatId: number, promoCode: string): Promise<void> {
+		try {
+			const promo = await this.promoCodeService.getPromoCodeByCode(promoCode);
+
+			if (!promo) {
+				this.bot.sendMessage(chatId, `❌ Промокод *${promoCode}* не знайдено`, {
+					parse_mode: 'Markdown',
+					reply_markup: {
+						inline_keyboard: [[{ text: '⬅️ Назад', callback_data: 'delete_promo' }]]
+					}
+				});
+				return;
+			}
+
+			const discount = promo.discountType === 'percentage'
+				? `${promo.discountValue}%`
+				: promo.discountType === 'fixed'
+					? `₴${promo.discountValue}`
+					: 'Безкоштовна доставка';
+
+			let confirmMessage = `⚠️ *ВИ СИГУРНІ, ЩО ХОЧЕТЕ ВИДАЛИТИ ПРОМОКОД?*\n\n`;
+			confirmMessage += `🎫 Код: *${promo.code}*\n`;
+			confirmMessage += `💰 Знижка: ${discount}\n`;
+
+			if (promo.usageCount && promo.usageCount > 0) {
+				confirmMessage += `📊 Використано: ${promo.usageCount} разів\n`;
+			}
+
+			if (promo.usageLimit) {
+				confirmMessage += `🔢 Ліміт: ${promo.usageLimit}\n`;
+			}
+
+			confirmMessage += `\n❌ Цю дію неможливо буде скасувати!`;
+
+			const confirmKeyboard = {
+				inline_keyboard: [
+					[
+						{ text: '✅ ТАК, ВИДАЛИТИ', callback_data: `delete_confirmed_${promo.code}` },
+						{ text: '❌ НІ, СКАСУВАТИ', callback_data: 'delete_promo' }
+					]
+				]
+			};
+
+			this.bot.sendMessage(chatId, confirmMessage, {
+				parse_mode: 'Markdown',
+				reply_markup: confirmKeyboard
+			});
+
+		} catch (error) {
+			console.error('Error confirming delete promo:', error);
+			this.bot.sendMessage(chatId, '❌ Помилка підтвердження видалення промокоду');
+		}
+	}
+
+	private async deletePromoCode(chatId: number, promoCode: string): Promise<void> {
+		try {
+			const success = await this.promoCodeService.deletePromoCodeByCode(promoCode);
+
+			if (success) {
+				this.bot.sendMessage(chatId, `✅ Промокод *${promoCode}* успішно видалено!`, {
+					parse_mode: 'Markdown',
+					reply_markup: {
+						inline_keyboard: [
+							[{ text: '🗑️ Видалити ще один', callback_data: 'delete_promo' }],
+							[{ text: '⬅️ До меню промокодів', callback_data: 'promo_menu' }]
+						]
+					}
+				});
+			} else {
+				this.bot.sendMessage(chatId, `❌ Не вдалося видалити промокод *${promoCode}*`, {
+					parse_mode: 'Markdown',
+					reply_markup: {
+						inline_keyboard: [[{ text: '⬅️ Назад', callback_data: 'delete_promo' }]]
+					}
+				});
+			}
+
+		} catch (error) {
+			console.error('Error deleting promo code:', error);
+			this.bot.sendMessage(chatId, `❌ Помилка видалення промокоду *${promoCode}*`, {
+				parse_mode: 'Markdown'
+			});
 		}
 	}
 }

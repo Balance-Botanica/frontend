@@ -272,7 +272,9 @@ This document tracks our project tasks, priorities, and progress.
   - View complete list of active promo codes
   - Statistics dashboard with usage analytics
   - Top-performing promo codes tracking
+  - **Delete Promo Codes**: Safe deletion with confirmation dialog
 - **Promo Code Creation**: Simple CSV-like format for quick creation
+- **Safe Deletion**: Two-step confirmation process prevents accidental deletion
 - **Real-time Management**: All operations performed directly through Telegram
 - **Enhanced User Experience**: Intuitive inline keyboards and formatted responses
 
