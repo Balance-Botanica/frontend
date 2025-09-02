@@ -301,6 +301,8 @@ export class TelegramBotService {
 			const data = query.data;
 			const username = query.from?.username;
 
+			console.log('[TelegramBot] 📨 Callback received:', { data, chatId, username });
+
 			if (!chatId || !data) return;
 
 			// Перевіряємо доступ
@@ -319,6 +321,7 @@ export class TelegramBotService {
 				// Спочатку перевіряємо повну строку data для спеціальних випадків
 				switch (data) {
 					case 'promo_menu':
+						console.log('[TelegramBot] 🎫 Promo menu button clicked');
 						await this.sendPromoMenu(chatId);
 						this.bot.answerCallbackQuery(query.id);
 						return;
