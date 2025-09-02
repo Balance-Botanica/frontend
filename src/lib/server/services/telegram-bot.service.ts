@@ -316,16 +316,24 @@ export class TelegramBotService {
 			const param2 = parts[2];
 
 			try {
-				switch (action) {
-					// Меню статусів
-					case 'status':
-						await this.sendOrdersByStatus(chatId, param1 as OrderStatus);
-						break;
-
-					// Меню промокодів
+				// Спочатку перевіряємо повну строку data для спеціальних випадків
+				switch (data) {
 					case 'promo_menu':
 						await this.sendPromoMenu(chatId);
-						break;
+						this.bot.answerCallbackQuery(query.id);
+						return;
+					case 'back_menu':
+						await this.sendMainMenu(chatId);
+						this.bot.answerCallbackQuery(query.id);
+						return;
+					case 'all_orders':
+						await this.sendOrdersList(chatId);
+						this.bot.answerCallbackQuery(query.id);
+						return;
+					case 'refresh_orders':
+						await this.sendOrdersList(chatId);
+						this.bot.answerCallbackQuery(query.id);
+						return;
 					case 'create_promo':
 						this.userStates.set(chatId, {
 							awaitingOrderId: false,
@@ -337,32 +345,56 @@ export class TelegramBotService {
 							chatId,
 							'🎫 Введіть дані промокоду у форматі:\n\nКод,Тип,Значення[,Мін.сума][,Ліміт][,Дедлайн]\n\nПриклади:\nWELCOME10,percentage,10\nSAVE50,fixed,50,500\nFREESHIP,free_shipping,0\n\nТипи: percentage, fixed, free_shipping'
 						);
-						break;
+						this.bot.answerCallbackQuery(query.id);
+						return;
 					case 'list_promos':
 						await this.sendPromoList(chatId);
-						break;
+						this.bot.answerCallbackQuery(query.id);
+						return;
 					case 'promo_stats':
 						await this.sendPromoStats(chatId);
-						break;
+						this.bot.answerCallbackQuery(query.id);
+						return;
 					case 'delete_promo':
 						await this.sendDeletePromoList(chatId);
+						this.bot.answerCallbackQuery(query.id);
+						return;
+				}
+
+				// Потім перевіряємо за частинами
+				switch (action) {
+					// Меню статусів
+					case 'status':
+						await this.sendOrdersByStatus(chatId, param1 as OrderStatus);
+						this.bot.answerCallbackQuery(query.id);
+						return;
+					case 'confirm':
+						if (param1 === 'delete') {
+							await this.confirmDeletePromo(chatId, param2);
+							this.bot.answerCallbackQuery(query.id);
+							return;
+						}
 						break;
-					case 'confirm_delete':
-						await this.confirmDeletePromo(chatId, param1);
-						break;
-					case 'delete_confirmed':
-						await this.deletePromoCode(chatId, param1);
+					case 'delete':
+						if (param1 === 'confirmed') {
+							await this.deletePromoCode(chatId, param2);
+							this.bot.answerCallbackQuery(query.id);
+							return;
+						}
 						break;
 					case 'all':
 						if (param1 === 'orders') {
 							await this.sendOrdersList(chatId);
+							this.bot.answerCallbackQuery(query.id);
+							return;
 						}
 						break;
 
 					// Дії з замовленнями
 					case 'confirm':
 						await this.updateOrderStatus(chatId, param1, 'confirmed');
-						break;
+						this.bot.answerCallbackQuery(query.id);
+						return;
 					case 'ship':
 						// Для відправки замовлення запитуємо ТТН
 						this.userStates.set(chatId, {
@@ -382,32 +414,40 @@ export class TelegramBotService {
 								reply_markup: cancelKeyboard
 							}
 						);
-						break;
+						this.bot.answerCallbackQuery(query.id);
+						return;
 					case 'deliver':
 						await this.updateOrderStatus(chatId, param1, 'delivered');
-						break;
+						this.bot.answerCallbackQuery(query.id);
+						return;
 					case 'cancel':
 						await this.updateOrderStatus(chatId, param1, 'cancelled');
-						break;
+						this.bot.answerCallbackQuery(query.id);
+						return;
 					case 'details':
 						await this.sendOrderDetails(chatId, param1);
-						break;
+						this.bot.answerCallbackQuery(query.id);
+						return;
 
 					// Навігація
 					case 'back':
 					case 'menu':
 						await this.sendMainMenu(chatId);
-						break;
+						this.bot.answerCallbackQuery(query.id);
+						return;
 					case 'refresh':
 						if (param1 === 'orders') {
 							await this.sendOrdersList(chatId);
+							this.bot.answerCallbackQuery(query.id);
+							return;
 						}
 						break;
 
 					// Нові дії з замовленнями
 					case 'action':
 						await this.handleOrderAction(chatId, param1);
-						break;
+						this.bot.answerCallbackQuery(query.id);
+						return;
 
 					// Скасування операції
 					case 'cancel':
@@ -415,6 +455,8 @@ export class TelegramBotService {
 							this.userStates.delete(chatId);
 							this.bot.sendMessage(chatId, '❌ Операція скасована.');
 							await this.sendOrdersList(chatId);
+							this.bot.answerCallbackQuery(query.id);
+							return;
 						}
 						break;
 				}
