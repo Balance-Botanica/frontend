@@ -1,6 +1,6 @@
 import { eq, and, sql } from 'drizzle-orm';
-import { db } from '../db/connection';
-import { promoCodes, promoCodeUsages } from '../db/schema';
+import { db } from '../../db/index';
+import { promoCodes, promoCodeUsages } from '../../db/schema';
 import type {
 	PromoCodeRepository,
 	CreatePromoCodeData
