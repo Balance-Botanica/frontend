@@ -32,24 +32,24 @@ export class TelegramBotService {
 			throw new Error('TELEGRAM_BOT_TOKEN is required. Please set it in .env file');
 		}
 
-		this.bot = new TelegramBot(botToken, { polling: false }); // Отключаем авто-polling
+		this.bot = new TelegramBot(botToken, { polling: false }); // Вимикаємо авто-polling
 		this.orderService = new OrderService();
 		this.sheetsService = new GoogleSheetsService();
 
-		// Загружаем сохраненный adminChatId
+		// Завантажуємо збережений adminChatId
 		this.loadAdminChatId();
 
 		this.setupCommands();
 		this.setupCallbacks();
 		this.setupTextHandler();
 
-		// Запускаем polling только если явно указано
+		// Запускаємо polling тільки якщо явно вказано
 		if (autoStartPolling) {
 			this.startPolling();
 		}
 	}
 
-	// Метод для запуска polling вручную
+	// Метод для запуску polling вручну
 	startPolling(): void {
 		console.log('[TelegramBot] Starting polling manually...');
 		this.bot.startPolling();
@@ -61,17 +61,17 @@ export class TelegramBotService {
 			const chatId = msg.chat.id;
 			const username = msg.from?.username;
 
-			// Проверяем, что это разрешенный пользователь
+			// Перевіряємо, що це дозволений користувач
 			if (username !== 'qq5756853') {
 				this.bot.sendMessage(
 					chatId,
-					'❌ Доступ запрещен. Этот бот предназначен только для администратора.'
+					'❌ Доступ заборонено. Цей бот призначений тільки для адміністратора.'
 				);
 				console.log(`[TelegramBot] Access denied for user: @${username} (ID: ${msg.from?.id})`);
 				return;
 			}
 
-			// Устанавливаем adminChatId при первом запуске
+			// Встановлюємо adminChatId при першому запуску
 			if (!this.adminChatId) {
 				this.setAdminChatId(chatId.toString());
 				console.log(`[TelegramBot] Admin chat ID set: ${chatId} for user @${username}`);
@@ -80,9 +80,9 @@ export class TelegramBotService {
 			const welcomeMessage = `
 🤖 *Balance Botanica Order Management Bot*
 
-Привет! Я помогу тебе управлять заказами с телефона.
+Привіт! Я допоможу тобі керувати замовленнями з телефону.
 
-🚀 *Выбери действие:*
+🚀 *Обери дію:*
 			`;
 
 			const mainMenu = {
@@ -97,7 +97,7 @@ export class TelegramBotService {
 					],
 					[
 						{ text: '❌ Скасовані', callback_data: 'status_cancelled' },
-						{ text: '📋 Всі закази', callback_data: 'all_orders' }
+						{ text: '📋 Всі замовлення', callback_data: 'all_orders' }
 					]
 				]
 			};
@@ -113,65 +113,65 @@ export class TelegramBotService {
 			const chatId = msg.chat.id;
 			const username = msg.from?.username;
 
-			// Проверяем доступ
+			// Перевіряємо доступ
 			if (username !== 'qq5756853') {
-				this.bot.sendMessage(chatId, '❌ Доступ запрещен.');
+				this.bot.sendMessage(chatId, '❌ Доступ заборонено.');
 				return;
 			}
 
 			const helpMessage = `
-📖 *Справка по командам:*
+📖 *Довідка по командах:*
 
-🔹 /orders - Показать все заказы
-🔹 /pending - Заказы в ожидании подтверждения
-🔹 /confirmed - Подтвержденные заказы
-🔹 /shipped - Отправленные заказы
-🔹 /delivered - Доставленные заказы
-🔹 /cancelled - Отмененные заказы
+🔹 /orders - Показати всі замовлення
+🔹 /pending - Замовлення в очікуванні підтвердження
+🔹 /confirmed - Підтверджені замовлення
+🔹 /shipped - Відправлені замовлення
+🔹 /delivered - Доставлені замовлення
+🔹 /cancelled - Скасовані замовлення
 
-🔹 /status [ID] [статус] - Обновить статус заказа
-   *Примеры:*
+🔹 /status [ID] [статус] - Оновити статус замовлення
+   *Приклади:*
    \`/status 123456 confirmed\`
    \`/status 123456 shipped\`
    \`/status 123456 delivered\`
 
-📊 *Статусы заказов:*
+📊 *Статуси замовлень:*
 • pending - Очікує підтвердження
 • confirmed - Підтверджено
 • shipped - Відправлено
 • delivered - Доставлено
 • cancelled - Скасовано
 
-💡 *Советы:*
-• Используй inline кнопки для быстрого управления
-• Все изменения синхронизируются с Google Sheets
-• Новые заказы приходят автоматически
+💡 *Поради:*
+• Використовуй inline кнопки для швидкого керування
+• Всі зміни синхронізуються з Google Sheets
+• Нові замовлення приходять автоматично
 			`;
 
 			this.bot.sendMessage(chatId, helpMessage, { parse_mode: 'Markdown' });
 		});
 
-		// Команда /orders - показать все заказы
+		// Команда /orders - показати всі замовлення
 		this.bot.onText(/\/orders/, async (msg: TelegramBot.Message) => {
 			const chatId = msg.chat.id;
 			const username = msg.from?.username;
 
-			// Проверяем доступ
+			// Перевіряємо доступ
 			if (username !== 'qq5756853') {
-				this.bot.sendMessage(chatId, '❌ Доступ запрещен.');
+				this.bot.sendMessage(chatId, '❌ Доступ заборонено.');
 				return;
 			}
 
 			await this.sendOrdersList(chatId);
 		});
 
-		// Команды по статусам
+		// Команди по статусам
 		this.bot.onText(/\/pending/, async (msg: TelegramBot.Message) => {
 			const chatId = msg.chat.id;
 			const username = msg.from?.username;
 
 			if (username !== 'qq5756853') {
-				this.bot.sendMessage(chatId, '❌ Доступ запрещен.');
+				this.bot.sendMessage(chatId, '❌ Доступ заборонено.');
 				return;
 			}
 
@@ -183,7 +183,7 @@ export class TelegramBotService {
 			const username = msg.from?.username;
 
 			if (username !== 'qq5756853') {
-				this.bot.sendMessage(chatId, '❌ Доступ запрещен.');
+				this.bot.sendMessage(chatId, '❌ Доступ заборонено.');
 				return;
 			}
 
@@ -195,7 +195,7 @@ export class TelegramBotService {
 			const username = msg.from?.username;
 
 			if (username !== 'qq5756853') {
-				this.bot.sendMessage(chatId, '❌ Доступ запрещен.');
+				this.bot.sendMessage(chatId, '❌ Доступ заборонено.');
 				return;
 			}
 
@@ -207,7 +207,7 @@ export class TelegramBotService {
 			const username = msg.from?.username;
 
 			if (username !== 'qq5756853') {
-				this.bot.sendMessage(chatId, '❌ Доступ запрещен.');
+				this.bot.sendMessage(chatId, '❌ Доступ заборонено.');
 				return;
 			}
 
@@ -219,14 +219,14 @@ export class TelegramBotService {
 			const username = msg.from?.username;
 
 			if (username !== 'qq5756853') {
-				this.bot.sendMessage(chatId, '❌ Доступ запрещен.');
+				this.bot.sendMessage(chatId, '❌ Доступ заборонено.');
 				return;
 			}
 
 			await this.sendOrdersByStatus(chatId, 'cancelled');
 		});
 
-		// Команда /status для обновления статуса
+		// Команда /status для оновлення статусу
 		this.bot.onText(
 			/\/status (.+)/,
 			async (msg: TelegramBot.Message, match: RegExpExecArray | null) => {
@@ -234,7 +234,7 @@ export class TelegramBotService {
 				const username = msg.from?.username;
 
 				if (username !== 'qq5756853') {
-					this.bot.sendMessage(chatId, '❌ Доступ запрещен.');
+					this.bot.sendMessage(chatId, '❌ Доступ заборонено.');
 					return;
 				}
 
@@ -243,7 +243,7 @@ export class TelegramBotService {
 				if (!params || params.length !== 2) {
 					this.bot.sendMessage(
 						chatId,
-						'❌ Неверный формат команды. Используй: /status [ID] [статус]'
+						'❌ Неправильний формат команди. Використовуй: /status [ID] [статус]'
 					);
 					return;
 				}
@@ -253,23 +253,23 @@ export class TelegramBotService {
 			}
 		);
 
-		// Команда /cancel для отмены текущей операции
+		// Команда /cancel для скасування поточної операції
 		this.bot.onText(/\/cancel/, (msg: TelegramBot.Message) => {
 			const chatId = msg.chat.id;
 			const username = msg.from?.username;
 
 			if (username !== 'qq5756853') {
-				this.bot.sendMessage(chatId, '❌ Доступ запрещен.');
+				this.bot.sendMessage(chatId, '❌ Доступ заборонено.');
 				return;
 			}
 
 			this.userStates.delete(chatId);
-			this.bot.sendMessage(chatId, '❌ Операция отменена.');
+			this.bot.sendMessage(chatId, '❌ Операція скасована.');
 		});
 	}
 
 	private setupCallbacks(): void {
-		// Обработка inline кнопок
+		// Обробка inline кнопок
 		this.bot.on('callback_query', async (query: TelegramBot.CallbackQuery) => {
 			const chatId = query.message?.chat.id;
 			const data = query.data;
@@ -277,13 +277,13 @@ export class TelegramBotService {
 
 			if (!chatId || !data) return;
 
-			// Проверяем доступ
+			// Перевіряємо доступ
 			if (username !== 'qq5756853') {
-				this.bot.answerCallbackQuery(query.id, { text: '❌ Доступ запрещен' });
+				this.bot.answerCallbackQuery(query.id, { text: '❌ Доступ заборонено' });
 				return;
 			}
 
-			// Разбор callback data
+			// Розбір callback data
 			const parts = data.split('_');
 			const action = parts[0];
 			const param1 = parts[1];
@@ -291,7 +291,7 @@ export class TelegramBotService {
 
 			try {
 				switch (action) {
-					// Меню статусов
+					// Меню статусів
 					case 'status':
 						await this.sendOrdersByStatus(chatId, param1 as OrderStatus);
 						break;
@@ -301,12 +301,12 @@ export class TelegramBotService {
 						}
 						break;
 
-					// Действия с заказами
+					// Дії з замовленнями
 					case 'confirm':
 						await this.updateOrderStatus(chatId, param1, 'confirmed');
 						break;
 					case 'ship':
-						// Для отправки заказа запрашиваем ТТН
+						// Для відправки замовлення запитуємо ТТН
 						this.userStates.set(chatId, {
 							awaitingOrderId: false,
 							awaitingTTN: true,
@@ -315,11 +315,11 @@ export class TelegramBotService {
 						});
 
 						const cancelKeyboard = {
-							inline_keyboard: [[{ text: '❌ Отмена', callback_data: 'cancel_operation' }]]
+							inline_keyboard: [[{ text: '❌ Скасування', callback_data: 'cancel_operation' }]]
 						};
 						this.bot.sendMessage(
 							chatId,
-							`📦 Введіть ТТН накладної Нової Пошти для заказа ${param1}:`,
+							`📦 Введіть ТТН накладної Нової Пошт.и для замовлення ${param1}:`,
 							{
 								reply_markup: cancelKeyboard
 							}
@@ -335,7 +335,7 @@ export class TelegramBotService {
 						await this.sendOrderDetails(chatId, param1);
 						break;
 
-					// Навигация
+					// Навігація
 					case 'back':
 					case 'menu':
 						await this.sendMainMenu(chatId);
@@ -346,32 +346,32 @@ export class TelegramBotService {
 						}
 						break;
 
-					// Новые действия с заказами
+					// Нові дії з замовленнями
 					case 'action':
 						await this.handleOrderAction(chatId, param1);
 						break;
 
-					// Отмена операции
+					// Скасування операції
 					case 'cancel':
 						if (param1 === 'operation') {
 							this.userStates.delete(chatId);
-							this.bot.sendMessage(chatId, '❌ Операция отменена.');
+							this.bot.sendMessage(chatId, '❌ Операція скасована.');
 							await this.sendOrdersList(chatId);
 						}
 						break;
 				}
 
-				// Убрать loading состояние кнопки
+				// Прибрати loading стан кнопки
 				this.bot.answerCallbackQuery(query.id);
 			} catch (error) {
 				console.error('Callback query error:', error);
-				this.bot.answerCallbackQuery(query.id, { text: '❌ Ошибка выполнения действия' });
+				this.bot.answerCallbackQuery(query.id, { text: '❌ Помилка виконання дії' });
 			}
 		});
 	}
 
 	private setupTextHandler(): void {
-		// Обработка текстовых сообщений для ввода ID заказа и ТТН
+		// Обробка текстових повідомлень для введення ID замовлення та ТТН
 		this.bot.on('message', async (msg: TelegramBot.Message) => {
 			const chatId = msg.chat.id;
 			const text = msg.text;
@@ -379,26 +379,26 @@ export class TelegramBotService {
 
 			if (!text) return;
 
-			// Проверяем доступ
+			// Перевіряємо доступ
 			if (username !== 'qq5756853') {
-				return; // Тихо игнорируем сообщения от других пользователей
+				return; // Тихо ігноруємо повідомлення від інших користувачів
 			}
 
 			if (!this.adminChatId || chatId.toString() !== this.adminChatId) {
 				return;
 			}
 
-			// Проверяем состояние пользователя
+			// Перевіряємо стан користувача
 			const userState = this.userStates.get(chatId);
 			if (!userState) return;
 
-			// Если пользователь ждет ТТН
+			// Якщо користувач чекає ТТН
 			if (userState.awaitingTTN && userState.orderId) {
 				await this.processTTN(chatId, text.trim(), userState.orderId);
 				return;
 			}
 
-			// Если пользователь ждет ID заказа
+			// Якщо користувач чекає ID замовлення
 			if (userState.awaitingOrderId && userState.action) {
 				await this.processOrderId(chatId, text.trim(), userState.action);
 				return;
@@ -422,9 +422,9 @@ export class TelegramBotService {
 		});
 
 		const cancelKeyboard = {
-			inline_keyboard: [[{ text: '❌ Отмена', callback_data: 'cancel_operation' }]]
+			inline_keyboard: [[{ text: '❌ Скасування', callback_data: 'cancel_operation' }]]
 		};
-		this.bot.sendMessage(chatId, `📝 Введіть ID заказа для ${actionText}:`, {
+		this.bot.sendMessage(chatId, `📝 Введіть ID замовлення для ${actionText}:`, {
 			reply_markup: cancelKeyboard
 		});
 	}
@@ -435,7 +435,7 @@ export class TelegramBotService {
 		action: 'confirm' | 'cancel' | 'ship' | 'deliver'
 	): Promise<void> {
 		try {
-			// Для отправки заказа сначала запрашиваем ТТН
+			// Для отправки замовлення сначала запрашиваем ТТН
 			if (action === 'ship') {
 				this.userStates.set(chatId, {
 					awaitingOrderId: false,
@@ -445,11 +445,11 @@ export class TelegramBotService {
 				});
 
 				const cancelKeyboard = {
-					inline_keyboard: [[{ text: '❌ Отмена', callback_data: 'cancel_operation' }]]
+					inline_keyboard: [[{ text: '❌ Скасування', callback_data: 'cancel_operation' }]]
 				};
 				this.bot.sendMessage(
 					chatId,
-					`📦 Введіть ТТН накладної Нової Пошти для заказа ${orderId}:`,
+					`📦 Введіть ТТН накладної Нової Пошт.и для замовлення ${orderId}:`,
 					{
 						reply_markup: cancelKeyboard
 					}
@@ -457,10 +457,10 @@ export class TelegramBotService {
 				return;
 			}
 
-			// Для остальных действий сразу обновляем статус
+			// Для інших дій відразу оновлюємо статус
 			this.userStates.delete(chatId);
 
-			// Определяем новый статус
+			// Визначаємо новий статус
 			const statusMap = {
 				confirm: 'confirmed' as OrderStatus,
 				cancel: 'cancelled' as OrderStatus,
@@ -472,61 +472,61 @@ export class TelegramBotService {
 			await this.updateOrderStatus(chatId, orderId, newStatus);
 		} catch (error) {
 			console.error('Failed to process order ID:', error);
-			this.bot.sendMessage(chatId, '❌ Ошибка обработки ID заказа. Попробуйте еще раз.');
+			this.bot.sendMessage(chatId, '❌ Ошибка обработки ID замовлення. Попробуйте еще раз.');
 			this.userStates.delete(chatId);
 		}
 	}
 
 	private async processTTN(chatId: number, ttn: string, orderId: string): Promise<void> {
 		try {
-			// Очищаем состояние пользователя
+			// Очищуємо стан користувача
 			this.userStates.delete(chatId);
 
-			// Валидация ТТН (должен быть числом из 14 цифр)
+			// Валідація ТТН (повинен бути числом з 14 цифр)
 			if (!/^\d{14}$/.test(ttn)) {
-				this.bot.sendMessage(chatId, '❌ ТТН должен содержать 14 цифр. Попробуйте еще раз.');
+				this.bot.sendMessage(chatId, '❌ ТТН повинен містити 14 цифр. Спробуйте ще раз.');
 				return;
 			}
 
 			console.log(`[TelegramBot] Shipping order ${orderId} with TTN: ${ttn}`);
 
-			// Обновляем статус заказа на shipped
+			// Оновлюємо статус замовлення на shipped
 			await this.updateOrderStatus(chatId, orderId, 'shipped');
 
-			// Синхронизируем ТТН с Google Sheets
+			// Синхронізуємо ТТН з Google Sheets
 			try {
 				await this.sheetsService.updateOrderTTN(orderId, ttn);
 				console.log(`[TelegramBot] TTN ${ttn} synced to Google Sheets for order ${orderId}`);
 			} catch (sheetsError) {
 				console.error('[TelegramBot] Failed to sync TTN to Google Sheets:', sheetsError);
-				// Не прерываем процесс, если Google Sheets недоступен
+				// Не перериваємо процес, якщо Google Sheets недоступний
 			}
 
-			// Отправляем подтверждение с ТТН
+			// Надсилаємо підтвердження з ТТН
 			this.bot.sendMessage(
 				chatId,
-				`✅ Заказ ${orderId} успешно отмечен как отправленный!\n\n📦 ТТН: ${ttn}\n\nЗаказ ожидает доставки.`
+				`✅ Замовлення ${orderId} успішно позначено як відправлене!\n\n📦 ТТН: ${ttn}\n\nЗамовлення очікує доставки.`
 			);
 		} catch (error) {
 			console.error('Failed to process TTN:', error);
-			this.bot.sendMessage(chatId, '❌ Ошибка обработки ТТН. Попробуйте еще раз.');
+			this.bot.sendMessage(chatId, '❌ Помилка обробки ТТН. Спробуйте ще раз.');
 		}
 	}
 
 	private async sendOrdersList(chatId: number): Promise<void> {
 		try {
-			this.bot.sendMessage(chatId, '📦 Загружаю заказы...');
+			this.bot.sendMessage(chatId, '📦 Завантажую замовлення...');
 
-			// Для админа получаем все заказы из базы данных
+			// Для адміна отримуємо всі замовлення з бази даних
 			const orders = await this.getAllOrdersForAdmin();
 
 			if (orders.length === 0) {
-				const emptyMessage = '📭 Нет активных заказов';
+				const emptyMessage = '📭 Немає активних замовлень';
 				const emptyKeyboard = {
 					inline_keyboard: [
 						[
-							{ text: '✅ Підтвердити заказ', callback_data: 'action_confirm' },
-							{ text: '❌ Скасувати заказ', callback_data: 'action_cancel' }
+							{ text: '✅ Підтвердити замовлення', callback_data: 'action_confirm' },
+							{ text: '❌ Скасувати замовлення', callback_data: 'action_cancel' }
 						],
 						[{ text: '⬅️ Назад', callback_data: 'back_menu' }]
 					]
@@ -536,22 +536,22 @@ export class TelegramBotService {
 				return;
 			}
 
-			let message = `📋 *Все заказы (${orders.length}):*\n\n`;
+			let message = `📋 *Всі замовлення (${orders.length}):*\n\n`;
 
-			// Показываем все заказы с подробной информацией
+			// Показуємо всі замовлення з детальною інформацією
 			for (const order of orders) {
 				message += this.formatOrderDetailedSummary(order);
 			}
 
-			// Кнопки управления заказами
+			// Кнопки керування замовленнями
 			const inlineKeyboard = {
 				inline_keyboard: [
 					[
-						{ text: '✅ Підтвердити заказ', callback_data: 'action_confirm' },
-						{ text: '❌ Скасувати заказ', callback_data: 'action_cancel' }
+						{ text: '✅ Підтвердити замовлення', callback_data: 'action_confirm' },
+						{ text: '❌ Скасувати замовлення', callback_data: 'action_cancel' }
 					],
 					[
-						{ text: '📦 Відправити заказ', callback_data: 'action_ship' },
+						{ text: '📦 Відправити замовлення', callback_data: 'action_ship' },
 						{ text: '🚚 Доставлено', callback_data: 'action_deliver' }
 					],
 					[
@@ -567,15 +567,15 @@ export class TelegramBotService {
 			});
 		} catch (error) {
 			console.error('Failed to send orders list:', error);
-			this.bot.sendMessage(chatId, '❌ Ошибка загрузки заказов');
+			this.bot.sendMessage(chatId, '❌ Помилка завантаження замовлень');
 		}
 	}
 
-	// Получить все заказы для администратора
+	// Отримати всі замовлення для адміністратора
 	private async getAllOrdersForAdmin(): Promise<Order[]> {
 		try {
 			console.log('[TelegramBot] Getting all orders for admin...');
-			// Прямой запрос к базе данных для получения всех заказов
+			// Прямий запит до бази даних для отримання всіх замовлень
 			const orders = await this.orderService.getAllOrders();
 			console.log(`[TelegramBot] Retrieved ${orders.length} orders from database`);
 			orders.forEach((order, index) => {
@@ -596,12 +596,12 @@ export class TelegramBotService {
 			const filteredOrders = orders.filter((order) => order.status === status);
 
 			if (filteredOrders.length === 0) {
-				const emptyMessage = `📭 Нет заказов со статусом "${this.getStatusText(status)}"`;
+				const emptyMessage = `📭 Немає замовлень зі статусом "${this.getStatusText(status)}"`;
 				const emptyKeyboard = {
 					inline_keyboard: [
 						[
-							{ text: '✅ Підтвердити заказ', callback_data: 'action_confirm' },
-							{ text: '❌ Скасувати заказ', callback_data: 'action_cancel' }
+							{ text: '✅ Підтвердити замовлення', callback_data: 'action_confirm' },
+							{ text: '❌ Скасувати замовлення', callback_data: 'action_cancel' }
 						],
 						[{ text: '⬅️ Назад', callback_data: 'back_menu' }]
 					]
@@ -611,22 +611,22 @@ export class TelegramBotService {
 				return;
 			}
 
-			let message = `📋 *Заказы "${this.getStatusText(status)}" (${filteredOrders.length}):*\n\n`;
+			let message = `📋 *Замовлення "${this.getStatusText(status)}" (${filteredOrders.length}):*\n\n`;
 
-			// Показываем все заказы с подробной информацией
+			// Показуємо всі замовлення з детальною інформацією
 			for (const order of filteredOrders) {
 				message += this.formatOrderDetailedSummary(order);
 			}
 
-			// Кнопки управления заказами
+			// Кнопки керування замовленнями
 			const inlineKeyboard = {
 				inline_keyboard: [
 					[
-						{ text: '✅ Підтвердити заказ', callback_data: 'action_confirm' },
-						{ text: '❌ Скасувати заказ', callback_data: 'action_cancel' }
+						{ text: '✅ Підтвердити замовлення', callback_data: 'action_confirm' },
+						{ text: '❌ Скасувати замовлення', callback_data: 'action_cancel' }
 					],
 					[
-						{ text: '📦 Відправити заказ', callback_data: 'action_ship' },
+						{ text: '📦 Відправити замовлення', callback_data: 'action_ship' },
 						{ text: '🚚 Доставлено', callback_data: 'action_deliver' }
 					],
 					[
@@ -642,7 +642,7 @@ export class TelegramBotService {
 			});
 		} catch (error) {
 			console.error('Failed to send orders by status:', error);
-			this.bot.sendMessage(chatId, '❌ Ошибка загрузки заказов');
+			this.bot.sendMessage(chatId, '❌ Помилка завантаження замовлень');
 		}
 	}
 
@@ -654,29 +654,29 @@ export class TelegramBotService {
 		try {
 			console.log(`[TelegramBot] Starting order status update: ${orderId} -> ${status}`);
 
-			// Обновить статус в БД
+			// Оновити статус у БД
 			const success = await this.orderService.updateOrderStatus(orderId, status);
 			console.log(`[TelegramBot] OrderService.updateOrderStatus result: ${success}`);
 
 			if (!success) {
 				console.log(`[TelegramBot] OrderService returned false for order ${orderId}`);
-				this.bot.sendMessage(chatId, `❌ Заказ ${orderId} не найден`);
+				this.bot.sendMessage(chatId, `❌ Замовлення ${orderId} не знайдено`);
 				return;
 			}
 
 			console.log(`[TelegramBot] Order status update successful: ${orderId} -> ${status}`);
 
-			// Обновить статус в Google Sheets
+			// Оновити статус у Google Sheets
 			await this.sheetsService.updateOrderStatus(orderId, status);
 
 			const statusText = this.getStatusText(status);
-			const message = `✅ Заказ *${orderId}* обновлен\n\n📊 Новый статус: *${statusText}*`;
+			const message = `✅ Замовлення *${orderId}* оновлено\n\n📊 Новий статус: *${statusText}*`;
 
 			const successKeyboard = {
 				inline_keyboard: [
 					[
-						{ text: '🔄 Продолжить работу', callback_data: 'back_menu' },
-						{ text: '📋 Детали заказа', callback_data: `details_${orderId}` }
+						{ text: '🔄 Продовжити роботу', callback_data: 'back_menu' },
+						{ text: '📋 Деталі замовлення', callback_data: `details_${orderId}` }
 					]
 				]
 			};
@@ -687,7 +687,7 @@ export class TelegramBotService {
 			});
 		} catch (error) {
 			console.error('Failed to update order status:', error);
-			this.bot.sendMessage(chatId, `❌ Ошибка обновления статуса заказа ${orderId}`);
+			this.bot.sendMessage(chatId, `❌ Помилка оновлення статусу замовлення ${orderId}`);
 		}
 	}
 
@@ -696,7 +696,7 @@ export class TelegramBotService {
 			const order = await this.orderService.getOrderById(orderId);
 
 			if (!order) {
-				this.bot.sendMessage(chatId, `❌ Заказ ${orderId} не найден`);
+				this.bot.sendMessage(chatId, `❌ Замовлення ${orderId} не знайдено`);
 				return;
 			}
 
@@ -721,7 +721,7 @@ export class TelegramBotService {
 			});
 		} catch (error) {
 			console.error('Failed to send order details:', error);
-			this.bot.sendMessage(chatId, `❌ Ошибка загрузки деталей заказа ${orderId}`);
+			this.bot.sendMessage(chatId, `❌ Помилка завантаження деталей замовлення ${orderId}`);
 		}
 	}
 
@@ -746,24 +746,24 @@ export class TelegramBotService {
 			`[TelegramBot] Formatting order ${order.id}: status=${order.status}, statusText=${statusText}, statusEmoji=${statusEmoji}`
 		);
 
-		let summary = `${statusEmoji} *ЗАКАЗ ${order.id}*\n`;
+		let summary = `${statusEmoji} *ЗАМОВЛЕННЯ ${order.id}*\n`;
 		summary += `📅 Дата: ${date}\n`;
 		summary += `📊 Статус: ${statusText}\n`;
-		summary += `💰 Сумма: ${total} ₴\n`;
-		summary += `📦 Товаров: ${order.items?.length || 0}\n`;
+		summary += `💰 Сума: ${total} ₴\n`;
+		summary += `📦 Товарів: ${order.items?.length || 0}\n`;
 
-		// Показываем товары
+		// Показуємо товари
 		if (order.items && order.items.length > 0) {
-			summary += `🛍️ Товары:\n`;
+			summary += `🛍️ Товари:\n`;
 			order.items.forEach((item, index) => {
 				const price = (item.price / 100).toFixed(2);
-				summary += `   ${index + 1}. ${item.productName} (${item.quantity}шт × ${price}₴)\n`;
+				summary += `   ${index + 1}. ${item.productName} (${item.quantity}шт. × ${price}₴)\n`;
 			});
 		}
 
-		// Адрес доставки
+		// Адреса доставки
 		if (order.deliveryAddress) {
-			summary += `🏠 Адрес: `;
+			summary += `🏠 Адреса: `;
 			if (order.deliveryAddress.city) {
 				summary += `${order.deliveryAddress.city}`;
 			}
@@ -777,7 +777,7 @@ export class TelegramBotService {
 		}
 
 		if (order.notes) {
-			summary += `📝 Примечания: ${order.notes}\n`;
+			summary += `📝 Примітки: ${order.notes}\n`;
 		}
 
 		summary += `\n─────────────\n\n`;
@@ -790,21 +790,21 @@ export class TelegramBotService {
 		const createDate = new Date(order.createdAt).toLocaleDateString('uk-UA');
 		const total = (order.total / 100).toFixed(2);
 
-		let message = `${statusEmoji} *ЗАКАЗ ${order.id}*\n\n`;
-		message += `📅 Создан: ${createDate}\n`;
+		let message = `${statusEmoji} *ЗАМОВЛЕННЯ ${order.id}*\n\n`;
+		message += `📅 Створено: ${createDate}\n`;
 		message += `📊 Статус: ${this.getStatusText(order.status)}\n`;
 		message += `💰 Сумма: ${total} ₴\n\n`;
 
-		message += `📦 *Товары:*\n`;
+		message += `📦 *Товари:*\n`;
 		order.items?.forEach((item, index) => {
 			const price = (item.price / 100).toFixed(2);
 			const itemTotal = (item.total / 100).toFixed(2);
 			message += `${index + 1}. ${item.productName}\n`;
-			message += `   ${item.quantity} шт. × ${price} ₴ = ${itemTotal} ₴\n`;
+			message += `   ${item.quantity} шт.. × ${price} ₴ = ${itemTotal} ₴\n`;
 		});
 
 		if (order.deliveryAddress) {
-			message += `\n🏠 *Адрес доставки:*\n`;
+			message += `\n🏠 *Адреса доставки:*\n`;
 			if (order.deliveryAddress.street) {
 				message += `${order.deliveryAddress.street}\n`;
 			}
@@ -812,12 +812,12 @@ export class TelegramBotService {
 				message += `${order.deliveryAddress.city}\n`;
 			}
 			if (order.deliveryAddress.npWarehouse) {
-				message += `Нова Пошта №${order.deliveryAddress.npWarehouse}\n`;
+				message += `Нова Пошт.а №${order.deliveryAddress.npWarehouse}\n`;
 			}
 		}
 
 		if (order.notes) {
-			message += `\n📝 *Примечания:* ${order.notes}\n`;
+			message += `\n📝 *Примітки:* ${order.notes}\n`;
 		}
 
 		return message;
@@ -857,7 +857,7 @@ export class TelegramBotService {
 		}
 	}
 
-	// Получить кнопки действий для заказа в зависимости от статуса
+	// Отримати кнопки дій для замовлення залежно від статусу
 	private getOrderActionButtons(orderId: string, currentStatus: OrderStatus): any[] {
 		const buttons = [];
 
@@ -879,20 +879,20 @@ export class TelegramBotService {
 				break;
 			case 'delivered':
 			case 'cancelled':
-				// Для завершенных заказов показываем только детали
-				buttons.push({ text: '📋 Детали', callback_data: `details_${orderId}` });
+				// Для завершених замовлень показуємо тільки деталі
+				buttons.push({ text: '📋 Деталі', callback_data: `details_${orderId}` });
 				break;
 		}
 
 		return buttons;
 	}
 
-	// Отправить главное меню
+	// Надіслати головне меню
 	private async sendMainMenu(chatId: number): Promise<void> {
 		const welcomeMessage = `
 🤖 *Balance Botanica Order Management Bot*
 
-🚀 *Выбери действие:*
+🚀 *Обери дію:*
 		`;
 
 		const mainMenu = {
@@ -943,11 +943,11 @@ export class TelegramBotService {
 
 		// Добавляем информацию о товарах
 		if (order.items && order.items.length > 0) {
-			message += `🛒 *Состав заказа:*\n`;
+			message += `🛒 *Состав замовлення:*\n`;
 			order.items.forEach((item, index) => {
 				const price = (item.price / 100).toFixed(2);
 				message += `${index + 1}. ${item.productName}\n`;
-				message += `   ${item.quantity} шт. × ${price} ₴\n`;
+				message += `   ${item.quantity} шт.. × ${price} ₴\n`;
 			});
 			message += '\n';
 		}
@@ -965,7 +965,7 @@ export class TelegramBotService {
 			} else {
 				// Если адрес - объект
 				if (order.deliveryAddress.npWarehouse) {
-					message += `Нова Пошта №${order.deliveryAddress.npWarehouse}\n`;
+					message += `Нова Пошт.а №${order.deliveryAddress.npWarehouse}\n`;
 				} else if (order.deliveryAddress.street) {
 					message += `${order.deliveryAddress.street}, ${order.deliveryAddress.city}\n`;
 				}
