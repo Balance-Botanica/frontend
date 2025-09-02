@@ -6,6 +6,7 @@
 import TelegramBot from 'node-telegram-bot-api';
 import { OrderService } from '../application/services/order.service';
 import { GoogleSheetsService } from './google-sheets.service';
+import { PromoCodeService } from '../application/services/promo-code.service';
 import type { Order, OrderStatus } from '../domain/interfaces/order.interface';
 import { readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
@@ -13,7 +14,8 @@ import { join } from 'path';
 interface UserState {
 	awaitingOrderId: boolean;
 	awaitingTTN?: boolean;
-	action?: 'confirm' | 'cancel' | 'ship' | 'deliver';
+	awaitingPromoData?: boolean;
+	action?: 'confirm' | 'cancel' | 'ship' | 'deliver' | 'create_promo';
 	orderId?: string;
 }
 
@@ -21,6 +23,7 @@ export class TelegramBotService {
 	private bot: TelegramBot;
 	private orderService: OrderService;
 	private sheetsService: GoogleSheetsService;
+	private promoCodeService: PromoCodeService;
 	private adminChatId: string | null = null;
 	private userStates: Map<number, UserState> = new Map();
 
@@ -35,6 +38,7 @@ export class TelegramBotService {
 		this.bot = new TelegramBot(botToken, { polling: false }); // Вимикаємо авто-polling
 		this.orderService = new OrderService();
 		this.sheetsService = new GoogleSheetsService();
+		this.promoCodeService = new PromoCodeService();
 
 		// Завантажуємо збережений adminChatId
 		this.loadAdminChatId();
@@ -141,6 +145,11 @@ export class TelegramBotService {
 • shipped - Відправлено
 • delivered - Доставлено
 • cancelled - Скасовано
+
+🎫 *Управління промокодами:*
+• Використовуйте кнопку "🎫 Промокоди" в головному меню
+• Створюйте промокоди різних типів: відсоткова знижка, фіксована сума, безкоштовна доставка
+• Переглядайте статистику використання та список активних промокодів
 
 💡 *Поради:*
 • Використовуй inline кнопки для швидкого керування
@@ -295,6 +304,26 @@ export class TelegramBotService {
 					case 'status':
 						await this.sendOrdersByStatus(chatId, param1 as OrderStatus);
 						break;
+
+					// Меню промокодів
+					case 'promo_menu':
+						await this.sendPromoMenu(chatId);
+						break;
+					case 'create_promo':
+						this.userStates.set(chatId, {
+							awaitingOrderId: false,
+							awaitingTTN: false,
+							awaitingPromoData: true,
+							action: 'create_promo'
+						});
+						this.bot.sendMessage(chatId, '🎫 Введіть дані промокоду у форматі:\n\nКод,Тип,Значення[,Мін.сума][,Ліміт][,Дедлайн]\n\nПриклади:\nWELCOME10,percentage,10\nSAVE50,fixed,50,500\nFREESHIP,free_shipping,0\n\nТипи: percentage, fixed, free_shipping');
+						break;
+					case 'list_promos':
+						await this.sendPromoList(chatId);
+						break;
+					case 'promo_stats':
+						await this.sendPromoStats(chatId);
+						break;
 					case 'all':
 						if (param1 === 'orders') {
 							await this.sendOrdersList(chatId);
@@ -401,6 +430,12 @@ export class TelegramBotService {
 			// Якщо користувач чекає ID замовлення
 			if (userState.awaitingOrderId && userState.action) {
 				await this.processOrderId(chatId, text.trim(), userState.action);
+				return;
+			}
+
+			// Якщо користувач чекає дані промокоду
+			if (userState.awaitingPromoData && userState.action === 'create_promo') {
+				await this.processPromoData(chatId, text.trim());
 				return;
 			}
 		});
@@ -902,6 +937,9 @@ export class TelegramBotService {
 					{ text: '✅ Підтверджені', callback_data: 'status_confirmed' }
 				],
 				[
+					{ text: '🎫 Промокоди', callback_data: 'promo_menu' }
+				],
+				[
 					{ text: '📦 Відправлені', callback_data: 'status_shipped' },
 					{ text: '🚚 Доставлені', callback_data: 'status_delivered' }
 				],
@@ -1092,6 +1130,193 @@ export class TelegramBotService {
 		} catch (error) {
 			// Файл не существует или поврежден - это нормально для первого запуска
 			console.log('[TelegramBot] No saved admin chat ID found (this is normal)');
+		}
+	}
+
+	// === ПРОМОКОДИ - МЕТОДЫ УПРАВЛЕНИЯ ===
+
+	private async sendPromoMenu(chatId: number): Promise<void> {
+		const promoMenu = {
+			inline_keyboard: [
+				[
+					{ text: '➕ Створити промокод', callback_data: 'create_promo' },
+					{ text: '📋 Список промокодів', callback_data: 'list_promos' }
+				],
+				[
+					{ text: '📊 Статистика', callback_data: 'promo_stats' },
+					{ text: '⬅️ Назад', callback_data: 'back_menu' }
+				]
+			]
+		};
+
+		this.bot.sendMessage(chatId, '🎫 *Управління промокодами*\n\nОберіть дію:', {
+			parse_mode: 'Markdown',
+			reply_markup: promoMenu
+		});
+	}
+
+	private async sendPromoList(chatId: number): Promise<void> {
+		try {
+			const promoCodes = await this.promoCodeService.getAllPromoCodes();
+
+			if (promoCodes.length === 0) {
+				this.bot.sendMessage(chatId, '📭 Немає активних промокодів', {
+					reply_markup: {
+						inline_keyboard: [[{ text: '⬅️ Назад', callback_data: 'promo_menu' }]]
+					}
+				});
+				return;
+			}
+
+			let message = '🎫 *Список промокодів:*\n\n';
+
+			for (const [index, promo] of promoCodes.entries()) {
+				const status = promo.isActive ? '✅' : '❌';
+				const discount = promo.discountType === 'percentage'
+					? `${promo.discountValue}%`
+					: promo.discountType === 'fixed'
+					? `₴${promo.discountValue}`
+					: 'Безкоштовна доставка';
+
+				message += `${index + 1}. *${promo.code}* ${status}\n`;
+				message += `   Знижка: ${discount}\n`;
+				message += `   Використано: ${promo.usageCount || 0}`;
+				if (promo.usageLimit) message += `/${promo.usageLimit}`;
+				message += '\n';
+
+				if (promo.expiresAt) {
+					const expiry = new Date(promo.expiresAt).toLocaleDateString('uk-UA');
+					message += `   Діє до: ${expiry}\n`;
+				}
+
+				message += '\n';
+			}
+
+			const keyboard = {
+				inline_keyboard: [
+					[{ text: '➕ Створити новий', callback_data: 'create_promo' }],
+					[{ text: '⬅️ Назад', callback_data: 'promo_menu' }]
+				]
+			};
+
+			this.bot.sendMessage(chatId, message, {
+				parse_mode: 'Markdown',
+				reply_markup: keyboard
+			});
+
+		} catch (error) {
+			console.error('Error sending promo list:', error);
+			this.bot.sendMessage(chatId, '❌ Помилка завантаження списку промокодів');
+		}
+	}
+
+	private async sendPromoStats(chatId: number): Promise<void> {
+		try {
+			const promoCodes = await this.promoCodeService.getAllPromoCodes();
+
+			let totalCodes = promoCodes.length;
+			let activeCodes = promoCodes.filter(p => p.isActive).length;
+			let totalUsage = promoCodes.reduce((sum, p) => sum + (p.usageCount || 0), 0);
+			let expiredCodes = promoCodes.filter(p => p.expiresAt && new Date(p.expiresAt) < new Date()).length;
+
+			let message = '📊 *Статистика промокодів*\n\n';
+			message += `📋 Загальна кількість: ${totalCodes}\n`;
+			message += `✅ Активних: ${activeCodes}\n`;
+			message += `❌ Прострочених: ${expiredCodes}\n`;
+			message += `🎯 Загальна кількість використань: ${totalUsage}\n\n`;
+
+			if (promoCodes.length > 0) {
+				message += '*Топ промокодів:*\n';
+				const topPromos = promoCodes
+					.sort((a, b) => (b.usageCount || 0) - (a.usageCount || 0))
+					.slice(0, 5);
+
+				for (const promo of topPromos) {
+					message += `• ${promo.code}: ${promo.usageCount || 0} використань\n`;
+				}
+			}
+
+			this.bot.sendMessage(chatId, message, {
+				parse_mode: 'Markdown',
+				reply_markup: {
+					inline_keyboard: [[{ text: '⬅️ Назад', callback_data: 'promo_menu' }]]
+				}
+			});
+
+		} catch (error) {
+			console.error('Error sending promo stats:', error);
+			this.bot.sendMessage(chatId, '❌ Помилка завантаження статистики');
+		}
+	}
+
+	private async processPromoData(chatId: number, text: string): Promise<void> {
+		try {
+			// Clear user state
+			this.userStates.delete(chatId);
+
+			// Parse promo data: Code,Type,Value[,MinAmount][,Limit][,Deadline]
+			const parts = text.split(',').map(p => p.trim());
+
+			if (parts.length < 3) {
+				this.bot.sendMessage(chatId, '❌ Неправильний формат. Використовуйте: Код,Тип,Значення[,Мін.сума][,Ліміт][,Дедлайн]');
+				return;
+			}
+
+			const [code, type, valueStr, minAmountStr, limitStr, deadlineStr] = parts;
+
+			// Validate type
+			if (!['percentage', 'fixed', 'free_shipping'].includes(type)) {
+				this.bot.sendMessage(chatId, '❌ Неправильний тип. Доступні: percentage, fixed, free_shipping');
+				return;
+			}
+
+			// Validate value
+			const value = parseFloat(valueStr);
+			if (isNaN(value) || value < 0) {
+				this.bot.sendMessage(chatId, '❌ Неправильне значення знижки');
+				return;
+			}
+
+			// Parse optional parameters
+			const minAmount = minAmountStr ? parseFloat(minAmountStr) : 0;
+			const limit = limitStr ? parseInt(limitStr) : undefined;
+			const deadline = deadlineStr ? new Date(deadlineStr) : undefined;
+
+			// Create promo code
+			const promoData = {
+				code: code.toUpperCase(),
+				discountType: type as 'percentage' | 'fixed' | 'free_shipping',
+				discountValue: value,
+				minimumAmount: minAmount || undefined,
+				usageLimit: limit || undefined,
+				expiresAt: deadline || undefined,
+				isActive: true
+			};
+
+			const promoCode = await this.promoCodeService.createPromoCode(promoData);
+
+			let message = '✅ *Промокод створено успішно!*\n\n';
+			message += `🎫 Код: *${promoCode.code}*\n`;
+			message += `💰 Знижка: ${type === 'percentage' ? `${value}%` : type === 'fixed' ? `₴${value}` : 'Безкоштовна доставка'}\n`;
+
+			if (minAmount > 0) message += `📦 Мін. сума: ₴${minAmount}\n`;
+			if (limit) message += `🔢 Ліміт використань: ${limit}\n`;
+			if (deadline) message += `📅 Діє до: ${deadline.toLocaleDateString('uk-UA')}\n`;
+
+			this.bot.sendMessage(chatId, message, {
+				parse_mode: 'Markdown',
+				reply_markup: {
+					inline_keyboard: [
+						[{ text: '➕ Створити ще один', callback_data: 'create_promo' }],
+						[{ text: '📋 Переглянути список', callback_data: 'list_promos' }],
+						[{ text: '⬅️ Назад до меню', callback_data: 'promo_menu' }]
+					]
+				}
+			});
+
+		} catch (error) {
+			console.error('Error processing promo data:', error);
+			this.bot.sendMessage(chatId, '❌ Помилка створення промокоду. Перевірте дані та спробуйте ще раз.');
 		}
 	}
 }

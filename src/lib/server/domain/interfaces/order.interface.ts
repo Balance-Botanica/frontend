@@ -13,6 +13,14 @@ export interface Order {
 	customerPhone?: string; // Phone number
 	userEmail?: string; // User email from database
 
+	// Promo code information
+	promoCode?: {
+		code: string;
+		discount: number; // Discount in kopiyky
+		description?: string;
+	};
+	originalTotal?: number; // Original total before discount
+
 	createdAt: Date;
 	updatedAt: Date;
 }

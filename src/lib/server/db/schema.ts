@@ -74,8 +74,38 @@ export const orders = sqliteTable('orders', {
 	updatedAt: integer('updated_at', { mode: 'timestamp' }).$defaultFn(() => new Date())
 });
 
+export const promoCodes = sqliteTable('promo_codes', {
+	id: text('id').primaryKey(),
+	code: text('code').notNull().unique(),
+	description: text('description'),
+	discountType: text('discount_type').notNull(), // 'percentage', 'fixed', 'free_shipping'
+	discountValue: real('discount_value').notNull(),
+	minimumAmount: real('minimum_amount').default(0),
+	maximumDiscount: real('maximum_discount'),
+	isActive: integer('is_active', { mode: 'boolean' }).notNull().default(true),
+	expiresAt: integer('expires_at', { mode: 'timestamp' }),
+	usageLimit: integer('usage_limit'),
+	usageCount: integer('usage_count').default(0),
+	createdAt: integer('created_at', { mode: 'timestamp' }).$defaultFn(() => new Date()),
+	updatedAt: integer('updated_at', { mode: 'timestamp' }).$defaultFn(() => new Date())
+});
+
+export const promoCodeUsages = sqliteTable('promo_code_usages', {
+	id: text('id').primaryKey(),
+	promoCodeId: text('promo_code_id')
+		.notNull()
+		.references(() => promoCodes.id),
+	userId: text('user_id')
+		.notNull()
+		.references(() => users.id),
+	orderId: text('order_id'),
+	usedAt: integer('used_at', { mode: 'timestamp' }).$defaultFn(() => new Date())
+});
+
 export type Session = typeof sessions.$inferSelect;
 export type User = typeof users.$inferSelect;
 export type DeliveryAddress = typeof deliveryAddresses.$inferSelect;
 export type Product = typeof products.$inferSelect;
 export type Order = typeof orders.$inferSelect;
+export type PromoCode = typeof promoCodes.$inferSelect;
+export type PromoCodeUsage = typeof promoCodeUsages.$inferSelect;

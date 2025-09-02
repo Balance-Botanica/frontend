@@ -43,6 +43,13 @@
       "when": 1756679757002,
       "tag": "0005_sweet_kid_colt",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "6",
+      "when": 1756802039462,
+      "tag": "0006_flimsy_joseph",
+      "breakpoints": true
     }
   ]
 }

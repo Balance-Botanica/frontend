@@ -7,6 +7,7 @@
 	import { browser } from '$app/environment';
 	import { onMount, onDestroy } from 'svelte';
 	import { page } from '$app/stores';
+	import { writable } from 'svelte/store';
 	import SEO from '$lib/components/SEO.svelte';
 	import NovaPoshtaSelector from '$lib/components/NovaPoshtaSelector.svelte';
 	import AddressModal from '$lib/components/AddressModal.svelte';
@@ -39,6 +40,20 @@
 		phoneNumber: false,
 		selectedAddress: false
 	};
+
+	// Promo code state
+	let promoCodeInput = '';
+	let appliedPromoCode: any = null;
+	let promoCodeLoading = false;
+	let promoCodeError = '';
+
+	// Create a derived store for discounted total
+	const discountedTotal = writable(0);
+	$: {
+		const baseTotal = $cartTotals.total;
+		const discount = appliedPromoCode?.discount || 0;
+		$discountedTotal = Math.max(0, baseTotal - discount);
+	}
 
 	// Handle quantity changes
 	function updateQuantity(productId: string, newQuantity: number) {
@@ -153,7 +168,7 @@
 	}
 
 	// Debounce timer for localStorage saves
-	let saveTimer: number | null = null;
+	let saveTimer: ReturnType<typeof setTimeout> | null = null;
 
 	// Prevent multiple load calls
 	let isLoadingData = false;
@@ -308,12 +323,19 @@
 
 			const orderData = {
 				items: orderItems,
-				total: $cartTotals.total,
+				total: appliedPromoCode ? $discountedTotal : $cartTotals.total,
+				originalTotal: appliedPromoCode ? $cartTotals.total : undefined,
 				deliveryAddress: selectedAddressData || null,
 				notes: '', // Can be extended later for customer notes
 				// Customer information
 				customerName: `${firstName.trim()} ${lastName.trim()}`.trim(),
-				customerPhone: phoneNumber.trim()
+				customerPhone: phoneNumber.trim(),
+				// Promo code information
+				promoCode: appliedPromoCode ? {
+					code: appliedPromoCode.code,
+					discount: appliedPromoCode.discount,
+					description: appliedPromoCode.description
+				} : null
 			};
 
 			console.log('[CART] Creating order:', orderData);
@@ -424,6 +446,77 @@
 				notificationStore.error($pageTranslations.t('cart.checkout.errors.profileUpdateFailed'));
 			}
 			return false;
+		}
+	}
+
+	// Promo code functions
+	async function applyPromoCode() {
+		if (!promoCodeInput.trim()) {
+			promoCodeError = 'Please enter a promo code';
+			return;
+		}
+
+		if (!$isAuthenticated) {
+			promoCodeError = 'Please log in to use promo codes';
+			return;
+		}
+
+		promoCodeLoading = true;
+		promoCodeError = '';
+
+		try {
+			const response = await fetch('/api/promo-codes', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
+					action: 'validate',
+					code: promoCodeInput.trim(),
+					cartTotal: $cartTotals.total / 100 // Convert to UAH
+				})
+			});
+
+			const result = await response.json();
+
+			if (result.success) {
+				appliedPromoCode = {
+					code: promoCodeInput.toUpperCase(),
+					discount: result.discount * 100, // Convert to kopiyky
+					description: result.promoCode?.description
+				};
+				promoCodeInput = '';
+				promoCodeError = '';
+
+				if ($pageTranslations) {
+					notificationStore.success(result.message || 'Promo code applied successfully!');
+				}
+			} else {
+				promoCodeError = result.message || 'Invalid promo code';
+				appliedPromoCode = null;
+			}
+		} catch (error) {
+			console.error('Promo code validation error:', error);
+			promoCodeError = 'Failed to validate promo code. Please try again.';
+			appliedPromoCode = null;
+		} finally {
+			promoCodeLoading = false;
+		}
+	}
+
+	function removePromoCode() {
+		appliedPromoCode = null;
+		promoCodeError = '';
+		promoCodeInput = '';
+
+		if ($pageTranslations) {
+			notificationStore.info('Promo code removed');
+		}
+	}
+
+	async function handlePromoCodeKeydown(event: KeyboardEvent) {
+		if (event.key === 'Enter') {
+			await applyPromoCode();
 		}
 	}
 
@@ -733,11 +826,74 @@
 							{/if}
 							
 							<div class="summary-divider"></div>
-							
-							<div class="summary-total">
-								<span class="total-label">{$pageTranslations.t('cart.summary.total')}:</span>
-								<span class="total-value">{formatPrice($cartTotals.total)}</span>
 
+							<!-- Promo Code Section -->
+							{#if $isAuthenticated}
+								<div class="promo-code-section">
+									{#if appliedPromoCode}
+										<div class="applied-promo">
+											<div class="promo-info">
+												<span class="promo-code">🎉 {appliedPromoCode.code}</span>
+												{#if appliedPromoCode.description}
+													<span class="promo-description">{appliedPromoCode.description}</span>
+												{/if}
+												<span class="promo-discount">-{formatPrice(appliedPromoCode.discount)}</span>
+											</div>
+											<button
+												class="remove-promo-btn"
+												on:click={removePromoCode}
+												aria-label="Remove promo code"
+											>
+												✕
+											</button>
+										</div>
+									{:else}
+										<div class="promo-input-group">
+											<input
+												type="text"
+												placeholder="Enter promo code"
+												bind:value={promoCodeInput}
+												on:keydown={handlePromoCodeKeydown}
+												disabled={promoCodeLoading}
+												class="promo-input"
+												class:error={promoCodeError}
+											/>
+											<button
+												class="apply-promo-btn"
+												on:click={applyPromoCode}
+												disabled={promoCodeLoading || !promoCodeInput.trim()}
+											>
+												{#if promoCodeLoading}
+													⏳
+												{:else}
+													Apply
+												{/if}
+											</button>
+										</div>
+										{#if promoCodeError}
+											<p class="promo-error">{promoCodeError}</p>
+										{/if}
+									{/if}
+								</div>
+
+								<div class="summary-divider"></div>
+							{/if}
+
+							<div class="summary-total">
+								<span class="total-label">
+									{$pageTranslations.t('cart.summary.total')}
+									{#if appliedPromoCode}
+										<span class="original-total">({formatPrice($cartTotals.total)})</span>
+									{/if}
+									:
+								</span>
+								<span class="total-value">
+									{#if appliedPromoCode}
+										{formatPrice($discountedTotal)}
+									{:else}
+										{formatPrice($cartTotals.total)}
+									{/if}
+								</span>
 							</div>
 						</div>
 						
@@ -1358,6 +1514,154 @@
 
 		.form-row {
 			grid-template-columns: 1fr;
+		}
+	}
+
+	/* Promo Code Styles */
+	.promo-code-section {
+		margin: 16px 0;
+	}
+
+	.promo-input-group {
+		display: flex;
+		gap: 8px;
+		margin-bottom: 8px;
+	}
+
+	.promo-input {
+		flex: 1;
+		padding: 12px 16px;
+		border: 2px solid #e0e0e0;
+		border-radius: 8px;
+		font-family: 'Nunito', sans-serif;
+		font-size: 14px;
+		transition: border-color 0.2s ease;
+	}
+
+	.promo-input:focus {
+		outline: none;
+		border-color: #4B766E;
+	}
+
+	.promo-input.error {
+		border-color: #dc3545;
+	}
+
+	.promo-input:disabled {
+		background-color: #f8f9fa;
+		color: #6c757d;
+		cursor: not-allowed;
+	}
+
+	.apply-promo-btn {
+		padding: 12px 20px;
+		background: #4B766E;
+		color: white;
+		border: none;
+		border-radius: 8px;
+		font-family: 'Nunito', sans-serif;
+		font-size: 14px;
+		font-weight: 600;
+		cursor: pointer;
+		transition: background-color 0.2s ease;
+		min-width: 80px;
+	}
+
+	.apply-promo-btn:hover:not(:disabled) {
+		background: #3a5d56;
+	}
+
+	.apply-promo-btn:disabled {
+		background: #6c757d;
+		cursor: not-allowed;
+	}
+
+	.promo-error {
+		color: #dc3545;
+		font-size: 12px;
+		margin: 4px 0 0 0;
+		font-family: 'Nunito', sans-serif;
+	}
+
+	.applied-promo {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		padding: 12px 16px;
+		background: #f8f9fa;
+		border: 2px solid #4B766E;
+		border-radius: 8px;
+		margin-bottom: 8px;
+	}
+
+	.promo-info {
+		display: flex;
+		flex-direction: column;
+		gap: 4px;
+		flex: 1;
+	}
+
+	.promo-code {
+		font-family: 'Nunito', sans-serif;
+		font-size: 14px;
+		font-weight: 600;
+		color: #4B766E;
+	}
+
+	.promo-description {
+		font-family: 'Nunito', sans-serif;
+		font-size: 12px;
+		color: #666;
+	}
+
+	.promo-discount {
+		font-family: 'Nunito', sans-serif;
+		font-size: 14px;
+		font-weight: 600;
+		color: #28a745;
+	}
+
+	.remove-promo-btn {
+		background: none;
+		border: none;
+		color: #6c757d;
+		font-size: 18px;
+		cursor: pointer;
+		padding: 4px;
+		border-radius: 4px;
+		transition: background-color 0.2s ease;
+	}
+
+	.remove-promo-btn:hover {
+		background: #e0e0e0;
+		color: #495057;
+	}
+
+	.original-total {
+		font-family: 'Nunito', sans-serif;
+		font-size: 12px;
+		color: #6c757d;
+		text-decoration: line-through;
+		margin-left: 8px;
+	}
+
+	@media (max-width: 700px) {
+		.promo-input-group {
+			flex-direction: column;
+		}
+
+		.apply-promo-btn {
+			width: 100%;
+		}
+
+		.applied-promo {
+			flex-direction: column;
+			align-items: flex-start;
+			gap: 8px;
+		}
+
+		.remove-promo-btn {
+			align-self: flex-end;
 		}
 	}
 </style>

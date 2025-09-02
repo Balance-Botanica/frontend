@@ -11,6 +11,15 @@ import type {
 // Lazy-loaded services to avoid circular dependencies
 let telegramBotService: any = null;
 let googleSheetsService: any = null;
+let promoCodeService: any = null;
+
+function getPromoCodeService() {
+	if (!promoCodeService) {
+		const { PromoCodeService } = require('./promo-code.service');
+		promoCodeService = new PromoCodeService();
+	}
+	return promoCodeService;
+}
 
 // Order service - business logic layer
 
@@ -201,6 +210,18 @@ export class OrderService {
 				console.log('[OrderService] Skipping external sync in test script');
 				console.log('[OrderService] Order created:', order.id, '- status:', order.status);
 				return;
+			}
+
+			// Record promo code usage if applicable
+			if ((order as any).promoCode) {
+				try {
+					const promoService = getPromoCodeService();
+					await promoService.recordUsage((order as any).promoCode.code, order.userId, order.id);
+					console.log('[OrderService] Recorded promo code usage:', (order as any).promoCode.code);
+				} catch (error) {
+					console.error('[OrderService] Failed to record promo code usage:', error);
+					// Don't fail the order creation for this
+				}
 			}
 
 			// Синхронизировать с Google Sheets (асинхронно, но с повторными попытками)

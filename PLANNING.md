@@ -263,6 +263,19 @@ This document tracks our project tasks, priorities, and progress.
 - Maintained consistency with existing Ukrainian translations in the web interface
 - Bot now provides native Ukrainian language experience for admin operations
 
+### ✅ Promo Codes Management via Telegram Bot
+- **Removed Web Admin Interface**: Eliminated `/admin/promo-codes` route from website
+- **Added Telegram Bot Management**: Full promo code management now available in Telegram bot
+- **New Bot Features**:
+  - `🎫 Промокоди` button in main menu
+  - Create promo codes with flexible parameters
+  - View complete list of active promo codes
+  - Statistics dashboard with usage analytics
+  - Top-performing promo codes tracking
+- **Promo Code Creation**: Simple CSV-like format for quick creation
+- **Real-time Management**: All operations performed directly through Telegram
+- **Enhanced User Experience**: Intuitive inline keyboards and formatted responses
+
 ### ✅ Repository Maintenance
 - Updated .gitignore with comprehensive rules for:
   - Google credentials and secrets
