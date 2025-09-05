@@ -27,11 +27,12 @@
 	let isMobileMenuOpen = $state(false);
 	let activeTab = $state('home');
 
-	const { children } = $props();
+	const { children, data } = $props();
 
 	const excludeFooterRoutes = ['/design-system', '/components'];
 	const showFooter = $derived(!excludeFooterRoutes.includes($page.url.pathname));
 	const isHome = $derived($page.url.pathname === '/');
+	const currentLocalePrefix = $derived($page.url.pathname.startsWith('/en/') || $page.url.pathname === '/en' ? '/en' : '');
 
 	// Subscribe to auth store changes for comprehensive logging
 	let authStateLog: string = 'Not initialized';
@@ -96,8 +97,8 @@
 			// Auth store is already initialized by singleton pattern - no waiting needed
 			console.log('🔍 [LAYOUT] Auth store initialized by singleton - proceeding immediately');
 			
-			console.log('🌍 [LAYOUT] Initializing i18n with Ukrainian locale...');
-			await initializeI18n('uk-ua'); // Start with Ukrainian as default
+			console.log('🌍 [LAYOUT] Initializing i18n with server locale:', data?.locale);
+			await initializeI18n(data?.locale || 'uk-ua'); // Use server locale or fallback to Ukrainian
 			
 			console.log('✅ [LAYOUT] App initialization completed successfully');
 		} catch (error) {
@@ -160,19 +161,19 @@
 	function handleTabNavigation(tab: string) {
 		activeTab = tab;
 		isMobileMenuOpen = false;
-		
+
 		switch (tab) {
 			case 'home':
-				goto('/');
+				goto(currentLocalePrefix ? `${currentLocalePrefix}/` : '/');
 				break;
 			case 'products':
-				goto('/products');
+				goto(`${currentLocalePrefix}/products`);
 				break;
 			case 'cart':
-				goto('/cart');
+				goto(`${currentLocalePrefix}/cart`);
 				break;
 			case 'account':
-				goto('/login');
+				goto(`${currentLocalePrefix}/login`);
 				break;
 		}
 	}

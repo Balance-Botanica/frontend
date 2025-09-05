@@ -11,6 +11,9 @@
 	import { enhance } from '$app/forms';
 	import type { PageData } from './$types';
 
+	// Detect language from optional route parameter
+	let lang = $derived($page.params?.lang || 'uk-ua');
+
 	// Create page translations
 	const pageTranslations = createPageTranslations();
 
@@ -38,7 +41,7 @@
 	let isLoggingOut = false;
 
 	// Load data from server
-	export let data: PageData;
+	const { data }: { data: PageData } = $props();
 
 	// Initialize with data from server
 	onMount(() => {
@@ -48,14 +51,16 @@
 	});
 
 	// Redirect to login if not authenticated (but not during logout)
-	$: if (!$isAuthenticated && !$isLoading && !isLoggingOut) {
-		console.log('[Profile Page] User not authenticated and not loading, redirecting to login');
-		goto('/login');
-	}
+	$effect(() => {
+		if (!$isAuthenticated && !$isLoading && !isLoggingOut) {
+			console.log('[Profile Page] User not authenticated and not loading, redirecting to login');
+			goto('/login');
+		}
+	});
 
 	// Form state
-	$: deliveryAddresses = data?.deliveryAddresses || [];
-	$: hasAddresses = deliveryAddresses?.length > 0;
+	let deliveryAddresses = $derived(data?.deliveryAddresses || []);
+	let hasAddresses = $derived(deliveryAddresses?.length > 0);
 	console.log('[Profile Page] Delivery addresses loaded:', deliveryAddresses?.length);
 
 	// Handle form input changes

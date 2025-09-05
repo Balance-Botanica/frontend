@@ -1,13 +1,17 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import SEO from '../../lib/components/SEO.svelte';
-	import type { Order, OrderStatus } from '../../lib/server/domain/interfaces/order.interface';
+	import { page } from '$app/stores';
+	import SEO from '$lib/components/SEO.svelte';
+	import type { Order, OrderStatus } from '$lib/server/domain/interfaces/order.interface';
 	import type { PageData } from './$types';
 	import { onMount } from 'svelte';
-	import { createPageTranslations } from '../../lib/i18n/store';
+	import { createPageTranslations } from '$lib/i18n/store';
 
 	// Get data from server
-	export let data: PageData;
+	const { data }: { data: PageData } = $props();
+
+	// Detect language from optional route parameter
+	let lang = $derived($page.params?.lang || 'uk-ua');
 
 	// Create page translations
 	const pageTranslations = createPageTranslations();

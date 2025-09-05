@@ -153,6 +153,24 @@ const handleSecurityHeaders: Handle = async ({ event, resolve }) => {
 	return response;
 };
 
+// Locale detection middleware
+const handleLocale: Handle = async ({ event, resolve }) => {
+	const pathname = event.url.pathname;
+
+	// Определяем локаль из URL
+	let locale = 'uk-ua'; // По умолчанию украинский
+
+	if (pathname.startsWith('/en/') || pathname === '/en') {
+		locale = 'en';
+	}
+
+	// Добавляем локаль в locals
+	event.locals.locale = locale;
+
+	console.log('🌍 [Locale] Detected locale:', locale, 'for path:', pathname);
+	return resolve(event);
+};
+
 // Suspicious activity detection
 const handleSuspiciousActivity: Handle = async ({ event, resolve }) => {
 	const userAgent = event.request.headers.get('user-agent') || '';
@@ -203,4 +221,9 @@ const handleSuspiciousActivity: Handle = async ({ event, resolve }) => {
 	return resolve(event);
 };
 
-export const handle: Handle = sequence(handleSecurityHeaders, handleSuspiciousActivity, handleAuth);
+export const handle: Handle = sequence(
+	handleSecurityHeaders,
+	handleLocale,
+	handleSuspiciousActivity,
+	handleAuth
+);

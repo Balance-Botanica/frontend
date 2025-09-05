@@ -3,12 +3,11 @@ import { readFileSync, existsSync } from 'fs';
 import { join } from 'path';
 import { marked } from 'marked';
 
-export const load: PageServerLoad = async ({ params, url }) => {
-	const { slug } = params;
+export const load: PageServerLoad = async ({ params }) => {
+	const { slug, lang } = params;
 
-	// Get current locale from query parameter or default to Ukrainian
-	const urlParams = new URL(url).searchParams;
-	const currentLocale = urlParams.get('lang') === 'en' ? 'en' : 'uk-ua';
+	// Get current locale from optional route parameter or default to Ukrainian
+	const currentLocale = lang === 'en' ? 'en' : 'uk-ua';
 	const langDir = currentLocale === 'uk-ua' ? 'uk' : 'en';
 
 	// Try to load content for current locale

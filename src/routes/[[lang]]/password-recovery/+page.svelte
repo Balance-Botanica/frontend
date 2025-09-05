@@ -1,6 +1,10 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { page } from '$app/stores';
 	import { createEventDispatcher } from 'svelte';
+
+	// Detect language from optional route parameter
+	let lang = $derived($page.params?.lang || 'uk-ua');
 
 	let email = '';
 	let isLoading = false;

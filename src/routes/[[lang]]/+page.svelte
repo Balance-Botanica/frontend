@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { page } from '$app/stores';
 	import MadeInUkraine from '$lib/components/MadeInUkraine.svelte';
 	import CalculatorSection from '$lib/components/CalculatorSection.svelte';
 	import FAQ from '$lib/components/FAQ.svelte';
@@ -12,10 +13,11 @@
 	import type { PageData } from './$types';
 	import mainBanner from '$lib/assets/images/main-banner.png';
 
-	export let data: PageData;
+	const { data }: { data: PageData } = $props();
 
-	// Создаем переводы для страницы
+	// Use global translations (reactive to language changes)
 	const pageTranslations = createPageTranslations();
+
 
 	// Debug logging
 	console.log('🔍 Page data received:', data);
@@ -66,13 +68,14 @@
 		/>
 
 		<!-- Benefits Section -->
-		<BenefitsSection locale={$pageTranslations.locale} />
+		<BenefitsSection />
 
 		<!-- Featured Products on Home -->
 		<ProductsSection
 			products={data.products}
 			limit={3}
 			title={$pageTranslations.t('benefits.products.homepage_title')}
+			translations={$pageTranslations}
 		/>
 
 		<!-- Made in Ukraine Section -->

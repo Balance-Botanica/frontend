@@ -169,7 +169,8 @@
 			"max_price": "Max",
 			"search_button": "Search",
 			"reset_button": "Reset Filters",
-			"results_info": "Showing {count} of {total} products"
+			"results_info": "Showing ${count} of ${total} products",
+			"found_results": "Found {count} products for \"{query}\""
 		},
 		"no_products_found": "No products found matching your criteria",
 		"try_different_filters": "Try adjusting your search or filter criteria",

@@ -4,26 +4,30 @@
 	import { currentLocale } from '$lib/i18n/store';
 	import BlogLayout from '$lib/components/BlogLayout.svelte';
 
-	export let data: any;
+	const { data }: { data: any } = $props();
 
-	// Get slug from URL parameters
-	$: slug = $page.params.slug;
+	// Get slug and lang from URL parameters
+	let slug = $derived($page.params?.slug);
+	let lang = $derived($page.params?.lang || 'uk-ua');
 
 	// Track previous locale to detect changes and prevent loops
 	let previousLocale = $currentLocale;
 	let isNavigating = false;
 
 	// Navigate to same article when locale changes
-	$: if ($currentLocale !== previousLocale && slug && !isNavigating) {
+	$effect(() => {
+		if ($currentLocale !== previousLocale && slug && !isNavigating) {
 		previousLocale = $currentLocale;
 		isNavigating = true;
 
 		// Small delay to prevent rapid navigation loops
 		setTimeout(() => {
-			goto(`/blog/${slug}?lang=${$currentLocale}`, { replaceState: true });
+			// Use language prefix in URL instead of query parameter
+			const langPrefix = $currentLocale === 'en' ? '/en' : '';
+			goto(`${langPrefix}/blog/${slug}`, { replaceState: true });
 			isNavigating = false;
 		}, 100);
-	}
+	});
 </script>
 
 <svelte:head>

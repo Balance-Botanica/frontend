@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { page } from '$app/stores';
 	import type { PageData } from './$types';
 	import ProductGrid from '$lib/components/ProductGrid.svelte';
 	import ProductSearch from '$lib/components/ProductSearch.svelte';
@@ -7,9 +8,12 @@
 	import SEO from '$lib/components/SEO.svelte';
 
 	const { data }: { data: PageData } = $props();
-	
-	// Create page translations
+
+	// Use global translations (reactive to language changes)
 	const pageTranslations = createPageTranslations();
+
+
+
 
 	// Handle search event
 	function handleSearch(event: CustomEvent) {
@@ -25,7 +29,9 @@
 		if (minPrice !== null) params.set('minPrice', minPrice.toString());
 		if (maxPrice !== null) params.set('maxPrice', maxPrice.toString());
 		
-		const url = `/products?${params.toString()}`;
+		// Include language parameter in navigation
+		const langPrefix = lang === 'uk' ? '' : `/${lang}`;
+		const url = `${langPrefix}/products?${params.toString()}`;
 		console.log('ProductsPage: Navigating to URL:', url);
 		
 		// Navigate to the same page with new query parameters
@@ -45,6 +51,7 @@
 		title={$pageTranslations.t('products.meta.title')}
 		description={$pageTranslations.t('products.meta.description')}
 		locale={$pageTranslations.locale}
+		currentPath={$page.url.pathname}
 	/>
 {/if}
 
@@ -86,25 +93,17 @@
 			<div class="mb-6">
 				<p class="text-gray-600">
 					{#if data.searchTerm || data.category || data.size || data.flavor || data.minPrice !== null || data.maxPrice !== null}
-						{#if $pageTranslations?.locale === 'uk-ua'}
-							{#if data.searchTerm}
-								Знайдено {data.totalProducts} {data.totalProducts === 1 ? 'продукт' : data.totalProducts < 5 ? 'продукти' : 'продуктів'} за запитом "{data.searchTerm}"
-							{:else}
-								Показано {data.totalProducts} з {data.allProductsCount} продуктів
-							{/if}
+						{#if data.searchTerm}
+							{$pageTranslations?.t('products.search.found_results', {
+								count: data.totalProducts,
+								query: data.searchTerm,
+								total: data.allProductsCount
+							}) || `Found ${data.totalProducts} products for "${data.searchTerm}"`}
 						{:else}
-							{#if data.searchTerm}
-								Found {data.totalProducts} {data.totalProducts === 1 ? 'product' : 'products'} for "{data.searchTerm}"
-							{:else}
-								{$pageTranslations?.t('products.search.results_info', { count: data.totalProducts, total: data.allProductsCount })}
-							{/if}
+							{$pageTranslations?.t('products.search.results_info', { count: data.totalProducts, total: data.allProductsCount }) || `Showing ${data.totalProducts} of ${data.allProductsCount} products`}
 						{/if}
 					{:else}
-						{#if $pageTranslations?.locale === 'uk-ua'}
-							Показано {data.totalProducts} {data.totalProducts === 1 ? 'продукт' : data.totalProducts < 5 ? 'продукти' : 'продуктів'}
-						{:else}
-							{$pageTranslations?.t('products.search.results_info', { count: data.totalProducts, total: data.totalProducts })}
-						{/if}
+						{$pageTranslations?.t('products.search.results_info', { count: data.totalProducts, total: data.allProductsCount }) || `Showing ${data.totalProducts} of ${data.allProductsCount} products`}
 					{/if}
 				</p>
 			</div>

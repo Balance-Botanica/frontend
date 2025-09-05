@@ -1,10 +1,14 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
+	import { page } from '$app/stores';
 	import { supabaseAuthStore, isAuthenticated } from '$lib/auth/supabase-store';
 	import LoginForm from '$lib/components/LoginForm.svelte';
 	import { createPageTranslations } from '$lib/i18n/store';
 	import SEO from '$lib/components/SEO.svelte';
+
+	// Detect language from optional route parameter
+	let lang = $derived($page.params?.lang || 'uk-ua');
 
 	// Create page translations
 	const pageTranslations = createPageTranslations();
@@ -29,9 +33,11 @@
 	}
 
 	// If user is already authenticated, redirect
-	$: if ($isAuthenticated) {
-		goto('/');
-	}
+	$effect(() => {
+		if ($isAuthenticated) {
+			goto('/');
+		}
+	});
 </script>
 
 {#if $pageTranslations}

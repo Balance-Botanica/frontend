@@ -4,6 +4,9 @@
 	import EmailSubscription from '$lib/components/EmailSubscription.svelte';
 	import { currentLocale } from '$lib/i18n/store';
 
+	// Detect language from optional route parameter
+	let lang = $derived($page.params?.lang || 'uk-ua');
+
 	// Blog posts data for different languages
 	const blogPostsData = {
 		'uk-ua': [
@@ -66,33 +69,33 @@
 		]
 	};
 
-	// Get current blog posts based on locale
-	$: blogPosts = blogPostsData[$currentLocale] || blogPostsData['uk-ua'];
+	// Get current blog posts based on detected language
+	let blogPosts = $derived(blogPostsData[lang === 'en' ? 'en' : 'uk-ua']);
 
-	// Format date based on current locale
-	$: formattedDate = (date: string) => {
+	// Format date based on detected language
+	const formattedDate = (date: string) => {
 		const localeMap = {
-			'uk-ua': 'uk-UA',
+			'uk': 'uk-UA',
 			'en': 'en-US'
 		};
-		return new Date(date).toLocaleDateString(localeMap[$currentLocale] || 'uk-UA', {
+		return new Date(date).toLocaleDateString(localeMap[lang] || 'uk-UA', {
 			year: 'numeric',
 			month: 'long',
 			day: 'numeric'
 		});
 	};
 
-	// Get translations based on current locale
-	$: pageTitle = $currentLocale === 'uk-ua' ? 'Блог - Balance Botanica' : 'Blog - Balance Botanica';
-	$: pageDescription = $currentLocale === 'uk-ua'
-		? 'Статті про CBD, здоров\'я та натуральні продукти. Дізнайтеся більше про користь каннабіноїдів та як вони можуть покращити ваше життя.'
-		: 'Articles about CBD, health and natural products. Learn more about the benefits of cannabinoids and how they can improve your life.';
-	$: blogTitle = $currentLocale === 'uk-ua' ? 'Блог Balance Botanica' : 'Balance Botanica Blog';
-	$: blogSubtitle = $currentLocale === 'uk-ua'
-		? 'Статті про CBD, здоров\'я та натуральні продукти'
-		: 'Articles about CBD, health and natural products';
-	$: readMoreText = $currentLocale === 'uk-ua' ? 'Читати далі' : 'Read more';
-	$: readingTimeLabel = $currentLocale === 'uk-ua' ? 'хв' : 'min';
+	// Get translations based on detected language
+	let pageTitle = $derived(lang === 'en' ? 'Blog - Balance Botanica' : 'Блог - Balance Botanica');
+	let pageDescription = $derived(lang === 'en'
+		? 'Articles about CBD, health and natural products. Learn more about the benefits of cannabinoids and how they can improve your life.'
+		: 'Статті про CBD, здоров\'я та натуральні продукти. Дізнайтеся більше про користь каннабіноїдів та як вони можуть покращити ваше життя.';
+	let blogTitle = $derived(lang === 'en' ? 'Balance Botanica Blog' : 'Блог Balance Botanica');
+	let blogSubtitle = $derived(lang === 'en'
+		? 'Articles about CBD, health and natural products'
+		: 'Статті про CBD, здоров\'я та натуральні продукти');
+	let readMoreText = $derived(lang === 'en' ? 'Read more' : 'Читати далі');
+	let readingTimeLabel = $derived(lang === 'en' ? 'min' : 'хв');
 </script>
 
 <SEO
@@ -121,7 +124,7 @@
 							</div>
 
 							<h2 class="post-title">
-								<a href="/blog/{post.slug}" class="post-link">
+								<a href="{lang === 'uk' ? '' : `/${lang}`}/blog/{post.slug}" class="post-link">
 									{post.title}
 								</a>
 							</h2>
@@ -138,7 +141,7 @@
 
 							<div class="post-footer">
 								<span class="author">✍️ {post.author}</span>
-								<a href="/blog/{post.slug}" class="read-more">
+								<a href="{lang === 'uk' ? '' : `/${lang}`}/blog/{post.slug}" class="read-more">
 									{readMoreText} →
 								</a>
 							</div>

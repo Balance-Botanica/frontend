@@ -2,35 +2,57 @@
 	import type { SupportedLocale } from '$lib/i18n/types';
 	import { SUPPORTED_LOCALES } from '$lib/i18n/types';
 
+	import { page } from '$app/stores';
+
 	// Props
-	export let title: string;
-	export let description: string;
-	export let keywords: string = '';
-	export let image: string = '';
-	export let locale: SupportedLocale = 'en';
-	export let baseUrl: string = 'https://balance-botanica.com';
+	const {
+		title,
+		description,
+		keywords = '',
+		image = '',
+		locale = 'en' as SupportedLocale,
+		baseUrl = 'https://balance-botanica.com',
+		currentPath = ''
+	}: {
+		title: string;
+		description: string;
+		keywords?: string;
+		image?: string;
+		locale?: SupportedLocale;
+		baseUrl?: string;
+		currentPath?: string;
+	} = $props();
 	
 	// Generate meta data
-	$: fullTitle = title ? `${title} | Balance Botanica` : 'Balance Botanica';
-	$: ogImage = image || `${baseUrl}/images/og-image.jpg`;
-	
+	let fullTitle = $derived(title ? `${title} | Balance Botanica` : 'Balance Botanica');
+	let ogImage = $derived(image || `${baseUrl}/images/og-image.jpg`);
+
+	// Generate hreflang URLs
+	let currentPagePath = $derived(currentPath || $page.url.pathname);
+	let basePath = $derived(currentPagePath.replace(/^\/en/, '') || '/');
+	let ukUrl = $derived(basePath === '/' ? baseUrl : `${baseUrl}${basePath}`);
+	let enUrl = $derived(basePath === '/' ? `${baseUrl}/en/` : `${baseUrl}/en${basePath}`);
+
 	// Create JSON-LD structured data
-	$: jsonLd = JSON.stringify({
-		"@context": "https://schema.org",
-		"@type": "Organization",
-		"name": "Balance Botanica",
-		"url": baseUrl,
-		"logo": `${baseUrl}/images/logo.png`,
-		"description": description,
-		"contactPoint": {
-			"@type": "ContactPoint",
-			"contactType": "customer service",
-			"availableLanguage": ["English", "Ukrainian"]
-		},
-		"sameAs": [
-			"https://www.facebook.com/balancebotanica",
-			"https://www.instagram.com/balancebotanica"
-		]
+	let jsonLd = '';
+	$effect(() => {
+		jsonLd = JSON.stringify({
+			"@context": "https://schema.org",
+			"@type": "Organization",
+			"name": "Balance Botanica",
+			"url": baseUrl,
+			"logo": `${baseUrl}/images/logo.png`,
+			"description": description,
+			"contactPoint": {
+				"@type": "ContactPoint",
+				"contactType": "customer service",
+				"availableLanguage": ["English", "Ukrainian"]
+			},
+			"sameAs": [
+				"https://www.facebook.com/balancebotanica",
+				"https://www.instagram.com/balancebotanica"
+			]
+		});
 	});
 </script>
 
@@ -49,9 +71,9 @@
 	<link rel="canonical" href={baseUrl} />
 	
 	<!-- Hreflang для SEO (важно для украинского рынка) -->
-	<link rel="alternate" hreflang="en" href={baseUrl} />
-	<link rel="alternate" hreflang="uk-ua" href={baseUrl} />
-	<link rel="alternate" hreflang="x-default" href={baseUrl} />
+	<link rel="alternate" hreflang="uk" href={ukUrl} />
+	<link rel="alternate" hreflang="en" href={enUrl} />
+	<link rel="alternate" hreflang="x-default" href={ukUrl} />
 	
 	<!-- Open Graph -->
 	<meta property="og:title" content={fullTitle} />

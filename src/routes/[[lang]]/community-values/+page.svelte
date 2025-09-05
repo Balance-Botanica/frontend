@@ -1,6 +1,10 @@
 <script lang="ts">
+	import { page } from '$app/stores';
 	import { createPageTranslations } from '$lib/i18n/store';
 	import SEO from '$lib/components/SEO.svelte';
+
+	// Detect language from optional route parameter
+	let lang = $derived($page.params?.lang || 'uk-ua');
 
 	// Create page translations
 	const pageTranslations = createPageTranslations();

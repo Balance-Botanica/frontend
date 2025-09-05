@@ -6,12 +6,16 @@
 	import { supabaseAuthStore, user, isAuthenticated, isLoading } from '$lib/auth/supabase-store';
 	import { cartItemCount } from '$lib/stores/cart.store';
 	import { onMount } from 'svelte';
+	import { page } from '$app/stores';
 	import Logo from './Logo.svelte';
 	import { goto } from '$app/navigation';
 
 	// Import icons
 	import personIcon from '../assets/icons/person.svg';
 	import cartIcon from '../assets/icons/cart.svg';
+
+	// Determine logo link based on current locale
+	let logoHref = $derived(page.url?.pathname && (page.url.pathname.startsWith('/en/') || page.url.pathname === '/en') ? '/en/' : '/');
 
 	// Initialize auth store
 	onMount(() => {
@@ -62,25 +66,25 @@
 	const pageTranslations = createPageTranslations();
 
 	// State for logout confirmation dialog
-	let showLogoutDialog = false;
+	let showLogoutDialog = $state(false);
 
-	$: {
+	$effect(() => {
 		console.log('🐄 [HEADER] Auth state updated:', {
 			isAuthenticated: $isAuthenticated,
 			userEmail: $user?.email,
 			userName: $user?.name,
 			isLoading: $isLoading
 		});
-	}
+	});
 
-	$: navigationLinks = $pageTranslations
+	let navigationLinks = $derived($pageTranslations
 		? [
 				{ href: '/products', label: $pageTranslations.t('header.navigation.shop') },
 				{ href: '/about', label: $pageTranslations.t('header.navigation.about') },
 				{ href: '/contacts', label: $pageTranslations.t('header.navigation.contacts') },
 				{ href: '/blog', label: $pageTranslations.t('header.navigation.blog') }
 			]
-		: [];
+		: []);
 
 		async function handlePersonClick() {
 		console.log('👤 [HEADER] Person icon clicked, auth state:', {
@@ -155,7 +159,7 @@
 		<div class="mx-auto flex h-full max-w-7xl items-center justify-between px-6">
 			<!-- Logo -->
 			<div class="flex items-center">
-				<a href="/" class="flex items-center">
+				<a href={logoHref} class="flex items-center">
 					<Logo size="default" />
 				</a>
 			</div>

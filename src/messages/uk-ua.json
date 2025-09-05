@@ -169,7 +169,8 @@
 			"max_price": "Макс",
 			"search_button": "Пошук",
 			"reset_button": "Скинути фільтри",
-			"results_info": "Показано {count} з {total} продуктів"
+			"results_info": "Показано ${count} з ${total} продуктів",
+			"found_results": "Знайдено {count} продуктів за запитом \"{query}\""
 		},
 		"no_products_found": "Продукти, що відповідають вашим критеріям, не знайдено",
 		"try_different_filters": "Спробуйте змінити пошук або критерії фільтрації",

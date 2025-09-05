@@ -5,19 +5,39 @@
 	import Button from '$lib/components/Button.svelte';
 	import Input from '$lib/components/Input.svelte';
 
-	// Create page translations
+	// Create page translations (reactive to global locale changes)
 	const pageTranslations = createPageTranslations();
 
 	// Props
-	export let searchTerm: string = '';
-	export let selectedCategory: string = '';
-	export let selectedSize: string = '';
-	export let selectedFlavor: string = '';
-	export let minPrice: number | null = null;
-	export let maxPrice: number | null = null;
-	export let categories: string[] = [];
-	export let sizes: string[] = [];
-	export let flavors: string[] = [];
+	const {
+		searchTerm: initialSearchTerm = '',
+		selectedCategory: initialSelectedCategory = '',
+		selectedSize: initialSelectedSize = '',
+		selectedFlavor: initialSelectedFlavor = '',
+		minPrice: initialMinPrice = null,
+		maxPrice: initialMaxPrice = null,
+		categories = [],
+		sizes = [],
+		flavors = []
+	}: {
+		searchTerm?: string;
+		selectedCategory?: string;
+		selectedSize?: string;
+		selectedFlavor?: string;
+		minPrice?: number | null;
+		maxPrice?: number | null;
+		categories?: string[];
+		sizes?: string[];
+		flavors?: string[];
+	} = $props();
+
+	// Local state for form values (can be modified)
+	let searchTerm = $state(initialSearchTerm);
+	let selectedCategory = $state(initialSelectedCategory);
+	let selectedSize = $state(initialSelectedSize);
+	let selectedFlavor = $state(initialSelectedFlavor);
+	let minPrice = $state(initialMinPrice);
+	let maxPrice = $state(initialMaxPrice);
 
 	// Event dispatcher
 	const dispatch = createEventDispatcher<{
@@ -195,7 +215,7 @@
 				<!-- Price Range -->
 				<div>
 					<label class="block text-sm font-medium text-gray-700 mb-2 cursor-pointer">
-						Price Range (UAH)
+						{$pageTranslations.t('products.search.price_label')}
 					</label>
 					<div class="flex space-x-2">
 						<input
@@ -351,7 +371,7 @@
 				<!-- Price Range -->
 				<div>
 					<label class="block text-sm font-medium text-gray-700 mb-2 cursor-pointer">
-						Price Range (UAH)
+						{$pageTranslations.t('products.search.price_label')}
 					</label>
 					<div class="flex space-x-2">
 						<Input

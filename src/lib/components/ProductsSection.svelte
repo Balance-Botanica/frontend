@@ -1,9 +1,11 @@
 <script lang="ts">
 	import ProductGrid from '$lib/components/ProductGrid.svelte';
 	import type { RawProduct } from '$lib/types/product.types';
+	import { createPageTranslations } from '$lib/i18n/store';
 
 	export let products: RawProduct[] = [];
 	export let title: string = 'Наші товари';
+	export let translations: any = null;
 	// Optional limit of items to render; if undefined/null, render all
 	export let limit: number | null | undefined = null;
 
@@ -24,6 +26,10 @@
 			? products.slice(0, limit)
 			: products
 		: [];
+
+	// Use provided translations or fallback to global translations
+	$: pageTranslations = translations || createPageTranslations();
+
 </script>
 
 <div id="products" class="w-full bg-white px-4 py-16 sm:px-6 lg:px-8">
@@ -42,7 +48,14 @@
 		{#if displayProducts.length > 0}
 			<!-- Debug info -->
 			<div class="mb-4 text-center text-sm text-gray-500">
-				Showing {displayProducts.length} product{displayProducts.length !== 1 ? 's' : ''}
+				{#if $pageTranslations?.t}
+					{$pageTranslations.t('products.search.results_info', {
+						count: displayProducts.length,
+						total: displayProducts.length
+					})}
+				{:else}
+					Showing {displayProducts.length} product{displayProducts.length !== 1 ? 's' : ''}
+				{/if}
 			</div>
 			
 			<!-- Product Grid -->

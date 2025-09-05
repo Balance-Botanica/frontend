@@ -6,7 +6,9 @@ This document tracks our project tasks, priorities, and progress.
 
 - [REVIEWED] ID:task_001 CONTENT:Implement Product Filtering and Search Functionality
 
-- [IN PROGRESS] ID:task_002 CONTENT:Add Product Categories Page with Filtering
+- [COMPLETED] ID:task_002 CONTENT:Add Product Categories Page with Filtering
+
+- [COMPLETED] ID:fix_products_localization CONTENT:Fix product search results localization for URL-based routing (/en/products shows Ukrainian text) - Fixed locale default values from 'uk' to 'uk-ua' across all [[lang]] pages, fixed variable substitution bug (was showing X of X instead of X of Y), fixed i18next translation function to properly substitute variables, and fixed ProductsSection component to use translations instead of hardcoded English text
 
 - [IN PROGRESS] ID:task_003 CONTENT:Implement User Authentication and Account Management
   - Email/Password: ~95% complete, minor UI changes needed

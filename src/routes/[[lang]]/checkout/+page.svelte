@@ -8,6 +8,9 @@
 	import { browser } from '$app/environment';
 	import { cartStore } from '$lib/stores/cart.store';
 
+	// Detect language from optional route parameter
+	let lang = $derived($page.params?.lang || 'uk-ua');
+
 	// State for order success
 	let orderSuccess = false;
 	let lastOrder: any = null;

@@ -13,11 +13,14 @@
 	import AddressModal from '$lib/components/AddressModal.svelte';
 	import type { PageData } from './$types';
 
+	// Detect language from optional route parameter
+	let lang = $derived($page.params?.lang || 'uk-ua');
+
 	// Create page translations
 	const pageTranslations = createPageTranslations();
 
-	// Export data from server
-	export let data: PageData;
+	// Get data from server
+	const { data }: { data: PageData } = $props();
 
 	// User information fields
 	let firstName = '';
@@ -49,11 +52,11 @@
 
 	// Create a derived store for discounted total
 	const discountedTotal = writable(0);
-	$: {
+	$effect(() => {
 		const baseTotal = $cartTotals.total;
 		const discount = appliedPromoCode?.discount || 0;
 		$discountedTotal = Math.max(0, baseTotal - discount);
-	}
+	});
 
 	// Handle quantity changes
 	function updateQuantity(productId: string, newQuantity: number) {
@@ -531,14 +534,14 @@
 	});
 
 	// Reactive block to reload data when navigating to this page
-	$: {
+	$effect(() => {
 		// This will trigger when the page store changes (navigation)
 		$page.url.pathname;
 		loadFormData();
-	}
+	});
 
 	// Reactive block to ensure form fields update in UI
-	$: {
+	$effect(() => {
 		// Force reactivity update for form fields
 		firstName, lastName, phoneNumber, selectedAddress;
 
@@ -549,7 +552,7 @@
 			phoneNumber: !!phoneNumber,
 			selectedAddress: !!selectedAddress
 		});
-	}
+	});
 
 	// Cleanup timer on component destroy
 	onDestroy(() => {
@@ -558,7 +561,7 @@
 		}
 	});
 
-	$: {
+	$effect(() => {
 		// Update delivery addresses when data changes
 		deliveryAddresses = data?.deliveryAddresses || [];
 
@@ -567,7 +570,7 @@
 			selectedAddress = deliveryAddresses[0].id;
 			saveFormDataImmediate(); // Save the auto-selected address immediately
 		}
-	}
+	});
 
 
 </script>

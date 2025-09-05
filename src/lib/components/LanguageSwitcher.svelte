@@ -1,13 +1,14 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import { availableLocales, switchLocale, currentLocale } from '$lib/i18n/store';
 	import { SUPPORTED_LOCALES } from '$lib/i18n/types';
 	import type { SupportedLocale } from '$lib/i18n/types';
 
 	// Props
-	export let className: string = '';
+	const { className = '' }: { className?: string } = $props();
 
 	// State for dropdown visibility
-	let isDropdownOpen = false;
+	let isDropdownOpen = $state(false);
 	let isDropdownHovered = false;
 	let dropdownContainer: HTMLDivElement;
 
@@ -22,13 +23,44 @@
 	}
 
 	// Get all locales including current one for dropdown
-	$: allLocales = Object.values(SUPPORTED_LOCALES);
-	$: currentLocaleConfig = SUPPORTED_LOCALES[$currentLocale];
+	let allLocales = $derived(Object.values(SUPPORTED_LOCALES));
+	let currentLocaleConfig = $derived(SUPPORTED_LOCALES[$currentLocale]);
 
 	// Handle language switch
 	async function handleLanguageSwitch(locale: SupportedLocale) {
 		await switchLocale(locale);
 		isDropdownOpen = false;
+
+		// Navigate to the appropriate URL for the selected language
+		await navigateToLanguageUrl(locale);
+	}
+
+	// Navigate to the appropriate URL for the selected language
+	async function navigateToLanguageUrl(targetLocale: SupportedLocale) {
+		if (typeof window === 'undefined') return;
+
+		const currentPath = window.location.pathname;
+
+		// Remove any existing language prefix to get the base path
+		const basePath = currentPath.replace(/^\/en/, '') || '/';
+
+		// If target is Ukrainian (default), navigate to path without language prefix
+		if (targetLocale === 'uk-ua') {
+			goto(basePath, { replaceState: false });
+			return;
+		}
+
+		// For other languages, add the appropriate prefix
+		if (targetLocale === 'en') {
+			const newPath = basePath === '/' ? '/en/' : `/en${basePath}`;
+			goto(newPath, { replaceState: false });
+		}
+
+		// Future languages can be added here easily:
+		// if (targetLocale === 'de') {
+		//   const newPath = basePath === '/' ? '/de/' : `/de${basePath}`;
+		//   goto(newPath, { replaceState: false });
+		// }
 	}
 
 	// Handle mouse enter
@@ -75,10 +107,10 @@
 
 <div 
 	class="language-switcher {className}"
-	on:mouseenter={handleMouseEnter}
-	on:mouseleave={handleMouseLeave}
-	on:focus={handleFocus}
-	on:blur={handleBlur}
+	onmouseenter={handleMouseEnter}
+	onmouseleave={handleMouseLeave}
+	onfocus={handleFocus}
+	onblur={handleBlur}
 	bind:this={dropdownContainer}
 	role="button"
 	tabindex="0"
@@ -103,13 +135,14 @@
 	{#if isDropdownOpen}
 		<div
 			class="dropdown-menu"
-			on:mouseenter={handleDropdownMouseEnter}
-			on:mouseleave={handleDropdownMouseLeave}
+			role="menu"
+			onmouseenter={handleDropdownMouseEnter}
+			onmouseleave={handleDropdownMouseLeave}
 		>
 			{#each allLocales as locale (locale.code)}
 				<button
 					class="dropdown-item {locale.code === $currentLocale ? 'active' : ''}"
-					on:click={() => handleLanguageSwitch(locale.code)}
+					onclick={() => handleLanguageSwitch(locale.code)}
 					title="Switch to {locale.nativeName}"
 				>
 					<span class="flag">{locale.flag}</span>
