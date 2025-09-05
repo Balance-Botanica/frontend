@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import SEO from '$lib/components/SEO.svelte';
-	import type { PageData } from './$types';
+	import { currentLocale } from '$lib/i18n/store';
 
 	// Export data from page
 	export let title: string;
@@ -14,12 +14,18 @@
 	// Calculate reading time (rough estimate)
 	$: readingTime = Math.ceil(title.length / 200 + (description?.length || 0) / 300);
 
-	// Format date
-	$: formattedDate = date ? new Date(date).toLocaleDateString('uk-UA', {
+	// Format date based on current locale
+	$: formattedDate = date ? new Date(date).toLocaleDateString($currentLocale === 'uk-ua' ? 'uk-UA' : 'en-US', {
 		year: 'numeric',
 		month: 'long',
 		day: 'numeric'
 	}) : '';
+
+	// Get translations based on current locale
+	$: backToBlogText = $currentLocale === 'uk-ua' ? 'Назад до блогу' : 'Back to Blog';
+	$: authorText = $currentLocale === 'uk-ua' ? 'Автор:' : 'Author:';
+	$: readingTimeText = $currentLocale === 'uk-ua' ? 'хв читання' : 'min read';
+	$: shareText = $currentLocale === 'uk-ua' ? 'Поділитися статтею:' : 'Share this article:';
 </script>
 
 <SEO
@@ -33,7 +39,7 @@
 		<!-- Back to blog link -->
 		<div class="back-link">
 			<a href="/blog" class="back-button">
-				← Назад до блогу
+				← {backToBlogText}
 			</a>
 		</div>
 
@@ -43,12 +49,12 @@
 
 			<div class="post-meta">
 				{#if author}
-					<span class="author">Автор: {author}</span>
+					<span class="author">{authorText} {author}</span>
 				{/if}
 				{#if formattedDate}
 					<span class="date">📅 {formattedDate}</span>
 				{/if}
-				<span class="reading-time">📖 {readingTime} хв читання</span>
+				<span class="reading-time">📖 {readingTime} {readingTimeText}</span>
 			</div>
 
 			{#if tags && tags.length > 0}
@@ -68,7 +74,7 @@
 		<!-- Article footer -->
 		<footer class="post-footer">
 			<div class="share-section">
-				<h3>Поділитися статтею:</h3>
+				<h3>{shareText}</h3>
 				<div class="share-buttons">
 					<button
 						class="share-btn telegram"
@@ -94,7 +100,7 @@
 	}
 
 	.blog-container {
-		max-width: 800px;
+		max-width: 1200px;
 		margin: 0 auto;
 		padding: 0 20px;
 	}
@@ -174,7 +180,7 @@
 		line-height: 1.7;
 	}
 
-	.post-content :global(h1), :global(h2), :global(h3), :global(h4), :global(h5), :global(h6) {
+	.post-content :global(h1), .post-content :global(h2), .post-content :global(h3), .post-content :global(h4), .post-content :global(h5), .post-content :global(h6) {
 		font-family: 'Nunito', sans-serif;
 		color: #1a1a1a;
 		margin-top: 32px;
@@ -206,7 +212,7 @@
 		color: #333;
 	}
 
-	.post-content :global(ul), :global(ol) {
+	.post-content :global(ul), .post-content :global(ol) {
 		margin-bottom: 16px;
 		padding-left: 24px;
 	}

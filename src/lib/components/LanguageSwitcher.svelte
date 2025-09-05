@@ -8,6 +8,7 @@
 
 	// State for dropdown visibility
 	let isDropdownOpen = false;
+	let isDropdownHovered = false;
 	let dropdownContainer: HTMLDivElement;
 
 	// Get display code for locale (convert 'uk-ua' to 'UA', 'en' to 'EN')
@@ -37,7 +38,26 @@
 
 	// Handle mouse leave
 	function handleMouseLeave() {
-		isDropdownOpen = false;
+		// Add a small delay to allow mouse to reach dropdown
+		setTimeout(() => {
+			if (!isDropdownHovered) {
+				isDropdownOpen = false;
+			}
+		}, 100);
+	}
+
+	// Handle dropdown mouse enter/leave
+	function handleDropdownMouseEnter() {
+		isDropdownHovered = true;
+	}
+
+	function handleDropdownMouseLeave() {
+		isDropdownHovered = false;
+		setTimeout(() => {
+			if (!isDropdownHovered) {
+				isDropdownOpen = false;
+			}
+		}, 100);
 	}
 	
 	// Add focus and blur handlers for keyboard accessibility
@@ -81,7 +101,11 @@
 
 	<!-- Dropdown Menu -->
 	{#if isDropdownOpen}
-		<div class="dropdown-menu">
+		<div
+			class="dropdown-menu"
+			on:mouseenter={handleDropdownMouseEnter}
+			on:mouseleave={handleDropdownMouseLeave}
+		>
 			{#each allLocales as locale (locale.code)}
 				<button
 					class="dropdown-item {locale.code === $currentLocale ? 'active' : ''}"
@@ -142,7 +166,7 @@
 
 	.dropdown-menu {
 		position: absolute;
-		top: calc(100% + 4px);
+		top: 100%;
 		right: 0;
 		min-width: 160px;
 		background: white;
@@ -153,6 +177,7 @@
 		overflow: hidden;
 		padding: 4px;
 		animation: fadeInUp 0.2s ease-out;
+		margin-top: 2px;
 	}
 
 	@keyframes fadeInUp {
@@ -228,6 +253,7 @@
 			min-width: 140px;
 			left: 0;
 			right: auto;
+			margin-top: 4px;
 		}
 	}
 </style>

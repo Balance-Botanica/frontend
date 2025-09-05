@@ -1,50 +1,103 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import SEO from '$lib/components/SEO.svelte';
+	import EmailSubscription from '$lib/components/EmailSubscription.svelte';
+	import { currentLocale } from '$lib/i18n/store';
 
-	// Mock blog posts data (in production, this would come from a CMS or database)
-	const blogPosts = [
-		{
-			title: "Що таке CBD і як він працює?",
-			description: "Повний гід по каннабидіолу, його механізм дії та користь для здоров'я. Розбираємося в науці за CBD.",
-			date: "2025-01-01",
-			author: "Команда Balance Botanica",
-			tags: ["CBD", "Здоров'я", "Наука"],
-			slug: "cbd-explained",
-			readingTime: 8
-		},
-		{
-			title: "CBD для спортивного відновлення",
-			description: "Як CBD допомагає спортсменам відновлюватися після тренувань, зменшувати запалення та покращувати сон.",
-			date: "2025-01-02",
-			author: "Команда Balance Botanica",
-			tags: ["CBD", "Спорт", "Відновлення"],
-			slug: "cbd-sports-recovery",
-			readingTime: 6
-		},
-		{
-			title: "Як вибрати якісну CBD олію?",
-			description: "Посібник з вибору CBD продуктів: типи екстракції, сертифікати якості та що шукати в складі.",
-			date: "2025-01-03",
-			author: "Команда Balance Botanica",
-			tags: ["CBD", "Продукти", "Якість"],
-			slug: "cbd-quality-guide",
-			readingTime: 7
-		}
-	];
+	// Blog posts data for different languages
+	const blogPostsData = {
+		'uk-ua': [
+			{
+				title: "Що таке CBD і як він працює?",
+				description: "Повний гід по каннабидіолу, його механізм дії та користь для здоров'я. Розбираємося в науці за CBD.",
+				date: "2025-01-01",
+				author: "Команда Balance Botanica",
+				tags: ["CBD", "Здоров'я", "Наука"],
+				slug: "cbd-explained",
+				readingTime: 8
+			},
+			{
+				title: "CBD для спортивного відновлення",
+				description: "Як CBD допомагає спортсменам відновлюватися після тренувань, зменшувати запалення та покращувати сон.",
+				date: "2025-01-02",
+				author: "Команда Balance Botanica",
+				tags: ["CBD", "Спорт", "Відновлення"],
+				slug: "cbd-sports-recovery",
+				readingTime: 6
+			},
+			{
+				title: "Як вибрати якісну CBD олію?",
+				description: "Посібник з вибору CBD продуктів: типи екстракції, сертифікати якості та що шукати в складі.",
+				date: "2025-01-03",
+				author: "Команда Balance Botanica",
+				tags: ["CBD", "Продукти", "Якість"],
+				slug: "cbd-quality-guide",
+				readingTime: 7
+			}
+		],
+		'en': [
+			{
+				title: "What is CBD and How Does It Work?",
+				description: "Complete guide to cannabidiol, its mechanism of action and health benefits. Understanding the science behind CBD.",
+				date: "2025-01-01",
+				author: "Balance Botanica Team",
+				tags: ["CBD", "Health", "Science"],
+				slug: "cbd-explained",
+				readingTime: 8
+			},
+			{
+				title: "CBD for Sports Recovery",
+				description: "How CBD helps athletes recover from workouts, reduce inflammation, and improve sleep.",
+				date: "2025-01-02",
+				author: "Balance Botanica Team",
+				tags: ["CBD", "Sports", "Recovery"],
+				slug: "cbd-sports-recovery",
+				readingTime: 6
+			},
+			{
+				title: "How to Choose Quality CBD Oil?",
+				description: "Guide to selecting CBD products: extraction types, quality certificates, and what to look for in composition.",
+				date: "2025-01-03",
+				author: "Balance Botanica Team",
+				tags: ["CBD", "Products", "Quality"],
+				slug: "cbd-quality-guide",
+				readingTime: 7
+			}
+		]
+	};
 
+	// Get current blog posts based on locale
+	$: blogPosts = blogPostsData[$currentLocale] || blogPostsData['uk-ua'];
+
+	// Format date based on current locale
 	$: formattedDate = (date: string) => {
-		return new Date(date).toLocaleDateString('uk-UA', {
+		const localeMap = {
+			'uk-ua': 'uk-UA',
+			'en': 'en-US'
+		};
+		return new Date(date).toLocaleDateString(localeMap[$currentLocale] || 'uk-UA', {
 			year: 'numeric',
 			month: 'long',
 			day: 'numeric'
 		});
 	};
+
+	// Get translations based on current locale
+	$: pageTitle = $currentLocale === 'uk-ua' ? 'Блог - Balance Botanica' : 'Blog - Balance Botanica';
+	$: pageDescription = $currentLocale === 'uk-ua'
+		? 'Статті про CBD, здоров\'я та натуральні продукти. Дізнайтеся більше про користь каннабіноїдів та як вони можуть покращити ваше життя.'
+		: 'Articles about CBD, health and natural products. Learn more about the benefits of cannabinoids and how they can improve your life.';
+	$: blogTitle = $currentLocale === 'uk-ua' ? 'Блог Balance Botanica' : 'Balance Botanica Blog';
+	$: blogSubtitle = $currentLocale === 'uk-ua'
+		? 'Статті про CBD, здоров\'я та натуральні продукти'
+		: 'Articles about CBD, health and natural products';
+	$: readMoreText = $currentLocale === 'uk-ua' ? 'Читати далі' : 'Read more';
+	$: readingTimeLabel = $currentLocale === 'uk-ua' ? 'хв' : 'min';
 </script>
 
 <SEO
-	title="Блог - Balance Botanica"
-	description="Статті про CBD, здоров'я та натуральні продукти. Дізнайтеся більше про користь каннабіноїдів та як вони можуть покращити ваше життя."
+	title={pageTitle}
+	description={pageDescription}
 	locale={$page.data.locale}
 />
 
@@ -52,8 +105,8 @@
 	<div class="blog-container">
 		<!-- Blog header -->
 		<header class="blog-header">
-			<h1 class="blog-title">Блог Balance Botanica</h1>
-			<p class="blog-subtitle">Статті про CBD, здоров'я та натуральні продукти</p>
+			<h1 class="blog-title">{blogTitle}</h1>
+			<p class="blog-subtitle">{blogSubtitle}</p>
 		</header>
 
 		<!-- Blog posts grid -->
@@ -64,7 +117,7 @@
 						<div class="post-content">
 							<div class="post-meta">
 								<span class="date">📅 {formattedDate(post.date)}</span>
-								<span class="reading-time">📖 {post.readingTime} хв</span>
+								<span class="reading-time">📖 {post.readingTime} {readingTimeLabel}</span>
 							</div>
 
 							<h2 class="post-title">
@@ -86,7 +139,7 @@
 							<div class="post-footer">
 								<span class="author">✍️ {post.author}</span>
 								<a href="/blog/{post.slug}" class="read-more">
-									Читати далі →
+									{readMoreText} →
 								</a>
 							</div>
 						</div>
@@ -97,23 +150,7 @@
 
 		<!-- Newsletter section -->
 		<section class="newsletter-section">
-			<div class="newsletter-card">
-				<h2 class="newsletter-title">Підписатися на оновлення</h2>
-				<p class="newsletter-description">
-					Отримуйте останні статті та новини про CBD прямо на email
-				</p>
-				<form class="newsletter-form" on:submit|preventDefault={() => {}}>
-					<input
-						type="email"
-						placeholder="Ваш email"
-						class="newsletter-input"
-						required
-					/>
-					<button type="submit" class="newsletter-btn">
-						Підписатися
-					</button>
-				</form>
-			</div>
+			<EmailSubscription compact={true} />
 		</section>
 	</div>
 </main>
@@ -126,14 +163,14 @@
 	}
 
 	.blog-container {
-		max-width: 1200px;
-		margin: 0 auto;
-		padding: 0 20px;
+		/* Container now allows full width for newsletter */
 	}
 
 	.blog-header {
+		max-width: 1200px;
+		margin: 0 auto 48px auto;
+		padding: 0 20px;
 		text-align: center;
-		margin-bottom: 48px;
 	}
 
 	.blog-title {
@@ -153,7 +190,8 @@
 	}
 
 	.blog-posts {
-		margin-bottom: 64px;
+		max-width: 1200px;
+		margin: 0 auto 64px auto;
 	}
 
 	.posts-grid {
@@ -260,80 +298,13 @@
 		margin-top: 64px;
 	}
 
-	.newsletter-card {
-		background: linear-gradient(135deg, #4B766E 0%, #5d8a7e 100%);
-		border-radius: 16px;
-		padding: 48px 32px;
-		text-align: center;
-		color: white;
-		box-shadow: 0 8px 32px rgba(75, 118, 110, 0.2);
-	}
-
-	.newsletter-title {
-		font-family: 'Nunito', sans-serif;
-		font-size: 32px;
-		font-weight: 700;
-		margin: 0 0 16px 0;
-		line-height: 1.2;
-	}
-
-	.newsletter-description {
-		font-size: 18px;
-		margin: 0 0 32px 0;
-		opacity: 0.9;
-		line-height: 1.5;
-	}
-
-	.newsletter-form {
-		display: flex;
-		max-width: 500px;
-		margin: 0 auto;
-		gap: 12px;
-		flex-wrap: wrap;
-		justify-content: center;
-	}
-
-	.newsletter-input {
-		flex: 1;
-		min-width: 250px;
-		padding: 12px 16px;
-		border: none;
-		border-radius: 6px;
-		font-size: 16px;
-		background: rgba(255, 255, 255, 0.1);
-		color: white;
-		border: 1px solid rgba(255, 255, 255, 0.2);
-	}
-
-	.newsletter-input::placeholder {
-		color: rgba(255, 255, 255, 0.7);
-	}
-
-	.newsletter-input:focus {
-		outline: none;
-		border-color: rgba(255, 255, 255, 0.4);
-		background: rgba(255, 255, 255, 0.15);
-	}
-
-	.newsletter-btn {
-		padding: 12px 24px;
-		background: white;
-		color: #4B766E;
-		border: none;
-		border-radius: 6px;
-		font-size: 16px;
-		font-weight: 600;
-		cursor: pointer;
-		transition: all 0.2s ease;
-	}
-
-	.newsletter-btn:hover {
-		background: #f8f9fa;
-		transform: translateY(-1px);
-		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-	}
 
 	@media (max-width: 768px) {
+		.blog-header {
+			padding: 0 16px;
+		}
+
+
 		.blog-title {
 			font-size: 36px;
 		}
@@ -359,25 +330,9 @@
 			font-size: 15px;
 		}
 
-		.newsletter-card {
-			padding: 32px 20px;
+		.newsletter-section {
+			margin-top: 48px;
 		}
 
-		.newsletter-title {
-			font-size: 28px;
-		}
-
-		.newsletter-description {
-			font-size: 16px;
-		}
-
-		.newsletter-form {
-			flex-direction: column;
-			align-items: stretch;
-		}
-
-		.newsletter-input {
-			min-width: auto;
-		}
 	}
 </style>
