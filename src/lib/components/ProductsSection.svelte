@@ -28,7 +28,9 @@
 		: [];
 
 	// Use provided translations or fallback to global translations
-	$: pageTranslations = translations || createPageTranslations();
+	$: pageTranslations = translations && typeof translations.subscribe === 'function'
+		? translations
+		: createPageTranslations();
 
 </script>
 

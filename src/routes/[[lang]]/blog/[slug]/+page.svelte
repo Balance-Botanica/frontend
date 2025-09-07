@@ -17,16 +17,19 @@
 	// Navigate to same article when locale changes
 	$effect(() => {
 		if ($currentLocale !== previousLocale && slug && !isNavigating) {
-		previousLocale = $currentLocale;
-		isNavigating = true;
+			previousLocale = $currentLocale;
+			isNavigating = true;
 
-		// Small delay to prevent rapid navigation loops
-		setTimeout(() => {
-			// Use language prefix in URL instead of query parameter
-			const langPrefix = $currentLocale === 'en' ? '/en' : '';
-			goto(`${langPrefix}/blog/${slug}`, { replaceState: true });
-			isNavigating = false;
-		}, 100);
+			// Small delay to prevent rapid navigation loops
+			setTimeout(() => {
+				// Use language prefix in URL - English gets /en, Ukrainian gets no prefix
+				const fullUrl = $currentLocale === 'en'
+					? `/en/blog/${slug}`
+					: `/blog/${slug}`;
+				goto(fullUrl, { replaceState: true });
+				isNavigating = false;
+			}, 100);
+		}
 	});
 </script>
 

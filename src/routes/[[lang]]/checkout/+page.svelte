@@ -20,15 +20,24 @@
 
 	// Check for success parameter and load order data
 	onMount(() => {
+		console.log('[CHECKOUT] ===== CHECKOUT PAGE INITIALIZATION =====');
+
 		// Check if user is authenticated
 		if (!$isAuthenticated) {
+			console.log('[CHECKOUT] ❌ User not authenticated, redirecting to cart');
 			goto('/cart');
 			return;
 		}
 
+		console.log('[CHECKOUT] ✅ User authenticated');
+
 		// Check for success parameter
 		const urlParams = new URLSearchParams($page.url.search);
-		orderSuccess = urlParams.get('success') === 'true';
+		const successParam = urlParams.get('success');
+		orderSuccess = successParam === 'true';
+
+		console.log('[CHECKOUT] Success parameter:', successParam);
+		console.log('[CHECKOUT] Order success flag:', orderSuccess);
 
 		// Clear cart only after successful order and when user reaches checkout page
 		if (orderSuccess) {
@@ -38,28 +47,49 @@
 
 		// Load last order data if success
 		if (orderSuccess && browser) {
+			console.log('[CHECKOUT] Loading last order data from localStorage...');
+
 			try {
 				const storedOrder = localStorage.getItem('lastOrder');
+				console.log('[CHECKOUT] Raw storedOrder from localStorage:', storedOrder);
+
 				if (storedOrder) {
 					const orderData = JSON.parse(storedOrder);
+					console.log('[CHECKOUT] Parsed orderData:', orderData);
 
 					// Check if order is recent (within last 24 hours)
 					const orderTime = orderData.timestamp;
 					const currentTime = Date.now();
 					const timeDiff = currentTime - orderTime;
 
+					console.log('[CHECKOUT] Order timestamp:', new Date(orderTime));
+					console.log('[CHECKOUT] Current time:', new Date(currentTime));
+					console.log('[CHECKOUT] Time difference (ms):', timeDiff);
+					console.log('[CHECKOUT] Time difference (hours):', timeDiff / (60 * 60 * 1000));
+
 					if (timeDiff < 24 * 60 * 60 * 1000) { // 24 hours
+						console.log('[CHECKOUT] ✅ Order is recent, setting lastOrder');
 						lastOrder = orderData.orderData;
+						console.log('[CHECKOUT] Last order set:', lastOrder);
 					} else {
+						console.log('[CHECKOUT] ❌ Order is too old, removing from localStorage');
 						// Old order data, remove it
 						localStorage.removeItem('lastOrder');
 					}
+				} else {
+					console.log('[CHECKOUT] ❌ No stored order found in localStorage');
 				}
 			} catch (error) {
-				console.error('Failed to load order data:', error);
+				console.error('[CHECKOUT] ❌ Failed to load order data:', error);
 				localStorage.removeItem('lastOrder');
 			}
 		}
+
+		console.log('[CHECKOUT] ===== FINAL STATE =====');
+		console.log('[CHECKOUT] orderSuccess:', orderSuccess);
+		console.log('[CHECKOUT] lastOrder:', lastOrder);
+		console.log('[CHECKOUT] Will show success:', orderSuccess && lastOrder);
+		console.log('[CHECKOUT] ===== CHECKOUT PAGE INITIALIZATION COMPLETE =====');
 	});
 
 	// Go back to cart
@@ -83,6 +113,11 @@
 <main class="checkout-page">
 	<div class="checkout-container">
 		{#if orderSuccess && lastOrder}
+			{@debug orderSuccess, lastOrder}
+			{console.log('[CHECKOUT] ===== SHOWING SUCCESS MESSAGE =====')}
+			{console.log('[CHECKOUT] orderSuccess:', orderSuccess)}
+			{console.log('[CHECKOUT] lastOrder:', lastOrder)}
+			{console.log('[CHECKOUT] Order ID:', lastOrder?.id)}
 			<!-- Order Success with Details -->
 			<div class="success-message">
 				<div class="success-icon">
@@ -117,6 +152,11 @@
 				</div>
 			</div>
 		{:else}
+			{@debug orderSuccess, lastOrder}
+			{console.log('[CHECKOUT] ===== SHOWING ACCESS DENIED =====')}
+			{console.log('[CHECKOUT] orderSuccess:', orderSuccess)}
+			{console.log('[CHECKOUT] lastOrder:', lastOrder)}
+			{console.log('[CHECKOUT] Condition not met: orderSuccess && lastOrder =', orderSuccess && lastOrder)}
 			<!-- Regular Checkout Page (redirect to cart if accessed directly) -->
 			<div class="success-message">
 				<div class="error-icon">

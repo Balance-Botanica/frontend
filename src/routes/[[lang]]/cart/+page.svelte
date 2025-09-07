@@ -361,11 +361,19 @@
 
 			// Store order info in localStorage for checkout page
 			if (browser) {
-				localStorage.setItem('lastOrder', JSON.stringify({
+				const orderDataToStore = {
 					orderId: result.data.id,
 					orderData: result.data,
 					timestamp: Date.now()
-				}));
+				};
+
+				console.log('[CART] Storing order data in localStorage:', orderDataToStore);
+				localStorage.setItem('lastOrder', JSON.stringify(orderDataToStore));
+
+				// Verify data was stored
+				const storedData = localStorage.getItem('lastOrder');
+				console.log('[CART] Verification - stored data:', storedData);
+				console.log('[CART] Verification - parsed data:', JSON.parse(storedData || '{}'));
 			}
 
 			return true;

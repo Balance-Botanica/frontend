@@ -8,7 +8,7 @@ This document tracks our project tasks, priorities, and progress.
 
 - [COMPLETED] ID:task_002 CONTENT:Add Product Categories Page with Filtering
 
-- [COMPLETED] ID:fix_products_localization CONTENT:Fix product search results localization for URL-based routing (/en/products shows Ukrainian text) - Fixed locale default values from 'uk' to 'uk-ua' across all [[lang]] pages, fixed variable substitution bug (was showing X of X instead of X of Y), fixed i18next translation function to properly substitute variables, and fixed ProductsSection component to use translations instead of hardcoded English text
+- [COMPLETED] ID:fix_products_localization CONTENT:Complete i18n system overhaul - migrated all pages to global locale system, fixed variable interpolation (${count}/${total}), updated components to Svelte 5 runes mode, fixed reactivity to language changes, added proper SEO hreflang support, and ensured all components react to language switching immediately
 
 - [IN PROGRESS] ID:task_003 CONTENT:Implement User Authentication and Account Management
   - Email/Password: ~95% complete, minor UI changes needed
@@ -288,6 +288,19 @@ This document tracks our project tasks, priorities, and progress.
   - Cache and build files
 - Removed duplicate SQL migration files from root directory
 - Cleaned up temporary development files
+
+## New Blog Content
+
+### ✅ CBD Isolate vs Full Spectrum Article
+**Status:** COMPLETED
+- Created comprehensive article comparing CBD isolate and full spectrum CBD for pets
+- Written in both English and Ukrainian languages
+- Focused on veterinary applications and pet wellness
+- Explained entourage effect and its importance for animals
+- Included comparative analysis table
+- Added scientific evidence section for pets
+- SEO-optimized with proper meta descriptions and keywords
+- Article ready for publication in blog system
 
 ## Notes for Future Development Sessions
 
