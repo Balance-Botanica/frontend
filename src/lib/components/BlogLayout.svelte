@@ -4,37 +4,28 @@
 	import { currentLocale } from '$lib/i18n/store';
 
 	// Props
-	const {
-		title,
-		description,
-		date,
-		author,
-		tags = [],
-		slug
-	}: {
-		title: string;
-		description: string;
-		date: string;
-		author: string;
-		tags?: string[];
-		slug: string;
-	} = $props();
+	export let title: string;
+	export let description: string;
+	export let date: string;
+	export let author: string;
+	export let tags: string[] = [];
+	export let slug: string;
 
 	// Calculate reading time (rough estimate)
-	let readingTime = $derived(Math.ceil(title.length / 200 + (description?.length || 0) / 300));
+	$: readingTime = Math.ceil(title.length / 200 + (description?.length || 0) / 300);
 
 	// Format date based on current locale
-	let formattedDate = $derived(date ? new Date(date).toLocaleDateString($currentLocale === 'uk-ua' ? 'uk-UA' : 'en-US', {
+	$: formattedDate = date ? new Date(date).toLocaleDateString($currentLocale === 'uk-ua' ? 'uk-UA' : 'en-US', {
 		year: 'numeric',
 		month: 'long',
 		day: 'numeric'
-	}) : '');
+	}) : '';
 
 	// Get translations based on current locale
-	let backToBlogText = $derived($currentLocale === 'uk-ua' ? 'Назад до блогу' : 'Back to Blog');
-	let authorText = $derived($currentLocale === 'uk-ua' ? 'Автор:' : 'Author:');
-	let readingTimeText = $derived($currentLocale === 'uk-ua' ? 'хв читання' : 'min read');
-	let shareText = $derived($currentLocale === 'uk-ua' ? 'Поділитися статтею:' : 'Share this article:');
+	$: backToBlogText = $currentLocale === 'uk-ua' ? 'Назад до блогу' : 'Back to Blog';
+	$: authorText = $currentLocale === 'uk-ua' ? 'Автор:' : 'Author:';
+	$: readingTimeText = $currentLocale === 'uk-ua' ? 'хв читання' : 'min read';
+	$: shareText = $currentLocale === 'uk-ua' ? 'Поділитися статтею:' : 'Share this article:';
 </script>
 
 <SEO

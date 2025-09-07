@@ -55,7 +55,9 @@ function createNovaPoshtaStore() {
 
 		// Fetch warehouses by city name
 		fetchWarehouses: async (cityName: string | null = null) => {
-			if (!cityName) return;
+			if (!cityName) {
+				return;
+			}
 
 			update((state) => ({ ...state, isLoading: true }));
 
@@ -77,12 +79,14 @@ function createNovaPoshtaStore() {
 				});
 
 				if (!response.ok) {
+					console.error('[NovaPoshta Store] API error:', response.status);
 					throw new Error(`API returned status: ${response.status}`);
 				}
 
 				const jsonData = await response.json();
 
 				if (!jsonData || !jsonData.data || !Array.isArray(jsonData.data)) {
+					console.error('[NovaPoshta Store] Unexpected response format:', jsonData);
 					throw new Error('Unexpected response format');
 				}
 
@@ -91,13 +95,11 @@ function createNovaPoshtaStore() {
 					warehouses: jsonData.data,
 					isLoading: false
 				}));
-
-				console.log('Nova Poshta warehouses loaded:', jsonData.data.length);
 			} catch (error) {
-				console.error('Error fetching warehouses:', error);
+				const errorMessage = error instanceof Error ? error.message : String(error);
 				update((state) => ({
 					...state,
-					errors: [...state.errors, error instanceof Error ? error.message : String(error)],
+					errors: [...state.errors, errorMessage],
 					isLoading: false
 				}));
 			}
@@ -134,8 +136,6 @@ function createNovaPoshtaStore() {
 
 				const jsonData = await response.json();
 
-				console.log('fetchSettlements() response:', jsonData);
-
 				if (jsonData.success === false || (jsonData.errors && jsonData.errors.length > 0)) {
 					update((state) => ({
 						...state,
@@ -163,8 +163,6 @@ function createNovaPoshtaStore() {
 						errors: [],
 						isLoading: false
 					}));
-
-					console.log('Nova Poshta settlements loaded:', Object.keys(newSettlements).length);
 				} else {
 					update((state) => ({
 						...state,

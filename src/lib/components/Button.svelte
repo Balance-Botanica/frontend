@@ -1,11 +1,13 @@
 <script lang="ts">
 	import { colors } from '../colors';
 
-	export let variant: 'primary' | 'secondary' | 'outline' | 'ghost' = 'primary';
-	export let size: 'sm' | 'md' | 'lg' = 'md';
-	export let disabled: boolean = false;
-	export let type: 'button' | 'submit' | 'reset' = 'button';
-	export let onClick: () => void = () => {};
+	const { variant = 'primary', size = 'md', disabled = false, type = 'button', onClick = (() => {}) } = $props<{
+		variant?: 'primary' | 'secondary' | 'outline' | 'ghost';
+		size?: 'sm' | 'md' | 'lg';
+		disabled?: boolean;
+		type?: 'button' | 'submit' | 'reset';
+		onClick?: () => void;
+	}>();
 
 	const sizeClasses = {
 		sm: 'px-3 py-2 text-sm',

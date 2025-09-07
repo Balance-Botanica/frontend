@@ -4,31 +4,42 @@
   import Input from '$lib/components/Input.svelte';
   import { createPageTranslations } from '$lib/i18n/store';
 
-  // Export props
-  export let selectedCityFullName = '';
-  export let selectedCityName = '';
-  export let selectedWarehouse = '';
+  // Props
+  const {
+    selectedCityFullName: initialCityFullName = '',
+    selectedCityName: initialCityName = '',
+    selectedWarehouse: initialWarehouse = '',
+    onChange
+  } = $props<{
+    selectedCityFullName?: string;
+    selectedCityName?: string;
+    selectedWarehouse?: string;
+    onChange?: (data: { npCityName: string; npCityFullName: string; npWarehouse: string }) => void;
+  }>();
+
+  // Local state
+  let selectedCityFullName = $state(initialCityFullName);
+  let selectedCityName = $state(initialCityName);
+  let selectedWarehouse = $state(initialWarehouse);
+
   
   // Create page translations
   const pageTranslations = createPageTranslations();
   
-  // Event dispatcher
-  const dispatch = createEventDispatcher<{
-    change: { npCityName: string; npCityFullName: string; npWarehouse: string }
-  }>();
+  // Note: Using onChange callback from props instead of event dispatcher
   
   // Local state
-  let showCityDropdown = false;
-  let showWarehouseDropdown = false;
-  let citySearchQuery = '';
-  let warehouseSearchQuery = '';
-  let debounceTimer: NodeJS.Timeout | null = null;
-  
+  let showCityDropdown = $state(false);
+  let showWarehouseDropdown = $state(false);
+  let citySearchQuery = $state('');
+  let warehouseSearchQuery = $state('');
+  let debounceTimer: NodeJS.Timeout | null = $state(null);
+
   // DOM references
-  let cityInputRef: HTMLDivElement;
-  let cityDropdownRef: HTMLDivElement;
-  let warehouseInputRef: HTMLDivElement;
-  let warehouseDropdownRef: HTMLDivElement;
+  let cityInputRef = $state<HTMLDivElement>();
+  let cityDropdownRef = $state<HTMLDivElement>();
+  let warehouseInputRef = $state<HTMLDivElement>();
+  let warehouseDropdownRef = $state<HTMLDivElement>();
   
   // Handle city search input
   function handleCityInputChange() {
@@ -52,23 +63,27 @@
   // Select city handler
   function selectCity(cityFullName: string) {
     const cityName = $allSettlements[cityFullName];
+
     selectedCityFullName = cityFullName;
     selectedCityName = cityName;
     showCityDropdown = false;
     citySearchQuery = '';
-    
+
     // Fetch warehouses for selected city
     novaPoshtaStore.fetchWarehouses(cityName);
-    
+
     // Clear selected warehouse when city changes
     selectedWarehouse = '';
-    
-    // Dispatch change event
-    dispatch('change', { 
-      npCityName: selectedCityName, 
-      npCityFullName: selectedCityFullName, 
-      npWarehouse: selectedWarehouse 
-    });
+
+    // Call onChange callback
+    const changeData = {
+      npCityName: selectedCityName,
+      npCityFullName: selectedCityFullName,
+      npWarehouse: selectedWarehouse
+    };
+    if (onChange) {
+      onChange(changeData);
+    }
   }
   
   // Select warehouse handler
@@ -76,13 +91,16 @@
     selectedWarehouse = warehouseName;
     showWarehouseDropdown = false;
     warehouseSearchQuery = '';
-    
-    // Dispatch change event
-    dispatch('change', { 
-      npCityName: selectedCityName, 
-      npCityFullName: selectedCityFullName, 
-      npWarehouse: selectedWarehouse 
-    });
+
+    // Call onChange callback
+    const changeData = {
+      npCityName: selectedCityName,
+      npCityFullName: selectedCityFullName,
+      npWarehouse: selectedWarehouse
+    };
+    if (onChange) {
+      onChange(changeData);
+    }
   }
   
   // Handle outside clicks to close dropdowns
@@ -101,14 +119,18 @@
   }
   
   // Filter warehouses based on search query
-  $: filteredWarehouses = warehouseSearchQuery 
-    ? $warehouses.filter(w => w.Description.toLowerCase().includes(warehouseSearchQuery.toLowerCase()))
-    : $warehouses;
-  
+  let filteredWarehouses = $derived(
+    warehouseSearchQuery
+      ? $warehouses.filter(w => w.Description.toLowerCase().includes(warehouseSearchQuery.toLowerCase()))
+      : $warehouses
+  );
+
   // Load warehouses when city is selected but no warehouses are loaded
-  $: if (selectedCityName && $warehouses.length === 0 && !$isLoading) {
-    novaPoshtaStore.fetchWarehouses(selectedCityName);
-  }
+  $effect(() => {
+    if (selectedCityName && $warehouses.length === 0 && !$isLoading) {
+      novaPoshtaStore.fetchWarehouses(selectedCityName);
+    }
+  });
   
   // Set up event listeners
   onMount(() => {
@@ -127,9 +149,10 @@
 </script>
 
 {#if $pageTranslations}
+
 <div class="nova-poshta-selector">
   <div class="np-section">
-    <label for="np-city-input" class="np-label">{$pageTranslations.t('delivery.npCity')}</label>
+    <label for="np-city-input" class="np-label">{$pageTranslations.t('delivery.npCity') as string}</label>
     
     <!-- City Selection -->
     <div class="relative" bind:this={cityInputRef}>
@@ -137,8 +160,10 @@
         id="np-city-input"
         class="dropdown-input" 
         class:active={showCityDropdown}
-        on:click={() => showCityDropdown = !showCityDropdown}
-        on:keydown={(e) => {
+        onclick={() => {
+          showCityDropdown = !showCityDropdown;
+        }}
+        onkeydown={(e) => {
           if (e.key === 'Enter' || e.key === ' ') {
             e.preventDefault();
             showCityDropdown = !showCityDropdown;
@@ -149,7 +174,7 @@
         aria-haspopup="listbox"
         aria-expanded={showCityDropdown}
       >
-        {selectedCityFullName || $pageTranslations.t('delivery.selectCity')}
+        {selectedCityFullName || $pageTranslations.t('delivery.selectCity') as string}
       </div>
       
       {#if showCityDropdown}
@@ -157,23 +182,23 @@
           <input
             type="text"
             class="search-input"
-            placeholder={$pageTranslations.t('delivery.searchCity')}
+            placeholder={$pageTranslations.t('delivery.searchCity') as string}
             bind:value={citySearchQuery}
-            on:input={handleCityInputChange}
-            aria-label={$pageTranslations.t('delivery.searchCity')}
+            oninput={handleCityInputChange}
+            aria-label={$pageTranslations.t('delivery.searchCity') as string}
           />
           
           {#if $isLoading}
             <div class="dropdown-message" role="status">
-              {$pageTranslations.t('delivery.loading')}
+              {$pageTranslations.t('delivery.loading') as string}
             </div>
           {:else if $errors.length > 0}
             <div class="dropdown-message error" role="alert">
-              {$pageTranslations.t('delivery.errorLoading')}
+              {$pageTranslations.t('delivery.errorLoading') as string}
             </div>
           {:else if Object.keys($allSettlements).length === 0}
             <div class="dropdown-message">
-              {$pageTranslations.t('delivery.noResults')}
+              {$pageTranslations.t('delivery.noResults') as string}
             </div>
           {:else}
             <div class="dropdown-list" role="listbox">
@@ -181,8 +206,8 @@
                 <div 
                   class="dropdown-item" 
                   class:selected={fullName === selectedCityFullName}
-                  on:click={() => selectCity(fullName)}
-                  on:keydown={(e) => {
+                  onclick={() => selectCity(fullName)}
+                  onkeydown={(e) => {
                     if (e.key === 'Enter' || e.key === ' ') {
                       e.preventDefault();
                       selectCity(fullName);
@@ -205,26 +230,28 @@
   <!-- Warehouse Selection (only show if city is selected) -->
   {#if selectedCityName}
     <div class="np-section">
-      <label for="np-warehouse-input" class="np-label">{$pageTranslations.t('delivery.npWarehouse')}</label>
+      <label for="np-warehouse-input" class="np-label">{$pageTranslations.t('delivery.npWarehouse') as string}</label>
       
       <div class="relative" bind:this={warehouseInputRef}>
         <div 
           id="np-warehouse-input"
           class="dropdown-input" 
           class:active={showWarehouseDropdown}
-          on:click={() => showWarehouseDropdown = !showWarehouseDropdown}
-          on:keydown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              e.preventDefault();
-              showWarehouseDropdown = !showWarehouseDropdown;
-            }
-          }}
+        onclick={() => {
+          showWarehouseDropdown = !showWarehouseDropdown;
+        }}
+        onkeydown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            showWarehouseDropdown = !showWarehouseDropdown;
+          }
+        }}
           role="button"
           tabindex="0"
           aria-haspopup="listbox"
           aria-expanded={showWarehouseDropdown}
         >
-          {selectedWarehouse || $pageTranslations.t('delivery.selectWarehouse')}
+          {selectedWarehouse || $pageTranslations.t('delivery.selectWarehouse') as string}
         </div>
         
         {#if showWarehouseDropdown}
@@ -232,23 +259,23 @@
             <input
               type="text"
               class="search-input"
-              placeholder={$pageTranslations.t('delivery.searchWarehouse')}
+              placeholder={$pageTranslations.t('delivery.searchWarehouse') as string}
               bind:value={warehouseSearchQuery}
-              on:input={handleWarehouseInputChange}
-              aria-label={$pageTranslations.t('delivery.searchWarehouse')}
+              oninput={handleWarehouseInputChange}
+              aria-label={$pageTranslations.t('delivery.searchWarehouse') as string}
             />
             
             {#if $isLoading}
               <div class="dropdown-message" role="status">
-                {$pageTranslations.t('delivery.loading')}
+                {$pageTranslations.t('delivery.loading') as string}
               </div>
             {:else if $errors.length > 0}
               <div class="dropdown-message error" role="alert">
-                {$pageTranslations.t('delivery.errorLoading')}
+                {$pageTranslations.t('delivery.errorLoading') as string}
               </div>
             {:else if $warehouses.length === 0}
               <div class="dropdown-message">
-                {$pageTranslations.t('delivery.noWarehouses')}
+                {$pageTranslations.t('delivery.noWarehouses') as string}
               </div>
             {:else}
               <div class="dropdown-list" role="listbox">
@@ -256,8 +283,8 @@
                   <div 
                     class="dropdown-item" 
                     class:selected={warehouse.Description === selectedWarehouse}
-                    on:click={() => selectWarehouse(warehouse.Description)}
-                    on:keydown={(e) => {
+                    onclick={() => selectWarehouse(warehouse.Description)}
+                    onkeydown={(e) => {
                       if (e.key === 'Enter' || e.key === ' ') {
                         e.preventDefault();
                         selectWarehouse(warehouse.Description);

@@ -18,7 +18,7 @@
 	const pageTranslations = createPageTranslations();
 
 	// Form state
-	let deliveryAddress = {
+	let deliveryAddress = $state({
 		name: '',
 		street: '',
 		city: '',
@@ -30,49 +30,43 @@
 		npWarehouse: '',
 		useNovaPost: true,
 		isDefault: false
-	};
+	});
 
-	let isAddingNew = false;
-	let isEditing = false;
-	let editingAddressId = '';
-	let isSaving = false;
-	let saveSuccess = false;
-	let saveError = '';
-	let isLoggingOut = false;
+	let isAddingNew = $state(false);
+	let isEditing = $state(false);
+	let editingAddressId = $state('');
+	let isSaving = $state(false);
+	let saveSuccess = $state(false);
+	let saveError = $state('');
+	let isLoggingOut = $state(false);
 
 	// Load data from server
 	const { data }: { data: PageData } = $props();
 
 	// Initialize with data from server
 	onMount(() => {
-		console.log('[Profile Page] Initializing profile page');
 		supabaseAuthStore.initialize();
-		console.log('[Profile Page] Supabase auth store initialized');
 	});
 
 	// Redirect to login if not authenticated (but not during logout)
 	$effect(() => {
 		if (!$isAuthenticated && !$isLoading && !isLoggingOut) {
-			console.log('[Profile Page] User not authenticated and not loading, redirecting to login');
 			goto('/login');
 		}
 	});
 
 	// Form state
-	let deliveryAddresses = $derived(data?.deliveryAddresses || []);
+	let deliveryAddresses = $state(data?.deliveryAddresses || []);
 	let hasAddresses = $derived(deliveryAddresses?.length > 0);
-	console.log('[Profile Page] Delivery addresses loaded:', deliveryAddresses?.length);
 
 	// Handle form input changes
 	function handleAddressChange(field: keyof typeof deliveryAddress, value: string | boolean) {
-		console.log('[Profile Page] Address field changed:', field, value);
 		deliveryAddress = { ...deliveryAddress, [field]: value };
 	}
 
 	// Handle Nova Poshta selection changes
-	function handleNovaPoshtaChange(event: CustomEvent<{npCityName: string; npCityFullName: string; npWarehouse: string}>) {
-		const { npCityName, npCityFullName, npWarehouse } = event.detail;
-		console.log('[Profile Page] Nova Poshta selection changed:', { npCityName, npCityFullName, npWarehouse });
+	function handleNovaPoshtaChange(data: {npCityName: string; npCityFullName: string; npWarehouse: string}) {
+		const { npCityName, npCityFullName, npWarehouse } = data;
 		deliveryAddress = {
 			...deliveryAddress,
 			npCityName,
@@ -83,9 +77,9 @@
 
 	// Start adding a new address
 	function addNewAddress() {
-		console.log('[Profile Page] Starting to add new address');
 		isAddingNew = true;
 		isEditing = false;
+
 		deliveryAddress = {
 			name: '',
 			street: '',
@@ -102,7 +96,6 @@
 
 	// Edit an existing address
 	function editAddress(address: any) {
-		console.log('[Profile Page] Editing address:', address.id);
 		isEditing = true;
 		isAddingNew = false;
 		editingAddressId = address.id;
@@ -122,7 +115,6 @@
 
 	// Cancel editing/adding
 	function cancelEdit() {
-		console.log('[Profile Page] Cancelling edit/add');
 		isEditing = false;
 		isAddingNew = false;
 		editingAddressId = '';
@@ -130,44 +122,65 @@
 
 	// Handle address save via API
 	async function saveAddress(formData: any) {
-		console.log('[Profile Page] Saving address via API');
 		isSaving = true;
 		saveSuccess = false;
 		saveError = '';
 
 		try {
-			const response = await fetch('/api/user/address', {
-				method: 'POST',
+			// Determine if we're creating or updating
+			const isUpdate = !!editingAddressId;
+			const method = isUpdate ? 'PUT' : 'POST';
+			const url = isUpdate ? `/api/user/address/${editingAddressId}` : '/api/user/address';
+
+			// For updates, we need to include the address ID in the request body as well
+			// since the API endpoint expects it
+			const requestData = isUpdate
+				? { ...formData, addressId: editingAddressId }
+				: formData;
+
+			const response = await fetch(url, {
+				method: method,
 				headers: {
 					'Content-Type': 'application/json'
 				},
 				body: JSON.stringify({
-					name: formData.name,
-					npCityName: formData.npCityName,
-					npCityFullName: formData.npCityFullName,
-					npWarehouse: formData.npWarehouse,
+					name: requestData.name,
+					npCityName: requestData.npCityName,
+					npCityFullName: requestData.npCityFullName,
+					npWarehouse: requestData.npWarehouse,
 					useNovaPost: true,
-					isDefault: formData.isDefault
+					isDefault: requestData.isDefault
 				})
 			});
 
 			const result = await response.json();
 
 			if (!response.ok) {
-				throw new Error(result.error || 'Failed to save address');
+				throw new Error(result.error || `Failed to ${isUpdate ? 'update' : 'save'} address`);
 			}
 
-			console.log('[Profile Page] Address saved successfully via API');
 			saveSuccess = true;
 			isAddingNew = false;
 			isEditing = false;
 
-			// Refresh the page to show updated data
+			// Update local delivery addresses array instead of reloading
+			if (isUpdate) {
+				// Update existing address in the array
+				deliveryAddresses = deliveryAddresses.map(addr =>
+					addr.id === editingAddressId ? result.address : addr
+				);
+			} else {
+				// Add new address to the array
+				deliveryAddresses = [...deliveryAddresses, result.address];
+			}
+
+			editingAddressId = ''; // Reset after successful operation
+
+			// Show success message briefly
 			setTimeout(() => {
-				window.location.reload();
-			}, 1000);
+				saveSuccess = false;
+			}, 3000);
 		} catch (error) {
-			console.error('[Profile Page] Failed to save address:', error);
 			const errorMessage = error instanceof Error ? error.message : String(error);
 			if (errorMessage.includes('Unauthorized')) {
 				saveError = 'Your session has expired. Redirecting to login...';
@@ -175,7 +188,7 @@
 					goto('/login');
 				}, 2000);
 			} else {
-				saveError = errorMessage || 'Failed to save address. Please try again.';
+				saveError = errorMessage || `Failed to ${editingAddressId ? 'update' : 'save'} address. Please try again.`;
 			}
 		} finally {
 			isSaving = false;
@@ -184,44 +197,54 @@
 
 	// Handle form enhancement for better UX (legacy support)
 	function enhanceForm({ form, data, cancel }: any) {
-		console.log('[Profile Page] Enhancing form submission');
 		isSaving = true;
 		saveSuccess = false;
 		saveError = '';
 
 		return async ({ result }: any) => {
-			console.log('[Profile Page] Form submission result:', result);
 			isSaving = false;
 
 			if (result.type === 'success') {
 				const responseData = result.data;
 				if (responseData?.success) {
-					console.log('[Profile Page] Address saved successfully');
 					saveSuccess = true;
 					isAddingNew = false;
 					isEditing = false;
 
-					// Refresh the page to show updated data
+					// Update local delivery addresses array instead of reloading
+					const isUpdate = !!editingAddressId;
+					if (isUpdate) {
+						// Update existing address in the array
+						deliveryAddresses = deliveryAddresses.map(addr =>
+							addr.id === editingAddressId ? responseData.address : addr
+						);
+					} else {
+						// Add new address to the array
+						deliveryAddresses = [...deliveryAddresses, responseData.address];
+					}
+
+					editingAddressId = ''; // Reset after successful operation
+
+					// Show success message briefly
 					setTimeout(() => {
-						window.location.reload();
-					}, 1000);
+						saveSuccess = false;
+					}, 3000);
 				} else {
-					console.log('[Profile Page] Address save failed:', responseData?.error);
 					// Check if it's an authentication error
 					if (responseData?.error === 'User not authenticated') {
-						console.log('[Profile Page] Authentication error detected, redirecting to login');
 						saveError = 'Your session has expired. Redirecting to login...';
 						// Redirect to login after a short delay
 						setTimeout(() => {
 							goto('/login');
 						}, 2000);
 					} else {
-						saveError = responseData?.error || 'Failed to save address. Please try again.';
+						const isUpdate = !!editingAddressId;
+						saveError = responseData?.error || `Failed to ${isUpdate ? 'update' : 'save'} address. Please try again.`;
 					}
 				}
 			} else {
-				console.log('[Profile Page] Form submission failed');
-				saveError = 'Failed to save address. Please try again.';
+				const isUpdate = !!editingAddressId;
+				saveError = `Failed to ${isUpdate ? 'update' : 'save'} address. Please try again.`;
 			}
 		};
 	}
@@ -238,18 +261,14 @@
 	// Handle logout
 	async function handleLogout() {
 		try {
-			console.log('🚪 Initiating logout...');
-
 			// Temporarily disable the auth redirect to prevent showing login page
 			isLoggingOut = true;
 
 			await supabaseAuthStore.signOut();
-			console.log('✅ Logout successful, redirecting to home page...');
 
 			// Immediately redirect to home page without showing login
 			goto('/', { replaceState: true });
 		} catch (error) {
-			console.error('❌ Error during logout:', error);
 			// Even if there's an error, still redirect to home page
 			goto('/', { replaceState: true });
 		} finally {
@@ -263,21 +282,21 @@
 
 {#if $pageTranslations}
 <SEO
-	title={$pageTranslations.t('profile.meta.title')}
-	description={$pageTranslations.t('profile.meta.description')}
+	title={$pageTranslations.t('profile.meta.title') as string}
+	description={$pageTranslations.t('profile.meta.description') as string}
 	locale={$pageTranslations.locale}
 />
 
 <div class="profile-page">
 	<div class="profile-container">
 		<div class="profile-header">
-			<h1 class="profile-title">{$pageTranslations.t('profile.title')}</h1>
-			<Button 
-				variant="outline" 
-				size="sm" 
+			<h1 class="profile-title">{$pageTranslations.t('profile.title') as string}</h1>
+			<Button
+				variant="outline"
+				size="sm"
 				onClick={handleLogout}
 			>
-				{$pageTranslations.t('profile.logout')}
+				{$pageTranslations.t('profile.logout') as string}
 			</Button>
 		</div>
 
@@ -285,21 +304,21 @@
 			<div class="profile-content">
 				<!-- User Information Section -->
 				<section class="profile-section">
-					<h2 class="section-title">{$pageTranslations.t('profile.userInformation')}</h2>
+					<h2 class="section-title">{$pageTranslations.t('profile.userInformation') as string}</h2>
 					<div class="user-info-grid">
 						<div class="info-item">
-							<span class="info-label">{$pageTranslations.t('profile.email')}</span>
+							<span class="info-label">{$pageTranslations.t('profile.email') as string}</span>
 							<div class="info-value">{$user.email}</div>
 						</div>
 						{#if $user.name}
 							<div class="info-item">
-								<span class="info-label">{$pageTranslations.t('profile.name')}</span>
+								<span class="info-label">{$pageTranslations.t('profile.name') as string}</span>
 								<div class="info-value">{$user.name}</div>
 							</div>
 						{/if}
 						{#if $user.firstName || $user.lastName}
 							<div class="info-item">
-								<span class="info-label">{$pageTranslations.t('profile.fullName')}</span>
+								<span class="info-label">{$pageTranslations.t('profile.fullName') as string}</span>
 								<div class="info-value">{[$user.firstName, $user.lastName].filter(Boolean).join(' ')}</div>
 							</div>
 						{/if}
@@ -308,16 +327,16 @@
 
 				<!-- Orders Section -->
 				<section class="profile-section">
-					<h2 class="section-title">{$pageTranslations.t('profile.orders') || 'Orders'}</h2>
+					<h2 class="section-title">{$pageTranslations.t('profile.orders') as string || 'Orders'}</h2>
 					<div class="orders-section">
 						<p class="orders-description">
-							{$pageTranslations.t('profile.ordersDescription') || 'View your order history and track current orders'}
+							{$pageTranslations.t('profile.ordersDescription') as string || 'View your order history and track current orders'}
 						</p>
 						<a href="/orders" class="orders-button-link">
 							<Button
 								variant="primary"
 							>
-								{$pageTranslations.t('profile.viewOrders') || 'View My Orders'}
+								{$pageTranslations.t('profile.viewOrders') as string || 'View My Orders'}
 							</Button>
 						</a>
 					</div>
@@ -326,14 +345,14 @@
 				<!-- Delivery Address Section -->
 				<section class="profile-section">
 					<div class="section-header">
-						<h2 class="section-title">{$pageTranslations.t('profile.deliveryAddress')}</h2>
+						<h2 class="section-title">{$pageTranslations.t('profile.deliveryAddress') as string}</h2>
 						{#if !isAddingNew && !isEditing && hasAddresses}
-							<Button 
-								variant="primary" 
-								size="sm" 
+							<Button
+								variant="primary"
+								size="sm"
 								onClick={addNewAddress}
 							>
-								{$pageTranslations.t('profile.address.addNew')}
+								{$pageTranslations.t('profile.address.addNew') as string}
 							</Button>
 						{/if}
 					</div>
@@ -351,9 +370,9 @@
 							{#each deliveryAddresses as address}
 								<div class="address-card {address.isDefault ? 'default' : ''}">
 									<div class="address-header">
-										<h3 class="address-name">{address.name || $pageTranslations.t('profile.address.addressName')}</h3>
+										<h3 class="address-name">{address.name || $pageTranslations.t('profile.address.addressName') as string}</h3>
 										{#if address.isDefault}
-											<span class="default-badge">{$pageTranslations.t('profile.address.defaultBadge')}</span>
+											<span class="default-badge">{$pageTranslations.t('profile.address.defaultBadge') as string}</span>
 										{/if}
 									</div>
 									<div class="address-content">
@@ -362,35 +381,64 @@
 										</p>
 										<div class="address-type">
 											{#if address.useNovaPost}
-												<span class="delivery-type">{$pageTranslations.t('profile.address.deliveryType.novaPoshta')}</span>
+												<span class="delivery-type">{$pageTranslations.t('profile.address.deliveryType.novaPoshta') as string}</span>
 											{:else}
-												<span class="delivery-type">{$pageTranslations.t('profile.address.deliveryType.regular')}</span>
+												<span class="delivery-type">{$pageTranslations.t('profile.address.deliveryType.regular') as string}</span>
 											{/if}
 										</div>
 									</div>
 									<div class="address-actions">
-										<button class="action-btn edit" on:click={() => editAddress(address)}>
-											{$pageTranslations.t('profile.address.edit')}
+										<button class="action-btn edit" onclick={() => editAddress(address)}>
+											{$pageTranslations.t('profile.address.edit') as string}
 										</button>
 										{#if !address.isDefault}
-											<form 
-												method="POST" 
+											<form
+												method="POST"
 												action="?/setDefaultAddress"
-												use:enhance
+												use:enhance={() => {
+													return async ({ result }) => {
+														if (result.type === 'success' && result.data?.success) {
+															// Update local array: set this address as default, others as not default
+															deliveryAddresses = deliveryAddresses.map(addr => ({
+																...addr,
+																isDefault: addr.id === address.id
+															}));
+
+															// Show success message briefly
+															saveSuccess = true;
+															setTimeout(() => {
+																saveSuccess = false;
+															}, 3000);
+														}
+													};
+												}}
 											>
 												<input type="hidden" name="addressId" value={address.id}>
 												<button type="submit" class="action-btn default">
-													{$pageTranslations.t('profile.address.setDefault')}
+													{$pageTranslations.t('profile.address.setDefault') as string}
 												</button>
 											</form>
-											<form 
-												method="POST" 
+											<form
+												method="POST"
 												action="?/deleteAddress"
-												use:enhance
+												use:enhance={() => {
+													return async ({ result }) => {
+														if (result.type === 'success' && result.data?.success) {
+															// Remove deleted address from local array
+															deliveryAddresses = deliveryAddresses.filter(addr => addr.id !== address.id);
+
+															// Show success message briefly
+															saveSuccess = true;
+															setTimeout(() => {
+																saveSuccess = false;
+															}, 3000);
+														}
+													};
+												}}
 											>
 												<input type="hidden" name="addressId" value={address.id}>
 												<button type="submit" class="action-btn delete">
-													{$pageTranslations.t('profile.address.delete')}
+													{$pageTranslations.t('profile.address.delete') as string}
 												</button>
 											</form>
 										{/if}
@@ -399,54 +447,55 @@
 							{/each}
 							
 							{#if deliveryAddresses?.length < 3}
-								<button class="add-address-btn" on:click={addNewAddress}>
-									+ {$pageTranslations.t('profile.address.addNew')}
+								<button class="add-address-btn" onclick={addNewAddress}>
+									+ {$pageTranslations.t('profile.address.addNew') as string}
 								</button>
 							{/if}
 						</div>
 					{:else if !hasAddresses && !isAddingNew}
 						<div class="no-addresses">
-							<p>{$pageTranslations.t('profile.address.noAddresses')}</p>
-							<Button 
-								variant="primary" 
+							<p>{$pageTranslations.t('profile.address.noAddresses') as string}</p>
+							<Button
+								variant="primary"
 								onClick={addNewAddress}
 							>
-								{$pageTranslations.t('profile.address.addAddress')}
+								{$pageTranslations.t('profile.address.addAddress') as string}
 							</Button>
 						</div>
 					{/if}
 					
 					<!-- Address Form for Adding/Editing -->
 					{#if isAddingNew || isEditing}
+
 						<form
 							class="address-form"
-							on:submit|preventDefault={() => saveAddress(deliveryAddress)}
+							onsubmit={(e) => { e.preventDefault(); saveAddress(deliveryAddress); }}
 						>
 							<!-- Address Name -->
 							<div class="form-group">
-								<label for="name" class="form-label">{$pageTranslations.t('profile.address.addressName')}</label>
-								<input 
-									type="text" 
-									id="name" 
-									name="name" 
+								<label for="name" class="form-label">{$pageTranslations.t('profile.address.addressName') as string}</label>
+								<input
+									type="text"
+									id="name"
+									name="name"
 									class="form-input"
-									placeholder={$pageTranslations.t('profile.address.addressNamePlaceholder')}
+									placeholder={$pageTranslations.t('profile.address.addressNamePlaceholder') as string}
 									bind:value={deliveryAddress.name}
-									on:input={(e) => handleAddressChange('name', e.currentTarget.value)}
+									oninput={(e) => handleAddressChange('name', e.currentTarget.value)}
 								/>
 							</div>
 							
 							<!-- Is Default Checkbox -->
 							<div class="form-group checkbox">
 								<label class="checkbox-label">
-									<input 
-										type="checkbox" 
-										name="isDefault" 
+									<input
+										type="checkbox"
+										name="isDefault"
 										value="true"
 										checked={deliveryAddress.isDefault}
-										on:change={(e) => handleAddressChange('isDefault', e.currentTarget.checked)}
+										onchange={(e) => handleAddressChange('isDefault', e.currentTarget.checked)}
 									/>
-									{$pageTranslations.t('profile.address.setDefaultCheckbox')}
+									{$pageTranslations.t('profile.address.setDefaultCheckbox') as string}
 								</label>
 							</div>
 							
@@ -466,7 +515,7 @@
 									selectedCityName={deliveryAddress.npCityName}
 									selectedCityFullName={deliveryAddress.npCityFullName}
 									selectedWarehouse={deliveryAddress.npWarehouse}
-									on:change={handleNovaPoshtaChange}
+									onChange={handleNovaPoshtaChange}
 								/>
 							</div>
 							
@@ -484,15 +533,15 @@
 									disabled={isSaving}
 								>
 									{#if isSaving}
-										{$pageTranslations.t('profile.saving')}
+										{$pageTranslations.t('profile.saving') as string}
 									{:else}
-										{isEditing ? $pageTranslations.t('profile.address.update') : $pageTranslations.t('profile.address.save')}
+										{isEditing ? $pageTranslations.t('profile.address.update') as string : $pageTranslations.t('profile.address.save') as string}
 									{/if}
 								</Button>
 							</div>
 							{#if saveSuccess}
 								<div class="success-message">
-									{$pageTranslations.t('profile.addressSaved')}
+									{$pageTranslations.t('profile.addressSaved') as string}
 								</div>
 							{/if}
 							{#if saveError}
@@ -507,7 +556,7 @@
 		{:else if $isLoading}
 			<div class="loading-state">
 				<div class="spinner"></div>
-				<p>{$pageTranslations.t('profile.loading')}</p>
+				<p>{$pageTranslations.t('profile.loading') as string}</p>
 			</div>
 		{/if}
 	</div>

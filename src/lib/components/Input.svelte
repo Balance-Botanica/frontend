@@ -1,15 +1,27 @@
 <script lang="ts">
 	import { colors } from '../colors';
 
-	export let type: 'text' | 'email' | 'password' | 'number' = 'text';
-	export let placeholder: string = '';
-	export let value: string = '';
-	export let disabled: boolean = false;
-	export let required: boolean = false;
-	export let name: string = '';
-	export let id: string = '';
-	export let onChange: (value: string) => void = () => {};
-	export let onInput: (event: Event) => void = () => {};
+	const {
+		type = 'text',
+		placeholder = '',
+		value = '',
+		disabled = false,
+		required = false,
+		name = '',
+		id = '',
+		onChange = (() => {}),
+		onInput = ((event: Event) => {})
+	} = $props<{
+		type?: 'text' | 'email' | 'password' | 'number';
+		placeholder?: string;
+		value?: string;
+		disabled?: boolean;
+		required?: boolean;
+		name?: string;
+		id?: string;
+		onChange?: (value: string) => void;
+		onInput?: (event: Event) => void;
+	}>();
 
 	function handleInput(event: Event) {
 		const target = event.target as HTMLInputElement;
@@ -21,7 +33,7 @@
 <input
 	{type}
 	{placeholder}
-	bind:value
+	{value}
 	{disabled}
 	{required}
 	{name}

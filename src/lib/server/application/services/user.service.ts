@@ -123,6 +123,36 @@ export class UserService {
 	}
 
 	/**
+	 * Update delivery address
+	 */
+	async updateDeliveryAddress(userId: string, addressId: string, deliveryAddressData: any) {
+		try {
+			console.log('[UserService] Updating delivery address:', addressId, 'for user:', userId);
+			console.log('[UserService] Delivery address update data:', deliveryAddressData);
+
+			// Update existing address
+			const result = await this.userRepository.updateDeliveryAddress(addressId, {
+				name: deliveryAddressData.name,
+				isDefault: deliveryAddressData.isDefault,
+				street: deliveryAddressData.street || '',
+				city: deliveryAddressData.city || '',
+				postalCode: deliveryAddressData.postalCode || '',
+				country: deliveryAddressData.country || 'Ukraine',
+				npCityName: deliveryAddressData.npCityName,
+				npCityFullName: deliveryAddressData.npCityFullName,
+				npWarehouse: deliveryAddressData.npWarehouse,
+				useNovaPost: deliveryAddressData.useNovaPost
+			});
+
+			console.log('[UserService] Delivery address update result:', result ? 'Success' : 'Failed');
+			return result;
+		} catch (error) {
+			console.error('[UserService] Error updating delivery address:', error);
+			return null;
+		}
+	}
+
+	/**
 	 * Delete a delivery address
 	 */
 	async deleteDeliveryAddress(addressId: string) {

@@ -5,10 +5,10 @@
 	import type { SupportedLocale } from '$lib/i18n/types';
 
 	// Props
-	const { className = '' }: { className?: string } = $props();
+	export let className = '';
 
 	// State for dropdown visibility
-	let isDropdownOpen = $state(false);
+	let isDropdownOpen = false;
 	let isDropdownHovered = false;
 	let dropdownContainer: HTMLDivElement;
 
@@ -23,8 +23,8 @@
 	}
 
 	// Get all locales including current one for dropdown
-	let allLocales = $derived(Object.values(SUPPORTED_LOCALES));
-	let currentLocaleConfig = $derived(SUPPORTED_LOCALES[$currentLocale]);
+	$: allLocales = Object.values(SUPPORTED_LOCALES);
+	$: currentLocaleConfig = SUPPORTED_LOCALES[$currentLocale];
 
 	// Handle language switch
 	async function handleLanguageSwitch(locale: SupportedLocale) {

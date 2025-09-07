@@ -39,8 +39,8 @@
 	let saveError = '';
 
 	// Handle Nova Poshta selection changes
-	function handleNovaPoshtaChange(event: CustomEvent<{npCityName: string; npCityFullName: string; npWarehouse: string}>) {
-		const { npCityName, npCityFullName, npWarehouse } = event.detail;
+	function handleNovaPoshtaChange(data: {npCityName: string; npCityFullName: string; npWarehouse: string}) {
+		const { npCityName, npCityFullName, npWarehouse } = data;
 		addressData = {
 			...addressData,
 			npCityName,
@@ -224,7 +224,7 @@
 							selectedCityName={addressData.npCityName}
 							selectedCityFullName={addressData.npCityFullName}
 							selectedWarehouse={addressData.npWarehouse}
-							on:change={handleNovaPoshtaChange}
+							onChange={handleNovaPoshtaChange}
 						/>
 					</div>
 

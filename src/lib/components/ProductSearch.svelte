@@ -9,35 +9,17 @@
 	const pageTranslations = createPageTranslations();
 
 	// Props
-	const {
-		searchTerm: initialSearchTerm = '',
-		selectedCategory: initialSelectedCategory = '',
-		selectedSize: initialSelectedSize = '',
-		selectedFlavor: initialSelectedFlavor = '',
-		minPrice: initialMinPrice = null,
-		maxPrice: initialMaxPrice = null,
-		categories = [],
-		sizes = [],
-		flavors = []
-	}: {
-		searchTerm?: string;
-		selectedCategory?: string;
-		selectedSize?: string;
-		selectedFlavor?: string;
-		minPrice?: number | null;
-		maxPrice?: number | null;
-		categories?: string[];
-		sizes?: string[];
-		flavors?: string[];
-	} = $props();
+	export let searchTerm = '';
+	export let selectedCategory = '';
+	export let selectedSize = '';
+	export let selectedFlavor = '';
+	export let minPrice = null;
+	export let maxPrice = null;
+	export let categories = [];
+	export let sizes = [];
+	export let flavors = [];
 
-	// Local state for form values (can be modified)
-	let searchTerm = $state(initialSearchTerm);
-	let selectedCategory = $state(initialSelectedCategory);
-	let selectedSize = $state(initialSelectedSize);
-	let selectedFlavor = $state(initialSelectedFlavor);
-	let minPrice = $state(initialMinPrice);
-	let maxPrice = $state(initialMaxPrice);
+	// Note: Props are used directly as local state since this component modifies them
 
 	// Event dispatcher
 	const dispatch = createEventDispatcher<{
