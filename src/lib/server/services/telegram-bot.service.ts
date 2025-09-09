@@ -11,6 +11,151 @@ import type { Order, OrderStatus } from '../domain/interfaces/order.interface';
 import { readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
 
+// === CURRENT ARCHITECTURE ANALYSIS ===
+// ✅ What works well:
+// - Single entry point for bot management
+// - All functionality in one place
+// - Easy to understand and modify
+// - Good error handling and logging
+//
+// ❌ Current problems:
+// - Monolithic class (1600+ lines)
+// - Mixed responsibilities (commands + callbacks + formatting)
+// - Hard to test individual components
+// - Difficult to maintain and extend
+// - No separation of concerns
+//
+// === RECOMMENDED ARCHITECTURE IMPROVEMENTS ===
+// 1. Split into smaller, focused modules
+// 2. Use dependency injection
+// 3. Add proper interfaces and abstractions
+// 4. Implement strategy pattern for handlers
+// 5. Add unit tests for each component
+//
+// === EXAMPLE: IMPROVED MODULAR ARCHITECTURE ===
+
+// Example interfaces for better architecture:
+interface IBotHandler {
+	handle(chatId: number, data: any): Promise<void>;
+	canHandle(data: any): boolean;
+}
+
+interface IOrderFormatter {
+	formatOrderSummary(order: Order): string;
+	formatOrderDetails(order: Order): string;
+	formatOrderList(orders: Order[]): string;
+}
+
+interface IUserStateManager {
+	getState(chatId: number): UserState | undefined;
+	setState(chatId: number, state: UserState): void;
+	clearState(chatId: number): void;
+}
+
+interface IMenuBuilder {
+	createMainMenu(): any;
+	createOrderActions(orderId: string, status: OrderStatus): any;
+	createPromoMenu(): any;
+}
+
+// Example of how handlers could be structured:
+class CommandHandler implements IBotHandler {
+	constructor(
+		private bot: TelegramBot,
+		private orderService: OrderService
+	) {}
+
+	async handle(chatId: number, command: string): Promise<void> {
+		switch (command) {
+			case '/orders':
+				await this.handleOrdersCommand(chatId);
+				break;
+			case '/start':
+				await this.handleStartCommand(chatId);
+				break;
+			default:
+				await this.bot.sendMessage(chatId, 'Unknown command');
+		}
+	}
+
+	canHandle(data: any): boolean {
+		return typeof data === 'string' && data.startsWith('/');
+	}
+
+	private async handleOrdersCommand(chatId: number): Promise<void> {
+		const orders = await this.orderService.getAllOrders();
+		const message = this.formatOrdersList(orders);
+		await this.bot.sendMessage(chatId, message);
+	}
+
+	private async handleStartCommand(chatId: number): Promise<void> {
+		const welcomeMessage = 'Welcome to Balance Botanica Bot!';
+		const keyboard = this.createMainKeyboard();
+		await this.bot.sendMessage(chatId, welcomeMessage, { reply_markup: keyboard });
+	}
+
+	private formatOrdersList(orders: Order[]): string {
+		return orders.map((order) => `${order.id}: ${order.status}`).join('\n');
+	}
+
+	private createMainKeyboard() {
+		return {
+			inline_keyboard: [
+				[{ text: 'Orders', callback_data: 'show_orders' }],
+				[{ text: 'Help', callback_data: 'show_help' }]
+			]
+		};
+	}
+}
+
+// Example improved TelegramBotService:
+class ImprovedTelegramBotService {
+	private handlers: IBotHandler[] = [];
+
+	constructor(
+		private bot: TelegramBot,
+		private orderService: OrderService,
+		private stateManager: IUserStateManager,
+		private formatter: IOrderFormatter,
+		private menuBuilder: IMenuBuilder
+	) {
+		this.initializeHandlers();
+		this.setupEventListeners();
+	}
+
+	private initializeHandlers(): void {
+		this.handlers.push(new CommandHandler(this.bot, this.orderService));
+		// Add other handlers...
+	}
+
+	private setupEventListeners(): void {
+		this.bot.on('message', (msg) => this.handleMessage(msg));
+		this.bot.on('callback_query', (query) => this.handleCallback(query));
+	}
+
+	private async handleMessage(msg: TelegramBot.Message): Promise<void> {
+		const chatId = msg.chat.id;
+		const text = msg.text;
+
+		if (!text) return;
+
+		// Find appropriate handler
+		const handler = this.handlers.find((h) => h.canHandle(text));
+		if (handler) {
+			await handler.handle(chatId, text);
+		}
+	}
+
+	private async handleCallback(query: TelegramBot.CallbackQuery): Promise<void> {
+		// Handle callback with appropriate handler
+		const handler = this.handlers.find((h) => h.canHandle(query.data));
+		if (handler) {
+			await handler.handle(query.message?.chat.id!, query.data);
+		}
+		this.bot.answerCallbackQuery(query.id);
+	}
+}
+
 interface UserState {
 	awaitingOrderId: boolean;
 	awaitingTTN?: boolean;
@@ -19,6 +164,16 @@ interface UserState {
 	orderId?: string;
 }
 
+/**
+ * LEGACY IMPLEMENTATION - MONOLITHIC BOT SERVICE
+ *
+ * This class works but has architectural issues:
+ * - Too many responsibilities in one class
+ * - Hard to test and maintain
+ * - Mixed concerns (presentation + business logic)
+ *
+ * For production, consider refactoring to the modular architecture shown above.
+ */
 export class TelegramBotService {
 	private bot: TelegramBot;
 	private orderService: OrderService;
@@ -318,6 +473,10 @@ export class TelegramBotService {
 			const param2 = parts[2];
 
 			try {
+				console.log(
+					`[TelegramBot] Processing callback: action='${action}', param1='${param1}', param2='${param2}'`
+				);
+
 				// Спочатку перевіряємо повну строку data для спеціальних випадків
 				switch (data) {
 					case 'promo_menu':
@@ -366,6 +525,19 @@ export class TelegramBotService {
 
 				// Потім перевіряємо за частинами
 				switch (action) {
+					// Скасування операції (повинно бути першим!)
+					case 'cancel':
+						if (param1 === 'operation') {
+							console.log('[TelegramBot] ❌ Cancel operation button clicked');
+							this.userStates.delete(chatId);
+							this.bot.sendMessage(chatId, '❌ Операція скасована.');
+							await this.sendOrdersList(chatId);
+							this.bot.answerCallbackQuery(query.id);
+							return;
+						}
+						// Якщо це не скасування операції, продовжуємо до звичайної обробки cancel
+						break;
+
 					// Меню статусів
 					case 'status':
 						await this.sendOrdersByStatus(chatId, param1 as OrderStatus);
@@ -395,9 +567,19 @@ export class TelegramBotService {
 
 					// Дії з замовленнями
 					case 'confirm':
-						await this.updateOrderStatus(chatId, param1, 'confirmed');
-						this.bot.answerCallbackQuery(query.id);
-						return;
+						// Перевіряємо, чи це підтвердження замовлення (не видалення промокоду)
+						if (param1 && param1 !== 'delete' && !param1.startsWith('delete')) {
+							await this.updateOrderStatus(chatId, param1, 'confirmed');
+							this.bot.answerCallbackQuery(query.id);
+							return;
+						}
+						// Якщо це видалення промокоду, продовжуємо існуючу логіку
+						if (param1 === 'delete') {
+							await this.confirmDeletePromo(chatId, param2);
+							this.bot.answerCallbackQuery(query.id);
+							return;
+						}
+						break;
 					case 'ship':
 						// Для відправки замовлення запитуємо ТТН
 						this.userStates.set(chatId, {
@@ -452,16 +634,7 @@ export class TelegramBotService {
 						this.bot.answerCallbackQuery(query.id);
 						return;
 
-					// Скасування операції
-					case 'cancel':
-						if (param1 === 'operation') {
-							this.userStates.delete(chatId);
-							this.bot.sendMessage(chatId, '❌ Операція скасована.');
-							await this.sendOrdersList(chatId);
-							this.bot.answerCallbackQuery(query.id);
-							return;
-						}
-						break;
+					// Скасування операції вже оброблено вище
 				}
 
 				// Прибрати loading стан кнопки
@@ -767,6 +940,25 @@ export class TelegramBotService {
 		try {
 			console.log(`[TelegramBot] Starting order status update: ${orderId} -> ${status}`);
 
+			// Спочатку отримуємо поточний статус замовлення для валідації
+			const currentOrder = await this.orderService.getOrderById(orderId);
+			if (!currentOrder) {
+				console.log(`[TelegramBot] Order ${orderId} not found`);
+				this.bot.sendMessage(chatId, `❌ Замовлення ${orderId} не знайдено`);
+				return;
+			}
+
+			const currentStatus = currentOrder.status;
+			console.log(`[TelegramBot] Current order status: ${currentStatus}`);
+
+			// Валідація переходів статусів (заборона перепрыгивания)
+			if (!this.isValidStatusTransition(currentStatus, status)) {
+				const errorMessage = this.getStatusTransitionErrorMessage(currentStatus, status);
+				console.log(`[TelegramBot] Invalid status transition: ${currentStatus} -> ${status}`);
+				this.bot.sendMessage(chatId, errorMessage);
+				return;
+			}
+
 			// Оновити статус у БД
 			const success = await this.orderService.updateOrderStatus(orderId, status);
 			console.log(`[TelegramBot] OrderService.updateOrderStatus result: ${success}`);
@@ -877,14 +1069,28 @@ export class TelegramBotService {
 		// Адреса доставки
 		if (order.deliveryAddress) {
 			summary += `🏠 Адреса: `;
-			if (order.deliveryAddress.city) {
-				summary += `${order.deliveryAddress.city}`;
-			}
-			if (order.deliveryAddress.street) {
-				summary += `, ${order.deliveryAddress.street}`;
-			}
-			if (order.deliveryAddress.npWarehouse) {
-				summary += ` (НП №${order.deliveryAddress.npWarehouse})`;
+
+			// Перевіряємо, чи це адреса Нової Пошти
+			if (
+				order.deliveryAddress.npWarehouse ||
+				order.deliveryAddress.npCityName ||
+				order.deliveryAddress.useNovaPost
+			) {
+				// Адреса Нової Пошти
+				if (order.deliveryAddress.npCityName) {
+					summary += `${order.deliveryAddress.npCityName}`;
+				}
+				if (order.deliveryAddress.npWarehouse) {
+					summary += `, НП №${order.deliveryAddress.npWarehouse}`;
+				}
+			} else {
+				// Звичайна адреса доставки
+				if (order.deliveryAddress.city) {
+					summary += `${order.deliveryAddress.city}`;
+				}
+				if (order.deliveryAddress.street) {
+					summary += `, ${order.deliveryAddress.street}`;
+				}
 			}
 			summary += `\n`;
 		}
@@ -918,14 +1124,37 @@ export class TelegramBotService {
 
 		if (order.deliveryAddress) {
 			message += `\n🏠 *Адреса доставки:*\n`;
-			if (order.deliveryAddress.street) {
-				message += `${order.deliveryAddress.street}\n`;
-			}
-			if (order.deliveryAddress.city) {
-				message += `${order.deliveryAddress.city}\n`;
-			}
-			if (order.deliveryAddress.npWarehouse) {
-				message += `Нова Пошт.а №${order.deliveryAddress.npWarehouse}\n`;
+
+			// Перевіряємо, чи це адреса Нової Пошти
+			if (
+				order.deliveryAddress.npWarehouse ||
+				order.deliveryAddress.npCityName ||
+				order.deliveryAddress.useNovaPost
+			) {
+				// Адреса Нової Пошти
+				if (order.deliveryAddress.npCityFullName) {
+					message += `${order.deliveryAddress.npCityFullName}\n`;
+				}
+				if (order.deliveryAddress.npWarehouse) {
+					message += `Відділення Нової Пошти №${order.deliveryAddress.npWarehouse}\n`;
+				}
+				if (order.deliveryAddress.name && order.deliveryAddress.name !== 'Нова Пошта') {
+					message += `Отримувач: ${order.deliveryAddress.name}\n`;
+				}
+			} else {
+				// Звичайна адреса доставки
+				if (order.deliveryAddress.street) {
+					message += `${order.deliveryAddress.street}\n`;
+				}
+				if (order.deliveryAddress.city) {
+					message += `${order.deliveryAddress.city}\n`;
+				}
+				if (order.deliveryAddress.postalCode) {
+					message += `${order.deliveryAddress.postalCode}\n`;
+				}
+				if (order.deliveryAddress.name) {
+					message += `Отримувач: ${order.deliveryAddress.name}\n`;
+				}
 			}
 		}
 
@@ -1539,5 +1768,59 @@ export class TelegramBotService {
 				parse_mode: 'Markdown'
 			});
 		}
+	}
+
+	// Валідація переходів статусів замовлень
+	private isValidStatusTransition(currentStatus: OrderStatus, newStatus: OrderStatus): boolean {
+		// Дозволені переходи статусів (не можна перепрыгивать)
+		const validTransitions: Record<OrderStatus, OrderStatus[]> = {
+			pending: ['confirmed', 'cancelled'], // Очікує -> Підтверджено або Скасовано
+			confirmed: ['shipped', 'cancelled'], // Підтверджено -> Відправлено або Скасовано
+			shipped: ['delivered'], // Відправлено -> Доставлено
+			delivered: [], // Доставлено - кінцевий статус
+			cancelled: [] // Скасовано - кінцевий статус
+		};
+
+		return validTransitions[currentStatus]?.includes(newStatus) || false;
+	}
+
+	// Повідомлення про помилку при недозволеному переході статусу
+	private getStatusTransitionErrorMessage(
+		currentStatus: OrderStatus,
+		newStatus: OrderStatus
+	): string {
+		const statusNames = {
+			pending: 'Очікує підтвердження',
+			confirmed: 'Підтверджено',
+			shipped: 'Відправлено',
+			delivered: 'Доставлено',
+			cancelled: 'Скасовано'
+		};
+
+		const currentName = statusNames[currentStatus];
+		const newName = statusNames[newStatus];
+
+		let message = `❌ *Недозволений перехід статусу!*\n\n`;
+		message += `Поточний статус: *${currentName}*\n`;
+		message += `Бажаний статус: *${newName}*\n\n`;
+
+		// Даємо підказку про правильну послідовність
+		switch (currentStatus) {
+			case 'pending':
+				message += `💡 Спочатку потрібно *підтвердити* замовлення, потім можна відправити або скасувати.`;
+				break;
+			case 'confirmed':
+				message += `💡 Спочатку потрібно *відправити* замовлення, потім можна позначити як доставлене.`;
+				break;
+			case 'shipped':
+				message += `💡 Замовлення вже відправлено. Тепер можна тільки позначити як доставлене.`;
+				break;
+			case 'delivered':
+			case 'cancelled':
+				message += `💡 Цей статус є кінцевим і не може бути змінений.`;
+				break;
+		}
+
+		return message;
 	}
 }
