@@ -14,9 +14,6 @@ export interface DeliveryAddress {
 	userId: string;
 	name?: string;
 	isDefault?: boolean;
-	street: string;
-	city: string;
-	postalCode: string;
 	country: string;
 	// Nova Poshta fields
 	npCityName?: string;
@@ -40,9 +37,6 @@ export interface CreateDeliveryAddressData {
 	userId: string;
 	name?: string;
 	isDefault?: boolean;
-	street: string;
-	city: string;
-	postalCode: string;
 	country: string;
 	// Nova Poshta fields
 	npCityName?: string;
@@ -55,9 +49,6 @@ export interface CreateDeliveryAddressData {
 export interface UpdateDeliveryAddressData {
 	name?: string;
 	isDefault?: boolean;
-	street?: string;
-	city?: string;
-	postalCode?: string;
 	country?: string;
 	// Nova Poshta fields
 	npCityName?: string;

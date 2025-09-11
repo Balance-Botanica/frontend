@@ -114,15 +114,6 @@ export class OrderFormatter {
 		// Regular address
 		let regularAddress = '';
 
-		if (address.street) {
-			regularAddress += `${address.street}\n`;
-		}
-		if (address.city) {
-			regularAddress += `${address.city}\n`;
-		}
-		if (address.postalCode) {
-			regularAddress += `${address.postalCode}\n`;
-		}
 		if (address.name) {
 			regularAddress += `Отримувач: ${address.name}\n`;
 		}

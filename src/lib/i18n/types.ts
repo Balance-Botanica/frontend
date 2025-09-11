@@ -41,12 +41,6 @@ export interface TranslationKeys {
 		name: string;
 		fullName: string;
 		deliveryAddress: string;
-		street: string;
-		streetPlaceholder: string;
-		city: string;
-		cityPlaceholder: string;
-		postalCode: string;
-		postalCodePlaceholder: string;
 		country: string;
 		saveAddress: string;
 		saving: string;

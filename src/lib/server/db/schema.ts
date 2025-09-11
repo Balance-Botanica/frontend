@@ -31,9 +31,6 @@ export const deliveryAddresses = sqliteTable('delivery_addresses', {
 		.references(() => users.id),
 	name: text('name'),
 	isDefault: integer('is_default', { mode: 'boolean' }).default(false),
-	street: text('street').notNull(),
-	city: text('city').notNull(),
-	postalCode: text('postal_code').notNull(),
 	country: text('country').notNull().default('Ukraine'),
 	// Nova Poshta fields
 	npCityName: text('np_city_name'),

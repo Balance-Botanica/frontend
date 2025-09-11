@@ -20,9 +20,6 @@
 	// Form state
 	let deliveryAddress = $state({
 		name: '',
-		street: '',
-		city: '',
-		postalCode: '',
 		country: 'Ukraine',
 		// Nova Poshta fields
 		npCityName: '',
@@ -82,9 +79,6 @@
 
 		deliveryAddress = {
 			name: '',
-			street: '',
-			city: '',
-			postalCode: '',
 			country: 'Ukraine',
 			npCityName: '',
 			npCityFullName: '',
@@ -101,9 +95,6 @@
 		editingAddressId = address.id;
 		deliveryAddress = {
 			name: address.name || '',
-			street: address.street || '',
-			city: address.city || '',
-			postalCode: address.postalCode || '',
 			country: address.country || 'Ukraine',
 			npCityName: address.npCityName || '',
 			npCityFullName: address.npCityFullName || '',
@@ -254,7 +245,7 @@
 		if (address.useNovaPost) {
 			return `${address.npCityFullName}, ${address.npWarehouse}`;
 		} else {
-			return `${address.street}, ${address.city}, ${address.postalCode}, ${address.country}`;
+			return `Адреса не вказана`;
 		}
 	}
 
@@ -505,9 +496,6 @@
 							<input type="hidden" name="npWarehouse" value={deliveryAddress.npWarehouse}>
 							<input type="hidden" name="useNovaPost" value="true">
 							<input type="hidden" name="country" value="Ukraine">
-							<input type="hidden" name="street" value="">
-							<input type="hidden" name="city" value="">
-							<input type="hidden" name="postalCode" value="">
 							
 							<!-- Nova Poshta Selection -->
 							<div class="nova-poshta-container">

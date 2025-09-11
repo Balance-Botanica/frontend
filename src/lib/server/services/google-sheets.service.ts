@@ -549,11 +549,7 @@ export class GoogleSheetsService {
 			return result;
 		}
 
-		// Обработка обычного адреса
-		if (parsedAddress.street) result += parsedAddress.street;
-		if (parsedAddress.city) result += result ? `, ${parsedAddress.city}` : parsedAddress.city;
-		if (parsedAddress.postalCode)
-			result += result ? `, ${parsedAddress.postalCode}` : parsedAddress.postalCode;
+		// Обработка обычного адреса (поля street, city, postalCode больше не используются)
 		if (parsedAddress.country && parsedAddress.country !== 'Ukraine')
 			result += result ? `, ${parsedAddress.country}` : parsedAddress.country;
 

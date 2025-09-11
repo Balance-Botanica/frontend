@@ -33,7 +33,7 @@ export class PocketBaseProductRepository implements ProductRepository {
 	async getByCategory(category: string): Promise<Product[]> {
 		try {
 			const records = await pb.collection('products').getList(1, 50, {
-				filter: `category = "${category}"`,
+				filter: `categories ~ "${category}"`,
 				sort: '-created'
 			});
 			return records.items.map(this.mapToDomain);
@@ -58,7 +58,16 @@ export class PocketBaseProductRepository implements ProductRepository {
 
 	async create(data: CreateProductData): Promise<Product | null> {
 		try {
-			const record = await pb.collection('products').create(data);
+			const record = await pb.collection('products').create({
+				name: data.name,
+				description: data.description,
+				price: data.price,
+				stock: data.stock,
+				size: data.size,
+				flavor: data.flavor,
+				categories: data.categories,
+				image_urls: data.imageUrls
+			});
 			return this.mapToDomain(record);
 		} catch (error) {
 			console.error('Error creating product in PocketBase:', error);
@@ -68,7 +77,17 @@ export class PocketBaseProductRepository implements ProductRepository {
 
 	async update(id: string, data: UpdateProductData): Promise<Product | null> {
 		try {
-			const record = await pb.collection('products').update(id, data);
+			const updateData: any = {};
+			if (data.name !== undefined) updateData.name = data.name;
+			if (data.description !== undefined) updateData.description = data.description;
+			if (data.price !== undefined) updateData.price = data.price;
+			if (data.stock !== undefined) updateData.stock = data.stock;
+			if (data.size !== undefined) updateData.size = data.size;
+			if (data.flavor !== undefined) updateData.flavor = data.flavor;
+			if (data.categories !== undefined) updateData.categories = data.categories;
+			if (data.imageUrls !== undefined) updateData.image_urls = data.imageUrls;
+
+			const record = await pb.collection('products').update(id, updateData);
 			return this.mapToDomain(record);
 		} catch (error) {
 			console.error('Error updating product in PocketBase:', error);
@@ -107,8 +126,10 @@ export class PocketBaseProductRepository implements ProductRepository {
 			description: record.description,
 			price: record.price,
 			stock: record.stock,
-			category: record.category,
-			imageUrl: record.imageUrl,
+			size: record.size,
+			flavor: record.flavor,
+			categories: record.categories,
+			imageUrls: record.image_urls,
 			createdAt: new Date(record.created),
 			updatedAt: new Date(record.updated)
 		};

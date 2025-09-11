@@ -781,3 +781,6 @@ export class OrderService {
 		}
 	}
 }
+
+// Export singleton instance
+export const orderService = new OrderService();

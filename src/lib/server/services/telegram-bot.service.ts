@@ -1070,27 +1070,27 @@ export class TelegramBotService {
 		if (order.deliveryAddress) {
 			summary += `🏠 Адреса: `;
 
-			// Перевіряємо, чи це адреса Нової Пошти
-			if (
-				order.deliveryAddress.npWarehouse ||
-				order.deliveryAddress.npCityName ||
-				order.deliveryAddress.useNovaPost
-			) {
-				// Адреса Нової Пошти
-				if (order.deliveryAddress.npCityName) {
-					summary += `${order.deliveryAddress.npCityName}`;
-				}
-				if (order.deliveryAddress.npWarehouse) {
-					summary += `, НП №${order.deliveryAddress.npWarehouse}`;
-				}
+			// Парсим JSON строку адреса
+			let addressData;
+			try {
+				addressData =
+					typeof order.deliveryAddress === 'string'
+						? JSON.parse(order.deliveryAddress)
+						: order.deliveryAddress;
+			} catch (e) {
+				summary += `Адреса не вказана\n`;
+				return summary;
+			}
+
+			// Просто берем np_city_full_name + np_warehouse
+			if (addressData.npCityFullName && addressData.npWarehouse) {
+				summary += `${addressData.npCityFullName}, ${addressData.npWarehouse}`;
+			} else if (addressData.npCityFullName) {
+				summary += `${addressData.npCityFullName}`;
+			} else if (addressData.npWarehouse) {
+				summary += `${addressData.npWarehouse}`;
 			} else {
-				// Звичайна адреса доставки
-				if (order.deliveryAddress.city) {
-					summary += `${order.deliveryAddress.city}`;
-				}
-				if (order.deliveryAddress.street) {
-					summary += `, ${order.deliveryAddress.street}`;
-				}
+				summary += `Адреса не вказана`;
 			}
 			summary += `\n`;
 		}
@@ -1125,37 +1125,32 @@ export class TelegramBotService {
 		if (order.deliveryAddress) {
 			message += `\n🏠 *Адреса доставки:*\n`;
 
-			// Перевіряємо, чи це адреса Нової Пошти
-			if (
-				order.deliveryAddress.npWarehouse ||
-				order.deliveryAddress.npCityName ||
-				order.deliveryAddress.useNovaPost
-			) {
-				// Адреса Нової Пошти
-				if (order.deliveryAddress.npCityFullName) {
-					message += `${order.deliveryAddress.npCityFullName}\n`;
-				}
-				if (order.deliveryAddress.npWarehouse) {
-					message += `Відділення Нової Пошти №${order.deliveryAddress.npWarehouse}\n`;
-				}
-				if (order.deliveryAddress.name && order.deliveryAddress.name !== 'Нова Пошта') {
-					message += `Отримувач: ${order.deliveryAddress.name}\n`;
-				}
-			} else {
-				// Звичайна адреса доставки
-				if (order.deliveryAddress.street) {
-					message += `${order.deliveryAddress.street}\n`;
-				}
-				if (order.deliveryAddress.city) {
-					message += `${order.deliveryAddress.city}\n`;
-				}
-				if (order.deliveryAddress.postalCode) {
-					message += `${order.deliveryAddress.postalCode}\n`;
-				}
-				if (order.deliveryAddress.name) {
-					message += `Отримувач: ${order.deliveryAddress.name}\n`;
-				}
+			// Парсим JSON строку адреса
+			let addressData;
+			try {
+				addressData =
+					typeof order.deliveryAddress === 'string'
+						? JSON.parse(order.deliveryAddress)
+						: order.deliveryAddress;
+			} catch (e) {
+				message += `Адреса не вказана\n`;
+				return message;
 			}
+
+			// Просто берем np_city_full_name + np_warehouse
+			if (addressData.npCityFullName && addressData.npWarehouse) {
+				message += `${addressData.npCityFullName}, ${addressData.npWarehouse}`;
+			} else if (addressData.npCityFullName) {
+				message += `${addressData.npCityFullName}`;
+			} else if (addressData.npWarehouse) {
+				message += `${addressData.npWarehouse}`;
+			} else {
+				message += `Адреса не вказана`;
+			}
+			message += '\n';
+		} else {
+			// Если адреса нет вообще
+			message += `\n🏠 *Адреса доставки:*\nАдреса не вказана\n`;
 		}
 
 		if (order.notes) {
@@ -1298,20 +1293,28 @@ export class TelegramBotService {
 		// Добавляем адрес доставки если есть
 		if (order.deliveryAddress) {
 			message += `🏠 *Доставка:*\n`;
-			if (typeof order.deliveryAddress === 'string') {
-				// Если адрес - строка, показываем первые 100 символов
-				const shortAddress =
-					order.deliveryAddress.length > 100
-						? order.deliveryAddress.substring(0, 100) + '...'
+
+			// Парсим JSON строку адреса
+			let addressData;
+			try {
+				addressData =
+					typeof order.deliveryAddress === 'string'
+						? JSON.parse(order.deliveryAddress)
 						: order.deliveryAddress;
-				message += `${shortAddress}\n`;
+			} catch (e) {
+				message += `Адреса не вказана\n`;
+				return;
+			}
+
+			// Просто берем np_city_full_name + np_warehouse
+			if (addressData.npCityFullName && addressData.npWarehouse) {
+				message += `${addressData.npCityFullName}, ${addressData.npWarehouse}`;
+			} else if (addressData.npCityFullName) {
+				message += `${addressData.npCityFullName}`;
+			} else if (addressData.npWarehouse) {
+				message += `${addressData.npWarehouse}`;
 			} else {
-				// Если адрес - объект
-				if (order.deliveryAddress.npWarehouse) {
-					message += `Нова Пошт.а №${order.deliveryAddress.npWarehouse}\n`;
-				} else if (order.deliveryAddress.street) {
-					message += `${order.deliveryAddress.street}, ${order.deliveryAddress.city}\n`;
-				}
+				message += `Адреса не вказана`;
 			}
 			message += '\n';
 		}

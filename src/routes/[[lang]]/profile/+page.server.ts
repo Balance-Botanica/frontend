@@ -83,12 +83,9 @@ export const actions: Actions = {
 					npWarehouse: formData.get('npWarehouse') as string
 				};
 			} else {
-				// Regular delivery address data
+				// Regular delivery address data (эти поля больше не используются)
 				deliveryAddressData = {
 					...deliveryAddressData,
-					street: formData.get('street') as string,
-					city: formData.get('city') as string,
-					postalCode: formData.get('postalCode') as string,
 					// Set empty values for Nova Poshta fields
 					npCityName: '',
 					npCityFullName: '',

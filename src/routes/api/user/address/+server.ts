@@ -24,9 +24,6 @@ export async function POST({ request, locals }) {
 			userId: user.id,
 			name: name.trim(),
 			isDefault: isDefault || false,
-			street: '', // Nova Poshta doesn't use street address
-			city: '', // Nova Poshta doesn't use regular city
-			postalCode: '', // Nova Poshta doesn't use postal code
 			country: 'Ukraine',
 			npCityName,
 			npCityFullName,
@@ -89,9 +86,6 @@ export async function PUT({ request, locals, params }) {
 			addressId: addressId,
 			name: name.trim(),
 			isDefault: isDefault || false,
-			street: '', // Nova Poshta doesn't use street address
-			city: '', // Nova Poshta doesn't use regular city
-			postalCode: '', // Nova Poshta doesn't use postal code
 			country: 'Ukraine',
 			npCityName,
 			npCityFullName,

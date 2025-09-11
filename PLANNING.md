@@ -373,6 +373,18 @@ This document tracks our project tasks, priorities, and progress.
 - Removed duplicate SQL migration files from root directory
 - Cleaned up temporary development files
 
+### ✅ Telegram Bot Address Display Fix (2025-09-10)
+**Status:** COMPLETED
+- **Issue**: Telegram bot was showing empty "🏠 Адреса:" when displaying all orders
+- **Root Cause**: Complex address formatting logic was not properly parsing Nova Poshta fields from JSON delivery address data
+- **Solution**: Simplified address display logic to directly use `npCityFullName + npWarehouse` from database
+- **Implementation**: Updated all address formatting methods in `telegram-bot.service.ts`:
+  - `formatOrderDetailedSummary()` - for order summaries
+  - `formatOrderDetails()` - for detailed order view
+  - `notifyNewOrder()` - for new order notifications
+- **Result**: Orders now display full Nova Poshta addresses: "🏠 Адреса: смт Коцюбинське, Бучанський р-н, Київська обл., Поштомат Нова Пошта №2631"
+- **Testing**: Created test scripts to verify address formatting works correctly
+
 ## New Blog Content
 
 ### ✅ CBD Isolate vs Full Spectrum Article

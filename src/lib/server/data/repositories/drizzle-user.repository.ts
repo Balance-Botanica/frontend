@@ -133,9 +133,6 @@ export class DrizzleUserRepository implements UserRepository {
 				userId: data.userId,
 				name: data.name || null,
 				isDefault: shouldBeDefault,
-				street: data.street,
-				city: data.city,
-				postalCode: data.postalCode,
 				country: data.country,
 				// Nova Poshta fields
 				npCityName: data.npCityName || null,
@@ -169,9 +166,6 @@ export class DrizzleUserRepository implements UserRepository {
 			const now = new Date();
 
 			if (data.name !== undefined) updateData.name = data.name;
-			if (data.street !== undefined) updateData.street = data.street;
-			if (data.city !== undefined) updateData.city = data.city;
-			if (data.postalCode !== undefined) updateData.postalCode = data.postalCode;
 			if (data.country !== undefined) updateData.country = data.country;
 
 			// Nova Poshta fields
@@ -308,9 +302,6 @@ export class DrizzleUserRepository implements UserRepository {
 			userId: dbAddress.userId,
 			name: dbAddress.name,
 			isDefault: dbAddress.isDefault,
-			street: dbAddress.street,
-			city: dbAddress.city,
-			postalCode: dbAddress.postalCode,
 			country: dbAddress.country,
 			npCityName: dbAddress.npCityName,
 			npCityFullName: dbAddress.npCityFullName,
