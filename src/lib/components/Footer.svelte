@@ -8,6 +8,7 @@
 	import fbIcon from '../assets/icons/fb.svg';
 	import Button from './Button.svelte';
 	import Input from './Input.svelte';
+	import { page } from '$app/stores';
 
 	const platforms: Array<'facebook' | 'instagram' | 'tiktok' | 'telegram' | 'whatsapp'> = [
 		'facebook',
@@ -16,6 +17,48 @@
 		'telegram',
 		'whatsapp'
 	];
+
+	// Pillar articles data
+	const pillarArticles = [
+		{
+			path: '/cbd',
+			title: t('footer.pillar.cbd'),
+			description: t('footer.pillar.cbd_desc')
+		},
+		{
+			path: '/cbd/cats',
+			title: t('footer.pillar.cbd_cats'),
+			description: t('footer.pillar.cbd_cats_desc')
+		},
+		{
+			path: '/cbd/dogs',
+			title: t('footer.pillar.cbd_dogs'),
+			description: t('footer.pillar.cbd_dogs_desc')
+		},
+		{
+			path: '/cbd/types',
+			title: t('footer.pillar.cbd_types'),
+			description: t('footer.pillar.cbd_types_desc')
+		},
+		{
+			path: '/cats-health',
+			title: t('footer.pillar.cats_health'),
+			description: t('footer.pillar.cats_health_desc')
+		},
+		{
+			path: '/dog-health',
+			title: t('footer.pillar.dog_health'),
+			description: t('footer.pillar.dog_health_desc')
+		},
+		{
+			path: '/veterinary-cbd',
+			title: t('footer.pillar.veterinary_cbd'),
+			description: t('footer.pillar.veterinary_cbd_desc')
+		}
+	];
+
+	// Get current language
+	const lang = $derived($page.params?.lang || 'uk-ua');
 
 	function getSocialIcon(platform: string) {
 		switch (platform) {
@@ -33,14 +76,15 @@
 				return waIcon;
 		}
 	}
-	
-	// Function to handle navigation - to be implemented with actual routes
+
+	// Function to handle navigation with proper language prefix
 	function handleNavigation(path: string) {
-		// For now, we'll just log the intended navigation
-		console.log('Navigate to:', path);
+		const fullPath = lang === 'uk-ua' ? `/${lang}${path}` : path;
+		console.log('Navigate to:', fullPath);
 		// In a real implementation, you would use goto from $app/navigation
 		// import { goto } from '$app/navigation';
-		// goto(path);
+		// goto(fullPath);
+		window.location.href = fullPath;
 	}
 </script>
 
@@ -101,6 +145,26 @@
 						</Button>
 					</form>
 				</div>
+			</div>
+		</div>
+
+		<!-- Pillar Articles Section -->
+		<div class="mb-8">
+			<h3 class="mb-6 text-lg font-semibold text-white">{t('footer.pillar.title')}</h3>
+			<div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+				{#each pillarArticles as article (article.path)}
+					<button
+						class="group rounded-lg border border-white/20 bg-white/5 p-4 text-left transition-all hover:border-white/40 hover:bg-white/10"
+						onclick={() => handleNavigation(article.path)}
+					>
+						<h4 class="mb-2 text-sm font-medium text-white group-hover:text-green-300 transition-colors">
+							{article.title}
+						</h4>
+						<p class="text-xs leading-relaxed text-white/70 group-hover:text-white/90 transition-colors">
+							{article.description}
+						</p>
+					</button>
+				{/each}
 			</div>
 		</div>
 

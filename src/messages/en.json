@@ -136,6 +136,23 @@
 		"company": {
 			"description": "Balance Botanica is one of the first companies in Ukraine that produces products with cannabidiol (CBD). Founded in 2023. We offer high-quality products at affordable prices that compete with Western analogues."
 		},
+		"pillar": {
+			"title": "Expert Articles",
+			"cbd": "CBD for Pets",
+			"cbd_desc": "Complete scientific guide to CBD therapy for dogs and cats",
+			"cbd_cats": "CBD for Cats",
+			"cbd_cats_desc": "Clinically proven CBD effectiveness for cat health",
+			"cbd_dogs": "CBD for Dogs",
+			"cbd_dogs_desc": "Evidence-based CBD recommendations for dogs",
+			"cbd_types": "CBD Types",
+			"cbd_types_desc": "Difference between isolate, full and broad spectrum",
+			"cats_health": "Cat Health",
+			"cats_health_desc": "Comprehensive natural cat health guide",
+			"dog_health": "Dog Health",
+			"dog_health_desc": "Complete guide to dog health care",
+			"veterinary_cbd": "Veterinary CBD",
+			"veterinary_cbd_desc": "Professional veterinary recommendations for CBD therapy"
+		},
 		"legal": {
 			"copyright": "© 2024. All Rights Reserved.",
 			"terms_privacy": "Terms of Service | Privacy Policy"

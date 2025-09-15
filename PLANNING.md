@@ -4,6 +4,16 @@ This document tracks our project tasks, priorities, and progress.
 
 ## Task List
 
+- [COMPLETED] ID:content_seo_update CONTENT:Updated /cats-health Pillar Page with 15+ scientific research links and renamed from /cats/ for better SEO
+
+- [COMPLETED] ID:cbd_cats_article CONTENT:Created comprehensive CBD for Cats cluster article (/cbd/cats/) with 15+ scientific studies, clinical evidence, safety data, and dosage guide
+
+- [COMPLETED] ID:cleanup_old_routes CONTENT:Removed old /cats/ route and content files, updated all references to use /cats-health/ instead
+
+- [COMPLETED] ID:veterinary_cbd_pillar CONTENT:Created comprehensive Veterinary CBD Pillar Page (/veterinary-cbd/) with 15+ peer-reviewed studies, clinical protocols, safety data, and professional guidelines
+
+- [COMPLETED] ID:cbd_types_article CONTENT:Created comprehensive CBD Types cluster article (/cbd/types/) with comparative analysis of isolate, full spectrum, broad spectrum, distillate, nano-CBD, and other forms
+
 - [REVIEWED] ID:task_001 CONTENT:Implement Product Filtering and Search Functionality
 
 - [COMPLETED] ID:task_002 CONTENT:Add Product Categories Page with Filtering
