@@ -24,14 +24,14 @@
 	} = $props();
 	
 	// Generate meta data
-	let fullTitle = $derived(title ? `${title} | Balance Botanica` : 'Balance Botanica');
-	let ogImage = $derived(image || `${baseUrl}/images/og-image.jpg`);
+	const fullTitle = $derived(title ? `${title} | Balance Botanica` : 'Balance Botanica');
+	const ogImage = $derived(image || `${baseUrl}/images/og-image.jpg`);
 
 	// Generate hreflang URLs
-	let currentPagePath = $derived(currentPath || $page.url.pathname);
-	let basePath = $derived(currentPagePath.replace(/^\/en/, '') || '/');
-	let ukUrl = $derived(basePath === '/' ? baseUrl : `${baseUrl}${basePath}`);
-	let enUrl = $derived(basePath === '/' ? `${baseUrl}/en/` : `${baseUrl}/en${basePath}`);
+	const currentPagePath = $derived(currentPath || $page.url.pathname);
+	const basePath = $derived(currentPagePath.replace(/^\/en/, '').replace(/^\/uk-ua/, '') || '/');
+	const ukUrl = $derived(basePath === '/' ? baseUrl : `${baseUrl}${basePath}`);
+	const enUrl = $derived(basePath === '/' ? `${baseUrl}/en/` : `${baseUrl}/en${basePath}`);
 
 	// Create JSON-LD structured data
 	let jsonLd = '';

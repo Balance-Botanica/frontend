@@ -208,7 +208,7 @@ export class ScriptLoader {
 			(function (f: any, b: any, e: any, v: any, n?: any, t?: any, s?: any) {
 				if (f.fbq) return;
 				n = f.fbq = function () {
-					n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments);
+					n.callMethod ? n.callMethod(...Array.from(arguments)) : n.queue.push(arguments);
 				};
 				if (!f._fbq) f._fbq = n;
 				n.push = n;

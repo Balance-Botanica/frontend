@@ -1,10 +1,11 @@
 <script lang="ts">
 	import SEO from '$lib/components/SEO.svelte';
 	import { ArticleHero, ArticleLayout } from '$lib/components/articles';
+	import type { SupportedLocale } from '$lib/i18n/types';
 	import { page } from '$app/stores';
 
 	const { data } = $props();
-	const lang = $derived($page.params?.lang || 'uk-ua');
+	const lang = $derived(($page.params?.lang || 'uk-ua') as SupportedLocale);
 	const isEnglish = $derived(lang === 'en');
 
 	// TOC will be auto-generated from content headings
@@ -13,21 +14,19 @@
 	const keyPoints = $derived([
 		isEnglish ? 'Clinically proven effective for dogs' : 'Клінічно доведена ефективність для собак',
 		isEnglish ? 'Well tolerated by canine patients' : 'Добре переноситься собаками',
-		isEnglish ? 'Natural pain relief and mobility support' : 'Натуральне знеболення та підтримка рухливості',
+		isEnglish
+			? 'Natural pain relief and mobility support'
+			: 'Натуральне знеболення та підтримка рухливості',
 		isEnglish ? 'Evidence-based veterinary recommendations' : 'Доказові ветеринарні рекомендації'
 	]);
 
 	const translations = $derived({
 		learnMore: isEnglish ? 'Learn More' : 'Дізнатися більше',
-		relatedArticles: isEnglish ? 'Related Articles' : 'Пов\'язані статті'
+		relatedArticles: isEnglish ? 'Related Articles' : "Пов'язані статті"
 	});
 </script>
 
-<SEO
-	title={data.title}
-	description={data.description}
-	locale={lang}
-/>
+<SEO title={data.title} description={data.description} locale={lang} />
 
 <main class="cbd-dogs-main">
 	<div class="cbd-dogs-container">
@@ -37,11 +36,11 @@
 			author={data.author}
 			date={data.date}
 			readingTime={data.readingTime}
-			lang={lang}
+			{lang}
 		/>
 
 		{#if data.content}
-			<ArticleLayout toc={tocItems} keyPoints={keyPoints} {lang} content={data.content} />
+			<ArticleLayout toc={tocItems} {keyPoints} {lang} content={data.content} />
 		{/if}
 
 		{#if data.seoData?.faq && data.seoData.faq.length > 0}
@@ -59,20 +58,20 @@
 		{/if}
 
 		<section class="cbd-dogs-related" id="related-articles">
-			<h2>{translations().relatedArticles}</h2>
+			<h2>{translations.relatedArticles}</h2>
 			<div class="cbd-dogs-related-grid">
-				<a href={`${lang}/cbd`} class="cbd-dogs-related-card">
+				<a href={`${lang}/knowledgebase/cbd`} class="cbd-dogs-related-card">
 					<h3>{isEnglish ? 'CBD for Pets' : 'CBD для тварин'}</h3>
 					<p>{isEnglish ? 'Complete scientific guide' : 'Повний науковий посібник'}</p>
 				</a>
 
-				<a href={`${lang}/cbd/types`} class="cbd-dogs-related-card">
+				<a href={`${lang}/knowledgebase/cbd/types`} class="cbd-dogs-related-card">
 					<h3>{isEnglish ? 'CBD Types' : 'Види CBD'}</h3>
 					<p>{isEnglish ? 'Isolate vs Full Spectrum' : 'Ізолят чи повний спектр'}</p>
 				</a>
 
 				<a href={`${lang}/dog-health`} class="cbd-dogs-related-card">
-					<h3>{isEnglish ? 'Dog Health Guide' : 'Посібник з здоров\'я собак'}</h3>
+					<h3>{isEnglish ? 'Dog Health Guide' : "Посібник з здоров'я собак"}</h3>
 					<p>{isEnglish ? 'Comprehensive care tips' : 'Комплексні поради з догляду'}</p>
 				</a>
 			</div>

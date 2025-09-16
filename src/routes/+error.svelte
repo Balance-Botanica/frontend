@@ -21,66 +21,99 @@
 	$: locale = getCurrentLanguage();
 </script>
 
-<ErrorSEO 
-	title={title} 
-	description={description} 
-	locale={locale} 
-	noindex={true} 
-/>
+<ErrorSEO {title} {description} {locale} noindex={true} />
 
 <div class="error-container" in:fade={{ duration: 300 }}>
 	{#if $i18nReady}
-	<div class="error-content">
-		<div class="error-icon">
-			{#if $page.status === 404}
-				<!-- 404 Icon - Page not found -->
-				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather">
-					<circle cx="12" cy="12" r="10"></circle>
-					<path d="M16 16s-1.5-2-4-2-4 2-4 2"></path>
-					<line x1="9" y1="9" x2="9.01" y2="9"></line>
-					<line x1="15" y1="9" x2="15.01" y2="9"></line>
-				</svg>
-			{:else if $page.status === 500}
-				<!-- 500 Icon - Server error -->
-				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather">
-					<path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
-					<line x1="12" y1="9" x2="12" y2="13"></line>
-					<line x1="12" y1="17" x2="12.01" y2="17"></line>
-				</svg>
-			{:else}
-				<!-- Default error icon -->
-				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather">
+		<div class="error-content">
+			<div class="error-icon">
+				{#if $page.status === 404}
+					<!-- 404 Icon - Page not found -->
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						class="feather"
+					>
+						<circle cx="12" cy="12" r="10"></circle>
+						<path d="M16 16s-1.5-2-4-2-4 2-4 2"></path>
+						<line x1="9" y1="9" x2="9.01" y2="9"></line>
+						<line x1="15" y1="9" x2="15.01" y2="9"></line>
+					</svg>
+				{:else if $page.status === 500}
+					<!-- 500 Icon - Server error -->
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						class="feather"
+					>
+						<path
+							d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"
+						></path>
+						<line x1="12" y1="9" x2="12" y2="13"></line>
+						<line x1="12" y1="17" x2="12.01" y2="17"></line>
+					</svg>
+				{:else}
+					<!-- Default error icon -->
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						class="feather"
+					>
+						<circle cx="12" cy="12" r="10"></circle>
+						<line x1="12" y1="8" x2="12" y2="12"></line>
+						<line x1="12" y1="16" x2="12.01" y2="16"></line>
+					</svg>
+				{/if}
+			</div>
+
+			<h1 class="error-code">{$page.status || 'Error'}</h1>
+
+			<h2 class="error-title">{t(`error.${getErrorKey()}.title`)}</h2>
+			<p class="error-message">{t(`error.${getErrorKey()}.message`)}</p>
+
+			<a href="/" class="home-button">{t('error.return_home')}</a>
+		</div>
+	{:else}
+		<div class="error-content">
+			<div class="error-icon">
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="2"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					class="feather"
+				>
 					<circle cx="12" cy="12" r="10"></circle>
 					<line x1="12" y1="8" x2="12" y2="12"></line>
 					<line x1="12" y1="16" x2="12.01" y2="16"></line>
 				</svg>
-			{/if}
+			</div>
+
+			<h1 class="error-code">{$page.status || 'Error'}</h1>
+
+			<h2 class="error-title">Error</h2>
+			<p class="error-message">Something went wrong. Please try again later.</p>
+
+			<a href="/" class="home-button">Return to Homepage</a>
 		</div>
-		
-		<h1 class="error-code">{$page.status || 'Error'}</h1>
-		
-		<h2 class="error-title">{t(`error.${getErrorKey()}.title`)}</h2>
-		<p class="error-message">{t(`error.${getErrorKey()}.message`)}</p>
-		
-		<a href="/" class="home-button">{t('error.return_home')}</a>
-	</div>
-	{:else}
-	<div class="error-content">
-		<div class="error-icon">
-			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather">
-				<circle cx="12" cy="12" r="10"></circle>
-				<line x1="12" y1="8" x2="12" y2="12"></line>
-				<line x1="12" y1="16" x2="12.01" y2="16"></line>
-			</svg>
-		</div>
-		
-		<h1 class="error-code">{$page.status || 'Error'}</h1>
-		
-		<h2 class="error-title">Error</h2>
-		<p class="error-message">Something went wrong. Please try again later.</p>
-		
-		<a href="/" class="home-button">Return to Homepage</a>
-	</div>
 	{/if}
 </div>
 

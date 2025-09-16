@@ -4,99 +4,99 @@
 	import SEO from '$lib/components/SEO.svelte';
 
 	// Detect language from optional route parameter
-	let lang = $derived($page.params?.lang || 'uk-ua');
+	const lang = $derived($page.params?.lang || 'uk-ua');
 
 	// Create page translations
 	const pageTranslations = createPageTranslations();
 </script>
 
 {#if $pageTranslations}
-<SEO
-	title={$pageTranslations.t('community_values.meta.title')}
-	description={$pageTranslations.t('community_values.meta.description')}
-	locale={$pageTranslations.locale}
-/>
+	<SEO
+		title={$pageTranslations.t('community_values.meta.title')}
+		description={$pageTranslations.t('community_values.meta.description')}
+		locale={$pageTranslations.locale}
+	/>
 
-<main class="community-page">
-	<div class="container">
-		<h1 class="page-title">{$pageTranslations.t('community_values.title')}</h1>
+	<main class="community-page">
+		<div class="container">
+			<h1 class="page-title">{$pageTranslations.t('community_values.title')}</h1>
 
-		<section class="value-section">
-			<h2>{$pageTranslations.t('community_values.garden.title')}</h2>
-			<p>
-				{$pageTranslations.t('community_values.garden.paragraph1')}
-			</p>
-			<p>
-				{$pageTranslations.t('community_values.garden.paragraph2')}
-			</p>
-		</section>
+			<section class="value-section">
+				<h2>{$pageTranslations.t('community_values.garden.title')}</h2>
+				<p>
+					{$pageTranslations.t('community_values.garden.paragraph1')}
+				</p>
+				<p>
+					{$pageTranslations.t('community_values.garden.paragraph2')}
+				</p>
+			</section>
 
-		<section class="value-section">
-			<h2>{$pageTranslations.t('community_values.discourse.title')}</h2>
-			<p>
-				{$pageTranslations.t('community_values.discourse.paragraph1')}
-			</p>
-			<p>
-				{$pageTranslations.t('community_values.discourse.paragraph2')}
-			</p>
-			<p>
-				{$pageTranslations.t('community_values.discourse.paragraph3')}
-			</p>
-		</section>
+			<section class="value-section">
+				<h2>{$pageTranslations.t('community_values.discourse.title')}</h2>
+				<p>
+					{$pageTranslations.t('community_values.discourse.paragraph1')}
+				</p>
+				<p>
+					{$pageTranslations.t('community_values.discourse.paragraph2')}
+				</p>
+				<p>
+					{$pageTranslations.t('community_values.discourse.paragraph3')}
+				</p>
+			</section>
 
-		<section class="value-section">
-			<h2>{$pageTranslations.t('community_values.disagreement.title')}</h2>
-			<p>
-				{$pageTranslations.t('community_values.disagreement.paragraph1')}
-			</p>
-			<ul class="avoid-list">
-				{#each [...Array(5).keys()] as i}
-					<li>{$pageTranslations.t(`community_values.disagreement.avoid_list.${i}`)}</li>
-				{/each}
-			</ul>
-			<p>
-				{$pageTranslations.t('community_values.disagreement.paragraph2')}
-			</p>
-		</section>
+			<section class="value-section">
+				<h2>{$pageTranslations.t('community_values.disagreement.title')}</h2>
+				<p>
+					{$pageTranslations.t('community_values.disagreement.paragraph1')}
+				</p>
+				<ul class="avoid-list">
+					{#each [...Array(5).keys()] as i}
+						<li>{$pageTranslations.t(`community_values.disagreement.avoid_list.${i}`)}</li>
+					{/each}
+				</ul>
+				<p>
+					{$pageTranslations.t('community_values.disagreement.paragraph2')}
+				</p>
+			</section>
 
-		<section class="value-section">
-			<h2>{$pageTranslations.t('community_values.journey.title')}</h2>
-			<p>
-				{$pageTranslations.t('community_values.journey.paragraph1')}
-			</p>
-			<p>
-				{$pageTranslations.t('community_values.journey.paragraph2')}
-			</p>
-		</section>
+			<section class="value-section">
+				<h2>{$pageTranslations.t('community_values.journey.title')}</h2>
+				<p>
+					{$pageTranslations.t('community_values.journey.paragraph1')}
+				</p>
+				<p>
+					{$pageTranslations.t('community_values.journey.paragraph2')}
+				</p>
+			</section>
 
-		<section class="value-section">
-			<h2>{$pageTranslations.t('community_values.trust.title')}</h2>
-			<p>
-				{$pageTranslations.t('community_values.trust.paragraph1')}
-			</p>
-			<p>
-				{$pageTranslations.t('community_values.trust.paragraph2')}
-			</p>
-		</section>
+			<section class="value-section">
+				<h2>{$pageTranslations.t('community_values.trust.title')}</h2>
+				<p>
+					{$pageTranslations.t('community_values.trust.paragraph1')}
+				</p>
+				<p>
+					{$pageTranslations.t('community_values.trust.paragraph2')}
+				</p>
+			</section>
 
-		<div class="closing-section">
-			<p>
-				{$pageTranslations.t('community_values.closing.paragraph')}
-			</p>
-			<div class="signature">
-				<span>{$pageTranslations.t('community_values.closing.signature')}</span>
-				<span>{$pageTranslations.t('community_values.closing.team')}</span>
+			<div class="closing-section">
+				<p>
+					{$pageTranslations.t('community_values.closing.paragraph')}
+				</p>
+				<div class="signature">
+					<span>{$pageTranslations.t('community_values.closing.signature')}</span>
+					<span>{$pageTranslations.t('community_values.closing.team')}</span>
+				</div>
 			</div>
 		</div>
-	</div>
-</main>
+	</main>
 {:else}
-<!-- Fallback while translations are loading -->
-<main class="community-page">
-	<div class="container">
-		<h1 class="page-title">Loading...</h1>
-	</div>
-</main>
+	<!-- Fallback while translations are loading -->
+	<main class="community-page">
+		<div class="container">
+			<h1 class="page-title">Loading...</h1>
+		</div>
+	</main>
 {/if}
 
 <style>
@@ -114,7 +114,7 @@
 	}
 
 	.page-title {
-		color: #4B766E;
+		color: #4b766e;
 		font-size: 2.5rem;
 		font-weight: 700;
 		text-align: center;
@@ -124,14 +124,14 @@
 	}
 
 	.page-title:after {
-		content: "";
+		content: '';
 		position: absolute;
 		bottom: 0;
 		left: 50%;
 		transform: translateX(-50%);
 		width: 80px;
 		height: 3px;
-		background-color: #4B766E;
+		background-color: #4b766e;
 	}
 
 	.value-section {
@@ -143,7 +143,7 @@
 	}
 
 	h2 {
-		color: #4B766E;
+		color: #4b766e;
 		font-size: 1.8rem;
 		margin-top: 0;
 		margin-bottom: 20px;
@@ -171,8 +171,8 @@
 	}
 
 	.avoid-list li:before {
-		content: "•";
-		color: #4B766E;
+		content: '•';
+		color: #4b766e;
 		font-weight: bold;
 		display: inline-block;
 		width: 1em;
@@ -198,7 +198,7 @@
 
 	em {
 		font-style: italic;
-		color: #4B766E;
+		color: #4b766e;
 		font-weight: 600;
 	}
 

@@ -22,9 +22,8 @@
 <div
 	id="subscribe"
 	aria-labelledby="email-subscription-heading"
-	class={`w-full ${sectionPadding} relative overflow-hidden bg-main/5 bg-gray-50`}
+	class={`w-full ${sectionPadding} relative overflow-hidden bg-gray-50 bg-main/5`}
 >
-
 	<div class="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 		<div class="w-full rounded-2xl bg-white shadow-sm ring-1 ring-black/5">
 			<div class={`mx-auto max-w-4xl text-center ${compact ? 'px-6 py-8' : 'px-8 py-16'}`}>

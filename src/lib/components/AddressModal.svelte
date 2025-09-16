@@ -14,8 +14,6 @@
 		document.body.style.overflow = '';
 	}
 
-
-
 	// Create page translations
 	const pageTranslations = createPageTranslations();
 
@@ -39,7 +37,11 @@
 	let saveError = '';
 
 	// Handle Nova Poshta selection changes
-	function handleNovaPoshtaChange(data: {npCityName: string; npCityFullName: string; npWarehouse: string}) {
+	function handleNovaPoshtaChange(data: {
+		npCityName: string;
+		npCityFullName: string;
+		npWarehouse: string;
+	}) {
 		const { npCityName, npCityFullName, npWarehouse } = data;
 		addressData = {
 			...addressData,
@@ -97,7 +99,6 @@
 </script>
 
 {#if show}
-
 	<!-- Modal overlay -->
 	<div
 		class="modal-overlay"
@@ -179,10 +180,17 @@
 						align-items: center !important;
 						justify-content: center !important;
 					"
-					on:mouseenter={(e) => e.currentTarget.style.background = '#f5f5f5'}
-					on:mouseleave={(e) => e.currentTarget.style.background = 'none'}
+					on:mouseenter={(e) => (e.currentTarget.style.background = '#f5f5f5')}
+					on:mouseleave={(e) => (e.currentTarget.style.background = 'none')}
 				>
-					<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+					<svg
+						width="20"
+						height="20"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+					>
 						<path d="M18 6L6 18M6 6l12 12"></path>
 					</svg>
 				</button>
@@ -200,7 +208,8 @@
 							type="text"
 							id="modal-address-name"
 							class="form-input"
-							placeholder={$pageTranslations?.t('profile.address.addressNamePlaceholder') || 'Home, Work, etc.'}
+							placeholder={$pageTranslations?.t('profile.address.addressNamePlaceholder') ||
+								'Home, Work, etc.'}
 							bind:value={addressData.name}
 							required
 						/>
@@ -209,12 +218,9 @@
 					<!-- Is Default Checkbox -->
 					<div class="form-group checkbox">
 						<label class="checkbox-label">
-							<input
-								type="checkbox"
-								id="modal-is-default"
-								bind:checked={addressData.isDefault}
-							/>
-							{$pageTranslations?.t('profile.address.setDefaultCheckbox') || 'Set as default address'}
+							<input type="checkbox" id="modal-is-default" bind:checked={addressData.isDefault} />
+							{$pageTranslations?.t('profile.address.setDefaultCheckbox') ||
+								'Set as default address'}
 						</label>
 					</div>
 
@@ -239,20 +245,10 @@
 
 			<!-- Modal footer -->
 			<div class="modal-footer">
-				<button
-					type="button"
-					class="btn btn-secondary"
-					on:click={handleClose}
-					disabled={isSaving}
-				>
+				<button type="button" class="btn btn-secondary" on:click={handleClose} disabled={isSaving}>
 					{$pageTranslations?.t('profile.address.cancel') || 'Cancel'}
 				</button>
-				<button
-					type="button"
-					class="btn btn-primary"
-					on:click={handleSubmit}
-					disabled={isSaving}
-				>
+				<button type="button" class="btn btn-primary" on:click={handleSubmit} disabled={isSaving}>
 					{#if isSaving}
 						{$pageTranslations?.t('profile.saving') || 'Saving...'}
 					{:else}
@@ -361,7 +357,7 @@
 
 	.form-input:focus {
 		outline: none;
-		border-color: #4B766E;
+		border-color: #4b766e;
 	}
 
 	.checkbox {
@@ -380,7 +376,7 @@
 		margin: 0;
 	}
 
-	.checkbox-label input[type="checkbox"] {
+	.checkbox-label input[type='checkbox'] {
 		width: 16px;
 		height: 16px;
 		cursor: pointer;
@@ -407,7 +403,7 @@
 	}
 
 	.btn-primary {
-		background: #4B766E;
+		background: #4b766e;
 		color: white;
 	}
 

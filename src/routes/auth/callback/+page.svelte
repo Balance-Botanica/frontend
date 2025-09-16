@@ -12,14 +12,15 @@
 
 		// Проверяем URL на наличие OAuth параметров
 		let currentUrl = '';
-		page.subscribe(p => {
+		page.subscribe((p) => {
 			currentUrl = p.url.toString();
 		});
 
 		// Проверяем, есть ли OAuth токены в URL
-		const hasOAuthTokens = currentUrl.includes('access_token=') ||
-		                      currentUrl.includes('#access_token=') ||
-		                      currentUrl.includes('?code=');
+		const hasOAuthTokens =
+			currentUrl.includes('access_token=') ||
+			currentUrl.includes('#access_token=') ||
+			currentUrl.includes('?code=');
 
 		console.log('🔍 [OAuth] OAuth tokens detected:', hasOAuthTokens);
 
@@ -28,7 +29,7 @@
 
 			try {
 				// Даем Supabase время автоматически обработать токены
-				await new Promise(resolve => setTimeout(resolve, 1000));
+				await new Promise((resolve) => setTimeout(resolve, 1000));
 
 				// Проверяем сессию
 				const { data: sessionData } = await supabase.auth.getSession();
@@ -42,17 +43,14 @@
 
 					// Моментальный редирект
 					goto('/', { replaceState: true });
-
 				} else {
 					console.log('⚠️ [OAuth] No session found, instant redirect to login...');
 					goto('/login?error=No session', { replaceState: true });
 				}
-
 			} catch (error) {
 				console.error('❌ [OAuth] Error processing OAuth:', error);
 				goto('/login?error=Processing error', { replaceState: true });
 			}
-
 		} else {
 			console.log('⚠️ [OAuth] No OAuth tokens found, instant redirect to login...');
 			goto('/login?error=No OAuth data', { replaceState: true });
@@ -60,16 +58,12 @@
 	});
 </script>
 
-<div class="min-h-screen flex items-center justify-center bg-gray-50">
-	<div class="max-w-md w-full space-y-8">
+<div class="flex min-h-screen items-center justify-center bg-gray-50">
+	<div class="w-full max-w-md space-y-8">
 		<div class="text-center">
-			<div class="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600 mx-auto"></div>
-			<h2 class="mt-4 text-center text-xl font-semibold text-gray-900">
-				Redirecting...
-			</h2>
-			<p class="mt-1 text-center text-xs text-gray-500">
-				Completing authentication
-			</p>
+			<div class="mx-auto h-8 w-8 animate-spin rounded-full border-b-2 border-green-600"></div>
+			<h2 class="mt-4 text-center text-xl font-semibold text-gray-900">Redirecting...</h2>
+			<p class="mt-1 text-center text-xs text-gray-500">Completing authentication</p>
 		</div>
 	</div>
 </div>

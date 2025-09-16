@@ -9,8 +9,8 @@
 		required = false,
 		name = '',
 		id = '',
-		onChange = (() => {}),
-		onInput = ((event: Event) => {})
+		onChange = () => {},
+		onInput = (event: Event) => {}
 	} = $props<{
 		type?: 'text' | 'email' | 'password' | 'number';
 		placeholder?: string;

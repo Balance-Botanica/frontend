@@ -9,7 +9,7 @@
 	import { cartStore } from '$lib/stores/cart.store';
 
 	// Detect language from optional route parameter
-	let lang = $derived($page.params?.lang || 'uk-ua');
+	const lang = $derived($page.params?.lang || 'uk-ua');
 
 	// State for order success
 	let orderSuccess = false;
@@ -67,7 +67,8 @@
 					console.log('[CHECKOUT] Time difference (ms):', timeDiff);
 					console.log('[CHECKOUT] Time difference (hours):', timeDiff / (60 * 60 * 1000));
 
-					if (timeDiff < 24 * 60 * 60 * 1000) { // 24 hours
+					if (timeDiff < 24 * 60 * 60 * 1000) {
+						// 24 hours
 						console.log('[CHECKOUT] ✅ Order is recent, setting lastOrder');
 						lastOrder = orderData.orderData;
 						console.log('[CHECKOUT] Last order set:', lastOrder);
@@ -104,84 +105,106 @@
 </script>
 
 {#if $pageTranslations}
-<SEO
-	title={$pageTranslations.t('cart.checkout.title')}
-	description="Complete your order with Google Pay or Apple Pay"
-	locale={$pageTranslations.locale}
-/>
+	<SEO
+		title={$pageTranslations.t('cart.checkout.title')}
+		description="Complete your order with Google Pay or Apple Pay"
+		locale={$pageTranslations.locale}
+	/>
 
-<main class="checkout-page">
-	<div class="checkout-container">
-		{#if orderSuccess && lastOrder}
-			{@debug orderSuccess, lastOrder}
-			{console.log('[CHECKOUT] ===== SHOWING SUCCESS MESSAGE =====')}
-			{console.log('[CHECKOUT] orderSuccess:', orderSuccess)}
-			{console.log('[CHECKOUT] lastOrder:', lastOrder)}
-			{console.log('[CHECKOUT] Order ID:', lastOrder?.id)}
-			<!-- Order Success with Details -->
-			<div class="success-message">
-				<div class="success-icon">
-					<svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-						<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-						<polyline points="22,4 12,14.01 9,11.01"></polyline>
-					</svg>
-				</div>
+	<main class="checkout-page">
+		<div class="checkout-container">
+			{#if orderSuccess && lastOrder}
+				{@debug orderSuccess, lastOrder}
+				{console.log('[CHECKOUT] ===== SHOWING SUCCESS MESSAGE =====')}
+				{console.log('[CHECKOUT] orderSuccess:', orderSuccess)}
+				{console.log('[CHECKOUT] lastOrder:', lastOrder)}
+				{console.log('[CHECKOUT] Order ID:', lastOrder?.id)}
+				<!-- Order Success with Details -->
+				<div class="success-message">
+					<div class="success-icon">
+						<svg
+							width="80"
+							height="80"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+						>
+							<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+							<polyline points="22,4 12,14.01 9,11.01"></polyline>
+						</svg>
+					</div>
 
-				<h1 class="success-title">{$pageTranslations?.t('cart.checkout.successTitle') || 'Thank you for your order!'}</h1>
+					<h1 class="success-title">
+						{$pageTranslations?.t('cart.checkout.successTitle') || 'Thank you for your order!'}
+					</h1>
 
-				<p class="success-description">
-					{$pageTranslations?.t('cart.checkout.successMessage') || 'We have received your order and will contact you shortly to confirm the details.'}
-				</p>
+					<p class="success-description">
+						{$pageTranslations?.t('cart.checkout.successMessage') ||
+							'We have received your order and will contact you shortly to confirm the details.'}
+					</p>
 
-				<!-- Order Details -->
-				<div class="order-details">
-					<div class="order-info">
-						<h3>Order #{lastOrder.id}</h3>
-						<p>Total: {formatPrice(lastOrder.total)}</p>
-						<p>Items: {lastOrder.items?.length || 0}</p>
+					<!-- Order Details -->
+					<div class="order-details">
+						<div class="order-info">
+							<h3>Order #{lastOrder.id}</h3>
+							<p>Total: {formatPrice(lastOrder.total)}</p>
+							<p>Items: {lastOrder.items?.length || 0}</p>
+						</div>
+					</div>
+
+					<div class="success-actions">
+						<button class="primary-btn" on:click={() => goto('/products')}>
+							{$pageTranslations?.t('cart.checkout.continueShopping') || 'Continue Shopping'}
+						</button>
+						<a href="/orders" class="secondary-btn">
+							{$pageTranslations?.t('cart.checkout.viewOrders') || 'View My Orders'}
+						</a>
 					</div>
 				</div>
+			{:else}
+				{@debug orderSuccess, lastOrder}
+				{console.log('[CHECKOUT] ===== SHOWING ACCESS DENIED =====')}
+				{console.log('[CHECKOUT] orderSuccess:', orderSuccess)}
+				{console.log('[CHECKOUT] lastOrder:', lastOrder)}
+				{console.log(
+					'[CHECKOUT] Condition not met: orderSuccess && lastOrder =',
+					orderSuccess && lastOrder
+				)}
+				<!-- Regular Checkout Page (redirect to cart if accessed directly) -->
+				<div class="success-message">
+					<div class="error-icon">
+						<svg
+							width="80"
+							height="80"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+						>
+							<circle cx="12" cy="12" r="10"></circle>
+							<line x1="12" y1="8" x2="12" y2="12"></line>
+							<line x1="12" y1="16" x2="12.01" y2="16"></line>
+						</svg>
+					</div>
 
-				<div class="success-actions">
-					<button class="primary-btn" on:click={() => goto('/products')}>
-						{$pageTranslations?.t('cart.checkout.continueShopping') || 'Continue Shopping'}
-					</button>
-					<a href="/orders" class="secondary-btn">
-						{$pageTranslations?.t('cart.checkout.viewOrders') || 'View My Orders'}
-					</a>
+					<h1 class="success-title">Access Denied</h1>
+
+					<p class="success-description">
+						This page is only accessible after completing an order. Please go back to your cart.
+					</p>
+
+					<div class="success-actions">
+						<button class="primary-btn" on:click={() => goto('/cart')}> Return to Cart </button>
+					</div>
 				</div>
-			</div>
-		{:else}
-			{@debug orderSuccess, lastOrder}
-			{console.log('[CHECKOUT] ===== SHOWING ACCESS DENIED =====')}
-			{console.log('[CHECKOUT] orderSuccess:', orderSuccess)}
-			{console.log('[CHECKOUT] lastOrder:', lastOrder)}
-			{console.log('[CHECKOUT] Condition not met: orderSuccess && lastOrder =', orderSuccess && lastOrder)}
-			<!-- Regular Checkout Page (redirect to cart if accessed directly) -->
-			<div class="success-message">
-				<div class="error-icon">
-					<svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-						<circle cx="12" cy="12" r="10"></circle>
-						<line x1="12" y1="8" x2="12" y2="12"></line>
-						<line x1="12" y1="16" x2="12.01" y2="16"></line>
-					</svg>
-				</div>
-
-				<h1 class="success-title">Access Denied</h1>
-
-				<p class="success-description">
-					This page is only accessible after completing an order. Please go back to your cart.
-				</p>
-
-				<div class="success-actions">
-					<button class="primary-btn" on:click={() => goto('/cart')}>
-						Return to Cart
-					</button>
-				</div>
-			</div>
-		{/if}
-	</div>
-</main>
+			{/if}
+		</div>
+	</main>
 {:else}
 	<!-- Loading state while translations are initializing -->
 	<main class="checkout-page">
@@ -222,7 +245,7 @@
 	}
 
 	.success-icon svg {
-		color: #4B766E;
+		color: #4b766e;
 	}
 
 	.success-title {
@@ -260,7 +283,7 @@
 		font-family: 'Nunito', sans-serif;
 		font-size: 18px;
 		font-weight: 600;
-		color: #4B766E;
+		color: #4b766e;
 		margin: 0 0 8px 0;
 	}
 
@@ -278,7 +301,8 @@
 		color: #dc3545;
 	}
 
-	.primary-btn, .secondary-btn {
+	.primary-btn,
+	.secondary-btn {
 		font-family: 'Nunito', sans-serif;
 		font-size: 16px;
 		font-weight: 600;
@@ -292,7 +316,7 @@
 	}
 
 	.primary-btn {
-		background: #4B766E;
+		background: #4b766e;
 		color: white;
 		box-shadow: 0 4px 12px rgba(75, 118, 110, 0.3);
 	}
@@ -304,12 +328,12 @@
 
 	.secondary-btn {
 		background: #f5f5f5;
-		color: #4B766E;
-		border: 2px solid #4B766E;
+		color: #4b766e;
+		border: 2px solid #4b766e;
 	}
 
 	.secondary-btn:hover {
-		background: #4B766E;
+		background: #4b766e;
 		color: white;
 		text-decoration: none;
 	}
@@ -454,7 +478,8 @@
 		border-bottom: 2px solid #f0f0f0;
 	}
 
-	.customer-details, .delivery-details {
+	.customer-details,
+	.delivery-details {
 		margin-bottom: 24px;
 		padding: 16px;
 		background: #f8f9fa;
@@ -474,7 +499,8 @@
 		margin-bottom: 6px;
 	}
 
-	.form-input, .form-select {
+	.form-input,
+	.form-select {
 		width: 100%;
 		padding: 12px;
 		border: 1px solid #ddd;
@@ -485,12 +511,15 @@
 		transition: border-color 0.2s;
 	}
 
-	.form-input:focus, .form-select:focus {
-		border-color: #4B766E;
+	.form-input:focus,
+	.form-select:focus {
+		border-color: #4b766e;
 		outline: none;
 	}
 
-	.selected-address, .new-address-form, .no-address {
+	.selected-address,
+	.new-address-form,
+	.no-address {
 		margin-top: 16px;
 		padding: 12px;
 		background: white;
@@ -498,7 +527,8 @@
 		border: 1px solid #e0e0e0;
 	}
 
-	.selected-address h4, .new-address-form h4 {
+	.selected-address h4,
+	.new-address-form h4 {
 		font-family: 'Nunito', sans-serif;
 		font-size: 16px;
 		font-weight: 600;
@@ -525,9 +555,9 @@
 		width: 100%;
 		padding: 12px 20px;
 		border-radius: 8px;
-		border: 2px solid #4B766E;
+		border: 2px solid #4b766e;
 		background: transparent;
-		color: #4B766E;
+		color: #4b766e;
 		font-family: 'Nunito', sans-serif;
 		font-size: 14px;
 		font-weight: 600;
@@ -536,7 +566,7 @@
 	}
 
 	.back-btn:hover {
-		background: #4B766E;
+		background: #4b766e;
 		color: white;
 	}
 

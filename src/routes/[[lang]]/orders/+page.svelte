@@ -11,24 +11,24 @@
 	const { data }: { data: PageData } = $props();
 
 	// Detect language from optional route parameter
-	let lang = $derived($page.params?.lang || 'uk-ua');
+	const lang = $derived($page.params?.lang || 'uk-ua');
 
 	// Create page translations
 	const pageTranslations = createPageTranslations();
 
 	// Page state from server data
 	let orders: Order[] = data.orders || [];
-	let error = data.error || '';
+	const error = data.error || '';
 
 	console.log('[Orders Page Client] Initial data received:', {
 		ordersCount: orders.length,
 		hasError: !!error,
 		error: error,
-		orders: orders.map(o => ({ id: o.id, status: o.status, total: o.total }))
+		orders: orders.map((o) => ({ id: o.id, status: o.status, total: o.total }))
 	});
 
 	// Page state for client-side updates
-	let isLoading = false;
+	const isLoading = false;
 	let isCancelling: string | null = null;
 
 	// Auto-sync orders when page loads - TEMPORARILY DISABLED
@@ -56,12 +56,18 @@
 	// Get status color for UI
 	function getStatusColor(status: OrderStatus): string {
 		switch (status) {
-			case 'pending': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-			case 'confirmed': return 'bg-blue-100 text-blue-800 border-blue-200';
-			case 'shipped': return 'bg-purple-100 text-purple-800 border-purple-200';
-			case 'delivered': return 'bg-green-100 text-green-800 border-green-200';
-			case 'cancelled': return 'bg-red-100 text-red-800 border-red-200';
-			default: return 'bg-gray-100 text-gray-800 border-gray-200';
+			case 'pending':
+				return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+			case 'confirmed':
+				return 'bg-blue-100 text-blue-800 border-blue-200';
+			case 'shipped':
+				return 'bg-purple-100 text-purple-800 border-purple-200';
+			case 'delivered':
+				return 'bg-green-100 text-green-800 border-green-200';
+			case 'cancelled':
+				return 'bg-red-100 text-red-800 border-red-200';
+			default:
+				return 'bg-gray-100 text-gray-800 border-gray-200';
 		}
 	}
 
@@ -75,9 +81,13 @@
 
 	// Cancel order function
 	async function cancelOrder(orderId: string) {
-		if (!confirm($pageTranslations?.t('cart.orders.confirmCancel', {
-			defaultValue: 'Are you sure you want to cancel this order?'
-		}))) {
+		if (
+			!confirm(
+				$pageTranslations?.t('cart.orders.confirmCancel', {
+					defaultValue: 'Are you sure you want to cancel this order?'
+				})
+			)
+		) {
 			return;
 		}
 
@@ -98,25 +108,26 @@
 			}
 
 			// Update the order status in the local state
-			orders = orders.map(order =>
-				order.id === orderId
-					? { ...order, status: 'cancelled' as OrderStatus }
-					: order
+			orders = orders.map((order) =>
+				order.id === orderId ? { ...order, status: 'cancelled' as OrderStatus } : order
 			);
 
 			// Show success message
 			if ($pageTranslations) {
-				alert($pageTranslations.t('cart.orders.cancelledSuccess', {
-					defaultValue: 'Order cancelled successfully'
-				}));
+				alert(
+					$pageTranslations.t('cart.orders.cancelledSuccess', {
+						defaultValue: 'Order cancelled successfully'
+					})
+				);
 			}
-
 		} catch (error) {
 			console.error('Failed to cancel order:', error);
 			if ($pageTranslations) {
-				alert($pageTranslations.t('cart.orders.cancelledError', {
-					defaultValue: 'Failed to cancel order. Please try again.'
-				}));
+				alert(
+					$pageTranslations.t('cart.orders.cancelledError', {
+						defaultValue: 'Failed to cancel order. Please try again.'
+					})
+				);
 			}
 		} finally {
 			isCancelling = null;
@@ -152,7 +163,6 @@
 
 			console.log(`[Orders Page] 📊 Orders updated: ${oldCount} → ${newCount}`);
 			console.log('[Orders Page] ✅ Automatic sync completed successfully');
-
 		} catch (error) {
 			console.error('[Orders Page] ❌ Automatic sync failed:', error);
 			// Don't show alerts for automatic sync - just log the error
@@ -160,141 +170,191 @@
 			console.log('[Orders Page] 🔄 Sync process finished');
 		}
 	}
-
-
 </script>
 
 {#if $pageTranslations}
-<SEO
-	title={$pageTranslations.t('cart.orders.meta.title', { defaultValue: 'My Orders | Balance Botanica' })}
-	description={$pageTranslations.t('cart.orders.meta.description', { defaultValue: 'View your order history and track current orders' })}
-/>
+	<SEO
+		title={$pageTranslations.t('cart.orders.meta.title', {
+			defaultValue: 'My Orders | Balance Botanica'
+		})}
+		description={$pageTranslations.t('cart.orders.meta.description', {
+			defaultValue: 'View your order history and track current orders'
+		})}
+	/>
 
-<main class="orders-page">
-	<div class="orders-container">
-		<!-- Header -->
-		<div class="orders-header">
-			<h1 class="orders-title">{$pageTranslations.t('cart.orders.title', { defaultValue: 'My Orders' })} ({orders.length})</h1>
-		</div>
-
-		<!-- Error state -->
-		{#if error}
-			<div class="error-state">
-				<h1 class="orders-title">{$pageTranslations.t('cart.orders.title', { defaultValue: 'My Orders' })} ({orders.length})</h1>
-				<div class="error-icon">
-					<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-						<circle cx="12" cy="12" r="10"></circle>
-						<line x1="12" y1="8" x2="12" y2="12"></line>
-						<line x1="12" y1="16" x2="12.01" y2="16"></line>
-					</svg>
-				</div>
-				<h2 class="error-title">{$pageTranslations.t('cart.orders.error.title', { defaultValue: 'Error' })}</h2>
-				<p class="error-message">{error}</p>
+	<main class="orders-page">
+		<div class="orders-container">
+			<!-- Header -->
+			<div class="orders-header">
+				<h1 class="orders-title">
+					{$pageTranslations.t('cart.orders.title', { defaultValue: 'My Orders' })} ({orders.length})
+				</h1>
 			</div>
-		{:else if orders.length === 0}
-			<!-- Empty state -->
-			<div class="empty-state">
-				<div class="empty-icon">
-					<svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
-						<path d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m0 0h8"></path>
-					</svg>
-				</div>
-				<h2 class="empty-title">{$pageTranslations.t('cart.orders.empty.title', { defaultValue: 'No orders yet' })}</h2>
-				<p class="empty-message">{$pageTranslations.t('cart.orders.empty.message', { defaultValue: 'You haven\'t placed any orders yet. Start shopping to see your orders here.' })}</p>
-				<button class="shop-button" on:click={() => goto('/products')}>
-					{$pageTranslations.t('cart.orders.empty.shopNow', { defaultValue: 'Shop Now' })}
-				</button>
-			</div>
-		{:else}
-			<!-- Orders list -->
-			<div class="orders-list">
-				{#each orders as order (order.id)}
-					<div class="order-card">
-						<div class="order-header">
-							<div class="order-info">
-								<h3 class="order-number">{$pageTranslations.t('cart.orders.orderNumber', { defaultValue: 'Order #' })}{order.id}</h3>
-								<p class="order-date">{formatDate(order.createdAt)}</p>
-							</div>
-							<div class="order-status">
-								<span class="status-badge {getStatusColor(order.status)}">
-									{getStatusText(order.status)}
-								</span>
-							</div>
-						</div>
 
-						<div class="order-content">
-							<!-- Order items -->
-							<div class="order-items">
-								<h4>{$pageTranslations.t('cart.orders.items', { defaultValue: 'Items' })} ({order.items?.length || 0})</h4>
-								<div class="items-list">
-									{#each order.items || [] as item}
-										<div class="item-row">
-											<span class="item-name">{item.productName}</span>
-											<span class="item-details">
-												{item.quantity} × {formatPrice(item.price)}
-											</span>
-											<span class="item-total">{formatPrice(item.total)}</span>
-										</div>
-									{/each}
-								</div>
-							</div>
-
-							<!-- Order summary -->
-							<div class="order-summary">
-								<div class="summary-row">
-									<span>{$pageTranslations.t('cart.orders.total', { defaultValue: 'Total' })}:</span>
-									<span class="total-amount">{formatPrice(order.total)}</span>
-								</div>
-							</div>
-						</div>
-
-						{#if order.deliveryAddress}
-							<div class="order-delivery">
-								<h4>{$pageTranslations.t('cart.orders.deliveryAddress', { defaultValue: 'Delivery Address' })}</h4>
-								<div class="address-info">
-									{#if order.deliveryAddress.name}
-										<p><strong>{order.deliveryAddress.name}</strong></p>
-									{/if}
-									{#if order.deliveryAddress.npWarehouse}
-										<p>Nova Poshta: {order.deliveryAddress.npWarehouse}</p>
-									{/if}
-									{#if order.deliveryAddress.npCityName}
-										<p>{order.deliveryAddress.npCityName}</p>
-									{/if}
-								</div>
-							</div>
-						{/if}
-
-						<!-- Order Actions -->
-						{#if order.status !== 'delivered' && order.status !== 'cancelled'}
-							<div class="order-actions">
-								<button
-									class="cancel-order-btn"
-									on:click={() => cancelOrder(order.id)}
-									disabled={isCancelling === order.id}
-								>
-									{#if isCancelling === order.id}
-										{$pageTranslations.t('cart.orders.cancelling', { defaultValue: 'Cancelling...' })}
-									{:else}
-										{$pageTranslations.t('cart.orders.cancelOrder', { defaultValue: 'Cancel Order' })}
-									{/if}
-								</button>
-							</div>
-						{/if}
+			<!-- Error state -->
+			{#if error}
+				<div class="error-state">
+					<h1 class="orders-title">
+						{$pageTranslations.t('cart.orders.title', { defaultValue: 'My Orders' })} ({orders.length})
+					</h1>
+					<div class="error-icon">
+						<svg
+							width="48"
+							height="48"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2"
+						>
+							<circle cx="12" cy="12" r="10"></circle>
+							<line x1="12" y1="8" x2="12" y2="12"></line>
+							<line x1="12" y1="16" x2="12.01" y2="16"></line>
+						</svg>
 					</div>
-				{/each}
-			</div>
-		{/if}
-	</div>
-</main>
-{:else}
-<main class="orders-page">
-	<div class="orders-container">
-		<div class="orders-header">
-			<h1 class="orders-title">{($pageTranslations as any)?.t('cart.orders.loadingPage', { defaultValue: 'Loading...' }) || 'Loading...'} ({orders.length})</h1>
+					<h2 class="error-title">
+						{$pageTranslations.t('cart.orders.error.title', { defaultValue: 'Error' })}
+					</h2>
+					<p class="error-message">{error}</p>
+				</div>
+			{:else if orders.length === 0}
+				<!-- Empty state -->
+				<div class="empty-state">
+					<div class="empty-icon">
+						<svg
+							width="64"
+							height="64"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="1"
+						>
+							<path d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m0 0h8"></path>
+						</svg>
+					</div>
+					<h2 class="empty-title">
+						{$pageTranslations.t('cart.orders.empty.title', { defaultValue: 'No orders yet' })}
+					</h2>
+					<p class="empty-message">
+						{$pageTranslations.t('cart.orders.empty.message', {
+							defaultValue:
+								"You haven't placed any orders yet. Start shopping to see your orders here."
+						})}
+					</p>
+					<button class="shop-button" on:click={() => goto('/products')}>
+						{$pageTranslations.t('cart.orders.empty.shopNow', { defaultValue: 'Shop Now' })}
+					</button>
+				</div>
+			{:else}
+				<!-- Orders list -->
+				<div class="orders-list">
+					{#each orders as order (order.id)}
+						<div class="order-card">
+							<div class="order-header">
+								<div class="order-info">
+									<h3 class="order-number">
+										{$pageTranslations.t('cart.orders.orderNumber', {
+											defaultValue: 'Order #'
+										})}{order.id}
+									</h3>
+									<p class="order-date">{formatDate(order.createdAt)}</p>
+								</div>
+								<div class="order-status">
+									<span class="status-badge {getStatusColor(order.status)}">
+										{getStatusText(order.status)}
+									</span>
+								</div>
+							</div>
+
+							<div class="order-content">
+								<!-- Order items -->
+								<div class="order-items">
+									<h4>
+										{$pageTranslations.t('cart.orders.items', { defaultValue: 'Items' })} ({order
+											.items?.length || 0})
+									</h4>
+									<div class="items-list">
+										{#each order.items || [] as item}
+											<div class="item-row">
+												<span class="item-name">{item.productName}</span>
+												<span class="item-details">
+													{item.quantity} × {formatPrice(item.price)}
+												</span>
+												<span class="item-total">{formatPrice(item.total)}</span>
+											</div>
+										{/each}
+									</div>
+								</div>
+
+								<!-- Order summary -->
+								<div class="order-summary">
+									<div class="summary-row">
+										<span
+											>{$pageTranslations.t('cart.orders.total', { defaultValue: 'Total' })}:</span
+										>
+										<span class="total-amount">{formatPrice(order.total)}</span>
+									</div>
+								</div>
+							</div>
+
+							{#if order.deliveryAddress}
+								<div class="order-delivery">
+									<h4>
+										{$pageTranslations.t('cart.orders.deliveryAddress', {
+											defaultValue: 'Delivery Address'
+										})}
+									</h4>
+									<div class="address-info">
+										{#if order.deliveryAddress.name}
+											<p><strong>{order.deliveryAddress.name}</strong></p>
+										{/if}
+										{#if order.deliveryAddress.npWarehouse}
+											<p>Nova Poshta: {order.deliveryAddress.npWarehouse}</p>
+										{/if}
+										{#if order.deliveryAddress.npCityName}
+											<p>{order.deliveryAddress.npCityName}</p>
+										{/if}
+									</div>
+								</div>
+							{/if}
+
+							<!-- Order Actions -->
+							{#if order.status !== 'delivered' && order.status !== 'cancelled'}
+								<div class="order-actions">
+									<button
+										class="cancel-order-btn"
+										on:click={() => cancelOrder(order.id)}
+										disabled={isCancelling === order.id}
+									>
+										{#if isCancelling === order.id}
+											{$pageTranslations.t('cart.orders.cancelling', {
+												defaultValue: 'Cancelling...'
+											})}
+										{:else}
+											{$pageTranslations.t('cart.orders.cancelOrder', {
+												defaultValue: 'Cancel Order'
+											})}
+										{/if}
+									</button>
+								</div>
+							{/if}
+						</div>
+					{/each}
+				</div>
+			{/if}
 		</div>
-	</div>
-</main>
+	</main>
+{:else}
+	<main class="orders-page">
+		<div class="orders-container">
+			<div class="orders-header">
+				<h1 class="orders-title">
+					{($pageTranslations as any)?.t('cart.orders.loadingPage', {
+						defaultValue: 'Loading...'
+					}) || 'Loading...'} ({orders.length})
+				</h1>
+			</div>
+		</div>
+	</main>
 {/if}
 
 <style>
@@ -324,8 +384,6 @@
 		margin: 0;
 	}
 
-
-
 	/* Loading state */
 	.loading-state {
 		text-align: center;
@@ -336,19 +394,24 @@
 		width: 40px;
 		height: 40px;
 		border: 4px solid #f3f3f3;
-		border-top: 4px solid #4B766E;
+		border-top: 4px solid #4b766e;
 		border-radius: 50%;
 		animation: spin 1s linear infinite;
 		margin: 0 auto 16px;
 	}
 
 	@keyframes spin {
-		0% { transform: rotate(0deg); }
-		100% { transform: rotate(360deg); }
+		0% {
+			transform: rotate(0deg);
+		}
+		100% {
+			transform: rotate(360deg);
+		}
 	}
 
 	/* Error state */
-	.error-state, .empty-state {
+	.error-state,
+	.empty-state {
 		text-align: center;
 		padding: 64px 32px;
 		background: white;
@@ -356,14 +419,16 @@
 		box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 	}
 
-	.error-icon, .empty-icon {
+	.error-icon,
+	.empty-icon {
 		margin-bottom: 24px;
 		display: flex;
 		justify-content: center;
 		color: #666;
 	}
 
-	.error-title, .empty-title {
+	.error-title,
+	.empty-title {
 		font-family: 'Nunito', sans-serif;
 		font-size: 24px;
 		font-weight: 600;
@@ -371,7 +436,8 @@
 		margin-bottom: 16px;
 	}
 
-	.error-message, .empty-message {
+	.error-message,
+	.empty-message {
 		font-family: 'Nunito', sans-serif;
 		font-size: 16px;
 		color: #666;
@@ -379,7 +445,8 @@
 		line-height: 1.5;
 	}
 
-	.retry-button, .shop-button {
+	.retry-button,
+	.shop-button {
 		font-family: 'Nunito', sans-serif;
 		font-size: 16px;
 		font-weight: 600;
@@ -391,7 +458,7 @@
 	}
 
 	.retry-button {
-		background: #4B766E;
+		background: #4b766e;
 		color: white;
 	}
 
@@ -400,7 +467,7 @@
 	}
 
 	.shop-button {
-		background: #4B766E;
+		background: #4b766e;
 		color: white;
 	}
 
@@ -438,7 +505,7 @@
 		font-family: 'Nunito', sans-serif;
 		font-size: 20px;
 		font-weight: 600;
-		color: #4B766E;
+		color: #4b766e;
 		margin: 0 0 4px 0;
 	}
 
@@ -464,7 +531,8 @@
 		padding: 24px;
 	}
 
-	.order-items h4, .order-delivery h4 {
+	.order-items h4,
+	.order-delivery h4 {
 		font-family: 'Nunito', sans-serif;
 		font-size: 16px;
 		font-weight: 600;
@@ -507,7 +575,7 @@
 		font-family: 'Nunito', sans-serif;
 		font-size: 14px;
 		font-weight: 600;
-		color: #4B766E;
+		color: #4b766e;
 	}
 
 	.order-summary {
@@ -533,7 +601,7 @@
 		font-family: 'Nunito', sans-serif;
 		font-size: 20px;
 		font-weight: 700;
-		color: #4B766E;
+		color: #4b766e;
 	}
 
 	.order-delivery {
@@ -603,8 +671,6 @@
 		.orders-title {
 			font-size: 28px;
 		}
-
-
 
 		.order-header {
 			flex-direction: column;

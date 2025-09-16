@@ -5,7 +5,7 @@
 	import ProductGrid from './ProductGrid.svelte';
 	
 	// Sample products data for ProductGrid example
-	let products = [
+	const products = [
 		{
 			id: '1',
 			name: 'CBD Oil 5%',

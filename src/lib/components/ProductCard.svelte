@@ -79,7 +79,7 @@
 	let imgRef: HTMLImageElement | null = null; // Changed from HTMLDivElement to HTMLImageElement
 	let touchStartX = 0;
 	let touchStartY = 0;
-	let touchEndX = 0;
+	const touchEndX = 0;
 	let isSwiping = false;
 
 	const dispatch = createEventDispatcher<{
@@ -128,7 +128,7 @@
 		}
 
 		currentImageIndex = 0;
-		
+
 		// Log final state
 		// console.log(`  ✅ Final state for "${product.name}":`);
 		// console.log('    ImageUrls:', imageUrls);
@@ -154,7 +154,7 @@
 
 	// Format price from kopiyky to UAH
 	$: formattedPrice = (product.price / 100).toFixed(2);
-	
+
 	// Log price formatting
 	$: {
 		// console.log(`💰 Price for "${product.name}": ${product.price} kopiyky = ${formattedPrice} грн`);
@@ -200,13 +200,13 @@
 
 	function handleTouchMove(event: TouchEvent) {
 		if (!isSwiping) return;
-		
+
 		const touchX = event.touches[0].clientX;
 		const touchY = event.touches[0].clientY;
-		
+
 		const diffX = touchStartX - touchX;
 		const diffY = touchStartY - touchY;
-		
+
 		// Check if horizontal swipe
 		if (Math.abs(diffX) > Math.abs(diffY)) {
 			event.preventDefault();
@@ -215,11 +215,11 @@
 
 	function handleTouchEnd(event: TouchEvent) {
 		if (!isSwiping) return;
-		
+
 		const touchEndX = event.changedTouches[0].clientX;
 		const diffX = touchStartX - touchEndX;
 		const absDiffX = Math.abs(diffX);
-		
+
 		// Minimum swipe distance
 		if (absDiffX > 50) {
 			if (diffX > 0) {
@@ -228,10 +228,10 @@
 				prevImage(); // Swipe right - previous image
 			}
 		}
-		
+
 		isSwiping = false;
 	}
-	
+
 	// Add keyboard event handler for accessibility
 	function handleKeyDown(event: KeyboardEvent, action: () => void) {
 		if (event.key === 'Enter' || event.key === ' ') {
@@ -289,7 +289,7 @@
 		// 	categories: product.categories
 		// });
 		// console.log('  Current imageUrls state:', imageUrls);
-		
+
 		// Only start slideshow if there are multiple unique images
 		if (imageUrls.length > 1) {
 			// console.log('  🎠 Starting slideshow with interval');
@@ -330,30 +330,39 @@
 	class="overflow-hidden {className}"
 	style="min-height: 650px; height: 100%; display: flex; flex-direction: column; max-width: 100%;"
 >
-	<div class="flex h-full flex-col justify-end items-start p-4 md:p-6 gap-4 md:gap-6">
+	<div class="flex h-full flex-col items-start justify-end gap-4 p-4 md:gap-6 md:p-6">
 		<!-- Top Section: Rating + Bestseller Badge -->
 		{#if showRating || (showBestsellerBadge && (forceBestsellerBadge || productIndex === 1 || productIndex === 2))}
-			<div class="flex items-start justify-between w-full py-1">
+			<div class="flex w-full items-start justify-between py-1">
 				<!-- Rating and Reviews -->
 				{#if showRating}
 					<div class="flex flex-col items-start space-y-1 md:space-y-2">
 						<div class="flex space-x-1">
 							{#each Array(5) as _, _i}
-								<svg class="h-4 w-4 md:h-5 md:w-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+								<svg
+									class="h-4 w-4 text-yellow-400 md:h-5 md:w-5"
+									fill="currentColor"
+									viewBox="0 0 20 20"
+								>
 									<path
 										d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
 									/>
 								</svg>
 							{/each}
 						</div>
-						<span class="text-[14px] md:text-[16px] leading-[18px] md:leading-[22px] font-normal text-[#474747]">100 Відгуків</span>
+						<span
+							class="text-[14px] leading-[18px] font-normal text-[#474747] md:text-[16px] md:leading-[22px]"
+							>100 Відгуків</span
+						>
 					</div>
 				{/if}
 
 				<!-- Bestseller Badge -->
 				{#if showBestsellerBadge && (forceBestsellerBadge || productIndex === 1 || productIndex === 2)}
-					<div class="rounded-[38px] bg-[#1f1f1f] px-3 py-1 md:px-4 md:py-2 ml-auto">
-						<span class="text-[14px] md:text-[16px] leading-[22px] font-normal text-white">Бестселер</span>
+					<div class="ml-auto rounded-[38px] bg-[#1f1f1f] px-3 py-1 md:px-4 md:py-2">
+						<span class="text-[14px] leading-[22px] font-normal text-white md:text-[16px]"
+							>Бестселер</span
+						>
 					</div>
 				{/if}
 			</div>
@@ -363,21 +372,23 @@
 		{/if}
 
 		<!-- Product Image Section -->
-		<div 
-			class="relative w-full overflow-hidden rounded-xl bg-white group" 
+		<div
+			class="group relative w-full overflow-hidden rounded-xl bg-white"
 			style="height: 240px;"
 			ontouchstart={handleTouchStart}
 			ontouchend={handleTouchEnd}
 		>
 			<!-- Image Counter (only for multiple images) -->
 			{#if imageUrls.length > 1}
-				<div class="absolute top-3 right-3 z-10 rounded-full bg-black/60 px-2 py-1 text-xs font-medium text-white backdrop-blur-sm">
+				<div
+					class="absolute top-3 right-3 z-10 rounded-full bg-black/60 px-2 py-1 text-xs font-medium text-white backdrop-blur-sm"
+				>
 					{currentImageIndex + 1} / {imageUrls.length}
 				</div>
 			{/if}
 			<!-- Main Image -->
 			{#if imageUrls.length > 0}
-				<div 
+				<div
 					class="h-full w-full cursor-pointer object-cover transition-opacity duration-500"
 					role="button"
 					tabindex="0"
@@ -418,7 +429,7 @@
 				</div>
 			{:else}
 				<!-- Fallback Image -->
-				<div 
+				<div
 					class="h-full w-full cursor-pointer object-cover"
 					role="button"
 					tabindex="0"
@@ -457,7 +468,7 @@
 			{#if imageUrls.length > 1}
 				<!-- Previous Button -->
 				<button
-					class="touch-button absolute top-1/2 left-3 flex h-10 w-10 -translate-y-1/2 transform items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-sm transition-all duration-300 hover:bg-black/60 hover:scale-110 shadow-lg opacity-0 group-hover:opacity-100"
+					class="touch-button absolute top-1/2 left-3 flex h-10 w-10 -translate-y-1/2 transform items-center justify-center rounded-full bg-black/40 text-white opacity-0 shadow-lg backdrop-blur-sm transition-all duration-300 group-hover:opacity-100 hover:scale-110 hover:bg-black/60"
 					onclick={prevImage}
 					aria-label="Previous image"
 				>
@@ -473,7 +484,7 @@
 
 				<!-- Next Button -->
 				<button
-					class="touch-button absolute top-1/2 right-3 flex h-10 w-10 -translate-y-1/2 transform items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-sm transition-all duration-300 hover:bg-black/60 hover:scale-110 shadow-lg opacity-0 group-hover:opacity-100"
+					class="touch-button absolute top-1/2 right-3 flex h-10 w-10 -translate-y-1/2 transform items-center justify-center rounded-full bg-black/40 text-white opacity-0 shadow-lg backdrop-blur-sm transition-all duration-300 group-hover:opacity-100 hover:scale-110 hover:bg-black/60"
 					onclick={nextImage}
 					aria-label="Next image"
 				>
@@ -491,8 +502,9 @@
 				<div class="absolute bottom-3 left-1/2 flex -translate-x-1/2 transform space-x-2">
 					{#each imageUrls as _, index}
 						<button
-							class="touch-button h-3 w-3 rounded-full transition-all duration-300 {index === currentImageIndex
-								? 'bg-white shadow-lg scale-125'
+							class="touch-button h-3 w-3 rounded-full transition-all duration-300 {index ===
+							currentImageIndex
+								? 'scale-125 bg-white shadow-lg'
 								: 'bg-white/60 hover:bg-white/80'}"
 							onclick={() => goToImage(index)}
 							aria-label={`Go to image ${index + 1}`}
@@ -530,16 +542,18 @@
 		{/if}
 
 		<!-- Product Information -->
-		<div class="space-y-2 md:space-y-3 w-full">
+		<div class="w-full space-y-2 md:space-y-3">
 			<!-- Product Name -->
-			<h3 class="font-poppins text-[18px] md:text-[20px] leading-[26px] md:leading-[28px] font-semibold text-black">
+			<h3
+				class="font-poppins text-[18px] leading-[26px] font-semibold text-black md:text-[20px] md:leading-[28px]"
+			>
 				{product.name}
 			</h3>
 
 			<!-- Product Description -->
 			{#if showDescription && product.description}
 				<p
-					class="font-poppins line-clamp-2 text-[14px] md:text-[16px] leading-[20px] md:leading-[22px] font-normal text-[#474747]"
+					class="font-poppins line-clamp-2 text-[14px] leading-[20px] font-normal text-[#474747] md:text-[16px] md:leading-[22px]"
 				>
 					{product.description}
 				</p>
@@ -547,12 +561,14 @@
 		</div>
 
 		<!-- Price -->
-		<div class="font-poppins text-[20px] md:text-[24px] leading-[28px] md:leading-[33px] font-semibold text-black">
+		<div
+			class="font-poppins text-[20px] leading-[28px] font-semibold text-black md:text-[24px] md:leading-[33px]"
+		>
 			{formattedPrice} грн
 		</div>
 
 		<!-- Action Buttons Section - Sticky to bottom -->
-		<div class="mt-auto space-y-4 w-full">
+		<div class="mt-auto w-full space-y-4">
 			<!-- Add to Cart Button -->
 			{#if showAddToCart}
 				<button
@@ -583,15 +599,17 @@
 	.font-poppins {
 		font-family: 'Nunito', sans-serif;
 	}
-	
+
 	/* Prevent overflow on small screens */
 	@media (max-width: 400px) {
-		h3, p, div {
+		h3,
+		p,
+		div {
 			max-width: 100%;
 			word-break: break-word;
 		}
 	}
-	
+
 	/* Mobile-specific styles */
 	@media (max-width: 767px) {
 		.mobile-card {
@@ -606,7 +624,7 @@
 			box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
 			transform: translateY(-2px);
 		}
-		
+
 		.touch-button {
 			min-height: 44px;
 			min-width: 44px;
@@ -625,7 +643,7 @@
 			transform: scale(0.98);
 		}
 	}
-	
+
 	/* Desktop styles */
 	@media (min-width: 768px) {
 		.touch-button {
@@ -634,7 +652,7 @@
 			min-width: auto;
 			transform: none;
 		}
-		
+
 		.touch-button:active {
 			transform: none;
 		}

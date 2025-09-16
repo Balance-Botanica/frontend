@@ -10,7 +10,7 @@
 		lang?: string;
 	}
 
-	let {
+	const {
 		title,
 		description,
 		author = 'Balance Botanica',
@@ -20,7 +20,9 @@
 	}: Props = $props();
 
 	const isEnglish = $derived(lang === 'en');
-	const formattedDate = $derived(date ? new Date(date).toLocaleDateString(lang === 'en' ? 'en-US' : 'uk-UA') : null);
+	const formattedDate = $derived(
+		date ? new Date(date).toLocaleDateString(lang === 'en' ? 'en-US' : 'uk-UA') : null
+	);
 </script>
 
 <header class="article-hero">

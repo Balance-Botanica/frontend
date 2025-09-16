@@ -14,9 +14,15 @@
 	const tocItems = $derived([]);
 
 	const keyPoints = $derived([
-		isEnglish ? 'Evidence-based research and clinical studies' : 'Доказові дослідження та клінічні випробування',
-		isEnglish ? 'Safe for dogs and cats with proper dosing' : 'Безпечний для собак та котів при правильному дозуванні',
-		isEnglish ? 'Natural pain relief and anti-inflammatory effects' : 'Натуральне знеболення та протизапальні ефекти',
+		isEnglish
+			? 'Evidence-based research and clinical studies'
+			: 'Доказові дослідження та клінічні випробування',
+		isEnglish
+			? 'Safe for dogs and cats with proper dosing'
+			: 'Безпечний для собак та котів при правильному дозуванні',
+		isEnglish
+			? 'Natural pain relief and anti-inflammatory effects'
+			: 'Натуральне знеболення та протизапальні ефекти',
 		isEnglish ? 'Supported by veterinary science' : 'Підтримується ветеринарною наукою'
 	]);
 
@@ -27,11 +33,7 @@
 	});
 </script>
 
-<SEO
-	title={data.title}
-	description={data.description}
-	locale={lang}
-/>
+<SEO title={data.title} description={data.description} locale={lang} />
 
 <main class="cbd-main">
 	<div class="cbd-container">
@@ -42,12 +44,12 @@
 			author={data.author}
 			date={data.date}
 			readingTime={data.readingTime}
-			lang={lang}
+			{lang}
 		/>
 
 		<!-- Article Content with Layout -->
 		{#if data.content}
-			<ArticleLayout toc={tocItems} keyPoints={keyPoints} {lang} content={data.content} />
+			<ArticleLayout toc={tocItems} {keyPoints} {lang} content={data.content} />
 		{/if}
 
 		<!-- FAQ Section -->
@@ -71,22 +73,38 @@
 			<div class="cbd-related-grid">
 				<div class="cbd-related-card">
 					<h3>{isEnglish ? 'CBD for Cats' : 'CBD для котів'}</h3>
-					<p>{isEnglish ? 'Detailed guide to using CBD for cats' : 'Детальний посібник з використання CBD для котів'}</p>
+					<p>
+						{isEnglish
+							? 'Detailed guide to using CBD for cats'
+							: 'Детальний посібник з використання CBD для котів'}
+					</p>
 					<a href="/{lang}/cbd/cats/" class="cbd-link">{translations.learnMore} →</a>
 				</div>
 				<div class="cbd-related-card">
 					<h3>{isEnglish ? 'CBD for Dogs' : 'CBD для собак'}</h3>
-					<p>{isEnglish ? 'Detailed guide to using CBD for dogs' : 'Детальний посібник з використання CBD для собак'}</p>
+					<p>
+						{isEnglish
+							? 'Detailed guide to using CBD for dogs'
+							: 'Детальний посібник з використання CBD для собак'}
+					</p>
 					<a href="/{lang}/cbd/dogs/" class="cbd-link">{translations.learnMore} →</a>
 				</div>
 				<div class="cbd-related-card">
 					<h3>{isEnglish ? 'CBD Types' : 'Види CBD'}</h3>
-					<p>{isEnglish ? 'Difference between isolate, distillate and full spectrum' : 'Різниця між ізолятом, дистилятом та full spectrum'}</p>
+					<p>
+						{isEnglish
+							? 'Difference between isolate, distillate and full spectrum'
+							: 'Різниця між ізолятом, дистилятом та full spectrum'}
+					</p>
 					<a href="/{lang}/cbd/types/" class="cbd-link">{translations.learnMore} →</a>
 				</div>
 				<div class="cbd-related-card">
 					<h3>{isEnglish ? 'CBD Dosage' : 'Дозування CBD'}</h3>
-					<p>{isEnglish ? 'How to calculate the right dose for your pet' : 'Як правильно розрахувати дозу для вашого улюбленця'}</p>
+					<p>
+						{isEnglish
+							? 'How to calculate the right dose for your pet'
+							: 'Як правильно розрахувати дозу для вашого улюбленця'}
+					</p>
 					<a href="/{lang}/cbd/dosage/" class="cbd-link">{translations.learnMore} →</a>
 				</div>
 			</div>
@@ -106,7 +124,6 @@
 		margin: 0 auto;
 		padding: 0 20px;
 	}
-
 
 	/* Article content from markdown */
 	.cbd-article {
@@ -135,7 +152,7 @@
 	.cbd-article-content :global(h1) {
 		font-size: 36px;
 		font-weight: 700;
-		border-bottom: 3px solid #4B766E;
+		border-bottom: 3px solid #4b766e;
 		padding-bottom: 12px;
 		margin-top: 0;
 	}
@@ -143,7 +160,7 @@
 	.cbd-article-content :global(h2) {
 		font-size: 28px;
 		font-weight: 600;
-		border-bottom: 2px solid #4B766E;
+		border-bottom: 2px solid #4b766e;
 		padding-bottom: 8px;
 	}
 
@@ -176,7 +193,7 @@
 	}
 
 	.cbd-article-content :global(blockquote) {
-		border-left: 4px solid #4B766E;
+		border-left: 4px solid #4b766e;
 		padding-left: 16px;
 		margin: 24px 0;
 		font-style: italic;
@@ -186,7 +203,7 @@
 	/* Removed duplicate styles - now using :global() selectors in .cbd-article-content */
 
 	.cbd-article-content :global(a) {
-		color: #4B766E;
+		color: #4b766e;
 		text-decoration: none;
 		font-weight: 600;
 		transition: all 0.3s ease;
@@ -200,7 +217,7 @@
 	}
 
 	.cbd-article blockquote {
-		border-left: 4px solid #4B766E;
+		border-left: 4px solid #4b766e;
 		padding-left: 16px;
 		margin: 24px 0;
 		font-style: italic;
@@ -281,7 +298,9 @@
 		padding: 24px;
 		border: 1px solid #e0e0e0;
 		border-radius: 12px;
-		transition: transform 0.2s ease, box-shadow 0.2s ease;
+		transition:
+			transform 0.2s ease,
+			box-shadow 0.2s ease;
 	}
 
 	.cbd-related-card:hover {
@@ -304,7 +323,7 @@
 	}
 
 	.cbd-link {
-		color: #4B766E;
+		color: #4b766e;
 		text-decoration: none;
 		font-weight: 600;
 		font-size: 14px;

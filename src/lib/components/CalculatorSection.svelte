@@ -3,7 +3,7 @@
 	import PetCalculator from './PetCalculator.svelte';
 </script>
 
-<div id="calculator" class="relative w-full overflow-hidden py-20 md:py-28 bg-gray-50">
+<div id="calculator" class="relative w-full overflow-hidden bg-gray-50 py-20 md:py-28">
 	<!-- Background Image with Green Overlay -->
 	<div class="absolute inset-0">
 		<img
@@ -124,28 +124,28 @@
 			padding-right: 3rem !important;
 		}
 	}
-	
+
 	@media (max-width: 768px) {
 		div .relative.z-10.mx-auto.max-w-7xl {
 			padding-left: 3rem !important;
 			padding-right: 3rem !important;
 		}
 	}
-	
+
 	@media (max-width: 640px) {
 		div .relative.z-10.mx-auto.max-w-7xl {
 			padding-left: 3rem !important;
 			padding-right: 3rem !important;
 		}
 	}
-	
+
 	@media (max-width: 480px) {
 		div .relative.z-10.mx-auto.max-w-7xl {
 			padding-left: 3rem !important;
 			padding-right: 3rem !important;
 		}
 	}
-	
+
 	@media (max-width: 400px) {
 		div .relative.z-10.mx-auto.max-w-7xl {
 			padding-left: 3rem !important;

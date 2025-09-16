@@ -4,7 +4,7 @@
 		lang?: string;
 	}
 
-	let { toc, lang = 'uk-ua' }: Props = $props();
+	const { toc, lang = 'uk-ua' }: Props = $props();
 
 	const isEnglish = $derived(lang === 'en');
 </script>
@@ -49,12 +49,12 @@
 		margin-bottom: 0.5rem;
 	}
 
-	.article-toc nav li[data-level="3"] {
+	.article-toc nav li[data-level='3'] {
 		margin-left: 1rem;
 		font-size: 0.8125rem;
 	}
 
-	.article-toc nav li[data-level="3"] a {
+	.article-toc nav li[data-level='3'] a {
 		padding-left: 1rem;
 		border-left: 2px solid rgba(75, 118, 110, 0.3);
 	}

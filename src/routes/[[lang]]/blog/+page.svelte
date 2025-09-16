@@ -5,96 +5,104 @@
 	import { currentLocale } from '$lib/i18n/store';
 
 	// Detect language from optional route parameter
-	let lang = $derived($page.params?.lang || 'uk-ua');
+	const lang = $derived($page.params?.lang || 'uk-ua');
 
 	// Blog posts data for different languages
 	const blogPostsData = {
 		'uk-ua': [
 			{
-				title: "Що таке CBD і як він працює?",
-				description: "Повний гід по каннабидіолу, його механізм дії та користь для здоров'я. Розбираємося в науці за CBD.",
-				date: "2025-01-01",
-				author: "Команда Balance Botanica",
-				tags: ["CBD", "Здоров'я", "Наука"],
-				slug: "cbd-explained",
+				title: 'Що таке CBD і як він працює?',
+				description:
+					"Повний гід по каннабидіолу, його механізм дії та користь для здоров'я. Розбираємося в науці за CBD.",
+				date: '2025-01-01',
+				author: 'Команда Balance Botanica',
+				tags: ['CBD', "Здоров'я", 'Наука'],
+				slug: 'cbd-explained',
 				readingTime: 8
 			},
 			{
-				title: "CBD Isolate vs Full Spectrum: що обрати для вашого улюбленця?",
-				description: "Дізнайтеся про різницю між CBD ізолятом та повним спектром. Як обрати найкращий варіант для здоров'я вашого собаки чи кота.",
-				date: "2025-01-02",
-				author: "Команда Balance Botanica",
-				tags: ["CBD", "Тварини", "Здоров'я"],
-				slug: "cbd-isolate-vs-full-spectrum",
+				title: 'CBD Isolate vs Full Spectrum: що обрати для вашого улюбленця?',
+				description:
+					"Дізнайтеся про різницю між CBD ізолятом та повним спектром. Як обрати найкращий варіант для здоров'я вашого собаки чи кота.",
+				date: '2025-01-02',
+				author: 'Команда Balance Botanica',
+				tags: ['CBD', 'Тварини', "Здоров'я"],
+				slug: 'cbd-isolate-vs-full-spectrum',
 				readingTime: 6
 			},
 			{
-				title: "Користь CBD Golden Paste для домашніх тварин",
-				description: "Як CBD Golden Paste допомагає собакам та котам: від болю та запалення до покращення сну та загального благополуччя.",
-				date: "2025-01-03",
-				author: "Команда Balance Botanica",
-				tags: ["CBD", "Тварини", "Здоров'я"],
-				slug: "cbd-golden-paste-benefits-for-pets",
+				title: 'Користь CBD Golden Paste для домашніх тварин',
+				description:
+					'Як CBD Golden Paste допомагає собакам та котам: від болю та запалення до покращення сну та загального благополуччя.',
+				date: '2025-01-03',
+				author: 'Команда Balance Botanica',
+				tags: ['CBD', 'Тварини', "Здоров'я"],
+				slug: 'cbd-golden-paste-benefits-for-pets',
 				readingTime: 7
 			},
 			{
 				title: "Куркумін: повний посібник з користі для здоров'я",
-				description: "Дізнайтеся про потужні властивості куркуміну - природного протизапального засобу, що міститься в куркумі.",
-				date: "2025-01-04",
-				author: "Команда Balance Botanica",
-				tags: ["Куркумін", "Здоров'я", "Протизапалення"],
-				slug: "curcumin-benefits-complete-guide",
+				description:
+					'Дізнайтеся про потужні властивості куркуміну - природного протизапального засобу, що міститься в куркумі.',
+				date: '2025-01-04',
+				author: 'Команда Balance Botanica',
+				tags: ['Куркумін', "Здоров'я", 'Протизапалення'],
+				slug: 'curcumin-benefits-complete-guide',
 				readingTime: 9
 			}
 		],
-		'en': [
+		en: [
 			{
-				title: "What is CBD and How Does It Work?",
-				description: "Complete guide to cannabidiol, its mechanism of action and health benefits. Understanding the science behind CBD.",
-				date: "2025-01-01",
-				author: "Balance Botanica Team",
-				tags: ["CBD", "Health", "Science"],
-				slug: "cbd-explained",
+				title: 'What is CBD and How Does It Work?',
+				description:
+					'Complete guide to cannabidiol, its mechanism of action and health benefits. Understanding the science behind CBD.',
+				date: '2025-01-01',
+				author: 'Balance Botanica Team',
+				tags: ['CBD', 'Health', 'Science'],
+				slug: 'cbd-explained',
 				readingTime: 8
 			},
 			{
-				title: "CBD Isolate vs Full Spectrum: Which to Choose for Your Pet?",
-				description: "Learn about the difference between CBD isolate and full spectrum. How to choose the best option for your dog or cat's health.",
-				date: "2025-01-02",
-				author: "Balance Botanica Team",
-				tags: ["CBD", "Pets", "Health"],
-				slug: "cbd-isolate-vs-full-spectrum",
+				title: 'CBD Isolate vs Full Spectrum: Which to Choose for Your Pet?',
+				description:
+					"Learn about the difference between CBD isolate and full spectrum. How to choose the best option for your dog or cat's health.",
+				date: '2025-01-02',
+				author: 'Balance Botanica Team',
+				tags: ['CBD', 'Pets', 'Health'],
+				slug: 'cbd-isolate-vs-full-spectrum',
 				readingTime: 6
 			},
 			{
-				title: "Benefits of CBD Golden Paste for Pets",
-				description: "How CBD Golden Paste helps dogs and cats: from pain and inflammation relief to better sleep and overall well-being.",
-				date: "2025-01-03",
-				author: "Balance Botanica Team",
-				tags: ["CBD", "Pets", "Health"],
-				slug: "cbd-golden-paste-benefits-for-pets",
+				title: 'Benefits of CBD Golden Paste for Pets',
+				description:
+					'How CBD Golden Paste helps dogs and cats: from pain and inflammation relief to better sleep and overall well-being.',
+				date: '2025-01-03',
+				author: 'Balance Botanica Team',
+				tags: ['CBD', 'Pets', 'Health'],
+				slug: 'cbd-golden-paste-benefits-for-pets',
 				readingTime: 7
 			},
 			{
-				title: "Curcumin: Complete Guide to Health Benefits",
-				description: "Discover the powerful properties of curcumin - a natural anti-inflammatory compound found in turmeric.",
-				date: "2025-01-04",
-				author: "Balance Botanica Team",
-				tags: ["Curcumin", "Health", "Anti-inflammatory"],
-				slug: "curcumin-benefits-complete-guide",
+				title: 'Curcumin: Complete Guide to Health Benefits',
+				description:
+					'Discover the powerful properties of curcumin - a natural anti-inflammatory compound found in turmeric.',
+				date: '2025-01-04',
+				author: 'Balance Botanica Team',
+				tags: ['Curcumin', 'Health', 'Anti-inflammatory'],
+				slug: 'curcumin-benefits-complete-guide',
 				readingTime: 9
 			}
 		]
 	};
 
 	// Get current blog posts based on detected language
-	let blogPosts = $derived(blogPostsData[lang === 'en' ? 'en' : 'uk-ua'] || []);
+	const blogPosts = $derived(blogPostsData[lang === 'en' ? 'en' : 'uk-ua'] || []);
 
 	// Format date based on detected language
 	const formattedDate = (date: string) => {
 		const localeMap = {
 			'uk-ua': 'uk-UA',
-			'en': 'en-US'
+			en: 'en-US'
 		};
 		return new Date(date).toLocaleDateString(localeMap[lang] || 'uk-UA', {
 			year: 'numeric',
@@ -104,23 +112,23 @@
 	};
 
 	// Get translations based on detected language
-	let pageTitle = $derived(lang === 'en' ? 'Blog - Balance Botanica' : 'Блог - Balance Botanica');
-	let pageDescription = $derived(lang === 'en'
-		? 'Articles about CBD, health and natural products. Learn more about the benefits of cannabinoids and how they can improve your life.'
-		: "Статті про CBD, здоров'я та натуральні продукти. Дізнайтеся більше про користь каннабіноїдів та як вони можуть покращити ваше життя.");
-	let blogTitle = $derived(lang === 'en' ? 'Balance Botanica Blog' : 'Блог Balance Botanica');
-	let blogSubtitle = $derived(lang === 'en'
-		? 'Articles about CBD, health and natural products'
-		: "Статті про CBD, здоров'я та натуральні продукти");
-	let readMoreText = $derived(lang === 'en' ? 'Read more' : 'Читати далі');
-	let readingTimeLabel = $derived(lang === 'en' ? 'min' : 'хв');
+	const pageTitle = $derived(lang === 'en' ? 'Blog - Balance Botanica' : 'Блог - Balance Botanica');
+	const pageDescription = $derived(
+		lang === 'en'
+			? 'Articles about CBD, health and natural products. Learn more about the benefits of cannabinoids and how they can improve your life.'
+			: "Статті про CBD, здоров'я та натуральні продукти. Дізнайтеся більше про користь каннабіноїдів та як вони можуть покращити ваше життя."
+	);
+	const blogTitle = $derived(lang === 'en' ? 'Balance Botanica Blog' : 'Блог Balance Botanica');
+	const blogSubtitle = $derived(
+		lang === 'en'
+			? 'Articles about CBD, health and natural products'
+			: "Статті про CBD, здоров'я та натуральні продукти"
+	);
+	const readMoreText = $derived(lang === 'en' ? 'Read more' : 'Читати далі');
+	const readingTimeLabel = $derived(lang === 'en' ? 'min' : 'хв');
 </script>
 
-<SEO
-	title={pageTitle}
-	description={pageDescription}
-	locale={$page.data.locale}
-/>
+<SEO title={pageTitle} description={pageDescription} locale={$page.data.locale} />
 
 <main class="blog-main">
 	<div class="blog-container">
@@ -225,7 +233,9 @@
 		background: white;
 		border-radius: 16px;
 		box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-		transition: transform 0.2s ease, box-shadow 0.2s ease;
+		transition:
+			transform 0.2s ease,
+			box-shadow 0.2s ease;
 		overflow: hidden;
 	}
 
@@ -263,7 +273,7 @@
 	}
 
 	.post-link:hover {
-		color: #4B766E;
+		color: #4b766e;
 	}
 
 	.post-description {
@@ -282,7 +292,7 @@
 
 	.tag {
 		background: #f0f0f0;
-		color: #4B766E;
+		color: #4b766e;
 		padding: 4px 10px;
 		border-radius: 12px;
 		font-size: 11px;
@@ -304,7 +314,7 @@
 	}
 
 	.read-more {
-		color: #4B766E;
+		color: #4b766e;
 		text-decoration: none;
 		font-size: 14px;
 		font-weight: 600;
@@ -319,12 +329,10 @@
 		margin-top: 64px;
 	}
 
-
 	@media (max-width: 768px) {
 		.blog-header {
 			padding: 0 16px;
 		}
-
 
 		.blog-title {
 			font-size: 36px;
@@ -354,6 +362,5 @@
 		.newsletter-section {
 			margin-top: 48px;
 		}
-
 	}
 </style>

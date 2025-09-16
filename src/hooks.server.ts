@@ -153,6 +153,71 @@ const handleSecurityHeaders: Handle = async ({ event, resolve }) => {
 	return response;
 };
 
+// Smart redirects middleware
+const handleSmartRedirects: Handle = async ({ event, resolve }) => {
+	const pathname = event.url.pathname;
+	const search = event.url.search;
+
+	// Проверяем старые URL паттерны и редиректим на новые
+	const redirectRules: Record<string, string> = {
+		// Старые URL с языковыми префиксами -> новые URL
+		'/uk-ua/cbd': '/cbd',
+		'/uk-ua/cbd/': '/cbd',
+		'/uk-ua/knowledgebase/cbd': '/knowledgebase/cbd',
+		'/uk-ua/knowledgebase/cbd/': '/knowledgebase/cbd',
+		'/uk-ua/cbd/cats': '/knowledgebase/cbd/cats',
+		'/uk-ua/cbd/dogs': '/knowledgebase/cbd/dogs',
+		'/uk-ua/cbd/types': '/knowledgebase/cbd/types',
+		'/en/cbd': '/en/knowledgebase/cbd',
+		'/en/cbd/': '/en/knowledgebase/cbd',
+		'/en/cbd/cats': '/en/knowledgebase/cbd/cats',
+		'/en/cbd/dogs': '/en/knowledgebase/cbd/dogs',
+		'/en/cbd/types': '/en/knowledgebase/cbd/types'
+	};
+
+	// Проверяем точные совпадения
+	if (redirectRules[pathname]) {
+		const redirectUrl = redirectRules[pathname] + search;
+		console.log('🔄 [Redirect] Redirecting:', pathname, '->', redirectUrl);
+		return new Response(null, {
+			status: 302,
+			headers: {
+				Location: redirectUrl
+			}
+		});
+	}
+
+	// Проверяем паттерны с подстраницами
+	const patternRedirects = [
+		{ from: /^\/uk-ua\/cbd\/(.+)$/, to: '/knowledgebase/cbd/$1' },
+		{ from: /^\/uk-ua\/knowledgebase\/cbd\/(.+)$/, to: '/knowledgebase/cbd/$1' },
+		{ from: /^\/uk-ua\/cats-health\/(.+)$/, to: '/cats-health/$1' },
+		{ from: /^\/uk-ua\/dog-health\/(.+)$/, to: '/dog-health/$1' },
+		{ from: /^\/uk-ua\/veterinary-cbd\/(.+)$/, to: '/veterinary-cbd/$1' },
+		{ from: /^\/en\/cbd\/(.+)$/, to: '/en/knowledgebase/cbd/$1' },
+		{ from: /^\/en\/knowledgebase\/cbd\/(.+)$/, to: '/en/knowledgebase/cbd/$1' },
+		{ from: /^\/en\/cats-health\/(.+)$/, to: '/en/cats-health/$1' },
+		{ from: /^\/en\/dog-health\/(.+)$/, to: '/en/dog-health/$1' },
+		{ from: /^\/en\/veterinary-cbd\/(.+)$/, to: '/en/veterinary-cbd/$1' }
+	];
+
+	for (const { from, to } of patternRedirects) {
+		const match = pathname.match(from);
+		if (match) {
+			const redirectUrl = pathname.replace(from, to) + search;
+			console.log('🔄 [Redirect] Pattern redirect:', pathname, '->', redirectUrl);
+			return new Response(null, {
+				status: 302,
+				headers: {
+					Location: redirectUrl
+				}
+			});
+		}
+	}
+
+	return resolve(event);
+};
+
 // Locale detection middleware
 const handleLocale: Handle = async ({ event, resolve }) => {
 	const pathname = event.url.pathname;
@@ -223,6 +288,7 @@ const handleSuspiciousActivity: Handle = async ({ event, resolve }) => {
 
 export const handle: Handle = sequence(
 	handleSecurityHeaders,
+	handleSmartRedirects,
 	handleLocale,
 	handleSuspiciousActivity,
 	handleAuth

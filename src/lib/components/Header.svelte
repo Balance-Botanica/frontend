@@ -9,13 +9,14 @@
 	import { page } from '$app/stores';
 	import Logo from './Logo.svelte';
 	import { goto } from '$app/navigation';
+	import { getLocalizedUrl } from '$lib/stores/language';
 
 	// Import icons
 	import personIcon from '../assets/icons/person.svg';
 	import cartIcon from '../assets/icons/cart.svg';
 
 	// Determine logo link based on current locale
-	let logoHref = $derived(page.url?.pathname && (page.url.pathname.startsWith('/en/') || page.url.pathname === '/en') ? '/en/' : '/');
+	const logoHref = $derived(getLocalizedUrl('/'));
 
 	// Initialize auth store
 	onMount(() => {
@@ -77,16 +78,27 @@
 		});
 	});
 
-	let navigationLinks = $derived($pageTranslations
-		? [
-				{ href: '/products', label: $pageTranslations.t('header.navigation.shop') },
-				{ href: '/about', label: $pageTranslations.t('header.navigation.about') },
-				{ href: '/contacts', label: $pageTranslations.t('header.navigation.contacts') },
-				{ href: '/blog', label: $pageTranslations.t('header.navigation.blog') }
-			]
-		: []);
+	const navigationLinks = $derived(
+		$pageTranslations
+			? [
+					{
+						href: getLocalizedUrl('/products'),
+						label: $pageTranslations.t('header.navigation.shop')
+					},
+					{
+						href: getLocalizedUrl('/about'),
+						label: $pageTranslations.t('header.navigation.about')
+					},
+					{
+						href: getLocalizedUrl('/contacts'),
+						label: $pageTranslations.t('header.navigation.contacts')
+					},
+					{ href: getLocalizedUrl('/blog'), label: $pageTranslations.t('header.navigation.blog') }
+				]
+			: []
+	);
 
-		async function handlePersonClick() {
+	async function handlePersonClick() {
 		console.log('👤 [HEADER] Person icon clicked, auth state:', {
 			isAuthenticated: $isAuthenticated,
 			userEmail: $user?.email
@@ -105,7 +117,7 @@
 	// Handle logout confirmation
 	async function handleLogoutConfirm() {
 		console.log('🚪 [HEADER] Logout confirmed, signing out...');
-		
+
 		try {
 			showLogoutDialog = false;
 			await supabaseAuthStore.signOut();
@@ -123,12 +135,10 @@
 		showLogoutDialog = false;
 	}
 
-
-
 	// Function to get user display name, prioritizing Google account data
 	function getUserDisplayName(user: any): string {
 		if (!user) return 'User';
-		
+
 		// Priority order: full_name from Google > name > first+last > email
 		if (user.name) return user.name;
 		if (user.firstName && user.lastName) return `${user.firstName} ${user.lastName}`;
@@ -144,7 +154,7 @@
 		// Always go to cart page, authentication will be required only at checkout
 		goto('/cart');
 	}
-	
+
 	// Add keyboard event handler for accessibility
 	function handleKeyDown(event: KeyboardEvent, action: () => void) {
 		if (event.key === 'Enter' || event.key === ' ') {
@@ -207,11 +217,7 @@
 								<div class="user-icon-container logged-in" title="Account menu">
 									{#if $user?.avatarUrl}
 										<!-- Display Google profile picture if available -->
-										<img
-											src={$user.avatarUrl}
-											alt="Profile"
-											class="profile-picture"
-										/>
+										<img src={$user.avatarUrl} alt="Profile" class="profile-picture" />
 									{:else}
 										<!-- Fallback to person icon -->
 										<img src={personIcon} alt="Account" class="user-icon" />
@@ -248,8 +254,8 @@
 
 		<!-- Logout Confirmation Dialog -->
 		{#if showLogoutDialog}
-			<div 
-				class="logout-dialog-overlay" 
+			<div
+				class="logout-dialog-overlay"
 				role="button"
 				tabindex="0"
 				onclick={handleLogoutCancel}
@@ -260,8 +266,8 @@
 					}
 				}}
 			>
-				<div 
-					class="logout-dialog" 
+				<div
+					class="logout-dialog"
 					role="presentation"
 					onclick={(e) => e.stopPropagation()}
 					onkeydown={(e) => {
@@ -271,16 +277,10 @@
 					}}
 				>
 					<h3 class="logout-dialog-title">Confirm Logout</h3>
-					<p class="logout-dialog-message">
-						Are you sure you want to sign out?
-					</p>
+					<p class="logout-dialog-message">Are you sure you want to sign out?</p>
 					<div class="logout-dialog-buttons">
-						<button class="logout-cancel-btn" onclick={handleLogoutCancel}>
-							Cancel
-						</button>
-						<button class="logout-confirm-btn" onclick={handleLogoutConfirm}>
-							Sign Out
-						</button>
+						<button class="logout-cancel-btn" onclick={handleLogoutCancel}> Cancel </button>
+						<button class="logout-confirm-btn" onclick={handleLogoutConfirm}> Sign Out </button>
 					</div>
 				</div>
 			</div>
@@ -300,7 +300,7 @@
 		font-family: 'Nunito', sans-serif;
 		font-size: 14px;
 		font-weight: 500;
-		color: #4B766E;
+		color: #4b766e;
 		white-space: nowrap;
 		cursor: pointer;
 		transition: color 0.2s ease;
@@ -316,7 +316,7 @@
 		border-radius: 50%;
 		object-fit: cover;
 		transition: transform 0.2s ease;
-		border: 2px solid #4B766E;
+		border: 2px solid #4b766e;
 	}
 
 	.user-icon-container {
@@ -331,7 +331,7 @@
 
 	.user-icon-container.logged-in {
 		background: transparent;
-		border: 2px solid #4B766E;
+		border: 2px solid #4b766e;
 	}
 
 	.user-icon-container.logged-in:hover {
@@ -345,7 +345,7 @@
 	}
 
 	.user-icon-container.logged-out:hover {
-		border-color: #4B766E;
+		border-color: #4b766e;
 		transform: scale(1.1);
 	}
 
@@ -384,7 +384,7 @@
 		border-radius: 50%;
 		transition: all 0.2s ease;
 		background: transparent;
-		border: 2px solid #4B766E;
+		border: 2px solid #4b766e;
 		position: relative;
 	}
 
@@ -443,7 +443,9 @@
 		padding: 24px;
 		min-width: 320px;
 		max-width: 400px;
-		box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -6px rgba(0, 0, 0, 0.04);
+		box-shadow:
+			0 20px 25px -5px rgba(0, 0, 0, 0.1),
+			0 10px 10px -6px rgba(0, 0, 0, 0.04);
 		animation: slideIn 0.2s ease-out;
 	}
 
@@ -521,8 +523,6 @@
 			transform: translateY(0) scale(1);
 		}
 	}
-
-
 
 	/* Removed the media query for small screens padding */
 </style>

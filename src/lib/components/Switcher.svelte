@@ -8,14 +8,14 @@
 	export let variant: 'default' | 'cookie' = 'default';
 
 	// Generate a unique ID for accessibility
-	let switchId = 'switch-' + Math.random().toString(36).substr(2, 9);
+	const switchId = 'switch-' + Math.random().toString(36).substr(2, 9);
 
 	function handleToggle() {
 		if (!disabled) {
 			onChange(!checked);
 		}
 	}
-	
+
 	// Add keyboard event handler for accessibility
 	function handleKeyDown(event: KeyboardEvent) {
 		if (event.key === 'Enter' || event.key === ' ') {
@@ -35,21 +35,34 @@
 		{disabled}
 		onclick={handleToggle}
 		onkeydown={handleKeyDown}
-		class="relative inline-flex h-8 w-[52px] items-center rounded-full transition-all duration-200 ease-in-out cursor-pointer"
+		class="relative inline-flex h-8 w-[52px] cursor-pointer items-center rounded-full transition-all duration-200 ease-in-out"
 		style="
-      background-color: {variant === 'cookie' ? (checked ? '#f97316' : '#4b5563') : (checked ? colors.main : colors.tertiary)};
+      background-color: {variant === 'cookie'
+			? checked
+				? '#f97316'
+				: '#4b5563'
+			: checked
+				? colors.main
+				: colors.tertiary};
     "
 		class:opacity-50={disabled}
 		class:cursor-not-allowed={disabled}
 	>
 		<!-- Background -->
-		<div class="absolute inset-0 rounded-full transition-colors duration-200 ease-in-out"
-			style="background-color: {variant === 'cookie' ? (checked ? '#f97316' : '#4b5563') : (checked ? colors.main : colors.tertiary)};">
-		</div>
-		
+		<div
+			class="absolute inset-0 rounded-full transition-colors duration-200 ease-in-out"
+			style="background-color: {variant === 'cookie'
+				? checked
+					? '#f97316'
+					: '#4b5563'
+				: checked
+					? colors.main
+					: colors.tertiary};"
+		></div>
+
 		<!-- Knob -->
 		<div
-			class="absolute size-6 top-1/2 bg-white rounded-full shadow-md transition-all duration-200 ease-in-out"
+			class="absolute top-1/2 size-6 rounded-full bg-white shadow-md transition-all duration-200 ease-in-out"
 			style="
 				left: {checked ? '26px' : '2px'};
 				transform: translateY(-50%);
@@ -60,7 +73,7 @@
 	{#if label}
 		<label
 			id={switchId + '-label'}
-			class="cursor-pointer text-sm font-medium select-none transition-colors duration-200"
+			class="cursor-pointer text-sm font-medium transition-colors duration-200 select-none"
 			style="color: {disabled ? colors.primary : colors.text};"
 			class:cursor-not-allowed={disabled}
 		>
@@ -76,7 +89,7 @@
 		box-shadow: none !important;
 		ring: none !important;
 	}
-	
+
 	/* Убираем любые возможные focus кольца от Tailwind */
 	button:focus-visible {
 		outline: none !important;

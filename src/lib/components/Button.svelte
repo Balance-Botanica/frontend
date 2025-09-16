@@ -1,7 +1,13 @@
 <script lang="ts">
 	import { colors } from '../colors';
 
-	const { variant = 'primary', size = 'md', disabled = false, type = 'button', onClick = (() => {}) } = $props<{
+	const {
+		variant = 'primary',
+		size = 'md',
+		disabled = false,
+		type = 'button',
+		onClick = () => {}
+	} = $props<{
 		variant?: 'primary' | 'secondary' | 'outline' | 'ghost';
 		size?: 'sm' | 'md' | 'lg';
 		disabled?: boolean;
@@ -45,7 +51,7 @@
 	{type}
 	{disabled}
 	on:click={onClick}
-	class="inline-flex items-center justify-center rounded-lg border-2 font-medium transition-all duration-200 ease-in-out focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer {sizeClasses[
+	class="inline-flex cursor-pointer items-center justify-center rounded-lg border-2 font-medium transition-all duration-200 ease-in-out focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 {sizeClasses[
 		size
 	]} {disabled ? 'cursor-not-allowed opacity-50' : ''}"
 	style="

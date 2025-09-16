@@ -37,7 +37,7 @@ export const load: PageServerLoad = async ({ params }) => {
 	}
 
 	let content = '';
-	let metadata: any = {};
+	const metadata: any = {};
 
 	if (existsSync(contentPath)) {
 		try {

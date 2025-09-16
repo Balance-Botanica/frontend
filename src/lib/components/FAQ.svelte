@@ -47,8 +47,8 @@
 </script>
 
 <div id="faq" class="w-full py-12 md:py-16 lg:py-20">
-	<div class="w-full px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-		<div class="rounded-2xl bg-gray-50 p-6 md:p-12 shadow-sm ring-1 ring-black/5">
+	<div class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+		<div class="rounded-2xl bg-gray-50 p-6 shadow-sm ring-1 ring-black/5 md:p-12">
 			<!-- Section Header -->
 			<div class="mb-12 text-center">
 				<h2 class="mb-4 text-3xl font-bold text-gray-900" style="color: {colors.main}">
@@ -126,4 +126,3 @@
 		</div>
 	</div>
 </div>
-

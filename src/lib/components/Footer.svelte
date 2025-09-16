@@ -9,6 +9,7 @@
 	import Button from './Button.svelte';
 	import Input from './Input.svelte';
 	import { page } from '$app/stores';
+	import { getLocalizedUrl } from '$lib/stores/language';
 
 	const platforms: Array<'facebook' | 'instagram' | 'tiktok' | 'telegram' | 'whatsapp'> = [
 		'facebook',
@@ -21,22 +22,22 @@
 	// Pillar articles data
 	const pillarArticles = [
 		{
-			path: '/cbd',
+			path: '/knowledgebase/cbd',
 			title: t('footer.pillar.cbd'),
 			description: t('footer.pillar.cbd_desc')
 		},
 		{
-			path: '/cbd/cats',
+			path: '/knowledgebase/cbd/cats',
 			title: t('footer.pillar.cbd_cats'),
 			description: t('footer.pillar.cbd_cats_desc')
 		},
 		{
-			path: '/cbd/dogs',
+			path: '/knowledgebase/cbd/dogs',
 			title: t('footer.pillar.cbd_dogs'),
 			description: t('footer.pillar.cbd_dogs_desc')
 		},
 		{
-			path: '/cbd/types',
+			path: '/knowledgebase/cbd/types',
 			title: t('footer.pillar.cbd_types'),
 			description: t('footer.pillar.cbd_types_desc')
 		},
@@ -57,9 +58,6 @@
 		}
 	];
 
-	// Get current language
-	const lang = $derived($page.params?.lang || 'uk-ua');
-
 	function getSocialIcon(platform: string) {
 		switch (platform) {
 			case 'facebook':
@@ -79,11 +77,8 @@
 
 	// Function to handle navigation with proper language prefix
 	function handleNavigation(path: string) {
-		const fullPath = lang === 'uk-ua' ? `/${lang}${path}` : path;
+		const fullPath = getLocalizedUrl(path);
 		console.log('Navigate to:', fullPath);
-		// In a real implementation, you would use goto from $app/navigation
-		// import { goto } from '$app/navigation';
-		// goto(fullPath);
 		window.location.href = fullPath;
 	}
 </script>
@@ -101,25 +96,25 @@
 
 				<!-- Navigation Links - Horizontal -->
 				<nav class="flex flex-wrap gap-6">
-					<button 
+					<button
 						class="text-sm text-white/80 transition-colors hover:text-white"
 						onclick={() => handleNavigation('/products')}
 					>
 						{t('footer.navigation.shop')}
 					</button>
-					<button 
+					<button
 						class="text-sm text-white/80 transition-colors hover:text-white"
 						onclick={() => handleNavigation('/about')}
 					>
 						{t('footer.navigation.about')}
 					</button>
-					<button 
+					<button
 						class="text-sm text-white/80 transition-colors hover:text-white"
 						onclick={() => handleNavigation('/contacts')}
 					>
 						{t('footer.navigation.contacts')}
 					</button>
-					<button 
+					<button
 						class="text-sm text-white/80 transition-colors hover:text-white"
 						onclick={() => handleNavigation('/blog')}
 					>
@@ -154,13 +149,17 @@
 			<div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
 				{#each pillarArticles as article (article.path)}
 					<button
-						class="group rounded-lg border border-white/20 bg-white/5 p-4 text-left transition-all hover:border-white/40 hover:bg-white/10"
+						class="pillar-article-button group rounded-lg border border-white/20 bg-white/5 p-4 text-left transition-all hover:border-white/40 hover:bg-white/10"
 						onclick={() => handleNavigation(article.path)}
 					>
-						<h4 class="mb-2 text-sm font-medium text-white group-hover:text-green-300 transition-colors">
+						<h4
+							class="mb-2 text-sm font-medium text-white transition-colors group-hover:text-green-300"
+						>
 							{article.title}
 						</h4>
-						<p class="text-xs leading-relaxed text-white/70 group-hover:text-white/90 transition-colors">
+						<p
+							class="text-xs leading-relaxed text-white/70 transition-colors group-hover:text-white/90"
+						>
 							{article.description}
 						</p>
 					</button>
@@ -175,7 +174,7 @@
 				<div class="text-xs text-white/60">
 					<span>{t('footer.legal.copyright')}</span>
 					<span class="mx-2">|</span>
-					<button 
+					<button
 						class="transition-colors hover:text-white"
 						onclick={() => handleNavigation('/terms')}
 					>
@@ -205,5 +204,10 @@
 </footer>
 
 <style>
+	/* Pillar articles cursor pointer */
+	.pillar-article-button {
+		cursor: pointer;
+	}
+
 	/* Removed the media query for small screens padding */
 </style>

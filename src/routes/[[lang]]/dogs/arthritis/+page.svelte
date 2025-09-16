@@ -13,15 +13,11 @@
 	const translations = {
 		learnMore: isEnglish ? 'Learn More' : 'Узнать больше',
 		relatedArticles: isEnglish ? 'Related Articles' : 'Связанные статьи',
-		backToMain: isEnglish ? 'Back to Dog Health' : 'Назад до здоров\'я собак'
+		backToMain: isEnglish ? 'Back to Dog Health' : "Назад до здоров'я собак"
 	};
 </script>
 
-<SEO
-	title={data.title}
-	description={data.description}
-	locale={lang}
-/>
+<SEO title={data.title} description={data.description} locale={lang} />
 
 <main class="dog-arthritis-main">
 	<div class="dog-arthritis-container">
@@ -29,7 +25,9 @@
 		<nav class="breadcrumb">
 			<a href="/{lang}/dog-health" class="breadcrumb-link">{translations.backToMain}</a>
 			<span class="breadcrumb-separator">→</span>
-			<span class="breadcrumb-current">{isEnglish ? 'Arthritis Treatment' : 'Лікування артриту'}</span>
+			<span class="breadcrumb-current"
+				>{isEnglish ? 'Arthritis Treatment' : 'Лікування артриту'}</span
+			>
 		</nav>
 
 		<!-- Hero Section -->
@@ -66,22 +64,38 @@
 			<div class="dog-arthritis-related-grid">
 				<div class="dog-arthritis-related-card">
 					<h3>{isEnglish ? 'CBD for Dogs' : 'CBD для собак'}</h3>
-					<p>{isEnglish ? 'Learn about CBD therapy for arthritis and joint pain' : 'Дізнайтеся про CBD терапію при артриті та болю в суглобах'}</p>
+					<p>
+						{isEnglish
+							? 'Learn about CBD therapy for arthritis and joint pain'
+							: 'Дізнайтеся про CBD терапію при артриті та болю в суглобах'}
+					</p>
 					<a href="/{lang}/cbd/dogs/" class="dog-arthritis-link">{translations.learnMore} →</a>
 				</div>
 				<div class="dog-arthritis-related-card">
 					<h3>{isEnglish ? 'Joint Supplements' : 'Добавки для суглобів'}</h3>
-					<p>{isEnglish ? 'Natural supplements for joint health' : 'Натуральні добавки для здоров\'я суглобів'}</p>
+					<p>
+						{isEnglish
+							? 'Natural supplements for joint health'
+							: "Натуральні добавки для здоров'я суглобів"}
+					</p>
 					<a href="/{lang}/dogs/gelatin/" class="dog-arthritis-link">{translations.learnMore} →</a>
 				</div>
 				<div class="dog-arthritis-related-card">
 					<h3>{isEnglish ? 'Senior Dog Care' : 'Догляд за літніми собаками'}</h3>
-					<p>{isEnglish ? 'Special care tips for older dogs' : 'Особливі поради по догляду за літніми собаками'}</p>
+					<p>
+						{isEnglish
+							? 'Special care tips for older dogs'
+							: 'Особливі поради по догляду за літніми собаками'}
+					</p>
 					<a href="/{lang}/dog-health/" class="dog-arthritis-link">{translations.learnMore} →</a>
 				</div>
 				<div class="dog-arthritis-related-card">
 					<h3>{isEnglish ? 'Weight Management' : 'Контроль ваги'}</h3>
-					<p>{isEnglish ? 'Importance of weight control for joint health' : 'Важливість контролю ваги для здоров\'я суглобів'}</p>
+					<p>
+						{isEnglish
+							? 'Importance of weight control for joint health'
+							: "Важливість контролю ваги для здоров'я суглобів"}
+					</p>
 					<a href="/{lang}/dog-health/" class="dog-arthritis-link">{translations.learnMore} →</a>
 				</div>
 			</div>
@@ -109,7 +123,7 @@
 	}
 
 	.breadcrumb-link {
-		color: #4B766E;
+		color: #4b766e;
 		text-decoration: none;
 		font-weight: 500;
 	}
@@ -176,7 +190,7 @@
 	.dog-arthritis-article h1 {
 		font-size: 36px;
 		font-weight: 700;
-		border-bottom: 3px solid #4B766E;
+		border-bottom: 3px solid #4b766e;
 		padding-bottom: 12px;
 		margin-top: 0;
 	}
@@ -184,7 +198,7 @@
 	.dog-arthritis-article h2 {
 		font-size: 28px;
 		font-weight: 600;
-		border-bottom: 2px solid #4B766E;
+		border-bottom: 2px solid #4b766e;
 		padding-bottom: 8px;
 	}
 
@@ -217,7 +231,7 @@
 	}
 
 	.dog-arthritis-article blockquote {
-		border-left: 4px solid #4B766E;
+		border-left: 4px solid #4b766e;
 		padding-left: 16px;
 		margin: 24px 0;
 		font-style: italic;
@@ -228,7 +242,7 @@
 	}
 
 	.dog-arthritis-article-content a {
-		color: #4B766E;
+		color: #4b766e;
 		text-decoration: none;
 		font-weight: 600;
 		transition: all 0.3s ease;
@@ -315,7 +329,9 @@
 		padding: 24px;
 		border: 1px solid #e0e0e0;
 		border-radius: 12px;
-		transition: transform 0.2s ease, box-shadow 0.2s ease;
+		transition:
+			transform 0.2s ease,
+			box-shadow 0.2s ease;
 	}
 
 	.dog-arthritis-related-card:hover {
@@ -338,7 +354,7 @@
 	}
 
 	.dog-arthritis-link {
-		color: #4B766E;
+		color: #4b766e;
 		text-decoration: none;
 		font-weight: 600;
 		font-size: 14px;

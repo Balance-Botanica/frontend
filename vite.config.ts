@@ -5,6 +5,7 @@ import { defineConfig, loadEnv } from 'vite';
 
 export default defineConfig({
 	plugins: [tailwindcss(), sveltekit(), devtoolsJson()],
+	assetsInclude: ['**/*.md'],
 	server: {
 		host: true, // Allow all hosts by default
 		proxy: {},

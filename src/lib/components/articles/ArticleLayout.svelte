@@ -10,13 +10,7 @@
 		content?: string;
 	}
 
-	let {
-		toc = [],
-		keyPoints = [],
-		lang = 'uk-ua',
-		children,
-		content = ''
-	}: Props = $props();
+	const { toc = [], keyPoints = [], lang = 'uk-ua', children, content = '' }: Props = $props();
 
 	const isEnglish = $derived(lang === 'en');
 
@@ -46,7 +40,7 @@
 				if (!heading.id) {
 					// Generate ID from heading text
 					const text = heading.textContent || '';
-					let id = generateSlug(text);
+					const id = generateSlug(text);
 
 					// Ensure unique ID by adding index if needed
 					let counter = 1;
@@ -70,10 +64,10 @@
 	}
 
 	// Processed content with heading IDs
-	let processedContent = $derived(addHeadingIds(content));
+	const processedContent = $derived(addHeadingIds(content));
 
 	// Auto-generate TOC from content headings
-	let autoToc = $derived(() => {
+	const autoToc = $derived(() => {
 		if (!content || typeof window === 'undefined') return [];
 
 		try {
@@ -81,22 +75,24 @@
 			tempDiv.innerHTML = content;
 			const headings = tempDiv.querySelectorAll('h2, h3');
 
-			return Array.from(headings).map(heading => {
-				const text = heading.textContent || '';
-				const id = generateSlug(text);
-				return {
-					href: `#${id}`,
-					text: text,
-					level: parseInt(heading.tagName.charAt(1))
-				};
-			}).filter(item => item.text.trim());
+			return Array.from(headings)
+				.map((heading) => {
+					const text = heading.textContent || '';
+					const id = generateSlug(text);
+					return {
+						href: `#${id}`,
+						text: text,
+						level: parseInt(heading.tagName.charAt(1))
+					};
+				})
+				.filter((item) => item.text.trim());
 		} catch (error) {
 			return [];
 		}
 	});
 
 	// Use auto-generated TOC if no manual TOC provided
-	let finalToc = $derived(toc.length > 0 ? toc : autoToc);
+	const finalToc = $derived(toc.length > 0 ? toc : autoToc);
 
 	// Handle smooth scrolling to anchors
 	function handleAnchorClick(event: Event) {
@@ -307,8 +303,8 @@
 		}
 	}
 
-/* Global smooth scrolling */
-:global(html) {
-	scroll-behavior: smooth;
-}
+	/* Global smooth scrolling */
+	:global(html) {
+		scroll-behavior: smooth;
+	}
 </style>

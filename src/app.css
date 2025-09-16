@@ -26,7 +26,7 @@ html {
 @media (hover: none) and (pointer: coarse) {
 	/* Remove hover effects on touch devices */
 	* {
-		--tw-ring-inset: var(--tw-empty,/*!*/ /*!*/);
+		--tw-ring-inset: var(--tw-empty, /*!*/ /*!*/);
 		--tw-ring-offset-width: 0px;
 		--tw-ring-offset-color: #fff;
 		--tw-ring-color: rgb(59 130 246 / 0.5);
@@ -39,7 +39,11 @@ html {
 
 /* Enhanced touch targets for mobile - only on small screens */
 @media (max-width: 767px) {
-	button, a, input, select, textarea {
+	button,
+	a,
+	input,
+	select,
+	textarea {
 		min-height: 44px;
 		min-width: 44px;
 	}
@@ -47,7 +51,11 @@ html {
 
 /* Mobile-specific focus states for accessibility */
 @media (hover: none) and (pointer: coarse) {
-	button:focus, a:focus, input:focus, select:focus, textarea:focus {
+	button:focus,
+	a:focus,
+	input:focus,
+	select:focus,
+	textarea:focus {
 		outline: 2px solid var(--color-main);
 		outline-offset: 2px;
 	}
@@ -92,7 +100,16 @@ html {
 
 /* Base styles */
 body {
-	font-family: 'Nunito', ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+	font-family:
+		'Nunito',
+		ui-sans-serif,
+		system-ui,
+		-apple-system,
+		Segoe UI,
+		Roboto,
+		Helvetica,
+		Arial,
+		sans-serif;
 	line-height: 1.6;
 	color: var(--color-text);
 	background-color: var(--color-background);
@@ -192,7 +209,7 @@ body {
 		box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
 		transform: translateY(-2px);
 	}
-	
+
 	/* Mobile grid styles */
 	.mobile-grid {
 		display: grid;
@@ -212,22 +229,22 @@ body {
 		min-width: auto;
 		transform: none;
 	}
-	
+
 	.touch-button:active {
 		transform: none;
 	}
-	
+
 	.mobile-card {
 		/* Reset mobile-specific styles for desktop */
 		box-shadow: none;
 		transform: none;
 	}
-	
+
 	.mobile-card:hover {
 		box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
 		transform: translateY(-2px);
 	}
-	
+
 	.mobile-grid {
 		/* Reset mobile grid for desktop */
 		grid-template-columns: repeat(3, 1fr);

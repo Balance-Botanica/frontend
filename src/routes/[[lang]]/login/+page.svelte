@@ -8,7 +8,7 @@
 	import SEO from '$lib/components/SEO.svelte';
 
 	// Detect language from optional route parameter
-	let lang = $derived($page.params?.lang || 'uk-ua');
+	const lang = $derived($page.params?.lang || 'uk-ua');
 
 	// Create page translations
 	const pageTranslations = createPageTranslations();
@@ -21,7 +21,7 @@
 	// Handle successful authentication
 	function handleAuthSuccess(event: CustomEvent) {
 		console.log('✅ Authentication successful:', event.detail);
-		
+
 		// Redirect to homepage
 		goto('/');
 	}
@@ -41,27 +41,24 @@
 </script>
 
 {#if $pageTranslations}
-<SEO
-	title={$pageTranslations.t('login.meta.title')}
-	description={$pageTranslations.t('login.meta.description')}
-	locale={$pageTranslations.locale}
-/>
+	<SEO
+		title={$pageTranslations.t('login.meta.title')}
+		description={$pageTranslations.t('login.meta.description')}
+		locale={$pageTranslations.locale}
+	/>
 
-<!-- Main Content -->
-<main class="login-page">
-	<div class="login-container">
-		<LoginForm 
-			on:success={handleAuthSuccess}
-			on:error={handleAuthError}
-		/>
-	</div>
-</main>
+	<!-- Main Content -->
+	<main class="login-page">
+		<div class="login-container">
+			<LoginForm on:success={handleAuthSuccess} on:error={handleAuthError} />
+		</div>
+	</main>
 {/if}
 
 <style>
 	.login-page {
 		min-height: 100vh;
-		background: #F8F7F6;
+		background: #f8f7f6;
 		padding: 40px 0;
 		display: flex;
 		align-items: center;
@@ -72,6 +69,4 @@
 		width: 100%;
 		max-width: 540px;
 	}
-
-
 </style>

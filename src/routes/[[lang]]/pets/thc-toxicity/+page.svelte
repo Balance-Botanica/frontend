@@ -17,11 +17,7 @@
 	};
 </script>
 
-<SEO
-	title={data.title}
-	description={data.description}
-	locale={lang}
-/>
+<SEO title={data.title} description={data.description} locale={lang} />
 
 <main class="thc-toxicity-main">
 	<div class="thc-toxicity-container">
@@ -66,22 +62,38 @@
 			<div class="thc-toxicity-related-grid">
 				<div class="thc-toxicity-related-card">
 					<h3>{isEnglish ? 'CBD Safety Guide' : 'Безпека CBD'}</h3>
-					<p>{isEnglish ? 'Learn about CBD product safety and quality standards' : 'Дізнайтеся про безпеку CBD продуктів та стандарти якості'}</p>
+					<p>
+						{isEnglish
+							? 'Learn about CBD product safety and quality standards'
+							: 'Дізнайтеся про безпеку CBD продуктів та стандарти якості'}
+					</p>
 					<a href="/{lang}/cbd/safety/" class="thc-toxicity-link">{translations.learnMore} →</a>
 				</div>
 				<div class="thc-toxicity-related-card">
 					<h3>{isEnglish ? 'CBD for Dogs' : 'CBD для собак'}</h3>
-					<p>{isEnglish ? 'Safe CBD use guidelines for dogs' : 'Рекомендації по безпечному використанню CBD для собак'}</p>
+					<p>
+						{isEnglish
+							? 'Safe CBD use guidelines for dogs'
+							: 'Рекомендації по безпечному використанню CBD для собак'}
+					</p>
 					<a href="/{lang}/cbd/dogs/" class="thc-toxicity-link">{translations.learnMore} →</a>
 				</div>
 				<div class="thc-toxicity-related-card">
 					<h3>{isEnglish ? 'CBD for Cats' : 'CBD для котів'}</h3>
-					<p>{isEnglish ? 'Safe CBD use guidelines for cats' : 'Рекомендації по безпечному використанню CBD для котів'}</p>
+					<p>
+						{isEnglish
+							? 'Safe CBD use guidelines for cats'
+							: 'Рекомендації по безпечному використанню CBD для котів'}
+					</p>
 					<a href="/{lang}/cbd/cats/" class="thc-toxicity-link">{translations.learnMore} →</a>
 				</div>
 				<div class="thc-toxicity-related-card">
 					<h3>{isEnglish ? 'CBD Types' : 'Види CBD'}</h3>
-					<p>{isEnglish ? 'Understanding different CBD forms and their safety' : 'Розуміння різних форм CBD та їх безпека'}</p>
+					<p>
+						{isEnglish
+							? 'Understanding different CBD forms and their safety'
+							: 'Розуміння різних форм CBD та їх безпека'}
+					</p>
 					<a href="/{lang}/cbd/types/" class="thc-toxicity-link">{translations.learnMore} →</a>
 				</div>
 			</div>
@@ -109,7 +121,7 @@
 	}
 
 	.breadcrumb-link {
-		color: #4B766E;
+		color: #4b766e;
 		text-decoration: none;
 		font-weight: 500;
 	}
@@ -180,7 +192,7 @@
 	.thc-toxicity-article h1 {
 		font-size: 36px;
 		font-weight: 700;
-		border-bottom: 3px solid #4B766E;
+		border-bottom: 3px solid #4b766e;
 		padding-bottom: 12px;
 		margin-top: 0;
 	}
@@ -188,7 +200,7 @@
 	.thc-toxicity-article h2 {
 		font-size: 28px;
 		font-weight: 600;
-		border-bottom: 2px solid #4B766E;
+		border-bottom: 2px solid #4b766e;
 		padding-bottom: 8px;
 	}
 
@@ -221,7 +233,7 @@
 	}
 
 	.thc-toxicity-article blockquote {
-		border-left: 4px solid #4B766E;
+		border-left: 4px solid #4b766e;
 		padding-left: 16px;
 		margin: 24px 0;
 		font-style: italic;
@@ -232,7 +244,7 @@
 	}
 
 	.thc-toxicity-article-content a {
-		color: #4B766E;
+		color: #4b766e;
 		text-decoration: none;
 		font-weight: 600;
 		transition: all 0.3s ease;
@@ -338,7 +350,9 @@
 		padding: 24px;
 		border: 1px solid #e0e0e0;
 		border-radius: 12px;
-		transition: transform 0.2s ease, box-shadow 0.2s ease;
+		transition:
+			transform 0.2s ease,
+			box-shadow 0.2s ease;
 	}
 
 	.thc-toxicity-related-card:hover {
@@ -361,7 +375,7 @@
 	}
 
 	.thc-toxicity-link {
-		color: #4B766E;
+		color: #4b766e;
 		text-decoration: none;
 		font-weight: 600;
 		font-size: 14px;

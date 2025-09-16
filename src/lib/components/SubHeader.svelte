@@ -12,7 +12,7 @@
 
 {#if isVisible}
 	<div
-		class="sticky top-0 z-50 w-full py-3 text-center relative"
+		class="relative sticky top-0 z-50 w-full py-3 text-center"
 		style="
       background-color: {colors.main};
       color: {colors.optional};
@@ -22,15 +22,20 @@
     "
 	>
 		{t('subheader.delivery_message')}
-		
+
 		<!-- Close button -->
 		<button
 			onclick={handleClose}
-			class="absolute right-4 top-1/2 -translate-y-1/2 text-white/80 hover:text-white transition-colors duration-200 cursor-pointer"
+			class="absolute top-1/2 right-4 -translate-y-1/2 cursor-pointer text-white/80 transition-colors duration-200 hover:text-white"
 			aria-label="Close delivery message"
 		>
-			<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+			<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+				<path
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					stroke-width="2"
+					d="M6 18L18 6M6 6l12 12"
+				/>
 			</svg>
 		</button>
 	</div>

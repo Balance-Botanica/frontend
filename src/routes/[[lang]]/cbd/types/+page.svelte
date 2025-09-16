@@ -7,7 +7,7 @@
 	const isEnglish = $derived(lang === 'en');
 	const translations = $derived(() => ({
 		learnMore: isEnglish ? 'Learn More' : 'Дізнатися більше',
-		relatedArticles: isEnglish ? 'Related Articles' : 'Пов\'язані статті',
+		relatedArticles: isEnglish ? 'Related Articles' : "Пов'язані статті",
 		tableOfContents: isEnglish ? 'Table of Contents' : 'Зміст',
 		comparison: isEnglish ? 'Comparison' : 'Порівняння',
 		scientificEvidence: isEnglish ? 'Scientific Evidence' : 'Наукові докази',
@@ -18,51 +18,52 @@
 	}));
 
 	// Comparison data
-	const comparisonData = $derived(() => [
-		{
-			feature: isEnglish ? 'THC Content' : 'Вміст THC',
-			isolate: isEnglish ? '0%' : '0%',
-			fullSpectrum: isEnglish ? '≤0.3%' : '≤0.3%',
-			broadSpectrum: isEnglish ? '0%' : '0%'
-		},
-		{
-			feature: isEnglish ? 'Other Cannabinoids' : 'Інші каннабіноїди',
-			isolate: isEnglish ? 'None' : 'Немає',
-			fullSpectrum: isEnglish ? 'All (CBD, THC, CBG, CBN, etc.)' : 'Всі (CBD, THC, CBG, CBN тощо)',
-			broadSpectrum: isEnglish ? 'All except THC' : 'Всі крім THC'
-		},
-		{
-			feature: isEnglish ? 'Entourage Effect' : 'Ефект супроводу',
-			isolate: isEnglish ? 'None' : 'Немає',
-			fullSpectrum: isEnglish ? 'Maximum' : 'Максимальний',
-			broadSpectrum: isEnglish ? 'High' : 'Високий'
-		},
-		{
-			feature: isEnglish ? 'Bioavailability' : 'Біодоступність',
-			isolate: isEnglish ? '30-35%' : '30-35%',
-			fullSpectrum: isEnglish ? '35-40%' : '35-40%',
-			broadSpectrum: isEnglish ? '32-38%' : '32-38%'
-		},
-		{
-			feature: isEnglish ? 'Drug Test Risk' : 'Ризик тестів',
-			isolate: isEnglish ? 'None' : 'Немає',
-			fullSpectrum: isEnglish ? 'Very Low' : 'Дуже низький',
-			broadSpectrum: isEnglish ? 'None' : 'Немає'
-		},
-		{
-			feature: isEnglish ? 'Price Range' : 'Ціновий діапазон',
-			isolate: isEnglish ? '$' : '₴',
-			fullSpectrum: isEnglish ? '$$$' : '₴₴₴',
-			broadSpectrum: isEnglish ? '$$' : '₴₴'
-		}
-	] as const);
+	const comparisonData = $derived(
+		() =>
+			[
+				{
+					feature: isEnglish ? 'THC Content' : 'Вміст THC',
+					isolate: isEnglish ? '0%' : '0%',
+					fullSpectrum: isEnglish ? '≤0.3%' : '≤0.3%',
+					broadSpectrum: isEnglish ? '0%' : '0%'
+				},
+				{
+					feature: isEnglish ? 'Other Cannabinoids' : 'Інші каннабіноїди',
+					isolate: isEnglish ? 'None' : 'Немає',
+					fullSpectrum: isEnglish
+						? 'All (CBD, THC, CBG, CBN, etc.)'
+						: 'Всі (CBD, THC, CBG, CBN тощо)',
+					broadSpectrum: isEnglish ? 'All except THC' : 'Всі крім THC'
+				},
+				{
+					feature: isEnglish ? 'Entourage Effect' : 'Ефект супроводу',
+					isolate: isEnglish ? 'None' : 'Немає',
+					fullSpectrum: isEnglish ? 'Maximum' : 'Максимальний',
+					broadSpectrum: isEnglish ? 'High' : 'Високий'
+				},
+				{
+					feature: isEnglish ? 'Bioavailability' : 'Біодоступність',
+					isolate: isEnglish ? '30-35%' : '30-35%',
+					fullSpectrum: isEnglish ? '35-40%' : '35-40%',
+					broadSpectrum: isEnglish ? '32-38%' : '32-38%'
+				},
+				{
+					feature: isEnglish ? 'Drug Test Risk' : 'Ризик тестів',
+					isolate: isEnglish ? 'None' : 'Немає',
+					fullSpectrum: isEnglish ? 'Very Low' : 'Дуже низький',
+					broadSpectrum: isEnglish ? 'None' : 'Немає'
+				},
+				{
+					feature: isEnglish ? 'Price Range' : 'Ціновий діапазон',
+					isolate: isEnglish ? '$' : '₴',
+					fullSpectrum: isEnglish ? '$$$' : '₴₴₴',
+					broadSpectrum: isEnglish ? '$$' : '₴₴'
+				}
+			] as const
+	);
 </script>
 
-<SEO
-	title={data.title}
-	description={data.description}
-	locale={lang as 'en' | 'uk-ua'}
-/>
+<SEO title={data.title} description={data.description} locale={lang as 'en' | 'uk-ua'} />
 
 <main class="cbd-types-main">
 	<div class="cbd-types-container">
@@ -72,7 +73,9 @@
 				<p class="cbd-types-subtitle">{data.description}</p>
 				<div class="cbd-types-meta">
 					<span class="cbd-types-author">{isEnglish ? 'By' : 'Автор'}: {data.author}</span>
-					<span class="cbd-types-date">{new Date(data.date).toLocaleDateString(lang === 'en' ? 'en-US' : 'uk-UA')}</span>
+					<span class="cbd-types-date"
+						>{new Date(data.date).toLocaleDateString(lang === 'en' ? 'en-US' : 'uk-UA')}</span
+					>
 					<span class="cbd-types-reading-time">{data.readingTime}</span>
 				</div>
 			</div>
@@ -80,17 +83,17 @@
 				<div class="cbd-types-comparison-preview">
 					<div class="cbd-type-card isolate">
 						<div class="cbd-type-icon">🧪</div>
-						<h3>{translations().isolate}</h3>
+						<h3>{translations.isolate}</h3>
 						<p>{isEnglish ? '99% Pure CBD' : '99% чистий CBD'}</p>
 					</div>
 					<div class="cbd-type-card full-spectrum">
 						<div class="cbd-type-icon">🌿</div>
-						<h3>{translations().fullSpectrum}</h3>
+						<h3>{translations.fullSpectrum}</h3>
 						<p>{isEnglish ? 'All Cannabinoids' : 'Всі каннабіноїди'}</p>
 					</div>
 					<div class="cbd-type-card broad-spectrum">
 						<div class="cbd-type-icon">🌱</div>
-						<h3>{translations().broadSpectrum}</h3>
+						<h3>{translations.broadSpectrum}</h3>
 						<p>{isEnglish ? 'No THC' : 'Без THC'}</p>
 					</div>
 				</div>
@@ -100,7 +103,7 @@
 		<!-- Quick Comparison Section -->
 		<section class="cbd-types-comparison-section">
 			<div class="cbd-types-comparison-container">
-				<h2 class="cbd-types-comparison-title">{translations().comparison}</h2>
+				<h2 class="cbd-types-comparison-title">{translations.comparison}</h2>
 				<div class="cbd-types-comparison-table">
 					<div class="cbd-types-comparison-header">
 						<div class="cbd-types-comparison-feature">
@@ -108,15 +111,15 @@
 						</div>
 						<div class="cbd-types-comparison-type isolate">
 							<div class="cbd-types-comparison-type-icon">🧪</div>
-							<div class="cbd-types-comparison-type-name">{translations().isolate}</div>
+							<div class="cbd-types-comparison-type-name">{translations.isolate}</div>
 						</div>
 						<div class="cbd-types-comparison-type full-spectrum">
 							<div class="cbd-types-comparison-type-icon">🌿</div>
-							<div class="cbd-types-comparison-type-name">{translations().fullSpectrum}</div>
+							<div class="cbd-types-comparison-type-name">{translations.fullSpectrum}</div>
 						</div>
 						<div class="cbd-types-comparison-type broad-spectrum">
 							<div class="cbd-types-comparison-type-icon">🌱</div>
-							<div class="cbd-types-comparison-type-name">{translations().broadSpectrum}</div>
+							<div class="cbd-types-comparison-type-name">{translations.broadSpectrum}</div>
 						</div>
 					</div>
 					{#each comparisonData() as row}
@@ -134,15 +137,15 @@
 		<div class="cbd-types-content-grid">
 			<aside class="cbd-types-sidebar">
 				<div class="cbd-types-toc">
-					<h3>{translations().tableOfContents}</h3>
+					<h3>{translations.tableOfContents}</h3>
 					<nav>
 						<ul>
-							<li><a href="#cbd-isolate">{translations().isolate}</a></li>
-							<li><a href="#full-spectrum">{translations().fullSpectrum}</a></li>
-							<li><a href="#broad-spectrum">{translations().broadSpectrum}</a></li>
-							<li><a href="#scientific-evidence">{translations().scientificEvidence}</a></li>
-							<li><a href="#choose-your-type">{translations().chooseYourType}</a></li>
-							<li><a href="#related-articles">{translations().relatedArticles}</a></li>
+							<li><a href="#cbd-isolate">{translations.isolate}</a></li>
+							<li><a href="#full-spectrum">{translations.fullSpectrum}</a></li>
+							<li><a href="#broad-spectrum">{translations.broadSpectrum}</a></li>
+							<li><a href="#scientific-evidence">{translations.scientificEvidence}</a></li>
+							<li><a href="#choose-your-type">{translations.chooseYourType}</a></li>
+							<li><a href="#related-articles">{translations.relatedArticles}</a></li>
 						</ul>
 					</nav>
 				</div>
@@ -154,21 +157,31 @@
 							<div class="insight-icon">🔬</div>
 							<div class="insight-content">
 								<h4>{isEnglish ? 'Evidence-Based' : 'Науково обґрунтовано'}</h4>
-								<p>{isEnglish ? '15+ clinical studies analyzed' : 'Проаналізовано 15+ клінічних досліджень'}</p>
+								<p>
+									{isEnglish
+										? '15+ clinical studies analyzed'
+										: 'Проаналізовано 15+ клінічних досліджень'}
+								</p>
 							</div>
 						</div>
 						<div class="insight-item">
 							<div class="insight-icon">⚖️</div>
 							<div class="insight-content">
 								<h4>{isEnglish ? 'Comparative Analysis' : 'Порівняльний аналіз'}</h4>
-								<p>{isEnglish ? 'Pharmacokinetics & bioavailability' : 'Фармакокінетика та біодоступність'}</p>
+								<p>
+									{isEnglish
+										? 'Pharmacokinetics & bioavailability'
+										: 'Фармакокінетика та біодоступність'}
+								</p>
 							</div>
 						</div>
 						<div class="insight-item">
 							<div class="insight-icon">🎯</div>
 							<div class="insight-content">
 								<h4>{isEnglish ? 'Personalized Choice' : 'Персональний вибір'}</h4>
-								<p>{isEnglish ? 'Find your perfect CBD type' : 'Знайдіть свій ідеальний тип CBD'}</p>
+								<p>
+									{isEnglish ? 'Find your perfect CBD type' : 'Знайдіть свій ідеальний тип CBD'}
+								</p>
 							</div>
 						</div>
 					</div>
@@ -224,41 +237,63 @@
 		{/if}
 
 		<section class="cbd-types-related" id="related-articles">
-			<h2>{translations().relatedArticles}</h2>
+			<h2>{translations.relatedArticles}</h2>
 			<div class="cbd-types-related-grid">
 				<a href={`${lang}/cbd/safety`} class="cbd-types-related-card">
 					<h3>{isEnglish ? 'CBD Safety & Research' : 'Безпека CBD та дослідження'}</h3>
-					<p>{isEnglish ? 'Safety studies and scientific research on CBD' : 'Дослідження безпеки та наукові дані про CBD'}</p>
+					<p>
+						{isEnglish
+							? 'Safety studies and scientific research on CBD'
+							: 'Дослідження безпеки та наукові дані про CBD'}
+					</p>
 					<span class="card-tag">{isEnglish ? 'Evidence-Based' : 'Науково обґрунтовано'}</span>
 				</a>
 
 				<a href={`${lang}/cbd/dosage`} class="cbd-types-related-card">
 					<h3>{isEnglish ? 'CBD Dosage Guide' : 'Посібник з дозування CBD'}</h3>
-					<p>{isEnglish ? 'Calculate the right CBD dosage for your needs' : 'Розрахуйте правильну дозу CBD для ваших потреб'}</p>
+					<p>
+						{isEnglish
+							? 'Calculate the right CBD dosage for your needs'
+							: 'Розрахуйте правильну дозу CBD для ваших потреб'}
+					</p>
 					<span class="card-tag">{isEnglish ? 'Calculator' : 'Калькулятор'}</span>
 				</a>
 
 				<a href={`${lang}/cbd/dogs`} class="cbd-types-related-card">
 					<h3>{isEnglish ? 'CBD for Dogs: Complete Guide' : 'CBD для собак: повний посібник'}</h3>
-					<p>{isEnglish ? 'Scientific guide to CBD therapy for dogs' : 'Науковий посібник з CBD терапії для собак'}</p>
-					<span class="card-tag">{isEnglish ? 'Canine Health' : 'Здоров\'я собак'}</span>
+					<p>
+						{isEnglish
+							? 'Scientific guide to CBD therapy for dogs'
+							: 'Науковий посібник з CBD терапії для собак'}
+					</p>
+					<span class="card-tag">{isEnglish ? 'Canine Health' : "Здоров'я собак"}</span>
 				</a>
 
 				<a href={`${lang}/cbd/cats`} class="cbd-types-related-card">
 					<h3>{isEnglish ? 'CBD for Cats: Complete Guide' : 'CBD для котів: повний посібник'}</h3>
-					<p>{isEnglish ? 'Scientific guide to CBD therapy for cats' : 'Науковий посібник з CBD терапії для котів'}</p>
-					<span class="card-tag">{isEnglish ? 'Feline Health' : 'Здоров\'я котів'}</span>
+					<p>
+						{isEnglish
+							? 'Scientific guide to CBD therapy for cats'
+							: 'Науковий посібник з CBD терапії для котів'}
+					</p>
+					<span class="card-tag">{isEnglish ? 'Feline Health' : "Здоров'я котів"}</span>
 				</a>
 
 				<a href={`${lang}/veterinary-cbd`} class="cbd-types-related-card">
 					<h3>{isEnglish ? 'Veterinary CBD Guide' : 'Ветеринарний посібник CBD'}</h3>
-					<p>{isEnglish ? 'Professional veterinary recommendations' : 'Професійні ветеринарні рекомендації'}</p>
+					<p>
+						{isEnglish
+							? 'Professional veterinary recommendations'
+							: 'Професійні ветеринарні рекомендації'}
+					</p>
 					<span class="card-tag">{isEnglish ? 'Professional' : 'Професійний'}</span>
 				</a>
 
 				<a href={`${lang}/cbd`} class="cbd-types-related-card">
 					<h3>{isEnglish ? 'CBD Complete Guide' : 'Повний посібник CBD'}</h3>
-					<p>{isEnglish ? 'Everything you need to know about CBD' : 'Все, що потрібно знати про CBD'}</p>
+					<p>
+						{isEnglish ? 'Everything you need to know about CBD' : 'Все, що потрібно знати про CBD'}
+					</p>
 					<span class="card-tag">{isEnglish ? 'Comprehensive' : 'Комплексний'}</span>
 				</a>
 			</div>
@@ -298,7 +333,8 @@
 		left: 0;
 		right: 0;
 		bottom: 0;
-		background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='4'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") repeat;
+		background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='4'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")
+			repeat;
 		opacity: 0.1;
 	}
 
@@ -774,7 +810,7 @@
 
 	/* Links styling */
 	.cbd-types-article-content :global(a) {
-		color: #4B766E;
+		color: #4b766e;
 		text-decoration: none;
 		font-weight: 600;
 		transition: all 0.3s ease;

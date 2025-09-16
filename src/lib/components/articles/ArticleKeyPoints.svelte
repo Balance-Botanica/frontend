@@ -4,7 +4,7 @@
 		lang?: string;
 	}
 
-	let { keyPoints, lang = 'uk-ua' }: Props = $props();
+	const { keyPoints, lang = 'uk-ua' }: Props = $props();
 
 	const isEnglish = $derived(lang === 'en');
 </script>

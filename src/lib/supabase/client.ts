@@ -4,7 +4,7 @@ import { browser } from '$app/environment';
 
 // Singleton pattern to ensure only one Supabase client instance
 let supabaseInstance: SupabaseClient | null = null;
-let isClientInitialized = false;
+const isClientInitialized = false;
 
 // Create a function that returns the client or null
 export function getSupabaseClient(): SupabaseClient | null {

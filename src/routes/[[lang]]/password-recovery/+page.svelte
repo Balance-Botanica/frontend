@@ -4,7 +4,7 @@
 	import { createEventDispatcher } from 'svelte';
 
 	// Detect language from optional route parameter
-	let lang = $derived($page.params?.lang || 'uk-ua');
+	const lang = $derived($page.params?.lang || 'uk-ua');
 
 	let email = '';
 	let isLoading = false;
@@ -31,7 +31,7 @@
 			// TODO: Заменить на реальную отправку email через Supabase/Firebase/NodeMailer
 			await mockSendRecoveryEmail(email);
 			isSuccess = true;
-			
+
 			// Автоматически перенаправляем через 3 секунды
 			setTimeout(() => {
 				goto('/login');
@@ -46,14 +46,14 @@
 	// Мок функция отправки email
 	async function mockSendRecoveryEmail(email: string): Promise<void> {
 		// Симуляция задержки сервера
-		await new Promise(resolve => setTimeout(resolve, 1500));
-		
+		await new Promise((resolve) => setTimeout(resolve, 1500));
+
 		// Симуляция успешной отправки
 		console.log(`📧 Мок: отправлен email восстановления на ${email}`);
-		
+
 		// TODO: Заменить на реальную отправку:
 		// 1. Supabase: supabase.auth.resetPasswordForEmail(email)
-		// 2. Firebase: sendPasswordResetEmail(auth, email)  
+		// 2. Firebase: sendPasswordResetEmail(auth, email)
 		// 3. NodeMailer: отправка через SMTP
 		// 4. Resend: resend.emails.send()
 		// 5. SendGrid: sgMail.send()
@@ -71,7 +71,10 @@
 
 <svelte:head>
 	<title>Відновлення паролю - Balance Botanica</title>
-	<meta name="description" content="Відновіть пароль для доступу до свого аккаунту Balance Botanica" />
+	<meta
+		name="description"
+		content="Відновіть пароль для доступу до свого аккаунту Balance Botanica"
+	/>
 </svelte:head>
 
 <main class="recovery-page">
@@ -82,25 +85,17 @@
 				<div class="form-header">
 					<h1 class="form-title">✅ Email надіслано</h1>
 				</div>
-				
+
 				<div class="success-content">
-					<p class="success-text">
-						Ми надіслали інструкції для відновлення паролю на адресу:
-					</p>
+					<p class="success-text">Ми надіслали інструкції для відновлення паролю на адресу:</p>
 					<p class="success-email">{email}</p>
 					<p class="success-hint">
 						Перевірте свою пошту та перейдіть за посиланням для створення нового паролю.
 					</p>
-					<p class="success-redirect">
-						Автоматичне перенаправлення через 3 секунди...
-					</p>
+					<p class="success-redirect">Автоматичне перенаправлення через 3 секунди...</p>
 				</div>
 
-				<button 
-					type="button" 
-					class="back-button"
-					on:click={handleBackToLogin}
-				>
+				<button type="button" class="back-button" on:click={handleBackToLogin}>
 					Повернутися до входу
 				</button>
 			</div>
@@ -134,11 +129,7 @@
 						</div>
 					{/if}
 
-					<button 
-						type="submit" 
-						class="submit-button"
-						disabled={isLoading || !email}
-					>
+					<button type="submit" class="submit-button" disabled={isLoading || !email}>
 						{#if isLoading}
 							<span class="loading-spinner"></span>
 							Надсилаємо...
@@ -149,14 +140,8 @@
 
 					<div class="back-to-login">
 						<p class="back-text">
-							Згадали пароль? 
-							<button 
-								type="button" 
-								class="back-link"
-								on:click={handleBackToLogin}
-							>
-								Увійти
-							</button>
+							Згадали пароль?
+							<button type="button" class="back-link" on:click={handleBackToLogin}> Увійти </button>
 						</p>
 					</div>
 				</form>
@@ -168,7 +153,7 @@
 <style>
 	.recovery-page {
 		min-height: 100vh;
-		background: #F8F7F6;
+		background: #f8f7f6;
 		padding: 40px 0;
 		display: flex;
 		align-items: center;
@@ -188,7 +173,7 @@
 		width: 540px;
 		min-height: 500px;
 		padding: 40px;
-		background: #FFFFFF;
+		background: #ffffff;
 		border-radius: 20px;
 		display: flex;
 		flex-direction: column;
@@ -268,7 +253,7 @@
 		padding: 12px 16px;
 		width: 100%;
 		height: 44px;
-		border: 1px solid #9A9A9A;
+		border: 1px solid #9a9a9a;
 		border-radius: 10px;
 		font-family: 'Nunito', sans-serif;
 		font-weight: 400;
@@ -280,7 +265,7 @@
 
 	.form-input:focus {
 		outline: none;
-		border-color: #4B766E;
+		border-color: #4b766e;
 	}
 
 	.form-input:disabled {
@@ -298,14 +283,14 @@
 		gap: 8px;
 		width: 100%;
 		height: 46px;
-		background: #4B766E;
+		background: #4b766e;
 		border: none;
 		border-radius: 12px;
 		font-family: 'Nunito', sans-serif;
 		font-weight: 500;
 		font-size: 16px;
 		line-height: 140%;
-		color: #FFFFFF;
+		color: #ffffff;
 		cursor: pointer;
 		transition: all 0.2s ease;
 	}
@@ -332,8 +317,12 @@
 	}
 
 	@keyframes spin {
-		0% { transform: rotate(0deg); }
-		100% { transform: rotate(360deg); }
+		0% {
+			transform: rotate(0deg);
+		}
+		100% {
+			transform: rotate(360deg);
+		}
 	}
 
 	/* Error Message */
@@ -368,7 +357,7 @@
 		font-family: 'Nunito', sans-serif;
 		font-size: 18px;
 		font-weight: 600;
-		color: #4B766E;
+		color: #4b766e;
 		margin: 0;
 	}
 
@@ -409,7 +398,7 @@
 	.back-link {
 		background: none;
 		border: none;
-		color: #4B766E;
+		color: #4b766e;
 		font-family: 'Nunito', sans-serif;
 		font-size: 16px;
 		line-height: 140%;
@@ -429,18 +418,18 @@
 		align-items: center;
 		padding: 12px 24px;
 		background: transparent;
-		border: 1px solid #4B766E;
+		border: 1px solid #4b766e;
 		border-radius: 12px;
 		font-family: 'Nunito', sans-serif;
 		font-weight: 500;
 		font-size: 16px;
-		color: #4B766E;
+		color: #4b766e;
 		cursor: pointer;
 		transition: all 0.2s ease;
 	}
 
 	.back-button:hover {
-		background: #4B766E;
+		background: #4b766e;
 		color: white;
 	}
 

@@ -18,7 +18,6 @@
 	// Use global translations (reactive to language changes)
 	const pageTranslations = createPageTranslations();
 
-
 	// Debug logging
 	console.log('🔍 Page data received:', data);
 	console.log('📦 Products in data:', data?.products);
@@ -33,7 +32,7 @@
 		const handleScroll = () => {
 			isScrolled = window.scrollY > 50;
 		};
-		
+
 		window.addEventListener('scroll', handleScroll);
 		return () => window.removeEventListener('scroll', handleScroll);
 	});

@@ -14,7 +14,7 @@
 	import type { PageData } from './$types';
 
 	// Detect language from optional route parameter
-	let lang = $derived($page.params?.lang || 'uk-ua');
+	const lang = $derived($page.params?.lang || 'uk-ua');
 
 	// Create page translations
 	const pageTranslations = createPageTranslations();
@@ -31,7 +31,7 @@
 
 	console.log('[Cart Page Client] Server data received:', {
 		deliveryAddressesCount: deliveryAddresses.length,
-		deliveryAddresses: deliveryAddresses.map(addr => ({ id: addr.id, name: addr.name }))
+		deliveryAddresses: deliveryAddresses.map((addr) => ({ id: addr.id, name: addr.name }))
 	});
 
 	let showAddressModal = false;
@@ -260,7 +260,11 @@
 				} else {
 					// Clear old data
 					localStorage.removeItem('cart-form-data');
-					console.log('[Cart] Old form data cleared (was', Math.round(age / 1000 / 60 / 60), 'hours old)');
+					console.log(
+						'[Cart] Old form data cleared (was',
+						Math.round(age / 1000 / 60 / 60),
+						'hours old)'
+					);
 					isLoadingData = false;
 				}
 			} else {
@@ -303,18 +307,14 @@
 		showAddressModal = false;
 	}
 
-
-
-
-
 	// Create order from cart
 	async function createOrder(): Promise<boolean> {
 		try {
 			// Find selected delivery address
-			const selectedAddressData = deliveryAddresses.find(addr => addr.id === selectedAddress);
+			const selectedAddressData = deliveryAddresses.find((addr) => addr.id === selectedAddress);
 
 			// Prepare order items from cart
-			const orderItems = $cartItems.map(item => ({
+			const orderItems = $cartItems.map((item) => ({
 				productId: item.product.id.getValue(),
 				productName: item.product.name.getUkrainian(),
 				quantity: item.quantity,
@@ -334,11 +334,13 @@
 				customerName: `${firstName.trim()} ${lastName.trim()}`.trim(),
 				customerPhone: phoneNumber.trim(),
 				// Promo code information
-				promoCode: appliedPromoCode ? {
-					code: appliedPromoCode.code,
-					discount: appliedPromoCode.discount,
-					description: appliedPromoCode.description
-				} : null
+				promoCode: appliedPromoCode
+					? {
+							code: appliedPromoCode.code,
+							discount: appliedPromoCode.discount,
+							description: appliedPromoCode.description
+						}
+					: null
 			};
 
 			console.log('[CART] Creating order:', orderData);
@@ -380,7 +382,10 @@
 		} catch (error) {
 			console.error('[CART] Failed to create order:', error);
 			if ($pageTranslations) {
-				notificationStore.error($pageTranslations.t('cart.checkout.errors.orderCreationFailed') || 'Failed to create order. Please try again.');
+				notificationStore.error(
+					$pageTranslations.t('cart.checkout.errors.orderCreationFailed') ||
+						'Failed to create order. Please try again.'
+				);
 			}
 			return false;
 		}
@@ -423,7 +428,10 @@
 		} catch (error) {
 			console.error('Failed to save address:', error);
 			if ($pageTranslations) {
-				notificationStore.error($pageTranslations.t('profile.address.saveError') || 'Failed to save address. Please try again.');
+				notificationStore.error(
+					$pageTranslations.t('profile.address.saveError') ||
+						'Failed to save address. Please try again.'
+				);
 			}
 		}
 	}
@@ -546,12 +554,14 @@
 		// This will trigger when the page store changes (navigation)
 		$page.url.pathname;
 		loadFormData();
+		// Ensure effect runs
+		return;
 	});
 
 	// Reactive block to ensure form fields update in UI
 	$effect(() => {
 		// Force reactivity update for form fields
-		firstName, lastName, phoneNumber, selectedAddress;
+		[firstName, lastName, phoneNumber, selectedAddress];
 
 		// This will trigger whenever any form field changes
 		console.log('[Cart] Form fields updated:', {
@@ -579,356 +589,418 @@
 			saveFormDataImmediate(); // Save the auto-selected address immediately
 		}
 	});
-
-
 </script>
 
 {#if $pageTranslations}
-<SEO
-	title={$pageTranslations.t('cart.meta.title')}
-	description={$pageTranslations.t('cart.meta.description')}
-	locale={$pageTranslations.locale}
-/>
+	<SEO
+		title={$pageTranslations.t('cart.meta.title')}
+		description={$pageTranslations.t('cart.meta.description')}
+		locale={$pageTranslations.locale}
+	/>
 
-<main class="cart-page">
-	<div class="cart-container">
-		<h1 class="cart-title">{$pageTranslations.t('cart.title')}</h1>
-		
-		{#if $cartIsEmpty}
-			<!-- Empty Cart -->
-			<div class="empty-cart">
-				<div class="empty-cart-icon">
-					<svg class="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2 8m2-8h10m0 0v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6z"></path>
-					</svg>
-				</div>
-				<p class="cart-empty">{$pageTranslations.t('cart.empty.title')}</p>
-				<p class="cart-hint">{$pageTranslations.t('cart.empty.description')}</p>
-				<button class="continue-shopping-btn" on:click={continueShopping}>
-					{$pageTranslations.t('cart.empty.continue_shopping')}
-				</button>
-			</div>
-		{:else}
-			<!-- Cart Layout: 3/4 Products + 1/4 Summary -->
+	<main class="cart-page">
+		<div class="cart-container">
+			<h1 class="cart-title">{$pageTranslations.t('cart.title')}</h1>
 
-
-			<div class="cart-layout">
-				<!-- Left Column: Cart Items (3/4) -->
-				<div class="cart-items-column">
-					<div class="cart-items-container">
-						<h2 class="section-title">
-							{$pageTranslations.t('cart.items.title')} 
-							({$cartTotals.itemCount} {$cartTotals.itemCount === 1 ? 'товар' : 'товарів'})
-						</h2>
-						
-						<div class="cart-items-list">
-							{#each $cartItems as item (item.product.id.getValue())}
-								<div class="cart-item">
-									<!-- Product Image -->
-									<div class="item-image">
-										{#if item.product.imageUrls.length > 0}
-											<img src={item.product.imageUrls[0]} alt={item.product.name.getUkrainian()} />
-										{:else}
-											<div class="no-image">📦</div>
-										{/if}
-									</div>
-									
-									<!-- Product Details -->
-									<div class="item-details">
-										<h3 class="item-name">{item.product.name.getUkrainian()}</h3>
-										<div class="item-specs">
-											<span class="spec-item">{item.product.size}</span>
-											<span class="spec-divider">•</span>
-											<span class="spec-item">{item.product.flavor}</span>
-										</div>
-										<p class="item-price">{formatPrice(item.product.price.getKopiyky())} {$pageTranslations.t('cart.items.each_price')}</p>
-									</div>
-									
-									<!-- Quantity Controls -->
-									<div class="item-quantity">
-										<div class="quantity-controls" role="group" aria-label={$pageTranslations.t('cart.items.quantity_label') || 'Quantity controls'}>
-											<button 
-												class="quantity-btn decrease" 
-												on:click={() => updateQuantity(item.product.id.getValue(), item.quantity - 1)}
-												disabled={item.quantity <= 1}
-												title={$pageTranslations.t('cart.items.decrease_quantity')}
-											>
-												-
-											</button>
-											<input 
-												type="number" 
-												class="quantity-input" 
-												value={item.quantity}
-												min="1"
-												max="99"
-												on:change={(e) => {
-													const value = parseInt(e.currentTarget.value) || 1;
-													updateQuantity(item.product.id.getValue(), Math.max(1, Math.min(99, value)));
-												}}
-											/>
-											<button 
-												class="quantity-btn increase" 
-												on:click={() => updateQuantity(item.product.id.getValue(), item.quantity + 1)}
-												disabled={item.quantity >= 99}
-												title={$pageTranslations.t('cart.items.increase_quantity')}
-											>
-												+
-											</button>
-										</div>
-									</div>
-									
-									<!-- Item Total -->
-									<div class="item-total">
-										<p class="total-label">{$pageTranslations.t('cart.items.total_label')}</p>
-										<p class="total-price">{formatPrice(item.product.price.getKopiyky() * item.quantity)}</p>
-									</div>
-									
-									<!-- Remove Button -->
-									<button
-										class="remove-btn"
-										on:click={() => removeItem(item.product.id.getValue())}
-										title={$pageTranslations.t('cart.items.remove_item')}
-										aria-label={$pageTranslations.t('cart.items.remove_item') || 'Remove item'}
-									>
-										<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-											<path d="M18 6L6 18M6 6l12 12"></path>
-										</svg>
-									</button>
-								</div>
-							{/each}
-						</div>
+			{#if $cartIsEmpty}
+				<!-- Empty Cart -->
+				<div class="empty-cart">
+					<div class="empty-cart-icon">
+						<svg
+							class="h-16 w-16 text-gray-400"
+							fill="none"
+							stroke="currentColor"
+							viewBox="0 0 24 24"
+						>
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								stroke-width="2"
+								d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2 8m2-8h10m0 0v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6z"
+							></path>
+						</svg>
 					</div>
-					
-					<!-- Customer Information and Address Picker -->
-					{#if $isAuthenticated}
-						<div class="customer-info-section">
-							<h2 class="section-title">{$pageTranslations.t('cart.checkout.customerInfo')}</h2>
-							<div class="customer-info-form">
-								<div class="form-row">
-									<div class="form-group">
-										<label for="firstName">{$pageTranslations.t('cart.checkout.firstName')}</label>
-										<input
-											type="text"
-											id="firstName"
-											class="form-input"
-											class:error={validationErrors.firstName}
-											bind:value={firstName}
-											placeholder={$pageTranslations.t('cart.checkout.firstName')}
-											on:input={() => { handleFieldChange('firstName'); saveFormData(); }}
-											on:change={saveFormDataImmediate}
-											on:blur={saveFormDataImmediate}
-										/>
-									</div>
-									<div class="form-group">
-										<label for="lastName">{$pageTranslations.t('cart.checkout.lastName')}</label>
-										<input
-											type="text"
-											id="lastName"
-											class="form-input"
-											class:error={validationErrors.lastName}
-											bind:value={lastName}
-											placeholder={$pageTranslations.t('cart.checkout.lastName')}
-											on:input={() => { handleFieldChange('lastName'); saveFormData(); }}
-											on:change={saveFormDataImmediate}
-											on:blur={saveFormDataImmediate}
-										/>
-									</div>
-								</div>
-								<div class="form-group">
-									<label for="phoneNumber">{$pageTranslations.t('cart.checkout.phoneNumber')}</label>
-									<input
-										type="tel"
-										id="phoneNumber"
-										class="form-input"
-										class:error={validationErrors.phoneNumber}
-										bind:value={phoneNumber}
-										placeholder={$pageTranslations.t('cart.checkout.phoneNumber')}
-										on:input={() => { handleFieldChange('phoneNumber'); saveFormData(); }}
-										on:change={saveFormDataImmediate}
-										on:blur={saveFormDataImmediate}
-									/>
-								</div>
-								
-								<div class="form-group">
-									<label for="deliveryAddress">{$pageTranslations.t('cart.checkout.deliveryAddress')}</label>
+					<p class="cart-empty">{$pageTranslations.t('cart.empty.title')}</p>
+					<p class="cart-hint">{$pageTranslations.t('cart.empty.description')}</p>
+					<button class="continue-shopping-btn" on:click={continueShopping}>
+						{$pageTranslations.t('cart.empty.continue_shopping')}
+					</button>
+				</div>
+			{:else}
+				<!-- Cart Layout: 3/4 Products + 1/4 Summary -->
 
-									{#if deliveryAddresses.length > 0}
-										<select
-											id="deliveryAddress"
-											class="form-input"
-											class:error={validationErrors.selectedAddress}
-											bind:value={selectedAddress}
-											on:change={() => { handleFieldChange('selectedAddress'); saveFormDataImmediate(); }}
+				<div class="cart-layout">
+					<!-- Left Column: Cart Items (3/4) -->
+					<div class="cart-items-column">
+						<div class="cart-items-container">
+							<h2 class="section-title">
+								{$pageTranslations.t('cart.items.title')}
+								({$cartTotals.itemCount}
+								{$cartTotals.itemCount === 1 ? 'товар' : 'товарів'})
+							</h2>
+
+							<div class="cart-items-list">
+								{#each $cartItems as item (item.product.id.getValue())}
+									<div class="cart-item">
+										<!-- Product Image -->
+										<div class="item-image">
+											{#if item.product.imageUrls.length > 0}
+												<img
+													src={item.product.imageUrls[0]}
+													alt={item.product.name.getUkrainian()}
+												/>
+											{:else}
+												<div class="no-image">📦</div>
+											{/if}
+										</div>
+
+										<!-- Product Details -->
+										<div class="item-details">
+											<h3 class="item-name">{item.product.name.getUkrainian()}</h3>
+											<div class="item-specs">
+												<span class="spec-item">{item.product.size}</span>
+												<span class="spec-divider">•</span>
+												<span class="spec-item">{item.product.flavor}</span>
+											</div>
+											<p class="item-price">
+												{formatPrice(item.product.price.getKopiyky())}
+												{$pageTranslations.t('cart.items.each_price')}
+											</p>
+										</div>
+
+										<!-- Quantity Controls -->
+										<div class="item-quantity">
+											<div
+												class="quantity-controls"
+												role="group"
+												aria-label={$pageTranslations.t('cart.items.quantity_label') ||
+													'Quantity controls'}
+											>
+												<button
+													class="quantity-btn decrease"
+													on:click={() =>
+														updateQuantity(item.product.id.getValue(), item.quantity - 1)}
+													disabled={item.quantity <= 1}
+													title={$pageTranslations.t('cart.items.decrease_quantity')}
+												>
+													-
+												</button>
+												<input
+													type="number"
+													class="quantity-input"
+													value={item.quantity}
+													min="1"
+													max="99"
+													on:change={(e) => {
+														const value = parseInt(e.currentTarget.value) || 1;
+														updateQuantity(
+															item.product.id.getValue(),
+															Math.max(1, Math.min(99, value))
+														);
+													}}
+												/>
+												<button
+													class="quantity-btn increase"
+													on:click={() =>
+														updateQuantity(item.product.id.getValue(), item.quantity + 1)}
+													disabled={item.quantity >= 99}
+													title={$pageTranslations.t('cart.items.increase_quantity')}
+												>
+													+
+												</button>
+											</div>
+										</div>
+
+										<!-- Item Total -->
+										<div class="item-total">
+											<p class="total-label">{$pageTranslations.t('cart.items.total_label')}</p>
+											<p class="total-price">
+												{formatPrice(item.product.price.getKopiyky() * item.quantity)}
+											</p>
+										</div>
+
+										<!-- Remove Button -->
+										<button
+											class="remove-btn"
+											on:click={() => removeItem(item.product.id.getValue())}
+											title={$pageTranslations.t('cart.items.remove_item')}
+											aria-label={$pageTranslations.t('cart.items.remove_item') || 'Remove item'}
 										>
-											{#each deliveryAddresses as address}
-												<option value={address.id}>{address.name || address.npCityFullName}</option>
-											{/each}
-										</select>
-									{:else}
-										<div class="no-address-message">
-											<p>{$pageTranslations.t('cart.checkout.noAddressesAvailable')}</p>
+											<svg
+												width="16"
+												height="16"
+												viewBox="0 0 24 24"
+												fill="none"
+												stroke="currentColor"
+												stroke-width="2"
+											>
+												<path d="M18 6L6 18M6 6l12 12"></path>
+											</svg>
+										</button>
+									</div>
+								{/each}
+							</div>
+						</div>
+
+						<!-- Customer Information and Address Picker -->
+						{#if $isAuthenticated}
+							<div class="customer-info-section">
+								<h2 class="section-title">{$pageTranslations.t('cart.checkout.customerInfo')}</h2>
+								<div class="customer-info-form">
+									<div class="form-row">
+										<div class="form-group">
+											<label for="firstName">{$pageTranslations.t('cart.checkout.firstName')}</label
+											>
+											<input
+												type="text"
+												id="firstName"
+												class="form-input"
+												class:error={validationErrors.firstName}
+												bind:value={firstName}
+												placeholder={$pageTranslations.t('cart.checkout.firstName')}
+												on:input={() => {
+													handleFieldChange('firstName');
+													saveFormData();
+												}}
+												on:change={saveFormDataImmediate}
+												on:blur={saveFormDataImmediate}
+											/>
+										</div>
+										<div class="form-group">
+											<label for="lastName">{$pageTranslations.t('cart.checkout.lastName')}</label>
+											<input
+												type="text"
+												id="lastName"
+												class="form-input"
+												class:error={validationErrors.lastName}
+												bind:value={lastName}
+												placeholder={$pageTranslations.t('cart.checkout.lastName')}
+												on:input={() => {
+													handleFieldChange('lastName');
+													saveFormData();
+												}}
+												on:change={saveFormDataImmediate}
+												on:blur={saveFormDataImmediate}
+											/>
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="phoneNumber"
+											>{$pageTranslations.t('cart.checkout.phoneNumber')}</label
+										>
+										<input
+											type="tel"
+											id="phoneNumber"
+											class="form-input"
+											class:error={validationErrors.phoneNumber}
+											bind:value={phoneNumber}
+											placeholder={$pageTranslations.t('cart.checkout.phoneNumber')}
+											on:input={() => {
+												handleFieldChange('phoneNumber');
+												saveFormData();
+											}}
+											on:change={saveFormDataImmediate}
+											on:blur={saveFormDataImmediate}
+										/>
+									</div>
+
+									<div class="form-group">
+										<label for="deliveryAddress"
+											>{$pageTranslations.t('cart.checkout.deliveryAddress')}</label
+										>
+
+										{#if deliveryAddresses.length > 0}
+											<select
+												id="deliveryAddress"
+												class="form-input"
+												class:error={validationErrors.selectedAddress}
+												bind:value={selectedAddress}
+												on:change={() => {
+													handleFieldChange('selectedAddress');
+													saveFormDataImmediate();
+												}}
+											>
+												{#each deliveryAddresses as address}
+													<option value={address.id}
+														>{address.name || address.npCityFullName}</option
+													>
+												{/each}
+											</select>
+										{:else}
+											<div class="no-address-message">
+												<p>{$pageTranslations.t('cart.checkout.noAddressesAvailable')}</p>
+												<button
+													type="button"
+													class="add-address-btn primary"
+													on:click={() => {
+														console.log('Primary button clicked');
+														openAddressModal();
+													}}
+												>
+													{$pageTranslations.t('cart.checkout.addNewAddress')}
+												</button>
+											</div>
+										{/if}
+
+										{#if deliveryAddresses.length > 0}
 											<button
 												type="button"
-												class="add-address-btn primary"
-												on:click={() => { console.log('Primary button clicked'); openAddressModal(); }}
+												class="add-address-btn"
+												on:click={() => {
+													console.log('Secondary button clicked');
+													openAddressModal();
+												}}
 											>
 												{$pageTranslations.t('cart.checkout.addNewAddress')}
 											</button>
-										</div>
-									{/if}
-
-									{#if deliveryAddresses.length > 0}
-										<button
-											type="button"
-											class="add-address-btn"
-											on:click={() => { console.log('Secondary button clicked'); openAddressModal(); }}
-										>
-											{$pageTranslations.t('cart.checkout.addNewAddress')}
-										</button>
-									{/if}
+										{/if}
+									</div>
 								</div>
-								
+							</div>
+						{/if}
+					</div>
 
-							</div>
-						</div>
-					{/if}
-				</div>
-				
-				<!-- Right Column: Order Summary (1/4) -->
-				<div class="cart-summary-column">
-					<div class="cart-summary-container">
-						<h2 class="summary-title">{$pageTranslations.t('cart.summary.title')}</h2>
-						
-						<!-- Summary Details -->
-						<div class="summary-details">
-							<div class="summary-line">
-								<span class="summary-label">
-									{$pageTranslations.t('cart.summary.subtotal')} 
-									({$cartTotals.itemCount} {$cartTotals.itemCount === 1 ? 'товар' : 'товарів'}):
-								</span>
-								<span class="summary-value">{formatPrice($cartTotals.subtotal)}</span>
-							</div>
-							<!-- Tax field hidden as requested -->
-							<!-- <div class="summary-line">
+					<!-- Right Column: Order Summary (1/4) -->
+					<div class="cart-summary-column">
+						<div class="cart-summary-container">
+							<h2 class="summary-title">{$pageTranslations.t('cart.summary.title')}</h2>
+
+							<!-- Summary Details -->
+							<div class="summary-details">
+								<div class="summary-line">
+									<span class="summary-label">
+										{$pageTranslations.t('cart.summary.subtotal')}
+										({$cartTotals.itemCount}
+										{$cartTotals.itemCount === 1 ? 'товар' : 'товарів'}):
+									</span>
+									<span class="summary-value">{formatPrice($cartTotals.subtotal)}</span>
+								</div>
+								<!-- Tax field hidden as requested -->
+								<!-- <div class="summary-line">
 								<span class="summary-label">{$pageTranslations.t('cart.summary.tax')}:</span>
 								<span class="summary-value">{formatPrice($cartTotals.tax)}</span>
 							</div> -->
-							<div class="summary-line">
-								<span class="summary-label">{$pageTranslations.t('cart.summary.shipping')}:</span>
-								<span class="summary-value">
-									{#if $cartTotals.subtotalUAH >= $cartTotals.freeShippingThreshold}
-										<span class="free-label">{$pageTranslations.t('cart.summary.shipping_free')}</span>
-									{:else}
-										<span class="carrier-label">{$pageTranslations.t('cart.summary.shipping_carrier')}</span>
-									{/if}
-								</span>
-							</div>
-							
-							{#if $cartTotals.subtotalUAH < $cartTotals.freeShippingThreshold}
-								<div class="free-shipping-notice">
-									<p class="notice-text">
-										{#if $pageTranslations.locale === 'en'}
-											💡 Free shipping on orders over <strong>$800</strong>!
+								<div class="summary-line">
+									<span class="summary-label">{$pageTranslations.t('cart.summary.shipping')}:</span>
+									<span class="summary-value">
+										{#if $cartTotals.subtotalUAH >= $cartTotals.freeShippingThreshold}
+											<span class="free-label"
+												>{$pageTranslations.t('cart.summary.shipping_free')}</span
+											>
 										{:else}
-											💡 Безкоштовна доставка від <strong>800₴</strong>!
+											<span class="carrier-label"
+												>{$pageTranslations.t('cart.summary.shipping_carrier')}</span
+											>
 										{/if}
-									</p>
+									</span>
 								</div>
-							{/if}
-							
-							<div class="summary-divider"></div>
 
-							<!-- Promo Code Section -->
-							{#if $isAuthenticated}
-								<div class="promo-code-section">
-									{#if appliedPromoCode}
-										<div class="applied-promo">
-											<div class="promo-info">
-												<span class="promo-code">🎉 {appliedPromoCode.code}</span>
-												{#if appliedPromoCode.description}
-													<span class="promo-description">{appliedPromoCode.description}</span>
-												{/if}
-												<span class="promo-discount">-{formatPrice(appliedPromoCode.discount)}</span>
-											</div>
-											<button
-												class="remove-promo-btn"
-												on:click={removePromoCode}
-												aria-label="Remove promo code"
-											>
-												✕
-											</button>
-										</div>
-									{:else}
-										<div class="promo-input-group">
-											<input
-												type="text"
-												placeholder="Enter promo code"
-												bind:value={promoCodeInput}
-												on:keydown={handlePromoCodeKeydown}
-												disabled={promoCodeLoading}
-												class="promo-input"
-												class:error={promoCodeError}
-											/>
-											<button
-												class="apply-promo-btn"
-												on:click={applyPromoCode}
-												disabled={promoCodeLoading || !promoCodeInput.trim()}
-											>
-												{#if promoCodeLoading}
-													⏳
-												{:else}
-													Apply
-												{/if}
-											</button>
-										</div>
-										{#if promoCodeError}
-											<p class="promo-error">{promoCodeError}</p>
-										{/if}
-									{/if}
-								</div>
+								{#if $cartTotals.subtotalUAH < $cartTotals.freeShippingThreshold}
+									<div class="free-shipping-notice">
+										<p class="notice-text">
+											{#if $pageTranslations.locale === 'en'}
+												💡 Free shipping on orders over <strong>$800</strong>!
+											{:else}
+												💡 Безкоштовна доставка від <strong>800₴</strong>!
+											{/if}
+										</p>
+									</div>
+								{/if}
 
 								<div class="summary-divider"></div>
-							{/if}
 
-							<div class="summary-total">
-								<span class="total-label">
-									{$pageTranslations.t('cart.summary.total')}
-									{#if appliedPromoCode}
-										<span class="original-total">({formatPrice($cartTotals.total)})</span>
-									{/if}
-									:
-								</span>
-								<span class="total-value">
-									{#if appliedPromoCode}
-										{formatPrice($discountedTotal)}
-									{:else}
-										{formatPrice($cartTotals.total)}
-									{/if}
-								</span>
-							</div>
-						</div>
-						
-						<!-- Action Buttons -->
-						<div class="summary-actions">
-							<button class="checkout-btn" on:click={handleCheckout}>
+								<!-- Promo Code Section -->
 								{#if $isAuthenticated}
-									{$pageTranslations.t('cart.summary.checkout_authenticated')}
-								{:else}
-									{$pageTranslations.t('cart.summary.checkout_sign_in')}
+									<div class="promo-code-section">
+										{#if appliedPromoCode}
+											<div class="applied-promo">
+												<div class="promo-info">
+													<span class="promo-code">🎉 {appliedPromoCode.code}</span>
+													{#if appliedPromoCode.description}
+														<span class="promo-description">{appliedPromoCode.description}</span>
+													{/if}
+													<span class="promo-discount"
+														>-{formatPrice(appliedPromoCode.discount)}</span
+													>
+												</div>
+												<button
+													class="remove-promo-btn"
+													on:click={removePromoCode}
+													aria-label="Remove promo code"
+												>
+													✕
+												</button>
+											</div>
+										{:else}
+											<div class="promo-input-group">
+												<input
+													type="text"
+													placeholder="Enter promo code"
+													bind:value={promoCodeInput}
+													on:keydown={handlePromoCodeKeydown}
+													disabled={promoCodeLoading}
+													class="promo-input"
+													class:error={promoCodeError}
+												/>
+												<button
+													class="apply-promo-btn"
+													on:click={applyPromoCode}
+													disabled={promoCodeLoading || !promoCodeInput.trim()}
+												>
+													{#if promoCodeLoading}
+														⏳
+													{:else}
+														Apply
+													{/if}
+												</button>
+											</div>
+											{#if promoCodeError}
+												<p class="promo-error">{promoCodeError}</p>
+											{/if}
+										{/if}
+									</div>
+
+									<div class="summary-divider"></div>
 								{/if}
-							</button>
-							
-							<button class="continue-shopping-btn secondary" on:click={continueShopping}>
-								{$pageTranslations.t('cart.summary.continue_shopping')}
-							</button>
+
+								<div class="summary-total">
+									<span class="total-label">
+										{$pageTranslations.t('cart.summary.total')}
+										{#if appliedPromoCode}
+											<span class="original-total">({formatPrice($cartTotals.total)})</span>
+										{/if}
+										:
+									</span>
+									<span class="total-value">
+										{#if appliedPromoCode}
+											{formatPrice($discountedTotal)}
+										{:else}
+											{formatPrice($cartTotals.total)}
+										{/if}
+									</span>
+								</div>
+							</div>
+
+							<!-- Action Buttons -->
+							<div class="summary-actions">
+								<button class="checkout-btn" on:click={handleCheckout}>
+									{#if $isAuthenticated}
+										{$pageTranslations.t('cart.summary.checkout_authenticated')}
+									{:else}
+										{$pageTranslations.t('cart.summary.checkout_sign_in')}
+									{/if}
+								</button>
+
+								<button class="continue-shopping-btn secondary" on:click={continueShopping}>
+									{$pageTranslations.t('cart.summary.continue_shopping')}
+								</button>
+							</div>
 						</div>
 					</div>
 				</div>
-			</div>
-		{/if}
-			</div>
+			{/if}
+		</div>
 	</main>
-
 {:else}
 	<!-- Loading state while translations are initializing -->
 	<main class="cart-page">
@@ -1131,8 +1203,6 @@
 		gap: 8px;
 	}
 
-
-
 	.quantity-controls {
 		display: flex;
 		align-items: center;
@@ -1159,7 +1229,7 @@
 
 	.quantity-btn:hover:not(:disabled) {
 		background: #e9ecef;
-		color: #4B766E;
+		color: #4b766e;
 	}
 
 	.quantity-btn:disabled {
@@ -1179,7 +1249,7 @@
 	}
 
 	.quantity-input:focus {
-		outline: 2px solid #4B766E;
+		outline: 2px solid #4b766e;
 	}
 
 	/* Item Total and Remove Button */
@@ -1202,7 +1272,7 @@
 		font-family: 'Nunito', sans-serif;
 		font-size: 18px;
 		font-weight: 700;
-		color: #4B766E;
+		color: #4b766e;
 		margin: 0;
 	}
 
@@ -1275,7 +1345,7 @@
 
 	.form-input:focus {
 		outline: none;
-		border-color: #4B766E;
+		border-color: #4b766e;
 	}
 
 	.form-input.error {
@@ -1291,7 +1361,7 @@
 		margin-top: 8px;
 		background: none;
 		border: none;
-		color: #4B766E;
+		color: #4b766e;
 		font-family: 'Nunito', sans-serif;
 		font-size: 14px;
 		font-weight: 600;
@@ -1304,14 +1374,14 @@
 	}
 
 	.add-address-btn.primary {
-		background: #4B766E;
+		background: #4b766e;
 		color: white;
 		padding: 10px 16px;
 		border-radius: 6px;
 		text-decoration: none;
 		margin-top: 12px;
 		font-size: 14px;
-		border: 1px solid #4B766E;
+		border: 1px solid #4b766e;
 		transition: all 0.2s ease;
 	}
 
@@ -1333,8 +1403,6 @@
 		color: #666;
 		font-size: 14px;
 	}
-
-
 
 	/* Right Column - Summary (1/4) */
 	.cart-summary-column {
@@ -1431,7 +1499,7 @@
 		font-family: 'Nunito', sans-serif;
 		font-size: 24px;
 		font-weight: 700;
-		color: #4B766E;
+		color: #4b766e;
 	}
 
 	.summary-actions {
@@ -1449,7 +1517,7 @@
 		border: none;
 		cursor: pointer;
 		transition: all 0.2s ease;
-		background: #4B766E;
+		background: #4b766e;
 		color: white;
 		box-shadow: 0 4px 12px rgba(75, 118, 110, 0.3);
 	}
@@ -1465,28 +1533,26 @@
 		font-weight: 500;
 		padding: 12px 20px;
 		border-radius: 8px;
-		border: 2px solid #4B766E;
+		border: 2px solid #4b766e;
 		cursor: pointer;
 		transition: all 0.2s ease;
 		background: transparent;
-		color: #4B766E;
+		color: #4b766e;
 	}
 
 	.continue-shopping-btn:hover {
-		background: #4B766E;
+		background: #4b766e;
 		color: white;
 	}
 
 	.empty-cart .continue-shopping-btn {
-		background: #4B766E;
+		background: #4b766e;
 		color: white;
 		border: none;
 		padding: 16px 32px;
 		font-size: 16px;
 		font-weight: 600;
 	}
-
-
 
 	/* Responsive Design - 700px Breakpoint */
 	@media (max-width: 700px) {
@@ -1551,7 +1617,7 @@
 
 	.promo-input:focus {
 		outline: none;
-		border-color: #4B766E;
+		border-color: #4b766e;
 	}
 
 	.promo-input.error {
@@ -1566,7 +1632,7 @@
 
 	.apply-promo-btn {
 		padding: 12px 20px;
-		background: #4B766E;
+		background: #4b766e;
 		color: white;
 		border: none;
 		border-radius: 8px;
@@ -1600,7 +1666,7 @@
 		align-items: center;
 		padding: 12px 16px;
 		background: #f8f9fa;
-		border: 2px solid #4B766E;
+		border: 2px solid #4b766e;
 		border-radius: 8px;
 		margin-bottom: 8px;
 	}
@@ -1616,7 +1682,7 @@
 		font-family: 'Nunito', sans-serif;
 		font-size: 14px;
 		font-weight: 600;
-		color: #4B766E;
+		color: #4b766e;
 	}
 
 	.promo-description {

@@ -1523,10 +1523,10 @@ export class TelegramBotService {
 		try {
 			const promoCodes = await this.promoCodeService.getAllPromoCodes();
 
-			let totalCodes = promoCodes.length;
-			let activeCodes = promoCodes.filter((p) => p.isActive).length;
-			let totalUsage = promoCodes.reduce((sum, p) => sum + (p.usageCount || 0), 0);
-			let expiredCodes = promoCodes.filter(
+			const totalCodes = promoCodes.length;
+			const activeCodes = promoCodes.filter((p) => p.isActive).length;
+			const totalUsage = promoCodes.reduce((sum, p) => sum + (p.usageCount || 0), 0);
+			const expiredCodes = promoCodes.filter(
 				(p) => p.expiresAt && new Date(p.expiresAt) < new Date()
 			).length;
 

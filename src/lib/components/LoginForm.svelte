@@ -169,7 +169,7 @@
 				class:facebook={provider.name === 'facebook'}
 				on:click={() => handleOAuthSignIn(provider.name)}
 				disabled={isLoading}
-				aria-label="{provider.label}"
+				aria-label={provider.label}
 			>
 				<img src={provider.icon} alt="{provider.name} icon" class="oauth-icon" />
 				<span class="oauth-label">{provider.label}</span>
@@ -221,7 +221,7 @@
 					id="password"
 					type={showPassword ? 'text' : 'password'}
 					bind:value={password}
-					class="form-input password-input"
+					class="password-input form-input"
 					placeholder="23SDSDS3dsj"
 					required
 					disabled={isLoading}
@@ -235,16 +235,58 @@
 				>
 					{#if showPassword}
 						<!-- Eye closed icon -->
-						<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-							<path d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-							<path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-							<path d="M3 3l18 18" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+						<svg
+							width="20"
+							height="20"
+							viewBox="0 0 24 24"
+							fill="none"
+							xmlns="http://www.w3.org/2000/svg"
+						>
+							<path
+								d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"
+								stroke="#6B7280"
+								stroke-width="2"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+							/>
+							<path
+								d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+								stroke="#6B7280"
+								stroke-width="2"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+							/>
+							<path
+								d="M3 3l18 18"
+								stroke="#6B7280"
+								stroke-width="2"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+							/>
 						</svg>
 					{:else}
 						<!-- Eye open icon -->
-						<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-							<path d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-							<path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+						<svg
+							width="20"
+							height="20"
+							viewBox="0 0 24 24"
+							fill="none"
+							xmlns="http://www.w3.org/2000/svg"
+						>
+							<path
+								d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"
+								stroke="#6B7280"
+								stroke-width="2"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+							/>
+							<path
+								d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+								stroke="#6B7280"
+								stroke-width="2"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+							/>
 						</svg>
 					{/if}
 				</button>
@@ -254,9 +296,7 @@
 		<!-- Забыли пароль (только для входа) -->
 		{#if !isSignUp}
 			<div class="forgot-password">
-				<a href="/password-recovery" class="forgot-link">
-					Забули пароль?
-				</a>
+				<a href="/password-recovery" class="forgot-link"> Забули пароль? </a>
 			</div>
 		{/if}
 
@@ -272,7 +312,7 @@
 			type="submit"
 			class="submit-button"
 			disabled={isLoading}
-			aria-label="{isSignUp ? 'Create account' : 'Sign in'}"
+			aria-label={isSignUp ? 'Create account' : 'Sign in'}
 		>
 			{#if isLoading}
 				<div class="loading-spinner"></div>
@@ -284,19 +324,12 @@
 	<!-- Переключение режима -->
 	<div class="mode-toggle">
 		<p class="toggle-text">
-			{isSignUp ? 'Вже є обліковий запис?' : "Немає облікового запису?"}
-			<button
-				type="button"
-				class="toggle-button"
-				on:click={toggleMode}
-				disabled={isLoading}
-			>
+			{isSignUp ? 'Вже є обліковий запис?' : 'Немає облікового запису?'}
+			<button type="button" class="toggle-button" on:click={toggleMode} disabled={isLoading}>
 				{isSignUp ? 'Увійти' : 'Зареєструватись'}
 			</button>
 		</p>
 	</div>
-
-
 </div>
 
 <style>
@@ -305,7 +338,7 @@
 		min-height: 695px;
 		margin: 0 auto;
 		padding: 40px 40px 60px;
-		background: #FFFFFF;
+		background: #ffffff;
 		border-radius: 20px;
 		display: flex;
 		flex-direction: column;
@@ -355,10 +388,10 @@
 		gap: 10px;
 		width: 460px;
 		min-height: 46px;
-		border: 1px solid #4B766E;
+		border: 1px solid #4b766e;
 		border-radius: 100px;
 		background: white;
-		color: #4B766E;
+		color: #4b766e;
 		font-family: 'Nunito', sans-serif;
 		font-style: normal;
 		font-weight: 500;
@@ -394,7 +427,7 @@
 		display: flex;
 		align-items: center;
 		text-align: center;
-		color: #4B766E;
+		color: #4b766e;
 	}
 
 	.divider {
@@ -412,7 +445,7 @@
 	.divider-line {
 		width: 199.5px;
 		height: 1px;
-		background: #B4B4B4;
+		background: #b4b4b4;
 		flex: 1;
 	}
 
@@ -427,7 +460,7 @@
 		display: flex;
 		align-items: center;
 		text-align: center;
-		color: #B4B4B4;
+		color: #b4b4b4;
 	}
 
 	.email-form {
@@ -473,7 +506,7 @@
 		padding: 12px 16px;
 		width: 460px;
 		height: 44px;
-		border: 1px solid #9A9A9A;
+		border: 1px solid #9a9a9a;
 		border-radius: 10px;
 		font-family: 'Nunito', sans-serif;
 		font-style: normal;
@@ -522,7 +555,7 @@
 
 	.form-input:focus {
 		outline: none;
-		border-color: #4B766E;
+		border-color: #4b766e;
 	}
 
 	.form-input:disabled {
@@ -549,7 +582,7 @@
 		gap: 8px;
 		width: 460px;
 		height: 46px;
-		background: #52796F;
+		background: #52796f;
 		border: none;
 		border-radius: 12px;
 		font-family: 'Nunito', sans-serif;
@@ -557,7 +590,7 @@
 		font-weight: 600;
 		font-size: 16px;
 		line-height: 140%;
-		color: #FFFFFF;
+		color: #ffffff;
 		cursor: pointer;
 		transition: all 0.2s ease;
 		align-self: stretch;
@@ -623,7 +656,7 @@
 	.toggle-button {
 		background: none;
 		border: none;
-		color: #4B766E;
+		color: #4b766e;
 		font-family: 'Nunito', sans-serif;
 		font-style: normal;
 		font-weight: 400;
@@ -660,7 +693,7 @@
 		font-family: 'Nunito', sans-serif;
 		font-size: 14px;
 		font-weight: 500;
-		color: #4B766E;
+		color: #4b766e;
 		text-decoration: underline;
 		transition: color 0.2s ease;
 	}

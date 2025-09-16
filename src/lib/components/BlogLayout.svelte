@@ -15,11 +15,13 @@
 	$: readingTime = Math.ceil(title.length / 200 + (description?.length || 0) / 300);
 
 	// Format date based on current locale
-	$: formattedDate = date ? new Date(date).toLocaleDateString($currentLocale === 'uk-ua' ? 'uk-UA' : 'en-US', {
-		year: 'numeric',
-		month: 'long',
-		day: 'numeric'
-	}) : '';
+	$: formattedDate = date
+		? new Date(date).toLocaleDateString($currentLocale === 'uk-ua' ? 'uk-UA' : 'en-US', {
+				year: 'numeric',
+				month: 'long',
+				day: 'numeric'
+			})
+		: '';
 
 	// Get translations based on current locale
 	$: backToBlogText = $currentLocale === 'uk-ua' ? 'Назад до блогу' : 'Back to Blog';
@@ -28,11 +30,7 @@
 	$: shareText = $currentLocale === 'uk-ua' ? 'Поділитися статтею:' : 'Share this article:';
 </script>
 
-<SEO
-	title={title}
-	description={description}
-	locale={$page.data.locale}
-/>
+<SEO {title} {description} locale={$page.data.locale} />
 
 <main class="blog-post">
 	<div class="blog-container">
@@ -113,7 +111,7 @@
 		display: inline-flex;
 		align-items: center;
 		gap: 8px;
-		color: #4B766E;
+		color: #4b766e;
 		text-decoration: none;
 		font-weight: 500;
 		font-size: 14px;
@@ -150,7 +148,9 @@
 		color: #666;
 	}
 
-	.author, .date, .reading-time {
+	.author,
+	.date,
+	.reading-time {
 		display: flex;
 		align-items: center;
 		gap: 6px;
@@ -164,7 +164,7 @@
 
 	.tag {
 		background: #f0f0f0;
-		color: #4B766E;
+		color: #4b766e;
 		padding: 4px 12px;
 		border-radius: 16px;
 		font-size: 12px;
@@ -180,7 +180,12 @@
 		line-height: 1.7;
 	}
 
-	.post-content :global(h1), .post-content :global(h2), .post-content :global(h3), .post-content :global(h4), .post-content :global(h5), .post-content :global(h6) {
+	.post-content :global(h1),
+	.post-content :global(h2),
+	.post-content :global(h3),
+	.post-content :global(h4),
+	.post-content :global(h5),
+	.post-content :global(h6) {
 		font-family: 'Nunito', sans-serif;
 		color: #1a1a1a;
 		margin-top: 32px;
@@ -198,7 +203,7 @@
 	.post-content :global(h2) {
 		font-size: 24px;
 		font-weight: 600;
-		color: #4B766E;
+		color: #4b766e;
 	}
 
 	.post-content :global(h3) {
@@ -212,7 +217,8 @@
 		color: #333;
 	}
 
-	.post-content :global(ul), .post-content :global(ol) {
+	.post-content :global(ul),
+	.post-content :global(ol) {
 		margin-bottom: 16px;
 		padding-left: 24px;
 	}
@@ -222,7 +228,7 @@
 	}
 
 	.post-content :global(blockquote) {
-		border-left: 4px solid #4B766E;
+		border-left: 4px solid #4b766e;
 		padding-left: 16px;
 		margin: 24px 0;
 		font-style: italic;
@@ -309,7 +315,9 @@
 			gap: 8px;
 		}
 
-		.post-content, .post-header, .post-footer {
+		.post-content,
+		.post-header,
+		.post-footer {
 			padding: 24px;
 		}
 

@@ -28,10 +28,10 @@
 		: [];
 
 	// Use provided translations or fallback to global translations
-	$: pageTranslations = translations && typeof translations.subscribe === 'function'
-		? translations
-		: createPageTranslations();
-
+	$: pageTranslations =
+		translations && typeof translations.subscribe === 'function'
+			? translations
+			: createPageTranslations();
 </script>
 
 <div id="products" class="w-full bg-white px-4 py-16 sm:px-6 lg:px-8">
@@ -39,7 +39,7 @@
 		{#if title}
 			<div class="mb-12 flex items-center justify-between">
 				<h2 class="text-4xl font-bold text-gray-900">{title}</h2>
-				
+
 				<!-- Navigation Controls -->
 				<div class="flex items-center gap-4">
 					<!-- Removed "Уся продукція" button -->
@@ -59,9 +59,9 @@
 					Showing {displayProducts.length} product{displayProducts.length !== 1 ? 's' : ''}
 				{/if}
 			</div>
-			
+
 			<!-- Product Grid -->
-			<ProductGrid 
+			<ProductGrid
 				products={displayProducts}
 				{columns}
 				{gap}
@@ -73,7 +73,7 @@
 				{showAddToCart}
 			/>
 		{:else}
-			<p class="text-center text-gray-500 mt-8">Товари скоро з'являться.</p>
+			<p class="mt-8 text-center text-gray-500">Товари скоро з'являться.</p>
 		{/if}
 	</div>
 </div>

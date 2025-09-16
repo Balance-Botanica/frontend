@@ -1,12 +1,12 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { t } from '$lib/i18n';
-	import { 
-		cookieConsentStore, 
-		acceptNecessary, 
-		acceptAll, 
-		hideCookieConsent, 
-		updateCookieSetting, 
+	import {
+		cookieConsentStore,
+		acceptNecessary,
+		acceptAll,
+		hideCookieConsent,
+		updateCookieSetting,
 		acceptSelected,
 		showManageModal,
 		hideManageModal
@@ -43,7 +43,7 @@
 
 {#if isVisible}
 	<div
-		class="fixed bottom-[30px] right-[30px] z-[10000000] w-[500px] max-w-[calc(100%-60px)] rounded-[40px] text-white bg-[#059669] px-8 py-6 transition-all duration-500 ease-out"
+		class="fixed right-[30px] bottom-[30px] z-[10000000] w-[500px] max-w-[calc(100%-60px)] rounded-[40px] bg-[#059669] px-8 py-6 text-white transition-all duration-500 ease-out"
 		class:translate-y-0={isVisible}
 		class:translate-y-full={!isVisible}
 		class:opacity-100={isVisible}
@@ -58,10 +58,17 @@
 				</div>
 				<button
 					on:click={hideCookieConsent}
-					class="rounded-full p-1 transition-colors hover:bg-white/10 cursor-pointer"
+					class="cursor-pointer rounded-full p-1 transition-colors hover:bg-white/10"
 					aria-label={t('cookie_consent.close')}
 				>
-					<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+					<svg
+						width="20"
+						height="20"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+					>
 						<path d="M18 6L6 18M6 6L18 18" />
 					</svg>
 				</button>
@@ -69,10 +76,17 @@
 				<div class="flex items-center gap-3">
 					<button
 						on:click={handleHideManageModal}
-						class="rounded-full p-2 transition-colors hover:bg-white/10 cursor-pointer"
+						class="cursor-pointer rounded-full p-2 transition-colors hover:bg-white/10"
 						aria-label="Back"
 					>
-						<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+						<svg
+							width="20"
+							height="20"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2"
+						>
 							<path d="M19 12H5M12 19l-7-7 7-7" />
 						</svg>
 					</button>
@@ -82,39 +96,34 @@
 		</div>
 
 		<!-- Main content -->
-		<div class="transition-all duration-500 ease-out overflow-hidden">
+		<div class="overflow-hidden transition-all duration-500 ease-out">
 			{#if !isManageModalOpen}
 				<!-- Compact mode -->
 				<div class="space-y-4">
 					<p class="text-sm text-white/80">
 						{t('cookie_consent.description')}
 					</p>
-					
-					<button	
+
+					<button
 						on:click={handleManage}
-						class="text-sm underline transition-colors hover:text-white/60 cursor-pointer"
+						class="cursor-pointer text-sm underline transition-colors hover:text-white/60"
 					>
 						{t('cookie_consent.manage')}
 					</button>
 				</div>
 			{:else}
 				<!-- Expanded mode -->
-				<div class="space-y-6 animate-in slide-in-from-top duration-300">
+				<div class="animate-in slide-in-from-top space-y-6 duration-300">
 					<!-- Necessary - always enabled -->
 					<div class="space-y-2">
 						<div class="flex items-center justify-between">
 							<div class="flex-1">
 								<h3 class="font-semibold">{t('cookie_manage.necessary.title')}</h3>
-								<p class="text-sm text-white/80 mt-1">
+								<p class="mt-1 text-sm text-white/80">
 									{t('cookie_manage.necessary.description')}
 								</p>
 							</div>
-							<Switcher 
-								checked={true} 
-								disabled={true}
-								variant="cookie"
-								onChange={() => {}} 
-							/>
+							<Switcher checked={true} disabled={true} variant="cookie" onChange={() => {}} />
 						</div>
 					</div>
 
@@ -123,11 +132,11 @@
 						<div class="flex items-center justify-between">
 							<div class="flex-1">
 								<h3 class="font-semibold">{t('cookie_manage.statistics.title')}</h3>
-								<p class="text-sm text-white/80 mt-1">
+								<p class="mt-1 text-sm text-white/80">
 									{t('cookie_manage.statistics.description')}
 								</p>
 							</div>
-							<Switcher 
+							<Switcher
 								checked={settings.statistics}
 								variant="cookie"
 								onChange={(checked) => handleToggle('statistics')}
@@ -140,11 +149,11 @@
 						<div class="flex items-center justify-between">
 							<div class="flex-1">
 								<h3 class="font-semibold">{t('cookie_manage.marketing.title')}</h3>
-								<p class="text-sm text-white/80 mt-1">
+								<p class="mt-1 text-sm text-white/80">
 									{t('cookie_manage.marketing.description')}
 								</p>
 							</div>
-							<Switcher 
+							<Switcher
 								checked={settings.marketing}
 								variant="cookie"
 								onChange={(checked) => handleToggle('marketing')}
@@ -160,15 +169,17 @@
 			<button
 				type="button"
 				on:click={isManageModalOpen ? handleAcceptSelected : handleAcceptNecessary}
-				class="cookie-btn-necessary flex-1 rounded-[20px] border-2 border-white bg-transparent px-6 py-3 text-sm font-medium text-white transition-all duration-300 hover:bg-white hover:text-[#059669] cursor-pointer"
+				class="cookie-btn-necessary flex-1 cursor-pointer rounded-[20px] border-2 border-white bg-transparent px-6 py-3 text-sm font-medium text-white transition-all duration-300 hover:bg-white hover:text-[#059669]"
 			>
-				{isManageModalOpen ? t('cookie_manage.accept_selected') : t('cookie_consent.accept_necessary')}
+				{isManageModalOpen
+					? t('cookie_manage.accept_selected')
+					: t('cookie_consent.accept_necessary')}
 			</button>
 
 			<button
 				type="button"
 				on:click={handleAcceptAll}
-				class="cookie-btn-all flex-1 rounded-[20px] bg-white px-6 py-3 text-sm font-medium text-[#059669] transition-all duration-300 hover:bg-gray-100 cursor-pointer"
+				class="cookie-btn-all flex-1 cursor-pointer rounded-[20px] bg-white px-6 py-3 text-sm font-medium text-[#059669] transition-all duration-300 hover:bg-gray-100"
 			>
 				{t('cookie_consent.accept_all')}
 			</button>
@@ -192,7 +203,7 @@
 
 	/* Base styles for cookie management modal */
 	:global(.cookie-manage-modal) {
-		font-family: "Nunito", "GT Walsheim", "Helvetica Neue", Helvetica, Arial, sans-serif;
+		font-family: 'Nunito', 'GT Walsheim', 'Helvetica Neue', Helvetica, Arial, sans-serif;
 		letter-spacing: -0.02em;
 		line-height: 1.2;
 		word-break: break-word;
@@ -217,11 +228,11 @@
 	}
 
 	/* Adaptive sizes for different languages */
-	:global([lang="uk"]) .cookie-btn-necessary {
+	:global([lang='uk']) .cookie-btn-necessary {
 		min-width: 220px; /* Larger for Ukrainian */
 	}
 
-	:global([lang="en"]) .cookie-btn-necessary {
+	:global([lang='en']) .cookie-btn-necessary {
 		min-width: 200px; /* Smaller for English */
 	}
 
@@ -232,11 +243,11 @@
 	}
 
 	/* Adaptive sizes for different languages */
-	:global([lang="uk"]) .cookie-btn-all {
+	:global([lang='uk']) .cookie-btn-all {
 		min-width: 140px; /* Larger for Ukrainian */
 	}
 
-	:global([lang="en"]) .cookie-btn-all {
+	:global([lang='en']) .cookie-btn-all {
 		min-width: 120px; /* Smaller for English */
 	}
 </style>

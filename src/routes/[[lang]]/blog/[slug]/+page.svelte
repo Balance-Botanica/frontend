@@ -7,8 +7,8 @@
 	const { data }: { data: any } = $props();
 
 	// Get slug and lang from URL parameters
-	let slug = $derived($page.params?.slug);
-	let lang = $derived($page.params?.lang || 'uk-ua');
+	const slug = $derived($page.params?.slug);
+	const lang = $derived($page.params?.lang || 'uk-ua');
 
 	// Track previous locale to detect changes and prevent loops
 	let previousLocale = $currentLocale;
@@ -23,9 +23,7 @@
 			// Small delay to prevent rapid navigation loops
 			setTimeout(() => {
 				// Use language prefix in URL - English gets /en, Ukrainian gets no prefix
-				const fullUrl = $currentLocale === 'en'
-					? `/en/blog/${slug}`
-					: `/blog/${slug}`;
+				const fullUrl = $currentLocale === 'en' ? `/en/blog/${slug}` : `/blog/${slug}`;
 				goto(fullUrl, { replaceState: true });
 				isNavigating = false;
 			}, 100);
@@ -44,7 +42,7 @@
 	date={data?.date}
 	author={data?.author}
 	tags={data?.tags}
-	slug={slug}
+	{slug}
 >
 	{@html data?.content}
 </BlogLayout>

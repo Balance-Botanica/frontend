@@ -38,7 +38,13 @@
 	function handleSearch() {
 		console.log('ProductSearch: handleSearch called with searchTerm:', searchTerm);
 		console.log('ProductSearch: searchTerm type:', typeof searchTerm, 'length:', searchTerm.length);
-		console.log('ProductSearch: filters:', { selectedCategory, selectedSize, selectedFlavor, minPrice, maxPrice });
+		console.log('ProductSearch: filters:', {
+			selectedCategory,
+			selectedSize,
+			selectedFlavor,
+			minPrice,
+			maxPrice
+		});
 		dispatch('search', {
 			searchTerm,
 			category: selectedCategory,
@@ -63,7 +69,7 @@
 
 	// Handle enter key in search input
 	function handleKeyPress(event: CustomEvent<{ key: string }>) {
-		// @ts-ignore - we need to access the original KeyboardEvent
+		// @ts-expect-error - we need to access the original KeyboardEvent
 		if (event.detail && event.detail.key === 'Enter') {
 			console.log('ProductSearch: Enter key pressed, triggering search');
 			handleSearch();
@@ -87,18 +93,25 @@
 	}
 </script>
 
-<div class="bg-white rounded-xl shadow-md p-6 mb-8">
+<div class="mb-8 rounded-xl bg-white p-6 shadow-md">
 	{#if $pageTranslations}
-		<h2 class="text-2xl font-bold text-gray-800 mb-6">{$pageTranslations.t('products.search.title')}</h2>
-		
+		<h2 class="mb-6 text-2xl font-bold text-gray-800">
+			{$pageTranslations.t('products.search.title')}
+		</h2>
+
 		<!-- Search Form -->
-		<form on:submit|preventDefault={(event) => {
-			console.log('Form submit event triggered');
-			handleSearch();
-		}}>
+		<form
+			on:submit|preventDefault={(event) => {
+				console.log('Form submit event triggered');
+				handleSearch();
+			}}
+		>
 			<!-- Search Input -->
 			<div class="mb-6">
-				<label for="search-input" class="block text-sm font-medium text-gray-700 mb-2 cursor-pointer">
+				<label
+					for="search-input"
+					class="mb-2 block cursor-pointer text-sm font-medium text-gray-700"
+				>
 					{$pageTranslations.t('products.search.search_label')}
 				</label>
 				<div class="relative">
@@ -106,7 +119,7 @@
 						id="search-input"
 						type="text"
 						bind:value={searchTerm}
-						placeholder="{$pageTranslations.t('products.search.search_placeholder')}"
+						placeholder={$pageTranslations.t('products.search.search_placeholder')}
 						on:keypress={(e) => {
 							if (e.key === 'Enter') {
 								console.log('ProductSearch: Enter key pressed, triggering search');
@@ -128,10 +141,15 @@
 								console.log('Clear search button clicked');
 								searchTerm = '';
 							}}
-							class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 cursor-pointer"
+							class="absolute top-1/2 right-3 -translate-y-1/2 transform cursor-pointer text-gray-400 hover:text-gray-600"
 						>
-							<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+							<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="M6 18L18 6M6 6l12 12"
+								/>
 							</svg>
 						</button>
 					{/if}
@@ -139,16 +157,19 @@
 			</div>
 
 			<!-- Filters Grid -->
-			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+			<div class="mb-6 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
 				<!-- Category Filter -->
 				<div>
-					<label for="category-select" class="block text-sm font-medium text-gray-700 mb-2 cursor-pointer">
+					<label
+						for="category-select"
+						class="mb-2 block cursor-pointer text-sm font-medium text-gray-700"
+					>
 						{$pageTranslations.t('products.search.category_label')}
 					</label>
 					<select
 						id="category-select"
 						bind:value={selectedCategory}
-						class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#4b766e] focus:border-[#4b766e] transition-colors cursor-pointer"
+						class="w-full cursor-pointer rounded-lg border border-gray-300 px-4 py-3 transition-colors focus:border-[#4b766e] focus:ring-2 focus:ring-[#4b766e]"
 						style="border-color: {colors.stroke}; background-color: {colors.optional}; color: {colors.text};"
 					>
 						<option value="">{$pageTranslations.t('products.search.all_categories')}</option>
@@ -160,13 +181,16 @@
 
 				<!-- Size Filter -->
 				<div>
-					<label for="size-select" class="block text-sm font-medium text-gray-700 mb-2 cursor-pointer">
+					<label
+						for="size-select"
+						class="mb-2 block cursor-pointer text-sm font-medium text-gray-700"
+					>
 						{$pageTranslations.t('products.search.size_label')}
 					</label>
 					<select
 						id="size-select"
 						bind:value={selectedSize}
-						class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#4b766e] focus:border-[#4b766e] transition-colors cursor-pointer"
+						class="w-full cursor-pointer rounded-lg border border-gray-300 px-4 py-3 transition-colors focus:border-[#4b766e] focus:ring-2 focus:ring-[#4b766e]"
 						style="border-color: {colors.stroke}; background-color: {colors.optional}; color: {colors.text};"
 					>
 						<option value="">{$pageTranslations.t('products.search.all_sizes')}</option>
@@ -178,13 +202,16 @@
 
 				<!-- Flavor Filter -->
 				<div>
-					<label for="flavor-select" class="block text-sm font-medium text-gray-700 mb-2 cursor-pointer">
+					<label
+						for="flavor-select"
+						class="mb-2 block cursor-pointer text-sm font-medium text-gray-700"
+					>
 						{$pageTranslations.t('products.search.flavor_label')}
 					</label>
 					<select
 						id="flavor-select"
 						bind:value={selectedFlavor}
-						class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#4b766e] focus:border-[#4b766e] transition-colors cursor-pointer"
+						class="w-full cursor-pointer rounded-lg border border-gray-300 px-4 py-3 transition-colors focus:border-[#4b766e] focus:ring-2 focus:ring-[#4b766e]"
 						style="border-color: {colors.stroke}; background-color: {colors.optional}; color: {colors.text};"
 					>
 						<option value="">{$pageTranslations.t('products.search.all_flavors')}</option>
@@ -196,7 +223,7 @@
 
 				<!-- Price Range -->
 				<div>
-					<label class="block text-sm font-medium text-gray-700 mb-2 cursor-pointer">
+					<label class="mb-2 block cursor-pointer text-sm font-medium text-gray-700">
 						{$pageTranslations.t('products.search.price_label')}
 					</label>
 					<div class="flex space-x-2">
@@ -230,31 +257,44 @@
 
 			<!-- Action Buttons -->
 			<div class="flex flex-wrap gap-4">
-				<Button type="submit" variant="primary" on:click={(event) => {
-					console.log('Search button clicked');
-				}}>
+				<Button
+					type="submit"
+					variant="primary"
+					on:click={(event) => {
+						console.log('Search button clicked');
+					}}
+				>
 					{$pageTranslations.t('products.search.search_button')}
 				</Button>
-				<Button type="button" variant="ghost" on:click={(event) => {
-					console.log('Reset button clicked');
-					handleReset();
-				}}>
+				<Button
+					type="button"
+					variant="ghost"
+					on:click={(event) => {
+						console.log('Reset button clicked');
+						handleReset();
+					}}
+				>
 					{$pageTranslations.t('products.search.reset_button')}
 				</Button>
 			</div>
 		</form>
 	{:else}
 		<!-- Fallback content while translations are loading -->
-		<h2 class="text-2xl font-bold text-gray-800 mb-6">Search Products</h2>
-		
+		<h2 class="mb-6 text-2xl font-bold text-gray-800">Search Products</h2>
+
 		<!-- Search Form -->
-		<form on:submit|preventDefault={(event) => {
-			console.log('Form submit event triggered');
-			handleSearch();
-		}}>
+		<form
+			on:submit|preventDefault={(event) => {
+				console.log('Form submit event triggered');
+				handleSearch();
+			}}
+		>
 			<!-- Search Input -->
 			<div class="mb-6">
-				<label for="search-input" class="block text-sm font-medium text-gray-700 mb-2 cursor-pointer">
+				<label
+					for="search-input"
+					class="mb-2 block cursor-pointer text-sm font-medium text-gray-700"
+				>
 					Search
 				</label>
 				<div class="relative">
@@ -284,10 +324,15 @@
 								console.log('Clear search button clicked');
 								searchTerm = '';
 							}}
-							class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 cursor-pointer"
+							class="absolute top-1/2 right-3 -translate-y-1/2 transform cursor-pointer text-gray-400 hover:text-gray-600"
 						>
-							<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+							<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="M6 18L18 6M6 6l12 12"
+								/>
 							</svg>
 						</button>
 					{/if}
@@ -295,16 +340,19 @@
 			</div>
 
 			<!-- Filters Grid -->
-			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+			<div class="mb-6 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
 				<!-- Category Filter -->
 				<div>
-					<label for="category-select" class="block text-sm font-medium text-gray-700 mb-2 cursor-pointer">
+					<label
+						for="category-select"
+						class="mb-2 block cursor-pointer text-sm font-medium text-gray-700"
+					>
 						Category
 					</label>
 					<select
 						id="category-select"
 						bind:value={selectedCategory}
-						class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#4b766e] focus:border-[#4b766e] transition-colors cursor-pointer"
+						class="w-full cursor-pointer rounded-lg border border-gray-300 px-4 py-3 transition-colors focus:border-[#4b766e] focus:ring-2 focus:ring-[#4b766e]"
 						style="border-color: {colors.stroke}; background-color: {colors.optional}; color: {colors.text};"
 					>
 						<option value="">All Categories</option>
@@ -316,13 +364,16 @@
 
 				<!-- Size Filter -->
 				<div>
-					<label for="size-select" class="block text-sm font-medium text-gray-700 mb-2 cursor-pointer">
+					<label
+						for="size-select"
+						class="mb-2 block cursor-pointer text-sm font-medium text-gray-700"
+					>
 						Size
 					</label>
 					<select
 						id="size-select"
 						bind:value={selectedSize}
-						class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#4b766e] focus:border-[#4b766e] transition-colors cursor-pointer"
+						class="w-full cursor-pointer rounded-lg border border-gray-300 px-4 py-3 transition-colors focus:border-[#4b766e] focus:ring-2 focus:ring-[#4b766e]"
 						style="border-color: {colors.stroke}; background-color: {colors.optional}; color: {colors.text};"
 					>
 						<option value="">All Sizes</option>
@@ -334,13 +385,16 @@
 
 				<!-- Flavor Filter -->
 				<div>
-					<label for="flavor-select" class="block text-sm font-medium text-gray-700 mb-2 cursor-pointer">
+					<label
+						for="flavor-select"
+						class="mb-2 block cursor-pointer text-sm font-medium text-gray-700"
+					>
 						Flavor
 					</label>
 					<select
 						id="flavor-select"
 						bind:value={selectedFlavor}
-						class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#4b766e] focus:border-[#4b766e] transition-colors cursor-pointer"
+						class="w-full cursor-pointer rounded-lg border border-gray-300 px-4 py-3 transition-colors focus:border-[#4b766e] focus:ring-2 focus:ring-[#4b766e]"
 						style="border-color: {colors.stroke}; background-color: {colors.optional}; color: {colors.text};"
 					>
 						<option value="">All Flavors</option>
@@ -352,7 +406,7 @@
 
 				<!-- Price Range -->
 				<div>
-					<label class="block text-sm font-medium text-gray-700 mb-2 cursor-pointer">
+					<label class="mb-2 block cursor-pointer text-sm font-medium text-gray-700">
 						{$pageTranslations.t('products.search.price_label')}
 					</label>
 					<div class="flex space-x-2">
@@ -374,12 +428,8 @@
 
 			<!-- Action Buttons -->
 			<div class="flex flex-wrap gap-4">
-				<Button on:click={handleSearch} variant="primary" type="submit">
-					Search
-				</Button>
-				<Button on:click={handleReset} variant="ghost" type="button">
-					Reset Filters
-				</Button>
+				<Button on:click={handleSearch} variant="primary" type="submit">Search</Button>
+				<Button on:click={handleReset} variant="ghost" type="button">Reset Filters</Button>
 			</div>
 		</form>
 	{/if}
@@ -390,8 +440,8 @@
 	select:focus {
 		cursor: pointer;
 	}
-	
-	input[type="number"]:focus {
+
+	input[type='number']:focus {
 		cursor: text;
 	}
 </style>

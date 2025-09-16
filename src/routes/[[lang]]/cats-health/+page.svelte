@@ -7,16 +7,12 @@
 	const isEnglish = $derived(lang === 'en');
 	const translations = $derived(() => ({
 		learnMore: isEnglish ? 'Learn More' : 'Дізнатися більше',
-		relatedArticles: isEnglish ? 'Related Articles' : 'Пов\'язані статті',
+		relatedArticles: isEnglish ? 'Related Articles' : "Пов'язані статті",
 		tableOfContents: isEnglish ? 'Table of Contents' : 'Зміст'
 	}));
 </script>
 
-<SEO
-	title={data.title}
-	description={data.description}
-	locale={lang as 'en' | 'uk-ua'}
-/>
+<SEO title={data.title} description={data.description} locale={lang as 'en' | 'uk-ua'} />
 
 <main class="cats-health-main">
 	<div class="cats-health-container">
@@ -46,26 +42,42 @@
 		{/if}
 
 		<section class="cats-health-related">
-			<h2>{translations().relatedArticles}</h2>
+			<h2>{translations.relatedArticles}</h2>
 			<div class="cats-health-related-grid">
-				<a href={`${lang}/cbd/cats/`} class="cats-health-related-card">
+				<a href={`${lang}/knowledgebase/cbd/cats/`} class="cats-health-related-card">
 					<h3>{isEnglish ? 'CBD for Cats: Complete Guide' : 'CBD для котів: повний посібник'}</h3>
-					<p>{isEnglish ? 'Learn about CBD benefits, dosage, and safety for cats' : 'Дізнайтеся про переваги CBD, дозування та безпеку для котів'}</p>
+					<p>
+						{isEnglish
+							? 'Learn about CBD benefits, dosage, and safety for cats'
+							: 'Дізнайтеся про переваги CBD, дозування та безпеку для котів'}
+					</p>
 				</a>
 
-				<a href={`${lang}/cbd/safety/`} class="cats-health-related-card">
+				<a href={`${lang}/knowledgebase/cbd/safety/`} class="cats-health-related-card">
 					<h3>{isEnglish ? 'CBD Safety Guide' : 'Посібник з безпеки CBD'}</h3>
-					<p>{isEnglish ? 'Important safety information and research' : 'Важлива інформація про безпеку та дослідження'}</p>
+					<p>
+						{isEnglish
+							? 'Important safety information and research'
+							: 'Важлива інформація про безпеку та дослідження'}
+					</p>
 				</a>
 
-				<a href={`${lang}/cbd/dosage/`} class="cats-health-related-card">
+				<a href={`${lang}/knowledgebase/cbd/dosage/`} class="cats-health-related-card">
 					<h3>{isEnglish ? 'CBD Dosage Calculator' : 'Калькулятор дозування CBD'}</h3>
-					<p>{isEnglish ? 'Calculate the right CBD dosage for your cat' : 'Розрахуйте правильну дозу CBD для вашого кота'}</p>
+					<p>
+						{isEnglish
+							? 'Calculate the right CBD dosage for your cat'
+							: 'Розрахуйте правильну дозу CBD для вашого кота'}
+					</p>
 				</a>
 
-				<a href={`${lang}/cbd/`} class="cats-health-related-card">
+				<a href={`${lang}/knowledgebase/cbd/`} class="cats-health-related-card">
 					<h3>{isEnglish ? 'CBD for Pets Overview' : 'CBD для домашніх тварин'}</h3>
-					<p>{isEnglish ? 'Complete guide to CBD therapy for animals' : 'Повний посібник з CBD терапії для тварин'}</p>
+					<p>
+						{isEnglish
+							? 'Complete guide to CBD therapy for animals'
+							: 'Повний посібник з CBD терапії для тварин'}
+					</p>
 				</a>
 			</div>
 		</section>
@@ -152,7 +164,7 @@
 
 	/* Links styling */
 	.cats-health-article-content :global(a) {
-		color: #4B766E;
+		color: #4b766e;
 		text-decoration: none;
 		font-weight: 600;
 		transition: all 0.3s ease;

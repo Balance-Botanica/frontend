@@ -20,15 +20,11 @@
 
 	const translations = $derived(() => ({
 		learnMore: isEnglish ? 'Learn More' : 'Дізнатися більше',
-		relatedArticles: isEnglish ? 'Related Articles' : 'Пов\'язані статті'
+		relatedArticles: isEnglish ? 'Related Articles' : "Пов'язані статті"
 	}));
 </script>
 
-<SEO
-	title={data.title}
-	description={data.description}
-	locale={lang as 'en' | 'uk-ua'}
-/>
+<SEO title={data.title} description={data.description} locale={lang as 'en' | 'uk-ua'} />
 
 <main class="cbd-cats-main">
 	<div class="cbd-cats-container">
@@ -38,11 +34,11 @@
 			author={data.author}
 			date={data.date}
 			readingTime={data.readingTime}
-			lang={lang}
+			{lang}
 		/>
 
 		{#if data.content}
-			<ArticleLayout toc={tocItems} keyPoints={keyPoints} {lang} content={data.content} />
+			<ArticleLayout toc={tocItems} {keyPoints} {lang} content={data.content} />
 		{/if}
 
 		{#if data.seoData?.faq && data.seoData.faq.length > 0}
@@ -63,33 +59,57 @@
 			<h2>{translations().relatedArticles}</h2>
 			<div class="cbd-cats-related-grid">
 				<a href={`${lang}/cats-health`} class="cbd-cats-related-card">
-					<h3>{isEnglish ? 'Cat Health: Complete Guide' : 'Здоров\'я котів: повний посібник'}</h3>
-					<p>{isEnglish ? 'Comprehensive natural health guide for cats' : 'Комплексний посібник натурального здоров\'я котів'}</p>
+					<h3>{isEnglish ? 'Cat Health: Complete Guide' : "Здоров'я котів: повний посібник"}</h3>
+					<p>
+						{isEnglish
+							? 'Comprehensive natural health guide for cats'
+							: "Комплексний посібник натурального здоров'я котів"}
+					</p>
 				</a>
 
 				<a href={`${lang}/cbd/safety`} class="cbd-cats-related-card">
 					<h3>{isEnglish ? 'CBD Safety & Research' : 'Безпека CBD та дослідження'}</h3>
-					<p>{isEnglish ? 'Safety studies and scientific research on CBD' : 'Дослідження безпеки та наукові дані про CBD'}</p>
+					<p>
+						{isEnglish
+							? 'Safety studies and scientific research on CBD'
+							: 'Дослідження безпеки та наукові дані про CBD'}
+					</p>
 				</a>
 
 				<a href={`${lang}/cbd/dosage`} class="cbd-cats-related-card">
 					<h3>{isEnglish ? 'CBD Dosage Calculator' : 'Калькулятор дозування CBD'}</h3>
-					<p>{isEnglish ? 'Calculate the right CBD dosage for your cat' : 'Розрахуйте правильну дозу CBD для вашого кота'}</p>
+					<p>
+						{isEnglish
+							? 'Calculate the right CBD dosage for your cat'
+							: 'Розрахуйте правильну дозу CBD для вашого кота'}
+					</p>
 				</a>
 
 				<a href={`${lang}/cbd`} class="cbd-cats-related-card">
 					<h3>{isEnglish ? 'CBD for Pets Overview' : 'CBD для домашніх тварин'}</h3>
-					<p>{isEnglish ? 'Complete guide to CBD therapy for all pets' : 'Повний посібник з CBD терапії для всіх тварин'}</p>
+					<p>
+						{isEnglish
+							? 'Complete guide to CBD therapy for all pets'
+							: 'Повний посібник з CBD терапії для всіх тварин'}
+					</p>
 				</a>
 
 				<a href={`${lang}/cbd/dogs`} class="cbd-cats-related-card">
 					<h3>{isEnglish ? 'CBD for Dogs: Complete Guide' : 'CBD для собак: повний посібник'}</h3>
-					<p>{isEnglish ? 'Scientific guide to CBD therapy for dogs' : 'Науковий посібник з CBD терапії для собак'}</p>
+					<p>
+						{isEnglish
+							? 'Scientific guide to CBD therapy for dogs'
+							: 'Науковий посібник з CBD терапії для собак'}
+					</p>
 				</a>
 
 				<a href={`${lang}/pets/thc-toxicity`} class="cbd-cats-related-card">
 					<h3>{isEnglish ? 'THC Toxicity in Pets' : 'THC токсичність у тварин'}</h3>
-					<p>{isEnglish ? 'Important safety information about THC' : 'Важлива інформація про безпеку THC'}</p>
+					<p>
+						{isEnglish
+							? 'Important safety information about THC'
+							: 'Важлива інформація про безпеку THC'}
+					</p>
 				</a>
 			</div>
 		</section>
@@ -108,8 +128,6 @@
 		margin: 0 auto;
 		padding: 0 1rem;
 	}
-
-
 
 	.cbd-cats-content :global(h2) {
 		color: #1e293b;
@@ -162,7 +180,7 @@
 
 	/* Links styling */
 	.cbd-cats-article-content :global(a) {
-		color: #4B766E;
+		color: #4b766e;
 		text-decoration: none;
 		font-weight: 600;
 		transition: all 0.3s ease;
