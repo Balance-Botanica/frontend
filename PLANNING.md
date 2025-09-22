@@ -507,6 +507,7 @@ This document tracks our project tasks, priorities, and progress.
 - **Standardized Components**: Veterinary CBD and CBD Types converted from custom layouts to unified ArticleLayout
 - **Preserved Unique Content**: Special sections (comparison tables, study highlights, etc.) maintained after main article content
 - **Perfect Layout Consistency**: Left column contains TOC and key points, right column contains article text on all pillar pages
+- **📋 Layout Documentation**: See [PILLAR_LAYOUT.md](PILLAR_LAYOUT.md) for pillar articles and [PILLAR_LAYOUT.md#blog-articles](PILLAR_LAYOUT.md#blog-articles) for blog posts structure reference
 
 ### ✅ Telegram Bot Address Display Fix (2025-09-10)
 **Status:** COMPLETED
