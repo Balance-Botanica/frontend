@@ -489,6 +489,16 @@ This document tracks our project tasks, priorities, and progress.
 - **Component Data Flow**: Verified proper data flow from page component through ArticleLayout to ArticleKeyPoints
 - **Cross-Language Consistency**: Maintained proper English/Ukrainian key points rendering
 
+### ✅ Pillar Pages Display and Layout Fixes (2025-09-22)
+**Status:** COMPLETED
+- **CBD Dogs Content Rendering**: Fixed content showing as file path by adding proper markdown-to-HTML conversion using marked library
+- **Veterinary CBD Layout**: Updated to use ArticleHero and improved responsive styling with better min-height calculation
+- **Dog Health Layout**: Converted from custom hero to ArticleHero and ArticleLayout components with proper key points
+- **Cats Health Layout**: Fixed 500 error by converting to ArticleHero and ArticleLayout components with proper key points
+- **Consistent Layout Pattern**: All pillar pages now use standardized ArticleHero + ArticleLayout + additional sections structure
+- **Reading Time Calculation**: Enhanced for CBD dogs with proper raw markdown processing before HTML conversion
+- **Responsive Design**: Improved mobile and desktop layouts across all pillar pages
+
 ### ✅ Telegram Bot Address Display Fix (2025-09-10)
 **Status:** COMPLETED
 - **Issue**: Telegram bot was showing empty "🏠 Адреса:" when displaying all orders
