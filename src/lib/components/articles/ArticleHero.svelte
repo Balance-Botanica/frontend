@@ -26,7 +26,7 @@
 	const formattedReadingTime = $derived(() => {
 		if (!readingTime) return null;
 		if (typeof readingTime === 'number') {
-			return `${readingTime} ${isEnglish ? 'min' : 'хв'}`;
+			return `${readingTime} ${lang === 'en' ? 'min' : 'хв'}`;
 		}
 		return readingTime;
 	});
