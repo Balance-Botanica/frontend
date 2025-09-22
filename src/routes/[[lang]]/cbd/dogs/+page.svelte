@@ -11,14 +11,14 @@
 	// TOC will be auto-generated from content headings
 	const tocItems = $derived([]);
 
-	const keyPoints = $derived([
+	const keyPoints = [
 		isEnglish ? 'Clinically proven effective for dogs' : 'Клінічно доведена ефективність для собак',
 		isEnglish ? 'Well tolerated by canine patients' : 'Добре переноситься собаками',
 		isEnglish
 			? 'Natural pain relief and mobility support'
 			: 'Натуральне знеболення та підтримка рухливості',
 		isEnglish ? 'Evidence-based veterinary recommendations' : 'Доказові ветеринарні рекомендації'
-	]);
+	];
 
 	const translations = $derived({
 		learnMore: isEnglish ? 'Learn More' : 'Дізнатися більше',

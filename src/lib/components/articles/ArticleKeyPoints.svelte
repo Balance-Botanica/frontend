@@ -8,10 +8,15 @@
 
 	const isEnglish = $derived(lang === 'en');
 
+	// Debug logging
+	console.log('ArticleKeyPoints received:', { keyPoints, lang, keyPointsLength: keyPoints.length });
+
 	// Split key points into two columns
 	const midPoint = Math.ceil(keyPoints.length / 2);
 	const leftColumn = $derived(keyPoints.slice(0, midPoint));
 	const rightColumn = $derived(keyPoints.slice(midPoint));
+
+	console.log('ArticleKeyPoints columns:', { leftColumn, rightColumn });
 </script>
 
 <div class="article-key-points">

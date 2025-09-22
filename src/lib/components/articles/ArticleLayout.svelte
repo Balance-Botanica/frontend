@@ -27,9 +27,16 @@
 
 	// Function to add IDs to headings in HTML content
 	function addHeadingIds(htmlContent: string): string {
-		if (!htmlContent || typeof window === 'undefined') return htmlContent;
+		// Always try to process, even on server side if possible
+		if (!htmlContent) return htmlContent;
 
 		try {
+			// For server-side rendering, we'll skip DOM manipulation
+			// and just return the content as-is for now
+			if (typeof window === 'undefined') {
+				return htmlContent;
+			}
+
 			// Create a temporary DOM element to parse HTML
 			const tempDiv = document.createElement('div');
 			tempDiv.innerHTML = htmlContent;

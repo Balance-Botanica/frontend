@@ -472,6 +472,15 @@ This document tracks our project tasks, priorities, and progress.
 - **Responsive Design**: Maintained responsive behavior across all screen sizes
 - **Better User Experience**: Key information is presented immediately after the hero section
 
+### ✅ Article Key Points Two-Column Layout (2025-09-22)
+**Status:** COMPLETED
+- **Balanced Column Distribution**: Split key points into two equal columns using Math.ceil for optimal distribution
+- **Responsive Grid Layout**: CSS Grid with 1fr 1fr columns on desktop, single column on mobile
+- **Space Optimization**: Better utilization of available horizontal space on larger screens
+- **Mobile-First Design**: Single column layout maintained on screens smaller than 768px
+- **Preserved Styling**: Maintained existing checkmark icons, typography, and visual hierarchy
+- **Dynamic Content Handling**: Automatically adjusts column count based on available key points
+
 ### ✅ Telegram Bot Address Display Fix (2025-09-10)
 **Status:** COMPLETED
 - **Issue**: Telegram bot was showing empty "🏠 Адреса:" when displaying all orders
