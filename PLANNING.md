@@ -481,6 +481,14 @@ This document tracks our project tasks, priorities, and progress.
 - **Preserved Styling**: Maintained existing checkmark icons, typography, and visual hierarchy
 - **Dynamic Content Handling**: Automatically adjusts column count based on available key points
 
+### ✅ CBD Dogs Page Key Points Display Fix (2025-09-22)
+**Status:** COMPLETED
+- **Reactive Key Points Issue**: Fixed key points not displaying due to $derived wrapper causing reactivity problems
+- **Removed Unnecessary Reactivity**: Converted keyPoints from $derived array to static array for proper initialization
+- **Layout Structure Alignment**: Ensured CBD dogs page follows same layout pattern as other pillar articles
+- **Component Data Flow**: Verified proper data flow from page component through ArticleLayout to ArticleKeyPoints
+- **Cross-Language Consistency**: Maintained proper English/Ukrainian key points rendering
+
 ### ✅ Telegram Bot Address Display Fix (2025-09-10)
 **Status:** COMPLETED
 - **Issue**: Telegram bot was showing empty "🏠 Адреса:" when displaying all orders
