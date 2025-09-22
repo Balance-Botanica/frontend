@@ -1,5 +1,6 @@
 <script lang="ts">
 	import SEO from '$lib/components/SEO.svelte';
+	import { ArticleHero, ArticleLayout } from '$lib/components/articles';
 	import { page } from '$app/stores';
 	import { createPageTranslations } from '$lib/i18n/store';
 	import type { SupportedLocale } from '$lib/i18n/types';
@@ -10,6 +11,11 @@
 
 	// Create page translations
 	const pageTranslations = createPageTranslations();
+
+	// TOC will be auto-generated from content headings
+	const tocItems = $derived([]);
+
+	const keyPoints = []; // Veterinary CBD has custom key insights in sidebar
 
 	// Use translation system for dynamic language switching
 	const translations = $derived({
@@ -27,20 +33,15 @@
 
 <main class="veterinary-cbd-main">
 	<div class="veterinary-cbd-container">
-		<header class="veterinary-cbd-hero">
-			<div class="veterinary-cbd-badge">
-				<span class="badge-text">{$pageTranslations?.t('veterinaryCbd.professionalBadge') || (isEnglish ? 'Veterinary Professional' : 'Для ветеринарів')}</span>
-			</div>
-			<h1 class="veterinary-cbd-title">{data.title}</h1>
-			<p class="veterinary-cbd-subtitle">{data.description}</p>
-			<div class="veterinary-cbd-meta">
-				<span class="veterinary-cbd-author">{$pageTranslations?.t('veterinaryCbd.byAuthor') || (isEnglish ? 'By' : 'Автор')}: {data.author}</span>
-				<span class="veterinary-cbd-date"
-					>{new Date(data.date).toLocaleDateString(lang === 'en' ? 'en-US' : 'uk-UA')}</span
-				>
-				<span class="veterinary-cbd-reading-time">{data.readingTime}</span>
-			</div>
-		</header>
+		<!-- Hero Section -->
+		<ArticleHero
+			title={data.title}
+			description={data.description}
+			author={data.author}
+			date={data.date}
+			readingTime={data.readingTime}
+			{lang}
+		/>
 
 		<div class="veterinary-cbd-content-grid">
 			<aside class="veterinary-cbd-sidebar">
@@ -219,9 +220,9 @@
 
 <style>
 	.veterinary-cbd-main {
-		min-height: 100vh;
 		background: linear-gradient(135deg, #f8fafc 0%, #e8f4f8 25%, #f1f8f5 50%, #fefefe 100%);
 		padding: 2rem 0;
+		min-height: calc(100vh - 160px);
 	}
 
 	.veterinary-cbd-container {

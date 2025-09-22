@@ -1,5 +1,6 @@
 import type { PageServerLoad } from './$types';
 import { error } from '@sveltejs/kit';
+import { marked } from 'marked';
 
 // Функция для расчета времени чтения на основе текста
 function calculateReadingTime(text: string): number {
@@ -26,20 +27,35 @@ export const load: PageServerLoad = async ({ params }) => {
 		const content = contentModule.default;
 		const metadata = contentModule.metadata || {};
 
-		// Получаем текст для расчета времени чтения
-		let textForReadingTime = '';
+		// Настраиваем marked для лучшей семантики
+		marked.setOptions({
+			breaks: true,
+			gfm: true,
+			headerIds: true,
+			mangle: false
+		});
+
+		// Преобразуем markdown в HTML
+		let htmlContent = '';
+		let rawMarkdown = '';
+
 		if (typeof content === 'string') {
-			textForReadingTime = content;
+			rawMarkdown = content;
+			htmlContent = marked(content);
 		} else if (content.body) {
-			// Если body - это HTML, попытаемся извлечь текст
-			textForReadingTime = content.body.replace(/<[^>]*>/g, ' ');
+			rawMarkdown = content.body;
+			htmlContent = marked(content.body);
 		} else if (content.default) {
-			textForReadingTime = content.default;
+			rawMarkdown = content.default;
+			htmlContent = marked(content.default);
+		} else {
+			// Fallback если контент не найден
+			htmlContent = '<p>Content not available</p>';
 		}
 
 		// Рассчитываем время чтения
-		const calculatedReadingTime = textForReadingTime
-			? calculateReadingTime(textForReadingTime)
+		const calculatedReadingTime = rawMarkdown
+			? calculateReadingTime(rawMarkdown)
 			: 12;
 
 		return {
@@ -48,7 +64,7 @@ export const load: PageServerLoad = async ({ params }) => {
 			author: metadata.author || content.author || 'Balance Botanica',
 			date: metadata.date || content.date,
 			readingTime: metadata.readingTime ? parseInt(metadata.readingTime) : calculatedReadingTime,
-			content: content.body || content.default || content,
+			content: htmlContent,
 			seoData: {
 				faq: metadata.faq
 					? typeof metadata.faq === 'string'

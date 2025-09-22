@@ -1,30 +1,45 @@
 <script lang="ts">
 	import SEO from '$lib/components/SEO.svelte';
+	import { ArticleHero, ArticleLayout } from '$lib/components/articles';
 	import { page } from '$app/stores';
+	import type { SupportedLocale } from '$lib/i18n/types';
+	import { createPageTranslations } from '$lib/i18n/store';
 
 	const { data } = $props();
-	const lang = $derived($page.params?.lang || 'uk-ua');
+	const lang = $derived(($page.params?.lang || 'uk-ua') as SupportedLocale);
 	const isEnglish = $derived(lang === 'en');
-	const translations = $derived(() => ({
-		learnMore: isEnglish ? 'Learn More' : 'Дізнатися більше',
-		relatedArticles: isEnglish ? 'Related Articles' : "Пов'язані статті",
-		tableOfContents: isEnglish ? 'Table of Contents' : 'Зміст'
-	}));
+
+	// Create page translations
+	const pageTranslations = createPageTranslations();
+
+	// TOC will be auto-generated from content headings
+	const tocItems = $derived([]);
+
+	const keyPoints = $derived([
+		isEnglish ? 'Complete cat health guide' : 'Повний посібник зі здоров\'я котів',
+		isEnglish ? 'Natural wellness solutions' : 'Натуральні рішення для благополуччя',
+		isEnglish ? 'Evidence-based care tips' : 'Доказові поради з догляду',
+		isEnglish ? 'Prevention and treatment strategies' : 'Стратегії профілактики та лікування'
+	]);
 </script>
 
 <SEO title={data.title} description={data.description} />
 
 <main class="cats-health-main">
 	<div class="cats-health-container">
-		<header class="cats-health-hero">
-			<h1 class="cats-health-title">{data.title}</h1>
-			<p class="cats-health-subtitle">{data.description}</p>
-		</header>
+		<!-- Hero Section -->
+		<ArticleHero
+			title={data.title}
+			description={data.description}
+			author={data.author}
+			date={data.date}
+			readingTime={data.readingTime}
+			{lang}
+		/>
 
+		<!-- Article Content with Layout -->
 		{#if data.content}
-			<div class="cats-health-article-content">
-				{@html data.content}
-			</div>
+			<ArticleLayout toc={tocItems} {keyPoints} {lang} content={data.content} />
 		{/if}
 
 		{#if data.seoData?.faq && data.seoData.faq.length > 0}

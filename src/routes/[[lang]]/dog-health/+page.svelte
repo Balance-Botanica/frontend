@@ -1,5 +1,6 @@
 <script lang="ts">
 	import SEO from '$lib/components/SEO.svelte';
+	import { ArticleHero, ArticleLayout } from '$lib/components/articles';
 	import { page } from '$app/stores';
 	import type { SupportedLocale } from '$lib/i18n/types';
 	import { createPageTranslations } from '$lib/i18n/store';
@@ -14,11 +15,15 @@
 	// Create page translations
 	const pageTranslations = createPageTranslations();
 
-	// Use translation system for dynamic language switching
-	const translations = $derived({
-		learnMore: $pageTranslations?.t('dogHealth.learnMore') || (isEnglish ? 'Learn More' : 'Узнать больше'),
-		relatedArticles: $pageTranslations?.t('dogHealth.relatedArticles') || (isEnglish ? 'Related Articles' : 'Связанные статьи')
-	});
+	// TOC will be auto-generated from content headings
+	const tocItems = $derived([]);
+
+	const keyPoints = $derived([
+		isEnglish ? 'Comprehensive dog health guide' : 'Комплексний посібник зі здоров\'я собак',
+		isEnglish ? 'Natural wellness solutions' : 'Натуральні рішення для благополуччя',
+		isEnglish ? 'Evidence-based care tips' : 'Доказові поради з догляду',
+		isEnglish ? 'Prevention and treatment strategies' : 'Стратегії профілактики та лікування'
+	]);
 </script>
 
 <SEO title={data.title} description={data.description} />
@@ -26,17 +31,18 @@
 <main class="dog-health-main">
 	<div class="dog-health-container">
 		<!-- Hero Section -->
-		<header class="dog-health-hero">
-			<h1 class="dog-health-title">{data.title}</h1>
-			<p class="dog-health-subtitle">{data.description}</p>
-		</header>
+		<ArticleHero
+			title={data.title}
+			description={data.description}
+			author={data.author}
+			date={data.date}
+			readingTime={data.readingTime}
+			{lang}
+		/>
 
-		<!-- Article Content from Markdown -->
+		<!-- Article Content with Layout -->
 		{#if data.content}
-			<div class="dog-health-article-content">
-				<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-				{@html data.content}
-			</div>
+			<ArticleLayout toc={tocItems} {keyPoints} {lang} content={data.content} />
 		{/if}
 
 		<!-- FAQ Section -->
