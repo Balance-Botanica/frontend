@@ -551,5 +551,98 @@
 		"meta": {
 			"description": "An error has occurred on this page"
 		}
+	},
+	"dogHealth": {
+		"learnMore": "Learn More",
+		"relatedArticles": "Related Articles"
+	},
+	"veterinaryCbd": {
+		"learnMore": "Learn More",
+		"relatedArticles": "Related Articles",
+		"tableOfContents": "Table of Contents",
+		"clinicalEvidence": "Clinical Evidence",
+		"veterinaryProtocols": "Veterinary Protocols",
+		"safetyData": "Safety Data",
+		"professionalGuide": "Professional Guide",
+		"professionalBadge": "Veterinary Professional",
+		"byAuthor": "By",
+		"keyInsights": "Key Insights",
+		"evidenceBased": "Evidence-Based",
+		"studiesAnalyzed": "15+ clinical studies analyzed",
+		"veterinaryFocus": "Veterinary Focus",
+		"professionalProtocols": "Professional protocols & guidelines",
+		"clinicalData": "Clinical Data",
+		"safetyEvidence": "Safety & efficacy evidence",
+		"treatmentProtocols": "Treatment Protocols",
+		"dosingGuidelines": "Evidence-based dosing guidelines",
+		"studyHighlights": "Study Highlights",
+		"faq": "Frequently Asked Questions"
+	},
+	"blog": {
+		"pageTitle": "Blog - Balance Botanica",
+		"pageDescription": "Complete collection of articles about CBD, health and natural products. Pillar guides and blog posts in one place.",
+		"blogTitle": "Balance Botanica Articles",
+		"blogSubtitle": "Pillar guides and blog articles about CBD, health and natural products",
+		"readMore": "Read more",
+		"readingTimeLabel": "min",
+		"guide": "Guide",
+		"article": "Article",
+		"errors": {
+			"articleNotFound": "Article Not Found",
+			"articleNotFoundDescription": "This article could not be found.",
+			"contentNotAvailable": "Article content not available."
+		},
+		"pillarArticles": {
+			"cbd": {
+				"title": "What is CBD and How Does It Work?",
+				"description": "Complete guide to cannabidiol, its mechanism of action and health benefits. Understanding the science behind CBD."
+			},
+			"dogHealth": {
+				"title": "Dog Health: Comprehensive Guide",
+				"description": "Complete natural health guide for dogs. From nutrition to disease prevention."
+			},
+			"catsHealth": {
+				"title": "Cat Health: Everything You Need to Know",
+				"description": "Comprehensive guide to cat care and health."
+			},
+			"veterinaryCbd": {
+				"title": "Veterinary CBD: Evidence-Based Guide",
+				"description": "Complete veterinary guide to CBD therapy for animals. Clinical studies, protocols, safety data."
+			},
+			"cbdDogs": {
+				"title": "CBD for Dogs: Complete Guide",
+				"description": "Scientific guide to CBD therapy for dogs. Dosages, indications, safety."
+			},
+			"cbdCats": {
+				"title": "CBD for Cats: Complete Guide",
+				"description": "Scientific guide to CBD therapy for cats. Dosage features and applications."
+			},
+			"cbdTypes": {
+				"title": "CBD Types: Which to Choose?",
+				"description": "Complete guide to CBD product types. Isolate, full spectrum, broad spectrum."
+			},
+			"dogsArthritis": {
+				"title": "Dog Arthritis: Treatment and Prevention",
+				"description": "Comprehensive approach to treating and preventing arthritis in dogs."
+			},
+			"petsThcToxicity": {
+				"title": "THC Toxicity in Pets",
+				"description": "Important information about THC danger for pets and poisoning symptoms."
+			}
+		},
+		"blogArticles": {
+			"cbdIsolateVsFullSpectrum": {
+				"title": "CBD Isolate vs Full Spectrum: Which to Choose for Your Pet?",
+				"description": "Learn about the difference between CBD isolate and full spectrum. How to choose the best option for your dog or cat's health."
+			},
+			"cbdGoldenPasteBenefits": {
+				"title": "Benefits of CBD Golden Paste for Pets",
+				"description": "How CBD Golden Paste helps dogs and cats: from pain and inflammation relief to better sleep and overall well-being."
+			},
+			"curcuminBenefits": {
+				"title": "Curcumin: Complete Guide to Health Benefits",
+				"description": "Discover the powerful properties of curcumin - a natural anti-inflammatory compound found in turmeric."
+			}
+		}
 	}
 }

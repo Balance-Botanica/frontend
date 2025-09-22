@@ -3,8 +3,12 @@
 	import { goto } from '$app/navigation';
 	import { language } from '$lib/stores/language';
 	import BlogLayout from '$lib/components/BlogLayout.svelte';
+	import { createPageTranslations } from '$lib/i18n/store';
 
 	const { data }: { data: any } = $props();
+
+	// Create page translations for error messages
+	const pageTranslations = createPageTranslations();
 
 	// Get slug and lang from URL parameters
 	const slug = $derived($page.params?.slug);
@@ -32,17 +36,17 @@
 </script>
 
 <svelte:head>
-	<title>{data?.title || 'Article Not Found'} - Balance Botanica</title>
-	<meta name="description" content={data?.description || 'This article could not be found.'} />
+	<title>{data?.title || $pageTranslations?.t('blog.errors.articleNotFound')} - Balance Botanica</title>
+	<meta name="description" content={data?.description || $pageTranslations?.t('blog.errors.articleNotFoundDescription')} />
 </svelte:head>
 
 <BlogLayout
-	title={data?.title || 'Article Not Found'}
-	description={data?.description || 'This article could not be found.'}
+	title={data?.title || $pageTranslations?.t('blog.errors.articleNotFound')}
+	description={data?.description || $pageTranslations?.t('blog.errors.articleNotFoundDescription')}
 	date={data?.date || new Date().toISOString()}
 	author={data?.author || 'Balance Botanica'}
 	tags={data?.tags || []}
 	slug={slug || ''}
 >
-	{@html data?.content || '<p>Article content not available.</p>'}
+	{@html data?.content || `<p>${$pageTranslations?.t('blog.errors.contentNotAvailable')}</p>`}
 </BlogLayout>
