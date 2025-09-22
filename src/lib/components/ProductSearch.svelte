@@ -13,11 +13,11 @@
 	export let selectedCategory = '';
 	export let selectedSize = '';
 	export let selectedFlavor = '';
-	export let minPrice = null;
-	export let maxPrice = null;
-	export let categories = [];
-	export let sizes = [];
-	export let flavors = [];
+	export let minPrice: number | null = null;
+	export let maxPrice: number | null = null;
+	export let categories: string[] = [];
+	export let sizes: string[] = [];
+	export let flavors: string[] = [];
 
 	// Note: Props are used directly as local state since this component modifies them
 
@@ -69,7 +69,6 @@
 
 	// Handle enter key in search input
 	function handleKeyPress(event: CustomEvent<{ key: string }>) {
-		// @ts-expect-error - we need to access the original KeyboardEvent
 		if (event.detail && event.detail.key === 'Enter') {
 			console.log('ProductSearch: Enter key pressed, triggering search');
 			handleSearch();
@@ -82,14 +81,12 @@
 		searchTerm = target.value;
 	}
 
-	function handleMinPriceInput(event: Event) {
-		const target = event.target as HTMLInputElement;
-		minPrice = target.value ? parseFloat(target.value) : null;
+	function handleMinPriceInput(value: string) {
+		minPrice = value ? parseFloat(value) : null;
 	}
 
-	function handleMaxPriceInput(event: Event) {
-		const target = event.target as HTMLInputElement;
-		maxPrice = target.value ? parseFloat(target.value) : null;
+	function handleMaxPriceInput(value: string) {
+		maxPrice = value ? parseFloat(value) : null;
 	}
 </script>
 
@@ -119,7 +116,7 @@
 						id="search-input"
 						type="text"
 						bind:value={searchTerm}
-						placeholder={$pageTranslations.t('products.search.search_placeholder')}
+						placeholder={String($pageTranslations.t('products.search.search_placeholder'))}
 						on:keypress={(e) => {
 							if (e.key === 'Enter') {
 								console.log('ProductSearch: Enter key pressed, triggering search');
@@ -224,7 +221,7 @@
 				<!-- Price Range -->
 				<div>
 					<label class="mb-2 block cursor-pointer text-sm font-medium text-gray-700">
-						{$pageTranslations.t('products.search.price_label')}
+						{$pageTranslations?.t('products.search.price_label') || 'Price Range'}
 					</label>
 					<div class="flex space-x-2">
 						<input
@@ -406,21 +403,22 @@
 
 				<!-- Price Range -->
 				<div>
-					<label class="mb-2 block cursor-pointer text-sm font-medium text-gray-700">
-						{$pageTranslations.t('products.search.price_label')}
+					<label for="min-price-input" class="mb-2 block cursor-pointer text-sm font-medium text-gray-700">
+						{$pageTranslations!.t('products.search.price_label')}
 					</label>
 					<div class="flex space-x-2">
 						<Input
+							id="min-price-input"
 							type="number"
 							value={minPrice !== null ? minPrice.toString() : ''}
 							placeholder="Min"
-							on:input={handleMinPriceInput}
+							onChange={handleMinPriceInput}
 						/>
 						<Input
 							type="number"
 							value={maxPrice !== null ? maxPrice.toString() : ''}
 							placeholder="Max"
-							on:input={handleMaxPriceInput}
+							onChange={handleMaxPriceInput}
 						/>
 					</div>
 				</div>

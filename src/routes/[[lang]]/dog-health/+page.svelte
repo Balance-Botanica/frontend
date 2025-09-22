@@ -1,26 +1,27 @@
 <script lang="ts">
 	import SEO from '$lib/components/SEO.svelte';
 	import { page } from '$app/stores';
+	import type { SupportedLocale } from '$lib/i18n/types';
+	import { createPageTranslations } from '$lib/i18n/store';
 
 	// Получаем данные из load функции
 	const { data } = $props();
 
 	// Определяем язык
-	const lang = $derived($page.params?.lang || 'uk-ua');
+	const lang = $derived(($page.params?.lang || 'uk-ua') as SupportedLocale);
 	const isEnglish = $derived(lang === 'en');
 
-	// Переводы для элементов интерфейса
-	const translations = {
-		learnMore: isEnglish ? 'Learn More' : 'Узнать больше',
-		relatedArticles: isEnglish ? 'Related Articles' : 'Связанные статьи'
-	};
+	// Create page translations
+	const pageTranslations = createPageTranslations();
+
+	// Use translation system for dynamic language switching
+	const translations = $derived({
+		learnMore: $pageTranslations?.t('dogHealth.learnMore') || (isEnglish ? 'Learn More' : 'Узнать больше'),
+		relatedArticles: $pageTranslations?.t('dogHealth.relatedArticles') || (isEnglish ? 'Related Articles' : 'Связанные статьи')
+	});
 </script>
 
-<SEO
-	title={data.title}
-	description={data.description}
-	locale={lang}
-/>
+<SEO title={data.title} description={data.description} />
 
 <main class="dog-health-main">
 	<div class="dog-health-container">
@@ -33,6 +34,7 @@
 		<!-- Article Content from Markdown -->
 		{#if data.content}
 			<div class="dog-health-article-content">
+				<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 				{@html data.content}
 			</div>
 		{/if}
@@ -42,7 +44,7 @@
 			<section class="dog-health-faq">
 				<h2>{isEnglish ? 'Frequently Asked Questions' : 'Поширені запитання'}</h2>
 				<div class="dog-health-faq-list">
-					{#each data.seoData.faq as faq}
+					{#each data.seoData.faq as faq, index (index)}
 						<div class="dog-health-faq-item">
 							<h3 class="dog-health-faq-question">{faq.question}</h3>
 							<p class="dog-health-faq-answer">{faq.answer}</p>
@@ -58,22 +60,40 @@
 			<div class="dog-health-related-grid">
 				<div class="dog-health-related-card">
 					<h3>{isEnglish ? 'CBD for Dogs' : 'CBD для собак'}</h3>
-					<p>{isEnglish ? 'Natural CBD supplements for dog health and wellness' : 'Натуральні CBD добавки для здоров\'я та благополуччя собак'}</p>
-					<a href="/{lang}/cbd/dogs/" class="dog-health-link">{translations.learnMore} →</a>
+					<p>
+						{isEnglish
+							? 'Natural CBD supplements for dog health and wellness'
+							: "Натуральні CBD добавки для здоров'я та благополуччя собак"}
+					</p>
+					<a href="/{lang}/knowledgebase/cbd/dogs/" class="dog-health-link"
+						>{translations.learnMore} →</a
+					>
 				</div>
 				<div class="dog-health-related-card">
 					<h3>{isEnglish ? 'Gelatin for Dogs' : 'Желатин для собак'}</h3>
-					<p>{isEnglish ? 'Natural joint support and health benefits' : 'Натуральна підтримка суглобів та користь для здоров\'я'}</p>
+					<p>
+						{isEnglish
+							? 'Natural joint support and health benefits'
+							: "Натуральна підтримка суглобів та користь для здоров'я"}
+					</p>
 					<a href="/{lang}/dogs/gelatin/" class="dog-health-link">{translations.learnMore} →</a>
 				</div>
 				<div class="dog-health-related-card">
 					<h3>{isEnglish ? 'Turmeric for Dogs' : 'Куркума для собак'}</h3>
-					<p>{isEnglish ? 'Natural anti-inflammatory and health benefits' : 'Натуральні протизапальні властивості та користь для здоров\'я'}</p>
+					<p>
+						{isEnglish
+							? 'Natural anti-inflammatory and health benefits'
+							: "Натуральні протизапальні властивості та користь для здоров'я"}
+					</p>
 					<a href="/{lang}/dogs/turmeric/" class="dog-health-link">{translations.learnMore} →</a>
 				</div>
 				<div class="dog-health-related-card">
 					<h3>{isEnglish ? 'Arthritis in Dogs' : 'Артрит у собак'}</h3>
-					<p>{isEnglish ? 'Natural approaches to managing joint health' : 'Натуральні підходи до управління здоров\'ям суглобів'}</p>
+					<p>
+						{isEnglish
+							? 'Natural approaches to managing joint health'
+							: "Натуральні підходи до управління здоров'ям суглобів"}
+					</p>
 					<a href="/{lang}/dogs/arthritis/" class="dog-health-link">{translations.learnMore} →</a>
 				</div>
 			</div>
@@ -138,7 +158,7 @@
 	.dog-health-article h1 {
 		font-size: 36px;
 		font-weight: 700;
-		border-bottom: 3px solid #4B766E;
+		border-bottom: 3px solid #4b766e;
 		padding-bottom: 12px;
 		margin-top: 0;
 	}
@@ -146,7 +166,7 @@
 	.dog-health-article h2 {
 		font-size: 28px;
 		font-weight: 600;
-		border-bottom: 2px solid #4B766E;
+		border-bottom: 2px solid #4b766e;
 		padding-bottom: 8px;
 	}
 
@@ -179,7 +199,7 @@
 	}
 
 	.dog-health-article blockquote {
-		border-left: 4px solid #4B766E;
+		border-left: 4px solid #4b766e;
 		padding-left: 16px;
 		margin: 24px 0;
 		font-style: italic;
@@ -188,7 +208,7 @@
 
 	/* Links styling */
 	.dog-health-article-content a {
-		color: #4B766E;
+		color: #4b766e;
 		text-decoration: none;
 		font-weight: 600;
 		transition: all 0.3s ease;
@@ -275,7 +295,9 @@
 		padding: 24px;
 		border: 1px solid #e0e0e0;
 		border-radius: 12px;
-		transition: transform 0.2s ease, box-shadow 0.2s ease;
+		transition:
+			transform 0.2s ease,
+			box-shadow 0.2s ease;
 	}
 
 	.dog-health-related-card:hover {
@@ -298,7 +320,7 @@
 	}
 
 	.dog-health-link {
-		color: #4B766E;
+		color: #4b766e;
 		text-decoration: none;
 		font-weight: 600;
 		font-size: 14px;

@@ -63,7 +63,7 @@
 	);
 </script>
 
-<SEO title={data.title} description={data.description} locale={lang as 'en' | 'uk-ua'} />
+<SEO title={data.title} description={data.description} />
 
 <main class="cbd-types-main">
 	<div class="cbd-types-container">

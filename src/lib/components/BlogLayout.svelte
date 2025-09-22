@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import SEO from '$lib/components/SEO.svelte';
-	import { currentLocale } from '$lib/i18n/store';
+	import { language } from '$lib/stores/language';
 
 	// Props
 	export let title: string;
@@ -16,7 +16,7 @@
 
 	// Format date based on current locale
 	$: formattedDate = date
-		? new Date(date).toLocaleDateString($currentLocale === 'uk-ua' ? 'uk-UA' : 'en-US', {
+		? new Date(date).toLocaleDateString($language === 'uk-ua' ? 'uk-UA' : 'en-US', {
 				year: 'numeric',
 				month: 'long',
 				day: 'numeric'
@@ -24,13 +24,13 @@
 		: '';
 
 	// Get translations based on current locale
-	$: backToBlogText = $currentLocale === 'uk-ua' ? 'Назад до блогу' : 'Back to Blog';
-	$: authorText = $currentLocale === 'uk-ua' ? 'Автор:' : 'Author:';
-	$: readingTimeText = $currentLocale === 'uk-ua' ? 'хв читання' : 'min read';
-	$: shareText = $currentLocale === 'uk-ua' ? 'Поділитися статтею:' : 'Share this article:';
+	$: backToBlogText = $language === 'uk-ua' ? 'Назад до блогу' : 'Back to Blog';
+	$: authorText = $language === 'uk-ua' ? 'Автор:' : 'Author:';
+	$: readingTimeText = $language === 'uk-ua' ? 'хв читання' : 'min read';
+	$: shareText = $language === 'uk-ua' ? 'Поділитися статтею:' : 'Share this article:';
 </script>
 
-<SEO {title} {description} locale={$page.data.locale} />
+<SEO {title} {description} />
 
 <main class="blog-post">
 	<div class="blog-container">

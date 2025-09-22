@@ -51,7 +51,6 @@
 	<SEO
 		title={$pageTranslations.t('benefits.meta.title')}
 		description={$pageTranslations.t('benefits.meta.description')}
-		locale={$pageTranslations.locale}
 	/>
 
 	<!-- Main Content -->

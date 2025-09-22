@@ -14,7 +14,6 @@
 	<SEO
 		title={$pageTranslations.t('community_values.meta.title')}
 		description={$pageTranslations.t('community_values.meta.description')}
-		locale={$pageTranslations.locale}
 	/>
 
 	<main class="community-page">

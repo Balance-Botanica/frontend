@@ -22,6 +22,7 @@
 	import CookieConsent from '$lib/components/CookieConsent.svelte';
 	import NotificationContainer from '$lib/components/NotificationContainer.svelte';
 	import { supabaseAuthStore, user, isAuthenticated, isLoading } from '$lib/auth/supabase-store';
+	import { setLanguage } from '$lib/stores/language';
 
 	// State for mobile navigation - properly declared with $state
 	let isMobileMenuOpen = $state(false);
@@ -70,6 +71,20 @@
 				timestamp: new Date().toISOString()
 			});
 			lastLoggedState = authStateLog;
+		}
+	});
+
+	// Auto-switch language based on URL changes (global for entire app)
+	$effect(() => {
+		const url = $page.url.pathname;
+		const isEnglishUrl = url.startsWith('/en/') || url === '/en';
+
+		if (isEnglishUrl) {
+			console.log('🌍 [LAYOUT] Detected English URL, switching to English');
+			setLanguage('en');
+		} else {
+			console.log('🌍 [LAYOUT] Detected Ukrainian URL, switching to Ukrainian');
+			setLanguage('uk-ua');
 		}
 	});
 

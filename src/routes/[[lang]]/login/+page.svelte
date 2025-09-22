@@ -44,7 +44,6 @@
 	<SEO
 		title={$pageTranslations.t('login.meta.title')}
 		description={$pageTranslations.t('login.meta.description')}
-		locale={$pageTranslations.locale}
 	/>
 
 	<!-- Main Content -->

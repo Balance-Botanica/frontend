@@ -207,8 +207,12 @@ export class ScriptLoader {
 		withMarketingConsent(() => {
 			(function (f: any, b: any, e: any, v: any, n?: any, t?: any, s?: any) {
 				if (f.fbq) return;
-				n = f.fbq = function () {
-					n.callMethod ? n.callMethod(...Array.from(arguments)) : n.queue.push(arguments);
+				n = f.fbq = function (...args: any[]) {
+					if (n.callMethod) {
+						n.callMethod(...args);
+					} else {
+						n.queue.push(args);
+					}
 				};
 				if (!f._fbq) f._fbq = n;
 				n.push = n;

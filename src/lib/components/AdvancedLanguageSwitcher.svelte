@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
-	import { advancedLocaleStore, currentLocale } from '$lib/i18n/store.js';
+	import { advancedLocaleStore } from '$lib/i18n/store.js';
+	import { language } from '$lib/stores/language';
 	import { SUPPORTED_LOCALES, getLocalesByPriority } from '$lib/i18n/config.js';
 
 	const dispatch = createEventDispatcher<{
@@ -12,7 +13,7 @@
 	let dropdownElement: HTMLDivElement;
 
 	// Get current locale
-	$: currentLocaleCode = $currentLocale;
+	$: currentLocaleCode = $language;
 	$: currentLocaleConfig = SUPPORTED_LOCALES[currentLocaleCode];
 
 	// Get available locales for dropdown

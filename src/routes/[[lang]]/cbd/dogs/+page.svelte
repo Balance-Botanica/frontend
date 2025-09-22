@@ -26,7 +26,7 @@
 	});
 </script>
 
-<SEO title={data.title} description={data.description} locale={lang} />
+<SEO title={data.title} description={data.description} />
 
 <main class="cbd-dogs-main">
 	<div class="cbd-dogs-container">

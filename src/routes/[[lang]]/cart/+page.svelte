@@ -9,12 +9,10 @@
 	import { page } from '$app/stores';
 	import { writable } from 'svelte/store';
 	import SEO from '$lib/components/SEO.svelte';
-	import NovaPoshtaSelector from '$lib/components/NovaPoshtaSelector.svelte';
 	import AddressModal from '$lib/components/AddressModal.svelte';
 	import type { PageData } from './$types';
+	import type { SupportedLocale } from '$lib/i18n/types';
 
-	// Detect language from optional route parameter
-	const lang = $derived($page.params?.lang || 'uk-ua');
 
 	// Create page translations
 	const pageTranslations = createPageTranslations();
@@ -26,7 +24,7 @@
 	let firstName = '';
 	let lastName = '';
 	let phoneNumber = '';
-	let selectedAddress: any = null;
+	let selectedAddress: string | null = null;
 	let deliveryAddresses = data?.deliveryAddresses || [];
 
 	console.log('[Cart Page Client] Server data received:', {
@@ -46,7 +44,7 @@
 
 	// Promo code state
 	let promoCodeInput = '';
-	let appliedPromoCode: any = null;
+	let appliedPromoCode: { code: string; discount: number; description?: string } | null = null;
 	let promoCodeLoading = false;
 	let promoCodeError = '';
 
@@ -63,7 +61,7 @@
 		if (newQuantity <= 0) {
 			cartStore.removeItem(productId);
 			if ($pageTranslations) {
-				notificationStore.success($pageTranslations.t('cart.notifications.item_removed'));
+				notificationStore.success(String($pageTranslations.t('cart.notifications.item_removed')));
 			}
 		} else {
 			cartStore.updateQuantity(productId, newQuantity);
@@ -74,7 +72,7 @@
 	function removeItem(productId: string) {
 		cartStore.removeItem(productId);
 		if ($pageTranslations) {
-			notificationStore.success($pageTranslations.t('cart.notifications.item_removed'));
+			notificationStore.success(String($pageTranslations.t('cart.notifications.item_removed')));
 		}
 	}
 
@@ -93,17 +91,17 @@
 		if (!$isAuthenticated) {
 			// Show notification and redirect to login
 			if ($pageTranslations) {
-				notificationStore.info($pageTranslations.t('cart.notifications.auth_required.message'), {
-					title: $pageTranslations.t('cart.notifications.auth_required.title'),
+				notificationStore.info(String($pageTranslations.t('cart.notifications.auth_required.message')), {
+					title: String($pageTranslations.t('cart.notifications.auth_required.title')),
 					duration: 8000,
 					actions: [
 						{
-							label: $pageTranslations.t('cart.notifications.auth_required.sign_in'),
+							label: String($pageTranslations.t('cart.notifications.auth_required.sign_in')),
 							action: () => goto('/login'),
 							style: 'primary'
 						},
 						{
-							label: $pageTranslations.t('cart.notifications.auth_required.create_account'),
+							label: String($pageTranslations.t('cart.notifications.auth_required.create_account')),
 							action: () => goto('/login'),
 							style: 'secondary'
 						}
@@ -141,7 +139,7 @@
 
 		if (hasErrors) {
 			if ($pageTranslations) {
-				notificationStore.error($pageTranslations.t('cart.checkout.errors.fillRequiredFields'));
+				notificationStore.error(String($pageTranslations.t('cart.checkout.errors.fillRequiredFields')));
 			}
 			return;
 		}
@@ -291,11 +289,6 @@
 		}
 	}
 
-	// Force refresh form data (for debugging)
-	function refreshFormData() {
-		console.log('[Cart] Forcing form data refresh...');
-		loadFormData();
-	}
 
 	// Handle address modal open
 	function openAddressModal() {
@@ -383,7 +376,7 @@
 			console.error('[CART] Failed to create order:', error);
 			if ($pageTranslations) {
 				notificationStore.error(
-					$pageTranslations.t('cart.checkout.errors.orderCreationFailed') ||
+					String($pageTranslations.t('cart.checkout.errors.orderCreationFailed')) ||
 						'Failed to create order. Please try again.'
 				);
 			}
@@ -392,7 +385,8 @@
 	}
 
 	// Handle address save
-	async function handleAddressSave(event: CustomEvent<{ addressData: any }>) {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	async function handleAddressSave(event: CustomEvent<{ addressData: { name: string; isDefault?: boolean; [key: string]: any } }>) {
 		const { addressData } = event.detail;
 
 		try {
@@ -423,13 +417,13 @@
 			showAddressModal = false;
 
 			if ($pageTranslations) {
-				notificationStore.success($pageTranslations.t('profile.addressSaved'));
+				notificationStore.success(String($pageTranslations.t('profile.addressSaved')));
 			}
 		} catch (error) {
 			console.error('Failed to save address:', error);
 			if ($pageTranslations) {
 				notificationStore.error(
-					$pageTranslations.t('profile.address.saveError') ||
+					String($pageTranslations.t('profile.address.saveError')) ||
 						'Failed to save address. Please try again.'
 				);
 			}
@@ -462,7 +456,7 @@
 		} catch (error) {
 			console.error('Failed to update user profile:', error);
 			if ($pageTranslations) {
-				notificationStore.error($pageTranslations.t('cart.checkout.errors.profileUpdateFailed'));
+				notificationStore.error(String($pageTranslations.t('cart.checkout.errors.profileUpdateFailed')));
 			}
 			return false;
 		}
@@ -552,15 +546,15 @@
 	// Reactive block to reload data when navigating to this page
 	$effect(() => {
 		// This will trigger when the page store changes (navigation)
+		// eslint-disable-next-line @typescript-eslint/no-unused-expressions
 		$page.url.pathname;
 		loadFormData();
-		// Ensure effect runs
-		return;
 	});
 
 	// Reactive block to ensure form fields update in UI
 	$effect(() => {
 		// Force reactivity update for form fields
+		// eslint-disable-next-line @typescript-eslint/no-unused-expressions
 		[firstName, lastName, phoneNumber, selectedAddress];
 
 		// This will trigger whenever any form field changes
@@ -593,9 +587,8 @@
 
 {#if $pageTranslations}
 	<SEO
-		title={$pageTranslations.t('cart.meta.title')}
-		description={$pageTranslations.t('cart.meta.description')}
-		locale={$pageTranslations.locale}
+		title={String($pageTranslations.t('cart.meta.title'))}
+		description={String($pageTranslations.t('cart.meta.description'))}
 	/>
 
 	<main class="cart-page">
@@ -673,7 +666,7 @@
 											<div
 												class="quantity-controls"
 												role="group"
-												aria-label={$pageTranslations.t('cart.items.quantity_label') ||
+												aria-label={String($pageTranslations.t('cart.items.quantity_label')) ||
 													'Quantity controls'}
 											>
 												<button
@@ -681,7 +674,7 @@
 													on:click={() =>
 														updateQuantity(item.product.id.getValue(), item.quantity - 1)}
 													disabled={item.quantity <= 1}
-													title={$pageTranslations.t('cart.items.decrease_quantity')}
+													title={String($pageTranslations.t('cart.items.decrease_quantity')) || ''}
 												>
 													-
 												</button>
@@ -704,7 +697,7 @@
 													on:click={() =>
 														updateQuantity(item.product.id.getValue(), item.quantity + 1)}
 													disabled={item.quantity >= 99}
-													title={$pageTranslations.t('cart.items.increase_quantity')}
+													title={String($pageTranslations.t('cart.items.increase_quantity')) || ''}
 												>
 													+
 												</button>
@@ -723,8 +716,8 @@
 										<button
 											class="remove-btn"
 											on:click={() => removeItem(item.product.id.getValue())}
-											title={$pageTranslations.t('cart.items.remove_item')}
-											aria-label={$pageTranslations.t('cart.items.remove_item') || 'Remove item'}
+											title={String($pageTranslations.t('cart.items.remove_item')) || ''}
+											aria-label={String($pageTranslations.t('cart.items.remove_item')) || 'Remove item'}
 										>
 											<svg
 												width="16"
@@ -757,7 +750,7 @@
 												class="form-input"
 												class:error={validationErrors.firstName}
 												bind:value={firstName}
-												placeholder={$pageTranslations.t('cart.checkout.firstName')}
+												placeholder={String($pageTranslations.t('cart.checkout.firstName')) || ''}
 												on:input={() => {
 													handleFieldChange('firstName');
 													saveFormData();
@@ -774,7 +767,7 @@
 												class="form-input"
 												class:error={validationErrors.lastName}
 												bind:value={lastName}
-												placeholder={$pageTranslations.t('cart.checkout.lastName')}
+												placeholder={String($pageTranslations.t('cart.checkout.lastName')) || ''}
 												on:input={() => {
 													handleFieldChange('lastName');
 													saveFormData();
@@ -794,7 +787,7 @@
 											class="form-input"
 											class:error={validationErrors.phoneNumber}
 											bind:value={phoneNumber}
-											placeholder={$pageTranslations.t('cart.checkout.phoneNumber')}
+											placeholder={String($pageTranslations.t('cart.checkout.phoneNumber')) || ''}
 											on:input={() => {
 												handleFieldChange('phoneNumber');
 												saveFormData();
@@ -820,7 +813,7 @@
 													saveFormDataImmediate();
 												}}
 											>
-												{#each deliveryAddresses as address}
+												{#each deliveryAddresses as address (address.id)}
 													<option value={address.id}
 														>{address.name || address.npCityFullName}</option
 													>

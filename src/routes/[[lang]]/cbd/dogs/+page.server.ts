@@ -38,7 +38,9 @@ export const load: PageServerLoad = async ({ params }) => {
 		}
 
 		// Рассчитываем время чтения
-		const calculatedReadingTime = textForReadingTime ? calculateReadingTime(textForReadingTime) : 12;
+		const calculatedReadingTime = textForReadingTime
+			? calculateReadingTime(textForReadingTime)
+			: 12;
 
 		return {
 			title: metadata.title || content.title,

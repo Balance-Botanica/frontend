@@ -108,7 +108,6 @@
 	<SEO
 		title={$pageTranslations.t('cart.checkout.title')}
 		description="Complete your order with Google Pay or Apple Pay"
-		locale={$pageTranslations.locale}
 	/>
 
 	<main class="checkout-page">

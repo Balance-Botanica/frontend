@@ -17,7 +17,7 @@
 	};
 </script>
 
-<SEO title={data.title} description={data.description} locale={lang} />
+<SEO title={data.title} description={data.description} />
 
 <main class="dog-arthritis-main">
 	<div class="dog-arthritis-container">

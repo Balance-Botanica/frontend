@@ -463,6 +463,15 @@ This document tracks our project tasks, priorities, and progress.
 - **Component-Level Translations**: ArticleHero now uses proper translation system instead of hardcoded strings
 - **Language Accuracy**: Corrected Ukrainian translation from Russian to proper Ukrainian
 
+### ✅ Pillar Article Layout Restructuring (2025-09-22)
+**Status:** COMPLETED
+- **Key Points Repositioning**: Moved ArticleKeyPoints from sidebar to display immediately after ArticleHero
+- **Full-Width Main Content**: Article main content now takes full available width when no TOC is present
+- **Improved Layout Hierarchy**: Reorganized component order: Hero → Key Points → Main Content
+- **Conditional Sidebar Display**: Sidebar with TOC only shows when table of contents exists
+- **Responsive Design**: Maintained responsive behavior across all screen sizes
+- **Better User Experience**: Key information is presented immediately after the hero section
+
 ### ✅ Telegram Bot Address Display Fix (2025-09-10)
 **Status:** COMPLETED
 - **Issue**: Telegram bot was showing empty "🏠 Адреса:" when displaying all orders

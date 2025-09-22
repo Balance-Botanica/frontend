@@ -40,7 +40,9 @@ async function getPillarArticleMetadata(lang: string, slug: string) {
 				textForReadingTime = content.body.replace(/<[^>]*>/g, ' ');
 			}
 
-			const calculatedReadingTime = textForReadingTime ? calculateReadingTime(textForReadingTime) : 12;
+			const calculatedReadingTime = textForReadingTime
+				? calculateReadingTime(textForReadingTime)
+				: 12;
 
 			return {
 				title: metadata.title || content.title,
@@ -59,7 +61,16 @@ async function getPillarArticleMetadata(lang: string, slug: string) {
 	} else if (slug.includes('/')) {
 		// Для других сложных путей (cbd/cats, cbd/types, dogs/arthritis, pets/thc-toxicity)
 		const [category, subCategory] = slug.split('/');
-		contentPath = join(process.cwd(), 'src', 'lib', 'content', category, subCategory, langDir, `${subCategory}-guide.md`);
+		contentPath = join(
+			process.cwd(),
+			'src',
+			'lib',
+			'content',
+			category,
+			subCategory,
+			langDir,
+			`${subCategory}-guide.md`
+		);
 	} else {
 		// Для простых путей (cats-health, dog-health, veterinary-cbd)
 		contentPath = join(process.cwd(), 'src', 'lib', 'content', slug, langDir, `${slug}-guide.md`);
@@ -70,9 +81,26 @@ async function getPillarArticleMetadata(lang: string, slug: string) {
 	if (!existsSync(contentPath)) {
 		if (slug.includes('/')) {
 			const [category, subCategory] = slug.split('/');
-			contentPath = join(process.cwd(), 'src', 'lib', 'content', category, subCategory, fallbackLangDir, `${subCategory}-guide.md`);
+			contentPath = join(
+				process.cwd(),
+				'src',
+				'lib',
+				'content',
+				category,
+				subCategory,
+				fallbackLangDir,
+				`${subCategory}-guide.md`
+			);
 		} else {
-			contentPath = join(process.cwd(), 'src', 'lib', 'content', slug, fallbackLangDir, `${slug}-guide.md`);
+			contentPath = join(
+				process.cwd(),
+				'src',
+				'lib',
+				'content',
+				slug,
+				fallbackLangDir,
+				`${slug}-guide.md`
+			);
 		}
 	}
 
@@ -132,7 +160,7 @@ async function getBlogArticles(lang: string) {
 			blogPosts = blogPostsEN;
 		}
 
-		return blogPosts.map(post => ({
+		return blogPosts.map((post) => ({
 			...post,
 			type: 'blog' as const
 		}));
@@ -170,8 +198,8 @@ export const load: PageServerLoad = async ({ params }) => {
 	const blogArticles = await getBlogArticles(lang);
 
 	// Объединяем все статьи и сортируем по дате
-	const allArticles = [...pillarArticles, ...blogArticles].sort((a, b) =>
-		new Date(b.date).getTime() - new Date(a.date).getTime()
+	const allArticles = [...pillarArticles, ...blogArticles].sort(
+		(a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
 	);
 
 	return {

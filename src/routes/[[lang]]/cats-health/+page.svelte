@@ -12,7 +12,7 @@
 	}));
 </script>
 
-<SEO title={data.title} description={data.description} locale={lang as 'en' | 'uk-ua'} />
+<SEO title={data.title} description={data.description} />
 
 <main class="cats-health-main">
 	<div class="cats-health-container">

@@ -89,6 +89,7 @@ export const load: PageServerLoad = async ({ params }) => {
 		date: metadata.date || new Date().toISOString(),
 		author: metadata.author || 'Balance Botanica',
 		tags: metadata.tags ? metadata.tags.split(',').map((tag: string) => tag.trim()) : [],
+		readingTime: metadata.readingTime || '25 minutes',
 		content: content || '',
 		seoData: {
 			faq: metadata.faq ? JSON.parse(metadata.faq) : [],

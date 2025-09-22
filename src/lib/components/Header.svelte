@@ -2,6 +2,7 @@
 	import { colors } from '../colors';
 	import { typography } from '../typography';
 	import { createPageTranslations } from '$lib/i18n/store';
+	import type { SupportedLocale } from '$lib/i18n/types';
 	import LanguageSwitcher from './LanguageSwitcher.svelte';
 	import { supabaseAuthStore, user, isAuthenticated, isLoading } from '$lib/auth/supabase-store';
 	import { cartItemCount } from '$lib/stores/cart.store';
@@ -15,8 +16,9 @@
 	import personIcon from '../assets/icons/person.svg';
 	import cartIcon from '../assets/icons/cart.svg';
 
-	// Determine logo link based on current locale
-	const logoHref = $derived(getLocalizedUrl('/'));
+	// Determine logo link based on current page language
+	const currentLang = $derived(($page.params?.lang as SupportedLocale) || 'uk-ua');
+	const logoHref = $derived(currentLang === 'uk-ua' ? '/' : `/${currentLang}/`);
 
 	// Initialize auth store
 	onMount(() => {

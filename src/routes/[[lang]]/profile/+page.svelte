@@ -281,7 +281,6 @@
 	<SEO
 		title={$pageTranslations.t('profile.meta.title') as string}
 		description={$pageTranslations.t('profile.meta.description') as string}
-		locale={$pageTranslations.locale}
 	/>
 
 	<div class="profile-page">
