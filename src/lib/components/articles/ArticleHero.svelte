@@ -23,13 +23,15 @@
 	const formattedDate = $derived(
 		date ? new Date(date).toLocaleDateString(lang === 'en' ? 'en-US' : 'uk-UA') : null
 	);
-	const formattedReadingTime = $derived(() => {
-		if (!readingTime) return null;
-		if (typeof readingTime === 'number') {
-			return `${readingTime} ${lang === 'en' ? 'min' : 'хв'}`;
+
+	// Format reading time directly in template to avoid reactivity issues
+	function formatReadingTime(rt: number | string | undefined): string | null {
+		if (!rt) return null;
+		if (typeof rt === 'number') {
+			return `${rt} ${lang === 'en' ? 'min' : 'хв'}`;
 		}
-		return readingTime;
-	});
+		return rt;
+	}
 </script>
 
 <header class="article-hero">
@@ -42,8 +44,8 @@
 		{#if formattedDate}
 			<span class="article-hero-date">{formattedDate}</span>
 		{/if}
-		{#if formattedReadingTime}
-			<span class="article-hero-reading-time">{formattedReadingTime}</span>
+		{#if readingTime}
+			<span class="article-hero-reading-time">{formatReadingTime(readingTime)}</span>
 		{/if}
 	</div>
 </header>
