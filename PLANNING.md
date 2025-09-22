@@ -434,6 +434,18 @@ This document tracks our project tasks, priorities, and progress.
 - **User Experience**: Better localized error messages instead of crashes when articles are not found
 - **i18n Integration**: All error messages now properly localized using createPageTranslations
 
+### ✅ Blog Translations Improvement (2025-09-22)
+**Status:** COMPLETED
+- **Natural Language Usage**: Replaced technical marketing terms with user-friendly language
+- **English Improvements**:
+  - Changed "Pillar guides" to "Essential guides" for better user understanding
+  - Updated page descriptions to use consistent terminology
+- **Ukrainian Improvements**:
+  - Replaced awkward "Столбові посібники" with natural "Основні посібники"
+  - Made translations more readable and professional
+- **SEO Consistency**: Maintained keyword relevance while improving readability
+- **User Experience**: Blog descriptions now sound more natural to target audience
+
 ### ✅ Telegram Bot Address Display Fix (2025-09-10)
 **Status:** COMPLETED
 - **Issue**: Telegram bot was showing empty "🏠 Адреса:" when displaying all orders
