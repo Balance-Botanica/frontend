@@ -454,6 +454,14 @@ This document tracks our project tasks, priorities, and progress.
 - **Svelte 5 Runes Compatibility**: Ensured proper handling of props in reactive contexts
 - **Performance Optimization**: Eliminated unnecessary reactive computations and nested dependencies
 
+### ✅ Localized Reading Time Display (2025-09-22)
+**Status:** COMPLETED
+- **Added Localized Prefix**: Added "Reading time:" / "Время чтения:" prefix to reading time display
+- **i18n Integration**: Integrated createPageTranslations for proper internationalization
+- **User Experience Enhancement**: Changed from "28 хв" to "Время чтения: 28 хв" for clarity
+- **Consistent Localization**: Added translation keys to both EN and UK-UA locale files
+- **Component-Level Translations**: ArticleHero now uses proper translation system instead of hardcoded strings
+
 ### ✅ Telegram Bot Address Display Fix (2025-09-10)
 **Status:** COMPLETED
 - **Issue**: Telegram bot was showing empty "🏠 Адреса:" when displaying all orders
