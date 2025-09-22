@@ -399,6 +399,14 @@ This document tracks our project tasks, priorities, and progress.
 - **Minimum Time Guarantee**: All articles show minimum 1 minute reading time to avoid "0 minutes" display
 - **Performance Optimized**: Calculation happens server-side during page load, no client-side overhead
 
+### ✅ ArticleHero Component Type Fix (2025-09-22)
+**Status:** COMPLETED
+- **Type Mismatch Resolution**: Fixed TypeScript error where `readingTime` number could not be assigned to string prop
+- **Flexible Type Support**: Updated ArticleHero component to accept both `number` and `string` for readingTime prop
+- **Smart Formatting**: Added `formattedReadingTime` derived value that automatically formats numeric minutes with localized units ('min'/'хв')
+- **Backward Compatibility**: Maintains support for pre-formatted reading time strings
+- **User Experience**: Proper display of reading time in both English and Ukrainian languages
+
 ### ✅ Telegram Bot Address Display Fix (2025-09-10)
 **Status:** COMPLETED
 - **Issue**: Telegram bot was showing empty "🏠 Адреса:" when displaying all orders
