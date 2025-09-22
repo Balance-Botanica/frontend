@@ -448,11 +448,11 @@ This document tracks our project tasks, priorities, and progress.
 
 ### ✅ ArticleHero Reading Time Reactivity Fix (2025-09-22)
 **Status:** COMPLETED
-- **Reactivity Issue Resolution**: Fixed reading time rendering problems caused by nested derived dependencies
-- **Dependency Simplification**: Removed dependency on `isEnglish` derived value inside `formattedReadingTime`
-- **Direct Language Check**: Use `lang` prop directly instead of intermediate derived value
-- **Svelte 5 Compatibility**: Ensured proper reactivity handling in Svelte 5 runes system
-- **Performance Optimization**: Eliminated unnecessary reactive computations
+- **Complete Reactivity Overhaul**: Completely eliminated all derived dependency issues in ArticleHero
+- **Function-Based Formatting**: Replaced `formattedReadingTime` derived with `formatReadingTime` function
+- **Template-Level Execution**: Moved formatting logic to template level to avoid reactivity conflicts
+- **Svelte 5 Runes Compatibility**: Ensured proper handling of props in reactive contexts
+- **Performance Optimization**: Eliminated unnecessary reactive computations and nested dependencies
 
 ### ✅ Telegram Bot Address Display Fix (2025-09-10)
 **Status:** COMPLETED
