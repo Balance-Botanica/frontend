@@ -499,6 +499,15 @@ This document tracks our project tasks, priorities, and progress.
 - **Reading Time Calculation**: Enhanced for CBD dogs with proper raw markdown processing before HTML conversion
 - **Responsive Design**: Improved mobile and desktop layouts across all pillar pages
 
+### ✅ Unified Pillar Pages Layout Structure (2025-09-22)
+**Status:** COMPLETED
+- **Maximum Unification**: All pillar pages now use identical layout structure: ArticleHero → ArticleKeyPoints → ArticleLayout (TOC + Content)
+- **Auto-Generated TOC**: Removed manual TOC creation, all pages now use automatic TOC generation from article headings
+- **Consistent Key Points**: Every pillar page has properly localized key points displayed after hero section
+- **Standardized Components**: Veterinary CBD and CBD Types converted from custom layouts to unified ArticleLayout
+- **Preserved Unique Content**: Special sections (comparison tables, study highlights, etc.) maintained after main article content
+- **Perfect Layout Consistency**: Left column contains TOC and key points, right column contains article text on all pillar pages
+
 ### ✅ Telegram Bot Address Display Fix (2025-09-10)
 **Status:** COMPLETED
 - **Issue**: Telegram bot was showing empty "🏠 Адреса:" when displaying all orders
