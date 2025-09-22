@@ -3,6 +3,15 @@ import { readFileSync, existsSync } from 'fs';
 import { join } from 'path';
 import { marked } from 'marked';
 
+// Функция для расчета времени чтения на основе текста
+function calculateReadingTime(text: string): number {
+	// Средняя скорость чтения - 200 слов в минуту
+	const wordsPerMinute = 200;
+	const words = text.trim().split(/\s+/).length;
+	const minutes = Math.ceil(words / wordsPerMinute);
+	return Math.max(1, minutes); // Минимум 1 минута
+}
+
 export const load: PageServerLoad = async ({ params }) => {
 	// Получаем язык из параметров маршрута
 	const lang = params.lang || 'uk-ua';
@@ -28,6 +37,7 @@ export const load: PageServerLoad = async ({ params }) => {
 
 	let content = '';
 	const metadata: any = {};
+	let readingTime = 15; // дефолтное значение
 
 	if (existsSync(contentPath)) {
 		try {
@@ -47,6 +57,9 @@ export const load: PageServerLoad = async ({ params }) => {
 						metadata[key.trim()] = value.replace(/^["']|["']$/g, ''); // Убираем кавычки
 					}
 				});
+
+				// Рассчитываем время чтения на основе markdown контента
+				readingTime = calculateReadingTime(markdownContent);
 
 				// Настраиваем marked для лучшей семантики
 				marked.setOptions({
@@ -81,6 +94,7 @@ export const load: PageServerLoad = async ({ params }) => {
 		date: metadata.date || new Date().toISOString(),
 		author: metadata.author || 'Balance Botanica',
 		tags: metadata.tags ? metadata.tags.split(',').map((tag: string) => tag.trim()) : [],
+		readingTime: metadata.readingTime ? parseInt(metadata.readingTime) : readingTime,
 		content: content || '',
 		seoData: {
 			faq: metadata.faq ? JSON.parse(metadata.faq) : [],

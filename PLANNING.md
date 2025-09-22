@@ -383,6 +383,22 @@ This document tracks our project tasks, priorities, and progress.
 - Removed duplicate SQL migration files from root directory
 - Cleaned up temporary development files
 
+### ✅ Automatic Reading Time Calculation Implementation (2025-09-22)
+**Status:** COMPLETED
+- **Smart Reading Time Algorithm**: Implemented intelligent reading time calculation based on text content length
+- **Universal Function**: Created `calculateReadingTime()` utility function that counts words and calculates minutes (200 words/minute average speed)
+- **Automatic Fallbacks**: Each page has smart defaults with content-based calculation as primary method
+- **Pages Updated**:
+  - CBD main page (`/cbd`) - calculates from markdown content
+  - CBD for Dogs (`/cbd/dogs`) - calculates from imported content or uses metadata override
+  - CBD for Cats (`/cbd/cats`) - calculates from markdown content
+  - Dog Health (`/dog-health`) - calculates from markdown content
+  - Cats Health (`/cats-health`) - calculates from markdown content
+  - Veterinary CBD (`/veterinary-cbd`) - calculates from markdown content
+- **Flexible Override System**: Pages can override automatic calculation by specifying `readingTime` in frontmatter metadata
+- **Minimum Time Guarantee**: All articles show minimum 1 minute reading time to avoid "0 minutes" display
+- **Performance Optimized**: Calculation happens server-side during page load, no client-side overhead
+
 ### ✅ Telegram Bot Address Display Fix (2025-09-10)
 **Status:** COMPLETED
 - **Issue**: Telegram bot was showing empty "🏠 Адреса:" when displaying all orders
