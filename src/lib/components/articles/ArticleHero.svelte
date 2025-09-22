@@ -6,7 +6,7 @@
 		description: string;
 		author?: string;
 		date?: string;
-		readingTime?: string;
+		readingTime?: number | string;
 		lang?: string;
 	}
 
@@ -23,6 +23,13 @@
 	const formattedDate = $derived(
 		date ? new Date(date).toLocaleDateString(lang === 'en' ? 'en-US' : 'uk-UA') : null
 	);
+	const formattedReadingTime = $derived(() => {
+		if (!readingTime) return null;
+		if (typeof readingTime === 'number') {
+			return `${readingTime} ${isEnglish ? 'min' : 'хв'}`;
+		}
+		return readingTime;
+	});
 </script>
 
 <header class="article-hero">
@@ -35,8 +42,8 @@
 		{#if formattedDate}
 			<span class="article-hero-date">{formattedDate}</span>
 		{/if}
-		{#if readingTime}
-			<span class="article-hero-reading-time">{readingTime}</span>
+		{#if formattedReadingTime}
+			<span class="article-hero-reading-time">{formattedReadingTime}</span>
 		{/if}
 	</div>
 </header>
