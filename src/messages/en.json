@@ -587,6 +587,7 @@
 		"readingTimeLabel": "min",
 		"guide": "Guide",
 		"article": "Article",
+		"readingTimePrefix": "Reading time:",
 		"errors": {
 			"articleNotFound": "Article Not Found",
 			"articleNotFoundDescription": "This article could not be found.",

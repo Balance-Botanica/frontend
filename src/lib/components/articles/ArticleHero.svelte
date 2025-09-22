@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
+	import { createPageTranslations } from '$lib/i18n/store';
 
 	interface Props {
 		title: string;
@@ -19,6 +20,8 @@
 		lang = 'uk-ua'
 	}: Props = $props();
 
+	const pageTranslations = createPageTranslations();
+
 	const isEnglish = $derived(lang === 'en');
 	const formattedDate = $derived(
 		date ? new Date(date).toLocaleDateString(lang === 'en' ? 'en-US' : 'uk-UA') : null
@@ -27,8 +30,10 @@
 	// Format reading time directly in template to avoid reactivity issues
 	function formatReadingTime(rt: number | string | undefined): string | null {
 		if (!rt) return null;
+		const prefix = $pageTranslations?.t('blog.readingTimePrefix') || 'Reading time:';
 		if (typeof rt === 'number') {
-			return `${rt} ${lang === 'en' ? 'min' : 'хв'}`;
+			const unit = lang === 'en' ? 'min' : 'хв';
+			return `${prefix} ${rt} ${unit}`;
 		}
 		return rt;
 	}

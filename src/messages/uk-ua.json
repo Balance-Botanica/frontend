@@ -589,6 +589,7 @@
 		"readingTimeLabel": "хв",
 		"guide": "Посібник",
 		"article": "Стаття",
+		"readingTimePrefix": "Время чтения:",
 		"errors": {
 			"articleNotFound": "Статтю не знайдено",
 			"articleNotFoundDescription": "Цю статтю не вдалося знайти.",
