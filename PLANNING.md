@@ -446,6 +446,14 @@ This document tracks our project tasks, priorities, and progress.
 - **SEO Consistency**: Maintained keyword relevance while improving readability
 - **User Experience**: Blog descriptions now sound more natural to target audience
 
+### ✅ ArticleHero Reading Time Reactivity Fix (2025-09-22)
+**Status:** COMPLETED
+- **Reactivity Issue Resolution**: Fixed reading time rendering problems caused by nested derived dependencies
+- **Dependency Simplification**: Removed dependency on `isEnglish` derived value inside `formattedReadingTime`
+- **Direct Language Check**: Use `lang` prop directly instead of intermediate derived value
+- **Svelte 5 Compatibility**: Ensured proper reactivity handling in Svelte 5 runes system
+- **Performance Optimization**: Eliminated unnecessary reactive computations
+
 ### ✅ Telegram Bot Address Display Fix (2025-09-10)
 **Status:** COMPLETED
 - **Issue**: Telegram bot was showing empty "🏠 Адреса:" when displaying all orders
