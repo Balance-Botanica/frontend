@@ -15,7 +15,12 @@
 	// TOC will be auto-generated from content headings
 	const tocItems = $derived([]);
 
-	const keyPoints = []; // Veterinary CBD has custom key insights in sidebar
+	const keyPoints = $derived([
+		isEnglish ? 'Evidence-based veterinary research' : 'Доказові ветеринарні дослідження',
+		isEnglish ? 'Clinical protocols and guidelines' : 'Клінічні протоколи та рекомендації',
+		isEnglish ? 'Safety data and contraindications' : 'Дані безпеки та протипоказання',
+		isEnglish ? 'Professional CBD therapy standards' : 'Професійні стандарти CBD терапії'
+	]);
 
 	// Use translation system for dynamic language switching
 	const translations = $derived({
@@ -43,97 +48,10 @@
 			{lang}
 		/>
 
-		<div class="veterinary-cbd-content-grid">
-			<aside class="veterinary-cbd-sidebar">
-				<div class="veterinary-cbd-toc">
-					<h3>{translations.tableOfContents}</h3>
-					<nav>
-						<ul>
-							<li><a href="#clinical-evidence">{translations.clinicalEvidence}</a></li>
-							<li><a href="#veterinary-protocols">{translations.veterinaryProtocols}</a></li>
-							<li><a href="#safety-data">{translations.safetyData}</a></li>
-							<li><a href="#professional-guide">{translations.professionalGuide}</a></li>
-							<li><a href="#related-articles">{translations.relatedArticles}</a></li>
-						</ul>
-					</nav>
-				</div>
-
-				<div class="veterinary-cbd-key-insights">
-					<h3>{$pageTranslations?.t('veterinaryCbd.keyInsights') || (isEnglish ? 'Key Insights' : 'Ключові висновки')}</h3>
-					<div class="insights-list">
-						<div class="insight-item">
-							<div class="insight-icon">📊</div>
-							<div class="insight-content">
-								<h4>{$pageTranslations?.t('veterinaryCbd.evidenceBased') || (isEnglish ? 'Evidence-Based' : 'Науково обґрунтовано')}</h4>
-								<p>
-									{$pageTranslations?.t('veterinaryCbd.studiesAnalyzed') || (isEnglish
-										? '15+ clinical studies analyzed'
-										: 'Проаналізовано 15+ клінічних досліджень')}
-								</p>
-							</div>
-						</div>
-						<div class="insight-item">
-							<div class="insight-icon">⚕️</div>
-							<div class="insight-content">
-								<h4>{$pageTranslations?.t('veterinaryCbd.veterinaryFocus') || (isEnglish ? 'Veterinary Focus' : 'Ветеринарний фокус')}</h4>
-								<p>
-									{$pageTranslations?.t('veterinaryCbd.professionalProtocols') || (isEnglish
-										? 'Professional protocols & guidelines'
-										: 'Професійні протоколи та рекомендації')}
-								</p>
-							</div>
-						</div>
-						<div class="insight-item">
-							<div class="insight-icon">🔬</div>
-							<div class="insight-content">
-								<h4>{$pageTranslations?.t('veterinaryCbd.clinicalData') || (isEnglish ? 'Clinical Data' : 'Клінічні дані')}</h4>
-								<p>{$pageTranslations?.t('veterinaryCbd.safetyEvidence') || (isEnglish ? 'Safety & efficacy evidence' : 'Докази безпеки та ефективності')}</p>
-							</div>
-						</div>
-						<div class="insight-item">
-							<div class="insight-icon">📋</div>
-							<div class="insight-content">
-								<h4>{$pageTranslations?.t('veterinaryCbd.treatmentProtocols') || (isEnglish ? 'Treatment Protocols' : 'Протоколи лікування')}</h4>
-								<p>
-									{$pageTranslations?.t('veterinaryCbd.dosingGuidelines') || (isEnglish
-										? 'Evidence-based dosing guidelines'
-										: 'Науково обґрунтовані рекомендації дозування')}
-								</p>
-							</div>
-						</div>
-					</div>
-				</div>
-
-				<div class="veterinary-cbd-study-highlights">
-					<h3>{$pageTranslations?.t('veterinaryCbd.studyHighlights') || (isEnglish ? 'Study Highlights' : 'Виділені дослідження')}</h3>
-					<ul>
-						<li>
-							<strong>McGrath (2019):</strong>
-							{isEnglish ? '33% seizure reduction' : '33% зменшення нападів'}
-						</li>
-						<li>
-							<strong>Rozental (2023):</strong>
-							{isEnglish ? '51 dogs crossover study' : '51 собака, перехресне дослідження'}
-						</li>
-						<li>
-							<strong>New Zealand (2024):</strong>
-							{isEnglish ? 'THC+CBD combination' : 'Комбінація THC+CBD'}
-						</li>
-						<li>
-							<strong>Kulpa (2021):</strong>
-							{isEnglish ? 'Safety up to 30 mg/kg' : 'Безпека до 30 мг/кг'}
-						</li>
-					</ul>
-				</div>
-			</aside>
-
-			{#if data.content}
-				<div class="veterinary-cbd-article-content">
-					<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-					{@html data.content}
-				</div>
-			{/if}
-		</div>
+		<!-- Article Content with Layout -->
+		{#if data.content}
+			<ArticleLayout toc={tocItems} {keyPoints} {lang} content={data.content} />
+		{/if}
 
 		{#if data.seoData?.faq && data.seoData.faq.length > 0}
 			<section class="veterinary-cbd-faq">

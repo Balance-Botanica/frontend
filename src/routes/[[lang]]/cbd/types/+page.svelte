@@ -1,20 +1,37 @@
 <script lang="ts">
 	import SEO from '$lib/components/SEO.svelte';
+	import { ArticleHero, ArticleLayout } from '$lib/components/articles';
 	import { page } from '$app/stores';
+	import type { SupportedLocale } from '$lib/i18n/types';
+	import { createPageTranslations } from '$lib/i18n/store';
 
 	const { data } = $props();
-	const lang = $derived($page.params?.lang || 'uk-ua');
+	const lang = $derived(($page.params?.lang || 'uk-ua') as SupportedLocale);
 	const isEnglish = $derived(lang === 'en');
+
+	// Create page translations
+	const pageTranslations = createPageTranslations();
+
+	// TOC will be auto-generated from content headings
+	const tocItems = $derived([]);
+
+	const keyPoints = $derived([
+		isEnglish ? 'Isolate: Pure CBD only' : 'Ізолят: Чистий CBD тільки',
+		isEnglish ? 'Full Spectrum: All cannabinoids' : 'Повний спектр: Всі каннабіноїди',
+		isEnglish ? 'Broad Spectrum: THC-free benefits' : 'Широкий спектр: Переваги без THC',
+		isEnglish ? 'Choose based on your needs' : 'Оберіть на основі ваших потреб'
+	]);
+
 	const translations = $derived(() => ({
-		learnMore: isEnglish ? 'Learn More' : 'Дізнатися більше',
-		relatedArticles: isEnglish ? 'Related Articles' : "Пов'язані статті",
-		tableOfContents: isEnglish ? 'Table of Contents' : 'Зміст',
-		comparison: isEnglish ? 'Comparison' : 'Порівняння',
-		scientificEvidence: isEnglish ? 'Scientific Evidence' : 'Наукові докази',
-		chooseYourType: isEnglish ? 'Choose Your CBD Type' : 'Оберіть свій тип CBD',
-		isolate: isEnglish ? 'CBD Isolate' : 'Ізолят CBD',
-		fullSpectrum: isEnglish ? 'Full Spectrum' : 'Повний спектр',
-		broadSpectrum: isEnglish ? 'Broad Spectrum' : 'Широкий спектр'
+		learnMore: $pageTranslations?.t('cbdTypes.learnMore') || (isEnglish ? 'Learn More' : 'Дізнатися більше'),
+		relatedArticles: $pageTranslations?.t('cbdTypes.relatedArticles') || (isEnglish ? 'Related Articles' : "Пов'язані статті"),
+		tableOfContents: $pageTranslations?.t('cbdTypes.tableOfContents') || (isEnglish ? 'Table of Contents' : 'Зміст'),
+		comparison: $pageTranslations?.t('cbdTypes.comparison') || (isEnglish ? 'Comparison' : 'Порівняння'),
+		scientificEvidence: $pageTranslations?.t('cbdTypes.scientificEvidence') || (isEnglish ? 'Scientific Evidence' : 'Наукові докази'),
+		chooseYourType: $pageTranslations?.t('cbdTypes.chooseYourType') || (isEnglish ? 'Choose Your CBD Type' : 'Оберіть свій тип CBD'),
+		isolate: $pageTranslations?.t('cbdTypes.isolate') || (isEnglish ? 'CBD Isolate' : 'Ізолят CBD'),
+		fullSpectrum: $pageTranslations?.t('cbdTypes.fullSpectrum') || (isEnglish ? 'Full Spectrum' : 'Повний спектр'),
+		broadSpectrum: $pageTranslations?.t('cbdTypes.broadSpectrum') || (isEnglish ? 'Broad Spectrum' : 'Широкий спектр')
 	}));
 
 	// Comparison data
@@ -67,38 +84,15 @@
 
 <main class="cbd-types-main">
 	<div class="cbd-types-container">
-		<header class="cbd-types-hero">
-			<div class="cbd-types-hero-content">
-				<h1 class="cbd-types-title">{data.title}</h1>
-				<p class="cbd-types-subtitle">{data.description}</p>
-				<div class="cbd-types-meta">
-					<span class="cbd-types-author">{isEnglish ? 'By' : 'Автор'}: {data.author}</span>
-					<span class="cbd-types-date"
-						>{new Date(data.date).toLocaleDateString(lang === 'en' ? 'en-US' : 'uk-UA')}</span
-					>
-					<span class="cbd-types-reading-time">{data.readingTime}</span>
-				</div>
-			</div>
-			<div class="cbd-types-hero-visual">
-				<div class="cbd-types-comparison-preview">
-					<div class="cbd-type-card isolate">
-						<div class="cbd-type-icon">🧪</div>
-						<h3>{translations.isolate}</h3>
-						<p>{isEnglish ? '99% Pure CBD' : '99% чистий CBD'}</p>
-					</div>
-					<div class="cbd-type-card full-spectrum">
-						<div class="cbd-type-icon">🌿</div>
-						<h3>{translations.fullSpectrum}</h3>
-						<p>{isEnglish ? 'All Cannabinoids' : 'Всі каннабіноїди'}</p>
-					</div>
-					<div class="cbd-type-card broad-spectrum">
-						<div class="cbd-type-icon">🌱</div>
-						<h3>{translations.broadSpectrum}</h3>
-						<p>{isEnglish ? 'No THC' : 'Без THC'}</p>
-					</div>
-				</div>
-			</div>
-		</header>
+		<!-- Hero Section -->
+		<ArticleHero
+			title={data.title}
+			description={data.description}
+			author={data.author}
+			date={data.date}
+			readingTime={data.readingTime}
+			{lang}
+		/>
 
 		<!-- Quick Comparison Section -->
 		<section class="cbd-types-comparison-section">
@@ -134,93 +128,10 @@
 			</div>
 		</section>
 
-		<div class="cbd-types-content-grid">
-			<aside class="cbd-types-sidebar">
-				<div class="cbd-types-toc">
-					<h3>{translations.tableOfContents}</h3>
-					<nav>
-						<ul>
-							<li><a href="#cbd-isolate">{translations.isolate}</a></li>
-							<li><a href="#full-spectrum">{translations.fullSpectrum}</a></li>
-							<li><a href="#broad-spectrum">{translations.broadSpectrum}</a></li>
-							<li><a href="#scientific-evidence">{translations.scientificEvidence}</a></li>
-							<li><a href="#choose-your-type">{translations.chooseYourType}</a></li>
-							<li><a href="#related-articles">{translations.relatedArticles}</a></li>
-						</ul>
-					</nav>
-				</div>
-
-				<div class="cbd-types-key-insights">
-					<h3>{isEnglish ? 'Key Insights' : 'Ключові висновки'}</h3>
-					<div class="insights-list">
-						<div class="insight-item">
-							<div class="insight-icon">🔬</div>
-							<div class="insight-content">
-								<h4>{isEnglish ? 'Evidence-Based' : 'Науково обґрунтовано'}</h4>
-								<p>
-									{isEnglish
-										? '15+ clinical studies analyzed'
-										: 'Проаналізовано 15+ клінічних досліджень'}
-								</p>
-							</div>
-						</div>
-						<div class="insight-item">
-							<div class="insight-icon">⚖️</div>
-							<div class="insight-content">
-								<h4>{isEnglish ? 'Comparative Analysis' : 'Порівняльний аналіз'}</h4>
-								<p>
-									{isEnglish
-										? 'Pharmacokinetics & bioavailability'
-										: 'Фармакокінетика та біодоступність'}
-								</p>
-							</div>
-						</div>
-						<div class="insight-item">
-							<div class="insight-icon">🎯</div>
-							<div class="insight-content">
-								<h4>{isEnglish ? 'Personalized Choice' : 'Персональний вибір'}</h4>
-								<p>
-									{isEnglish ? 'Find your perfect CBD type' : 'Знайдіть свій ідеальний тип CBD'}
-								</p>
-							</div>
-						</div>
-					</div>
-				</div>
-
-				<div class="cbd-types-research-highlights">
-					<h3>{isEnglish ? 'Research Highlights' : 'Виділені дослідження'}</h3>
-					<div class="research-highlights">
-						<div class="research-item">
-							<div class="research-year">2019</div>
-							<div class="research-content">
-								<h4>{isEnglish ? 'Isolate vs Full Spectrum' : 'Ізолят vs Повний спектр'}</h4>
-								<p>{isEnglish ? '33% better seizure control' : 'На 33% кращий контроль нападів'}</p>
-							</div>
-						</div>
-						<div class="research-item">
-							<div class="research-year">2023</div>
-							<div class="research-content">
-								<h4>{isEnglish ? 'Pharmacokinetics Study' : 'Фармакокінетичне дослідження'}</h4>
-								<p>{isEnglish ? 'Bioavailability differences' : 'Відмінності біодоступності'}</p>
-							</div>
-						</div>
-						<div class="research-item">
-							<div class="research-year">2024</div>
-							<div class="research-content">
-								<h4>{isEnglish ? 'Entourage Effect' : 'Ефект супроводу'}</h4>
-								<p>{isEnglish ? 'Synergistic mechanisms' : 'Синергетичні механізми'}</p>
-							</div>
-						</div>
-					</div>
-				</div>
-			</aside>
-
-			{#if data.content}
-				<div class="cbd-types-article-content">
-					{@html data.content}
-				</div>
-			{/if}
-		</div>
+		<!-- Article Content with Layout -->
+		{#if data.content}
+			<ArticleLayout toc={tocItems} {keyPoints} {lang} content={data.content} />
+		{/if}
 
 		{#if data.seoData?.faq && data.seoData.faq.length > 0}
 			<section class="cbd-types-faq">
