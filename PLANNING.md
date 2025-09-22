@@ -456,11 +456,12 @@ This document tracks our project tasks, priorities, and progress.
 
 ### ✅ Localized Reading Time Display (2025-09-22)
 **Status:** COMPLETED
-- **Added Localized Prefix**: Added "Reading time:" / "Время чтения:" prefix to reading time display
+- **Added Localized Prefix**: Added "Reading time:" / "Час читання:" prefix to reading time display
 - **i18n Integration**: Integrated createPageTranslations for proper internationalization
-- **User Experience Enhancement**: Changed from "28 хв" to "Время чтения: 28 хв" for clarity
+- **User Experience Enhancement**: Changed from "28 хв" to "Час читання: 28 хв" for clarity
 - **Consistent Localization**: Added translation keys to both EN and UK-UA locale files
 - **Component-Level Translations**: ArticleHero now uses proper translation system instead of hardcoded strings
+- **Language Accuracy**: Corrected Ukrainian translation from Russian to proper Ukrainian
 
 ### ✅ Telegram Bot Address Display Fix (2025-09-10)
 **Status:** COMPLETED
