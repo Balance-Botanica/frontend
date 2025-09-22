@@ -112,18 +112,31 @@
 	}
 </script>
 
-<div class="article-content-grid" onclick={handleAnchorClick}>
-	<aside class="article-sidebar">
-		{#if finalToc.length > 0}
+<!-- Key Points after hero -->
+{#if keyPoints.length > 0}
+	<section class="article-key-points-section">
+		<ArticleKeyPoints {keyPoints} {lang} />
+	</section>
+{/if}
+
+{#if finalToc.length > 0}
+	<div class="article-content-grid" onclick={handleAnchorClick}>
+		<aside class="article-sidebar">
 			<ArticleTOC toc={finalToc} {lang} />
-		{/if}
+		</aside>
 
-		{#if keyPoints.length > 0}
-			<ArticleKeyPoints {keyPoints} {lang} />
-		{/if}
-	</aside>
-
-	<article class="article-main">
+		<article class="article-main">
+			<div class="article-content">
+				{#if content}
+					{@html processedContent}
+				{:else}
+					{@render children?.()}
+				{/if}
+			</div>
+		</article>
+	</div>
+{:else}
+	<article class="article-main article-main-fullwidth">
 		<div class="article-content">
 			{#if content}
 				{@html processedContent}
@@ -132,13 +145,17 @@
 			{/if}
 		</div>
 	</article>
-</div>
+{/if}
 
 <style>
 	.article-content-grid {
 		display: grid;
 		grid-template-columns: 300px 1fr;
 		gap: 3rem;
+		margin-bottom: 3rem;
+	}
+
+	.article-key-points-section {
 		margin-bottom: 3rem;
 	}
 
@@ -154,6 +171,11 @@
 		overflow: hidden;
 		box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 		min-height: 600px;
+	}
+
+	.article-main-fullwidth {
+		width: 100%;
+		max-width: none;
 	}
 
 	.article-content {
