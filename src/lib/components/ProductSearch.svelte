@@ -403,7 +403,10 @@
 
 				<!-- Price Range -->
 				<div>
-					<label for="min-price-input" class="mb-2 block cursor-pointer text-sm font-medium text-gray-700">
+					<label
+						for="min-price-input"
+						class="mb-2 block cursor-pointer text-sm font-medium text-gray-700"
+					>
 						{$pageTranslations!.t('products.search.price_label')}
 					</label>
 					<div class="flex space-x-2">

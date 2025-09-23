@@ -36,8 +36,13 @@
 </script>
 
 <svelte:head>
-	<title>{data?.title || $pageTranslations?.t('blog.errors.articleNotFound')} - Balance Botanica</title>
-	<meta name="description" content={data?.description || $pageTranslations?.t('blog.errors.articleNotFoundDescription')} />
+	<title
+		>{data?.title || $pageTranslations?.t('blog.errors.articleNotFound')} - Balance Botanica</title
+	>
+	<meta
+		name="description"
+		content={data?.description || $pageTranslations?.t('blog.errors.articleNotFoundDescription')}
+	/>
 </svelte:head>
 
 <BlogLayout

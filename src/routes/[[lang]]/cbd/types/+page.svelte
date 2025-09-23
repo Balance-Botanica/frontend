@@ -18,15 +18,29 @@
 	const keyPoints = $derived($pageTranslations?.pillarArticles.cbdTypes.keyPoints || []);
 
 	const translations = $derived(() => ({
-		learnMore: $pageTranslations?.t('cbdTypes.learnMore') || (isEnglish ? 'Learn More' : 'Дізнатися більше'),
-		relatedArticles: $pageTranslations?.t('cbdTypes.relatedArticles') || (isEnglish ? 'Related Articles' : "Пов'язані статті"),
-		tableOfContents: $pageTranslations?.t('cbdTypes.tableOfContents') || (isEnglish ? 'Table of Contents' : 'Зміст'),
-		comparison: $pageTranslations?.t('cbdTypes.comparison') || (isEnglish ? 'Comparison' : 'Порівняння'),
-		scientificEvidence: $pageTranslations?.t('cbdTypes.scientificEvidence') || (isEnglish ? 'Scientific Evidence' : 'Наукові докази'),
-		chooseYourType: $pageTranslations?.t('cbdTypes.chooseYourType') || (isEnglish ? 'Choose Your CBD Type' : 'Оберіть свій тип CBD'),
+		learnMore:
+			$pageTranslations?.t('cbdTypes.learnMore') || (isEnglish ? 'Learn More' : 'Дізнатися більше'),
+		relatedArticles:
+			$pageTranslations?.t('cbdTypes.relatedArticles') ||
+			(isEnglish ? 'Related Articles' : "Пов'язані статті"),
+		tableOfContents:
+			$pageTranslations?.t('cbdTypes.tableOfContents') ||
+			(isEnglish ? 'Table of Contents' : 'Зміст'),
+		comparison:
+			$pageTranslations?.t('cbdTypes.comparison') || (isEnglish ? 'Comparison' : 'Порівняння'),
+		scientificEvidence:
+			$pageTranslations?.t('cbdTypes.scientificEvidence') ||
+			(isEnglish ? 'Scientific Evidence' : 'Наукові докази'),
+		chooseYourType:
+			$pageTranslations?.t('cbdTypes.chooseYourType') ||
+			(isEnglish ? 'Choose Your CBD Type' : 'Оберіть свій тип CBD'),
 		isolate: $pageTranslations?.t('cbdTypes.isolate') || (isEnglish ? 'CBD Isolate' : 'Ізолят CBD'),
-		fullSpectrum: $pageTranslations?.t('cbdTypes.fullSpectrum') || (isEnglish ? 'Full Spectrum' : 'Повний спектр'),
-		broadSpectrum: $pageTranslations?.t('cbdTypes.broadSpectrum') || (isEnglish ? 'Broad Spectrum' : 'Широкий спектр')
+		fullSpectrum:
+			$pageTranslations?.t('cbdTypes.fullSpectrum') ||
+			(isEnglish ? 'Full Spectrum' : 'Повний спектр'),
+		broadSpectrum:
+			$pageTranslations?.t('cbdTypes.broadSpectrum') ||
+			(isEnglish ? 'Broad Spectrum' : 'Широкий спектр')
 	}));
 
 	// Comparison data

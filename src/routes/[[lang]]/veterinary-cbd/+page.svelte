@@ -19,13 +19,27 @@
 
 	// Use translation system for dynamic language switching
 	const translations = $derived({
-		learnMore: $pageTranslations?.t('veterinaryCbd.learnMore') || (isEnglish ? 'Learn More' : 'Дізнатися більше'),
-		relatedArticles: $pageTranslations?.t('veterinaryCbd.relatedArticles') || (isEnglish ? 'Related Articles' : "Пов'язані статті"),
-		tableOfContents: $pageTranslations?.t('veterinaryCbd.tableOfContents') || (isEnglish ? 'Table of Contents' : 'Зміст'),
-		clinicalEvidence: $pageTranslations?.t('veterinaryCbd.clinicalEvidence') || (isEnglish ? 'Clinical Evidence' : 'Клінічні докази'),
-		veterinaryProtocols: $pageTranslations?.t('veterinaryCbd.veterinaryProtocols') || (isEnglish ? 'Veterinary Protocols' : 'Ветеринарні протоколи'),
-		safetyData: $pageTranslations?.t('veterinaryCbd.safetyData') || (isEnglish ? 'Safety Data' : 'Дані безпеки'),
-		professionalGuide: $pageTranslations?.t('veterinaryCbd.professionalGuide') || (isEnglish ? 'Professional Guide' : 'Професійний посібник')
+		learnMore:
+			$pageTranslations?.t('veterinaryCbd.learnMore') ||
+			(isEnglish ? 'Learn More' : 'Дізнатися більше'),
+		relatedArticles:
+			$pageTranslations?.t('veterinaryCbd.relatedArticles') ||
+			(isEnglish ? 'Related Articles' : "Пов'язані статті"),
+		tableOfContents:
+			$pageTranslations?.t('veterinaryCbd.tableOfContents') ||
+			(isEnglish ? 'Table of Contents' : 'Зміст'),
+		clinicalEvidence:
+			$pageTranslations?.t('veterinaryCbd.clinicalEvidence') ||
+			(isEnglish ? 'Clinical Evidence' : 'Клінічні докази'),
+		veterinaryProtocols:
+			$pageTranslations?.t('veterinaryCbd.veterinaryProtocols') ||
+			(isEnglish ? 'Veterinary Protocols' : 'Ветеринарні протоколи'),
+		safetyData:
+			$pageTranslations?.t('veterinaryCbd.safetyData') ||
+			(isEnglish ? 'Safety Data' : 'Дані безпеки'),
+		professionalGuide:
+			$pageTranslations?.t('veterinaryCbd.professionalGuide') ||
+			(isEnglish ? 'Professional Guide' : 'Професійний посібник')
 	});
 </script>
 
@@ -50,7 +64,10 @@
 
 		{#if data.seoData?.faq && data.seoData.faq.length > 0}
 			<section class="veterinary-cbd-faq">
-				<h2>{$pageTranslations?.t('veterinaryCbd.faq') || (isEnglish ? 'Frequently Asked Questions' : 'Поширені запитання')}</h2>
+				<h2>
+					{$pageTranslations?.t('veterinaryCbd.faq') ||
+						(isEnglish ? 'Frequently Asked Questions' : 'Поширені запитання')}
+				</h2>
 				<div class="veterinary-cbd-faq-list">
 					{#each data.seoData.faq as faq, index (index)}
 						<div class="veterinary-cbd-faq-item">
@@ -65,7 +82,10 @@
 		<section class="veterinary-cbd-related" id="related-articles">
 			<h2>{translations.relatedArticles}</h2>
 			<div class="veterinary-cbd-related-grid">
-				<a href={`${lang === 'uk-ua' ? '' : `/${lang}`}/knowledgebase/cbd/safety`} class="veterinary-cbd-related-card">
+				<a
+					href={`${lang === 'uk-ua' ? '' : `/${lang}`}/knowledgebase/cbd/safety`}
+					class="veterinary-cbd-related-card"
+				>
 					<h3>{isEnglish ? 'CBD Safety & Research' : 'Безпека CBD та дослідження'}</h3>
 					<p>
 						{isEnglish
@@ -75,7 +95,10 @@
 					<span class="card-tag">{isEnglish ? 'Evidence-Based' : 'Науково обґрунтовано'}</span>
 				</a>
 
-				<a href={`${lang === 'uk-ua' ? '' : `/${lang}`}/knowledgebase/cbd/dogs`} class="veterinary-cbd-related-card">
+				<a
+					href={`${lang === 'uk-ua' ? '' : `/${lang}`}/knowledgebase/cbd/dogs`}
+					class="veterinary-cbd-related-card"
+				>
 					<h3>{isEnglish ? 'CBD for Dogs: Complete Guide' : 'CBD для собак: повний посібник'}</h3>
 					<p>
 						{isEnglish
@@ -85,7 +108,10 @@
 					<span class="card-tag">{isEnglish ? 'Clinical Studies' : 'Клінічні дослідження'}</span>
 				</a>
 
-				<a href={`${lang === 'uk-ua' ? '' : `/${lang}`}/knowledgebase/cbd/cats`} class="veterinary-cbd-related-card">
+				<a
+					href={`${lang === 'uk-ua' ? '' : `/${lang}`}/knowledgebase/cbd/cats`}
+					class="veterinary-cbd-related-card"
+				>
 					<h3>{isEnglish ? 'CBD for Cats: Complete Guide' : 'CBD для котів: повний посібник'}</h3>
 					<p>
 						{isEnglish
@@ -95,7 +121,10 @@
 					<span class="card-tag">{isEnglish ? 'Feline Health' : "Здоров'я котів"}</span>
 				</a>
 
-				<a href={`${lang === 'uk-ua' ? '' : `/${lang}`}/pets/thc-toxicity`} class="veterinary-cbd-related-card">
+				<a
+					href={`${lang === 'uk-ua' ? '' : `/${lang}`}/pets/thc-toxicity`}
+					class="veterinary-cbd-related-card"
+				>
 					<h3>{isEnglish ? 'THC Toxicity in Pets' : 'THC токсичність у тварин'}</h3>
 					<p>
 						{isEnglish
@@ -105,7 +134,10 @@
 					<span class="card-tag">{isEnglish ? 'Safety Alert' : 'Попередження безпеки'}</span>
 				</a>
 
-				<a href={`${lang === 'uk-ua' ? '' : `/${lang}`}/knowledgebase/cbd`} class="veterinary-cbd-related-card">
+				<a
+					href={`${lang === 'uk-ua' ? '' : `/${lang}`}/knowledgebase/cbd`}
+					class="veterinary-cbd-related-card"
+				>
 					<h3>{isEnglish ? 'CBD for Pets Overview' : 'CBD для домашніх тварин'}</h3>
 					<p>
 						{isEnglish
@@ -115,7 +147,10 @@
 					<span class="card-tag">{isEnglish ? 'Comprehensive' : 'Комплексний'}</span>
 				</a>
 
-				<a href={`${lang === 'uk-ua' ? '' : `/${lang}`}/dog-health`} class="veterinary-cbd-related-card">
+				<a
+					href={`${lang === 'uk-ua' ? '' : `/${lang}`}/dog-health`}
+					class="veterinary-cbd-related-card"
+				>
 					<h3>
 						{isEnglish ? 'Dog Health: Comprehensive Guide' : "Здоров'я собак: повний посібник"}
 					</h3>

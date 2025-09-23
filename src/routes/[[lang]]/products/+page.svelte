@@ -47,11 +47,11 @@
 </script>
 
 {#if $pageTranslations}
-<SEO
+	<SEO
 		title={String($pageTranslations.t('products.meta.title'))}
 		description={String($pageTranslations.t('products.meta.description'))}
 		currentPath={$page.url.pathname}
-/>
+	/>
 {/if}
 
 <div class="min-h-screen overflow-x-hidden bg-gray-50">

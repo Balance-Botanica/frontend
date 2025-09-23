@@ -13,7 +13,6 @@
 	import type { PageData } from './$types';
 	import type { SupportedLocale } from '$lib/i18n/types';
 
-
 	// Create page translations
 	const pageTranslations = createPageTranslations();
 
@@ -91,22 +90,27 @@
 		if (!$isAuthenticated) {
 			// Show notification and redirect to login
 			if ($pageTranslations) {
-				notificationStore.info(String($pageTranslations.t('cart.notifications.auth_required.message')), {
-					title: String($pageTranslations.t('cart.notifications.auth_required.title')),
-					duration: 8000,
-					actions: [
-						{
-							label: String($pageTranslations.t('cart.notifications.auth_required.sign_in')),
-							action: () => goto('/login'),
-							style: 'primary'
-						},
-						{
-							label: String($pageTranslations.t('cart.notifications.auth_required.create_account')),
-							action: () => goto('/login'),
-							style: 'secondary'
-						}
-					]
-				});
+				notificationStore.info(
+					String($pageTranslations.t('cart.notifications.auth_required.message')),
+					{
+						title: String($pageTranslations.t('cart.notifications.auth_required.title')),
+						duration: 8000,
+						actions: [
+							{
+								label: String($pageTranslations.t('cart.notifications.auth_required.sign_in')),
+								action: () => goto('/login'),
+								style: 'primary'
+							},
+							{
+								label: String(
+									$pageTranslations.t('cart.notifications.auth_required.create_account')
+								),
+								action: () => goto('/login'),
+								style: 'secondary'
+							}
+						]
+					}
+				);
 			}
 			return;
 		}
@@ -139,7 +143,9 @@
 
 		if (hasErrors) {
 			if ($pageTranslations) {
-				notificationStore.error(String($pageTranslations.t('cart.checkout.errors.fillRequiredFields')));
+				notificationStore.error(
+					String($pageTranslations.t('cart.checkout.errors.fillRequiredFields'))
+				);
 			}
 			return;
 		}
@@ -289,7 +295,6 @@
 		}
 	}
 
-
 	// Handle address modal open
 	function openAddressModal() {
 		showAddressModal = true;
@@ -386,7 +391,9 @@
 
 	// Handle address save
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	async function handleAddressSave(event: CustomEvent<{ addressData: { name: string; isDefault?: boolean; [key: string]: any } }>) {
+	async function handleAddressSave(
+		event: CustomEvent<{ addressData: { name: string; isDefault?: boolean; [key: string]: any } }>
+	) {
 		const { addressData } = event.detail;
 
 		try {
@@ -456,7 +463,9 @@
 		} catch (error) {
 			console.error('Failed to update user profile:', error);
 			if ($pageTranslations) {
-				notificationStore.error(String($pageTranslations.t('cart.checkout.errors.profileUpdateFailed')));
+				notificationStore.error(
+					String($pageTranslations.t('cart.checkout.errors.profileUpdateFailed'))
+				);
 			}
 			return false;
 		}
@@ -717,7 +726,8 @@
 											class="remove-btn"
 											on:click={() => removeItem(item.product.id.getValue())}
 											title={String($pageTranslations.t('cart.items.remove_item')) || ''}
-											aria-label={String($pageTranslations.t('cart.items.remove_item')) || 'Remove item'}
+											aria-label={String($pageTranslations.t('cart.items.remove_item')) ||
+												'Remove item'}
 										>
 											<svg
 												width="16"

@@ -17,7 +17,10 @@
 	const pageTranslations = createPageTranslations();
 </script>
 
-<SEO title={$pageTranslations?.t('blog.pageTitle')} description={$pageTranslations?.t('blog.pageDescription')} />
+<SEO
+	title={$pageTranslations?.t('blog.pageTitle')}
+	description={$pageTranslations?.t('blog.pageDescription')}
+/>
 
 <main class="blog-main">
 	<div class="blog-container">
@@ -88,7 +91,6 @@
 		gap: 32px;
 	}
 
-
 	.newsletter-section {
 		margin-top: 64px;
 	}
@@ -127,5 +129,4 @@
 			margin-top: 48px;
 		}
 	}
-
 </style>

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import ArticleTOC from './ArticleTOC.svelte';
 	import ArticleKeyPoints from './ArticleKeyPoints.svelte';
+	import { onMount, onDestroy } from 'svelte';
 
 	interface Props {
 		toc?: Array<{ href: string; text: string }>;
@@ -13,6 +14,43 @@
 	const { toc = [], keyPoints = [], lang = 'uk-ua', children, content = '' }: Props = $props();
 
 	const isEnglish = $derived(lang === 'en');
+
+	// Global click handler for smooth scrolling - scoped to this component
+	function globalAnchorClickHandler(event: Event) {
+		// For keyboard events, only handle Enter and Space
+		if (event.type === 'keydown') {
+			const keyboardEvent = event as KeyboardEvent;
+			if (keyboardEvent.key !== 'Enter' && keyboardEvent.key !== ' ') {
+				return;
+			}
+		}
+
+		const target = event.target as HTMLElement;
+		// Only handle links within this component
+		if (target.tagName === 'A' && target.closest('.article-content-grid')) {
+			const href = target.getAttribute('href');
+			if (href && href.startsWith('#')) {
+				event.preventDefault();
+				const element = document.getElementById(href.substring(1));
+				if (element) {
+					element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+					history.pushState(null, '', href);
+				}
+			}
+		}
+	}
+
+	// Add global click handler on mount
+	onMount(() => {
+		window.addEventListener('click', globalAnchorClickHandler);
+		window.addEventListener('keydown', globalAnchorClickHandler);
+	});
+
+	// Remove global click handler on destroy
+	onDestroy(() => {
+		window.removeEventListener('click', globalAnchorClickHandler);
+		window.removeEventListener('keydown', globalAnchorClickHandler);
+	});
 
 	// Function to generate slug from text
 	function generateSlug(text: string): string {
@@ -88,8 +126,7 @@
 					const id = generateSlug(text);
 					return {
 						href: `#${id}`,
-						text: text,
-						level: parseInt(heading.tagName.charAt(1))
+						text: text
 					};
 				})
 				.filter((item) => item.text.trim());
@@ -99,32 +136,7 @@
 	});
 
 	// Use auto-generated TOC if no manual TOC provided
-	const finalToc = $derived(toc.length > 0 ? toc : autoToc);
-
-	// Handle smooth scrolling to anchors
-	function handleAnchorClick(event: Event) {
-		// For keyboard events, only handle Enter and Space
-		if (event.type === 'keydown') {
-			const keyboardEvent = event as KeyboardEvent;
-			if (keyboardEvent.key !== 'Enter' && keyboardEvent.key !== ' ') {
-				return;
-			}
-		}
-
-		const target = event.target as HTMLElement;
-		if (target.tagName === 'A') {
-			const href = target.getAttribute('href');
-			if (href && href.startsWith('#')) {
-				event.preventDefault();
-				const element = document.getElementById(href.substring(1));
-				if (element) {
-					element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-					// Update URL without triggering navigation
-					history.pushState(null, '', href);
-				}
-			}
-		}
-	}
+	const finalToc = $derived(toc.length > 0 ? toc : autoToc());
 </script>
 
 <!-- Key Points after hero -->
@@ -140,7 +152,7 @@
 			<ArticleTOC toc={finalToc} {lang} />
 		</aside>
 
-		<article class="article-main" onclick={handleAnchorClick} onkeydown={handleAnchorClick} role="application" aria-label="Article content with table of contents" tabindex="0">
+		<article class="article-main">
 			<div class="article-content">
 				{#if content}
 					{@html processedContent}

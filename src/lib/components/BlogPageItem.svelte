@@ -34,11 +34,17 @@
 	};
 </script>
 
-<article class="post-card" class:pillar-article={article.type === 'pillar'} class:blog-article={article.type === 'blog'}>
+<article
+	class="post-card"
+	class:pillar-article={article.type === 'pillar'}
+	class:blog-article={article.type === 'blog'}
+>
 	<div class="post-content">
 		<div class="post-meta">
 			<span class="date">📅 {formattedDate(article.date)}</span>
-			<span class="reading-time">📖 {article.readingTime} {$pageTranslations?.t('blog.readingTimeLabel')}</span>
+			<span class="reading-time"
+				>📖 {article.readingTime} {$pageTranslations?.t('blog.readingTimeLabel')}</span
+			>
 			{#if article.type === 'pillar'}
 				<span class="article-type pillar-type">{$pageTranslations?.t('blog.guide')}</span>
 			{:else}
@@ -47,7 +53,12 @@
 		</div>
 
 		<h2 class="post-title">
-			<a href="{lang === 'uk-ua' ? '' : `/${lang}`}/{article.type === 'pillar' ? article.slug : `blog/${article.slug}`}" class="post-link">
+			<a
+				href="{lang === 'uk-ua' ? '' : `/${lang}`}/{article.type === 'pillar'
+					? article.slug
+					: `blog/${article.slug}`}"
+				class="post-link"
+			>
 				{article.title}
 			</a>
 		</h2>
@@ -64,7 +75,12 @@
 
 		<div class="post-footer">
 			<span class="author">✍️ {article.author}</span>
-			<a href="{lang === 'uk-ua' ? '' : `/${lang}`}/{article.type === 'pillar' ? article.slug : `blog/${article.slug}`}" class="read-more">
+			<a
+				href="{lang === 'uk-ua' ? '' : `/${lang}`}/{article.type === 'pillar'
+					? article.slug
+					: `blog/${article.slug}`}"
+				class="read-more"
+			>
 				{$pageTranslations?.t('blog.readMore')} →
 			</a>
 		</div>
@@ -75,7 +91,9 @@
 	.post-card {
 		background: white;
 		border-radius: 20px;
-		box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04), 0 1px 4px rgba(0, 0, 0, 0.06);
+		box-shadow:
+			0 2px 12px rgba(0, 0, 0, 0.04),
+			0 1px 4px rgba(0, 0, 0, 0.06);
 		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 		overflow: hidden;
 		border: 1px solid rgba(0, 0, 0, 0.06);
@@ -89,17 +107,21 @@
 		left: 0;
 		right: 0;
 		height: 3px;
-		background: linear-gradient(90deg,
+		background: linear-gradient(
+			90deg,
 			rgb(75, 118, 110) 0%,
 			rgb(85, 128, 120) 50%,
-			rgb(75, 118, 110) 100%);
+			rgb(75, 118, 110) 100%
+		);
 		opacity: 0;
 		transition: opacity 0.3s ease;
 	}
 
 	.post-card:hover {
 		transform: translateY(-2px);
-		box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08), 0 4px 16px rgba(0, 0, 0, 0.06);
+		box-shadow:
+			0 8px 32px rgba(0, 0, 0, 0.08),
+			0 4px 16px rgba(0, 0, 0, 0.06);
 		border-color: rgba(75, 118, 110, 0.1);
 	}
 
@@ -258,17 +280,21 @@
 
 	/* Subtle visual differentiation for article types */
 	.pillar-article::before {
-		background: linear-gradient(90deg,
+		background: linear-gradient(
+			90deg,
 			rgb(75, 118, 110) 0%,
 			rgb(65, 105, 100) 50%,
-			rgb(75, 118, 110) 100%);
+			rgb(75, 118, 110) 100%
+		);
 	}
 
 	.blog-article::before {
-		background: linear-gradient(90deg,
+		background: linear-gradient(
+			90deg,
 			rgb(85, 128, 120) 0%,
 			rgb(75, 118, 110) 50%,
-			rgb(85, 128, 120) 100%);
+			rgb(85, 128, 120) 100%
+		);
 	}
 
 	/* Responsive adjustments */

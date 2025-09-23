@@ -54,9 +54,7 @@ export const load: PageServerLoad = async ({ params }) => {
 		}
 
 		// Рассчитываем время чтения
-		const calculatedReadingTime = rawMarkdown
-			? calculateReadingTime(rawMarkdown)
-			: 12;
+		const calculatedReadingTime = rawMarkdown ? calculateReadingTime(rawMarkdown) : 12;
 
 		return {
 			title: metadata.title || content.title,
