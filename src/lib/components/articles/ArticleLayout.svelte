@@ -135,12 +135,12 @@
 {/if}
 
 {#if finalToc.length > 0}
-	<div class="article-content-grid" onclick={handleAnchorClick} onkeydown={handleAnchorClick} role="region" aria-label="Article content with table of contents">
+	<div class="article-content-grid">
 		<aside class="article-sidebar">
 			<ArticleTOC toc={finalToc} {lang} />
 		</aside>
 
-		<article class="article-main">
+		<article class="article-main" onclick={handleAnchorClick} onkeydown={handleAnchorClick} role="region" aria-label="Article content with table of contents">
 			<div class="article-content">
 				{#if content}
 					{@html processedContent}
