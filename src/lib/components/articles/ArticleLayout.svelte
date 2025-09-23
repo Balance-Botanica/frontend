@@ -140,7 +140,7 @@
 			<ArticleTOC toc={finalToc} {lang} />
 		</aside>
 
-		<article class="article-main" onclick={handleAnchorClick} onkeydown={handleAnchorClick} role="region" aria-label="Article content with table of contents">
+		<article class="article-main" onclick={handleAnchorClick} onkeydown={handleAnchorClick} role="application" aria-label="Article content with table of contents" tabindex="0">
 			<div class="article-content">
 				{#if content}
 					{@html processedContent}
