@@ -1,4 +1,5 @@
 ---
+
 title: "Cat Health: Natural Wellness Guide 2024"
 description: "Complete guide to natural cat health. Learn about nutrition, supplements, CBD therapy, and holistic care for your feline friend."
 date: "2024-12-13"
@@ -6,8 +7,14 @@ author: "Balance Botanica"
 tags: "cat health, natural supplements, cat nutrition, cat care, natural wellness"
 keywords: "cat health, natural supplements for cats, cat nutrition, cat health problems"
 readingTime: "20 minutes"
+keyPoints:
+  - "Complete cat health guide"
+  - "Natural wellness solutions"
+  - "Evidence-based care tips"
+  - "Prevention and treatment strategies"
 faq: '[{"question": "What vitamins do cats need?", "answer": "Cats need vitamins A, D, E, K, and B-complex vitamins. Taurine is especially important for eye and heart health."}, {"question": "Can cats eat raw meat?", "answer": "Yes, but only fresh, high-quality meat without bones. Raw meat should be frozen before serving."}, {"question": "What herbs are good for cats?", "answer": "Beneficial: Catnip (for calming), valerian, chamomile. Harmful: Onion, garlic, lavender, tea tree."}]'
 schema: '{"@context": "https://schema.org", "@type": "Article", "headline": "Cat Health: Natural Wellness Guide", "description": "Complete guide to natural cat health and holistic care", "author": {"@type": "Organization", "name": "Balance Botanica"}, "publisher": {"@type": "Organization", "name": "Balance Botanica"}, "datePublished": "2024-12-13"}'
+
 ---
 
 # Cat Health: Natural Wellness Guide 2024

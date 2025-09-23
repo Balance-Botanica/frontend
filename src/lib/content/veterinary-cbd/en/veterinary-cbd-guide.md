@@ -1,4 +1,5 @@
 ---
+
 title: "Veterinary CBD: Evidence-Based Guide for Animal Health 2024"
 description: "Complete veterinary guide to CBD therapy for animals. Clinical studies, protocols, safety data, and evidence-based recommendations for veterinarians."
 date: "2024-12-13"
@@ -6,8 +7,14 @@ author: "Balance Botanica"
 tags: "veterinary CBD, cannabinoids, veterinary medicine, clinical studies, treatment protocols"
 keywords: "veterinary CBD, cannabinoids veterinary, CBD dogs, CBD cats, veterinary protocols"
 readingTime: "25 minutes"
+keyPoints:
+  - "Evidence-based veterinary research"
+  - "Clinical protocols and guidelines"
+  - "Safety data and contraindications"
+  - "Professional CBD therapy standards"
 faq: '[{"question": "Is CBD effective in veterinary practice?", "answer": "Yes, clinical studies show CBD effectiveness for epilepsy, pain, inflammation, and anxiety in animals."}, {"question": "What CBD doses does veterinary medicine recommend?", "answer": "Doses depend on animal species: for dogs 2.5 mg/kg, for cats 0.25-1 mg/kg twice daily."}, {"question": "Is CBD safe for animals?", "answer": "CBD is considered safe when properly dosed. Main side effects: drowsiness, diarrhea (rare)."}]'
 schema: '{"@context": "https://schema.org", "@type": "Article", "headline": "Veterinary CBD: Evidence-Based Guide for Animal Health", "description": "Complete veterinary guide to CBD therapy for animals", "author": {"@type": "Organization", "name": "Balance Botanica"}, "publisher": {"@type": "Organization", "name": "Balance Botanica"}, "datePublished": "2024-12-13"}'
+
 ---
 
 # Veterinary CBD: Evidence-Based Guide for Animal Health 2024

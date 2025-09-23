@@ -3,6 +3,56 @@ import { readFileSync, existsSync } from 'fs';
 import { join } from 'path';
 import { marked } from 'marked';
 
+// Функция для парсинга YAML-подобного frontmatter
+function parseFrontmatter(frontmatter: string): any {
+	const metadata: any = {};
+
+	const lines = frontmatter
+		.split('\n')
+		.map((line) => line.trim())
+		.filter((line) => line);
+	let currentKey = '';
+	let currentArray: string[] = [];
+	let inArray = false;
+
+	for (const line of lines) {
+		if (line.startsWith('- ')) {
+			// Это элемент массива
+			if (inArray && currentKey) {
+				currentArray.push(line.substring(2).replace(/^["']|["']$/g, ''));
+			}
+		} else if (line.includes(':')) {
+			// Сохраняем предыдущий массив если он был
+			if (inArray && currentKey) {
+				metadata[currentKey] = currentArray;
+				currentArray = [];
+				inArray = false;
+			}
+
+			const [key, ...valueParts] = line.split(':');
+			const trimmedKey = key.trim();
+			const value = valueParts.join(':').trim();
+
+			if (value === '') {
+				// Начало массива
+				currentKey = trimmedKey;
+				currentArray = [];
+				inArray = true;
+			} else {
+				// Обычное значение
+				metadata[trimmedKey] = value.replace(/^["']|["']$/g, '');
+			}
+		}
+	}
+
+	// Сохраняем последний массив если он был
+	if (inArray && currentKey) {
+		metadata[currentKey] = currentArray;
+	}
+
+	return metadata;
+}
+
 // Функция для расчета времени чтения на основе текста
 function calculateReadingTime(text: string): number {
 	// Средняя скорость чтения - 200 слов в минуту
@@ -57,14 +107,8 @@ export const load: PageServerLoad = async ({ params }) => {
 				const frontmatter = parts[1];
 				const markdownContent = parts.slice(2).join('---').trim();
 
-				// Парсим frontmatter
-				frontmatter.split('\n').forEach((line) => {
-					const [key, ...valueParts] = line.split(':');
-					if (key && valueParts.length > 0) {
-						const value = valueParts.join(':').trim();
-						metadata[key.trim()] = value.replace(/^["']|["']$/g, ''); // Убираем кавычки
-					}
-				});
+				// Парсим frontmatter с поддержкой массивов
+				Object.assign(metadata, parseFrontmatter(frontmatter));
 
 				// Рассчитываем время чтения на основе markdown контента
 				readingTime = calculateReadingTime(markdownContent);
@@ -103,6 +147,7 @@ export const load: PageServerLoad = async ({ params }) => {
 		author: metadata.author || 'Balance Botanica',
 		tags: metadata.tags ? metadata.tags.split(',').map((tag: string) => tag.trim()) : [],
 		readingTime: metadata.readingTime ? parseInt(metadata.readingTime) : readingTime,
+		keyPoints: metadata.keyPoints || [],
 		content: content || '',
 		seoData: {
 			faq: metadata.faq ? JSON.parse(metadata.faq) : [],

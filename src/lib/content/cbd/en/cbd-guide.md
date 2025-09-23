@@ -6,6 +6,11 @@ author: "Balance Botanica"
 tags: "CBD for pets, cannabinoids, dog health, cat health, natural supplements, scientific research"
 keywords: "CBD dogs, CBD cats, pet cannabinoids, CBD therapy, CBD safety"
 readingTime: "28 minutes"
+keyPoints:
+  - "Clinically proven effective for pets"
+  - "Well tolerated by dogs and cats"
+  - "Natural pain relief and mobility support"
+  - "Evidence-based veterinary recommendations"
 faq: '[{"question": "Is CBD safe for pets?", "answer": "Yes, according to studies, CBD is well tolerated by dogs and cats. Doses up to 30 mg/kg CBD are considered safe for dogs, up to 41.5 mg/kg THC."}, {"question": "What conditions does CBD treat in pets?", "answer": "CBD helps with arthritis, inflammation, anxiety, epilepsy, skin conditions and chronic pain in dogs and cats."}, {"question": "What CBD dosage for dogs and cats?", "answer": "Dosage is calculated individually: 0.25-0.5 mg/kg twice daily. For dogs - 10-60 mg/day depending on weight, for cats - 5-15 mg/day."}]'
 schema: '{"@context": "https://schema.org", "@type": "Article", "headline": "CBD for Pets: Complete Scientific Guide", "description": "Complete scientific guide to CBD therapy for dogs and cats", "author": {"@type": "Organization", "name": "Balance Botanica"}, "publisher": {"@type": "Organization", "name": "Balance Botanica"}, "datePublished": "2024-12-13"}'
 ---

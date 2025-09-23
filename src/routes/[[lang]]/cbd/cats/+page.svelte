@@ -14,7 +14,7 @@
 	// TOC will be auto-generated from content headings
 	const tocItems = $derived([]);
 
-	const keyPoints = $derived($pageTranslations?.pillarArticles.cbdCats.keyPoints || []);
+	const keyPoints = $derived(data.keyPoints || []);
 
 	const translations = $derived(() => ({
 		learnMore: isEnglish ? 'Learn More' : 'Дізнатися більше',

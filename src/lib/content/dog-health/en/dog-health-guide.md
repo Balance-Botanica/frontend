@@ -1,4 +1,5 @@
 ---
+
 title: "Dog Health: Natural Wellness Guide 2024"
 description: "Complete guide to natural dog health. Learn about nutrition, supplements, common diseases and holistic care for your canine friend."
 date: "2024-12-13"
@@ -6,8 +7,14 @@ author: "Balance Botanica"
 tags: "dog health, natural supplements, dog nutrition, dog care, natural wellness"
 keywords: "dog health, natural supplements for dogs, dog nutrition, dog health problems"
 readingTime: "25 minutes"
+keyPoints:
+  - "Comprehensive dog health guide"
+  - "Natural wellness solutions"
+  - "Evidence-based care tips"
+  - "Prevention and treatment strategies"
 faq: '[{"question": "What vitamins do dogs need?", "answer": "Dogs need vitamins A, D, E, K, and B-complex vitamins. Fat-soluble vitamins and antioxidants are especially important."}, {"question": "How often should I bathe my dog?", "answer": "Bathe your dog as needed, but no more than once a month. Excessive bathing can dry out skin and fur."}, {"question": "Can dogs eat raw meat?", "answer": "Yes, but only fresh, high-quality meat without bones. Raw meat should be frozen before serving to kill parasites."}]'
 schema: '{"@context": "https://schema.org", "@type": "Article", "headline": "Dog Health: Natural Wellness Guide", "description": "Complete guide to natural dog health and holistic care", "author": {"@type": "Organization", "name": "Balance Botanica"}, "publisher": {"@type": "Organization", "name": "Balance Botanica"}, "datePublished": "2024-12-13"}'
+
 ---
 
 # Dog Health: Natural Wellness Guide 2024

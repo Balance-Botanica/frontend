@@ -1,4 +1,5 @@
 ---
+
 title: "CBD for Dogs: Complete Scientific Guide 2024"
 description: "Complete scientific guide to CBD therapy for dogs. Learn about benefits, dosage, safety and clinical research for your dog's health."
 date: "2024-12-13"
@@ -6,8 +7,14 @@ author: "Balance Botanica"
 tags: "CBD for dogs, cannabinoids, dog health, natural supplements, scientific research"
 keywords: "CBD dogs, dog cannabinoids, CBD therapy dogs, CBD safety dogs"
 readingTime: "24 minutes"
+keyPoints:
+  - "Clinically proven effective for dogs"
+  - "Well tolerated by canine patients"
+  - "Natural pain relief and mobility support"
+  - "Evidence-based veterinary recommendations"
 faq: '[{"question": "Is CBD safe for dogs?", "answer": "Yes, according to studies, CBD is well tolerated by dogs. Doses up to 30 mg/kg CBD are considered safe."}, {"question": "What conditions does CBD treat in dogs?", "answer": "CBD helps with arthritis, inflammation, anxiety, epilepsy, skin conditions and chronic pain in dogs."}, {"question": "What CBD dosage for dogs?", "answer": "Dosage is calculated individually: 0.25-0.5 mg/kg twice daily. For dogs 10-60 mg/day depending on weight."}]'
 schema: '{"@context": "https://schema.org", "@type": "Article", "headline": "CBD for Dogs: Complete Scientific Guide", "description": "Complete scientific guide to CBD therapy for dogs", "author": {"@type": "Organization", "name": "Balance Botanica"}, "publisher": {"@type": "Organization", "name": "Balance Botanica"}, "datePublished": "2024-12-13"}'
+
 ---
 
 # 🌿 CBD for Dogs: Complete Scientific Guide 2024

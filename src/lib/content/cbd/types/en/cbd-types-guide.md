@@ -1,4 +1,5 @@
 ---
+
 title: "CBD Types: Isolate vs Full Spectrum vs Broad Spectrum 2024"
 description: "Complete guide to CBD types: isolate, full spectrum, broad spectrum. Compare benefits, scientific evidence, and choose the right CBD form for your needs."
 date: "2024-12-13"
@@ -6,8 +7,14 @@ author: "Balance Botanica"
 tags: "CBD types, CBD isolate, full spectrum, broad spectrum, entourage effect, cannabinoids"
 keywords: "CBD types, CBD isolate, full spectrum CBD, broad spectrum CBD, entourage effect"
 readingTime: "28 minutes"
+keyPoints:
+  - "Isolate: Pure CBD only"
+  - "Full Spectrum: All cannabinoids"
+  - "Broad Spectrum: THC-free benefits"
+  - "Choose based on your needs"
 faq: '[{"question": "What is CBD isolate?", "answer": "CBD isolate is a pure form of cannabidiol without other cannabinoids, terpenes, or THC. It contains 99% pure CBD."}, {"question": "How does full spectrum differ from broad spectrum?", "answer": "Full spectrum contains all cannabinoids from hemp, including THC. Broad spectrum contains all cannabinoids except THC."}, {"question": "Which CBD type is best?", "answer": "The choice depends on needs: full spectrum for entourage effect, isolate for purity, broad spectrum to avoid THC."}]'
 schema: '{"@context": "https://schema.org", "@type": "Article", "headline": "CBD Types: Isolate vs Full Spectrum vs Broad Spectrum", "description": "Complete guide to CBD types and their comparison", "author": {"@type": "Organization", "name": "Balance Botanica"}, "publisher": {"@type": "Organization", "name": "Balance Botanica"}, "datePublished": "2024-12-13"}'
+
 ---
 
 # CBD Types: Isolate vs Full Spectrum vs Broad Spectrum 2024

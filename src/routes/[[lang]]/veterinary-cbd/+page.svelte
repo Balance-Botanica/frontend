@@ -15,7 +15,7 @@
 	// TOC will be auto-generated from content headings
 	const tocItems = $derived([]);
 
-	const keyPoints = $derived($pageTranslations?.pillarArticles.veterinaryCbd.keyPoints || []);
+	const keyPoints = $derived(data.keyPoints || []);
 
 	// Use translation system for dynamic language switching
 	const translations = $derived({

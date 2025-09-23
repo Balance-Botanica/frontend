@@ -1,4 +1,5 @@
 ---
+
 title: "THC Toxicity in Pets: Risks, Symptoms and Prevention 2024"
 description: "Complete guide to THC toxicity in dogs and cats: symptoms, treatment, prevention and CBD product safety considerations."
 date: "2024-12-13"
@@ -6,8 +7,14 @@ author: "Balance Botanica"
 tags: "THC toxicity, pet poisoning, CBD safety, marijuana toxicity, veterinary toxicology"
 keywords: "THC toxicity dogs, THC poisoning cats, CBD products safety, marijuana toxicity pets"
 readingTime: "16 minutes"
+keyPoints:
+  - "THC toxicity symptoms"
+  - "Emergency response guide"
+  - "Prevention of poisoning"
+  - "Veterinary treatment protocols"
 faq: '[{"question": "What are the symptoms of THC toxicity in dogs?", "answer": "Main symptoms: ataxia (loss of coordination), excessive drooling, tremor, vomiting, diarrhea, altered consciousness, seizures in severe cases."}, {"question": "Can CBD cause toxicity?", "answer": "CBD itself is not toxic, but products may contain THC. Quality full-spectrum products contain <0.3% THC and are considered safe."}, {"question": "What to do if THC poisoning is suspected?", "answer": "Contact your veterinarian immediately. Do not attempt to induce vomiting yourself. Bring a sample of the product for analysis."}]'
 schema: '{"@context": "https://schema.org", "@type": "Article", "headline": "THC Toxicity in Pets: Risks, Symptoms and Prevention", "description": "Complete guide to THC toxicity in dogs and cats", "author": {"@type": "Organization", "name": "Balance Botanica"}, "publisher": {"@type": "Organization", "name": "Balance Botanica"}, "datePublished": "2024-12-13"}'
+
 ---
 
 # THC Toxicity in Pets: Risks, Symptoms and Prevention 2024

@@ -1,4 +1,5 @@
 ---
+
 title: "CBD for Cats: Complete Scientific Guide 2024"
 description: "Complete scientific guide to CBD therapy for cats. Learn about benefits, dosage, safety, and clinical studies for feline health."
 date: "2024-12-13"
@@ -6,8 +7,14 @@ author: "Balance Botanica"
 tags: "CBD for cats, cannabinoids, cat health, natural supplements, scientific research"
 keywords: "CBD cats, cannabinoids cats, CBD therapy cats, CBD safety cats"
 readingTime: "22 minutes"
+keyPoints:
+  - "Clinically proven effective for cats"
+  - "Well tolerated by feline patients"
+  - "Natural pain relief and stress reduction"
+  - "Evidence-based veterinary recommendations"
 faq: '[{"question": "Is CBD safe for cats?", "answer": "Yes, according to studies, CBD is well tolerated by cats. Doses up to 30 mg/kg of CBD are considered safe."}, {"question": "What diseases does CBD treat in cats?", "answer": "CBD helps with arthritis, inflammation, anxiety, gingivostomatitis, and chronic pain in cats."}, {"question": "What is the CBD dosage for cats?", "answer": "Dosage is calculated individually, usually 0.25-0.5 mg/kg twice daily. Consult your veterinarian."}]'
 schema: '{"@context": "https://schema.org", "@type": "Article", "headline": "CBD for Cats: Complete Scientific Guide", "description": "Complete scientific guide to CBD therapy for cats", "author": {"@type": "Organization", "name": "Balance Botanica"}, "publisher": {"@type": "Organization", "name": "Balance Botanica"}, "datePublished": "2024-12-13"}'
+
 ---
 
 # CBD for Cats: Complete Scientific Guide 2024

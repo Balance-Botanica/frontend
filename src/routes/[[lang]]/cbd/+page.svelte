@@ -17,7 +17,7 @@
 	// TOC will be auto-generated from content headings
 	const tocItems = $derived([]);
 
-	const keyPoints = $derived($pageTranslations?.pillarArticles.cbd.keyPoints || []);
+	const keyPoints = $derived(data.keyPoints || []);
 
 	// Переводы для элементов интерфейса
 	const translations = $derived({
