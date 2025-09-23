@@ -48,7 +48,7 @@ export function getCurrentLanguage(): SupportedLocale {
 }
 
 // Generate URL for current language
-export function getLocalizedUrl(path: string, targetLang?: SupportedLocale): string {
+export function getLocalizedUrl(path: string, targetLang?: SupportedLocale): `/${string}` {
 	const lang = targetLang || getCurrentLanguage();
 	const cleanPath = path.startsWith('/') ? path.slice(1) : path;
 
@@ -66,4 +66,3 @@ export function parseLanguageFromUrl(url: string): SupportedLocale {
 	}
 	return 'uk-ua';
 }
-
