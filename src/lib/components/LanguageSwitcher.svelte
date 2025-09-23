@@ -23,7 +23,7 @@
 		}
 
 		// Generate new URL
-		const newUrl = getLocalizedUrl(currentPath, newLang);
+		const newUrl = getLocalizedUrl(currentPath, newLang) as string;
 
 		// Update language and navigate
 		setLanguage(newLang);

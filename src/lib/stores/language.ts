@@ -53,10 +53,10 @@ export function getLocalizedUrl(path: string, targetLang?: SupportedLocale): str
 	const cleanPath = path.startsWith('/') ? path.slice(1) : path;
 
 	if (lang === 'uk-ua') {
-		return `/${cleanPath}`;
+		return cleanPath ? `/${cleanPath}` : '/';
 	}
 
-	return `/${lang}/${cleanPath}`;
+	return cleanPath ? `/${lang}/${cleanPath}` : `/${lang}`;
 }
 
 // Parse language from URL
