@@ -78,12 +78,12 @@
 		<section class="cbd-dogs-related" id="related-articles">
 			<h2>{translations.relatedArticles}</h2>
 			<div class="cbd-dogs-related-grid">
-				<a href={`${lang}/knowledgebase/cbd`} class="cbd-dogs-related-card">
+				<a href={`${lang}/cbd`} class="cbd-dogs-related-card">
 					<h3>{translations.cbdForPets}</h3>
 					<p>{translations.completeScientificGuide}</p>
 				</a>
 
-				<a href={`${lang}/knowledgebase/cbd/types`} class="cbd-dogs-related-card">
+				<a href={`${lang}/cbd/types`} class="cbd-dogs-related-card">
 					<h3>{translations.cbdTypes}</h3>
 					<p>{translations.isolateVsFullSpectrum}</p>
 				</a>

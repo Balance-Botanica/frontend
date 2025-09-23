@@ -39,7 +39,7 @@
 
 		{#if data.seoData?.faq && data.seoData.faq.length > 0}
 			<section class="cats-health-faq">
-				<h2>{isEnglish ? 'Frequently Asked Questions' : 'Поширені запитання'}</h2>
+				<h2>{$pageTranslations?.t('catsHealth.faqTitle')}</h2>
 				<div class="cats-health-faq-list">
 					{#each data.seoData.faq as faq}
 						<div class="cats-health-faq-item">
@@ -52,42 +52,26 @@
 		{/if}
 
 		<section class="cats-health-related">
-			<h2>{translations.relatedArticles}</h2>
+			<h2>{$pageTranslations?.t('catsHealth.relatedArticles')}</h2>
 			<div class="cats-health-related-grid">
-				<a href={`${lang}/knowledgebase/cbd/cats/`} class="cats-health-related-card">
-					<h3>{isEnglish ? 'CBD for Cats: Complete Guide' : 'CBD для котів: повний посібник'}</h3>
-					<p>
-						{isEnglish
-							? 'Learn about CBD benefits, dosage, and safety for cats'
-							: 'Дізнайтеся про переваги CBD, дозування та безпеку для котів'}
-					</p>
+				<a href={`${lang}/cbd/cats/`} class="cats-health-related-card">
+					<h3>{$pageTranslations?.t('cbdCats.title')}</h3>
+					<p>{$pageTranslations?.t('cbdCats.description')}</p>
 				</a>
 
-				<a href={`${lang}/knowledgebase/cbd/safety/`} class="cats-health-related-card">
-					<h3>{isEnglish ? 'CBD Safety Guide' : 'Посібник з безпеки CBD'}</h3>
-					<p>
-						{isEnglish
-							? 'Important safety information and research'
-							: 'Важлива інформація про безпеку та дослідження'}
-					</p>
+				<a href={`${lang}/cbd/safety/`} class="cats-health-related-card">
+					<h3>{$pageTranslations?.t('catsHealth.cbdSafetyResearch')}</h3>
+					<p>{$pageTranslations?.t('catsHealth.cbdSafetyDescription')}</p>
 				</a>
 
-				<a href={`${lang}/knowledgebase/cbd/dosage/`} class="cats-health-related-card">
-					<h3>{isEnglish ? 'CBD Dosage Calculator' : 'Калькулятор дозування CBD'}</h3>
-					<p>
-						{isEnglish
-							? 'Calculate the right CBD dosage for your cat'
-							: 'Розрахуйте правильну дозу CBD для вашого кота'}
-					</p>
+				<a href={`${lang}/cbd/dosage/`} class="cats-health-related-card">
+					<h3>{$pageTranslations?.t('catsHealth.cbdDosageTitle')}</h3>
+					<p>{$pageTranslations?.t('catsHealth.cbdDosageDescription')}</p>
 				</a>
 
-				<a href={`${lang}/knowledgebase/cbd/`} class="cats-health-related-card">
-					<h3>{isEnglish ? 'CBD for Pets Overview' : 'CBD для домашніх тварин'}</h3>
-					<p>
-						{isEnglish
-							? 'Complete guide to CBD therapy for animals'
-							: 'Повний посібник з CBD терапії для тварин'}
-					</p>
+				<a href={`${lang}/cbd/`} class="cats-health-related-card">
+					<h3>{$pageTranslations?.t('footer.pillar.cbd')}</h3>
+					<p>{$pageTranslations?.t('footer.pillar.cbd_desc')}</p>
 				</a>
 			</div>
 		</section>

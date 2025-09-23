@@ -1,147 +1,31 @@
 import type { PageServerLoad } from './$types';
-import { error } from '@sveltejs/kit';
-import { marked } from 'marked';
-
-// Функция для парсинга YAML-подобного frontmatter
-function parseFrontmatter(frontmatter: string): any {
-	const metadata: any = {};
-
-	const lines = frontmatter
-		.split('\n')
-		.map((line) => line.trim())
-		.filter((line) => line);
-	let currentKey = '';
-	let currentArray: string[] = [];
-	let inArray = false;
-
-	for (const line of lines) {
-		if (line.startsWith('- ')) {
-			// Это элемент массива
-			if (inArray && currentKey) {
-				currentArray.push(line.substring(2).replace(/^["']|["']$/g, ''));
-			}
-		} else if (line.includes(':')) {
-			// Сохраняем предыдущий массив если он был
-			if (inArray && currentKey) {
-				metadata[currentKey] = currentArray;
-				currentArray = [];
-				inArray = false;
-			}
-
-			const [key, ...valueParts] = line.split(':');
-			const trimmedKey = key.trim();
-			const value = valueParts.join(':').trim();
-
-			if (value === '') {
-				// Начало массива
-				currentKey = trimmedKey;
-				currentArray = [];
-				inArray = true;
-			} else {
-				// Обычное значение
-				metadata[trimmedKey] = value.replace(/^["']|["']$/g, '');
-			}
-		}
-	}
-
-	// Сохраняем последний массив если он был
-	if (inArray && currentKey) {
-		metadata[currentKey] = currentArray;
-	}
-
-	return metadata;
-}
-
-// Функция для расчета времени чтения на основе текста
-function calculateReadingTime(text: string): number {
-	// Средняя скорость чтения - 200 слов в минуту
-	const wordsPerMinute = 200;
-	const words = text.trim().split(/\s+/).length;
-	const minutes = Math.ceil(words / wordsPerMinute);
-	return Math.max(1, minutes); // Минимум 1 минута
-}
+import { loadArticleContent } from '$lib/utils/contentLoader';
 
 export const load: PageServerLoad = async ({ params }) => {
 	const lang = params.lang || 'uk-ua';
+	const currentLocale = lang === 'en' ? 'en' : 'uk-ua';
 
-	try {
-		// Load content based on language
-		let contentModule;
+	const { content, metadata, readingTime } = await loadArticleContent(
+		'cbd/dogs',
+		'cbd-dogs-guide.md',
+		lang,
+		12
+	);
 
-		if (lang === 'en') {
-			contentModule = await import('$lib/content/cbd/dogs/en/cbd-dogs-guide.md');
-		} else {
-			contentModule = await import('$lib/content/cbd/dogs/uk/cbd-dogs-guide.md');
+	return {
+		lang: currentLocale,
+		title: metadata.title || '',
+		description: metadata.description || '',
+		date: metadata.date || new Date().toISOString(),
+		author: metadata.author || 'Balance Botanica',
+		tags: metadata.tags ? metadata.tags.split(',').map((tag: string) => tag.trim()) : [],
+		readingTime: metadata.readingTime ? parseInt(metadata.readingTime) : readingTime,
+		keyPoints: metadata.keyPoints || [],
+		content,
+		seoData: {
+			faq: metadata.faq || [],
+			schema: metadata.schema || '',
+			keywords: metadata.keywords || ''
 		}
-
-		const content = contentModule.default;
-		const metadata = contentModule.metadata || {};
-
-		// Настраиваем marked для лучшей семантики
-		marked.setOptions({
-			breaks: true,
-			gfm: true,
-			headerIds: true,
-			mangle: false
-		});
-
-		// Преобразуем markdown в HTML
-		let htmlContent = '';
-		let rawMarkdown = '';
-
-		if (typeof content === 'string') {
-			rawMarkdown = content;
-			htmlContent = marked(content);
-		} else if (content.body) {
-			rawMarkdown = content.body;
-			htmlContent = marked(content.body);
-		} else if (content.default) {
-			rawMarkdown = content.default;
-			htmlContent = marked(content.default);
-		} else {
-			// Fallback если контент не найден
-			htmlContent = '<p>Content not available</p>';
-		}
-
-		// Рассчитываем время чтения
-		const calculatedReadingTime = rawMarkdown ? calculateReadingTime(rawMarkdown) : 12;
-
-		return {
-			title: metadata.title || content.title,
-			description: metadata.description || content.description,
-			author: metadata.author || content.author || 'Balance Botanica',
-			date: metadata.date || content.date,
-			readingTime: metadata.readingTime ? parseInt(metadata.readingTime) : calculatedReadingTime,
-			keyPoints: metadata.keyPoints || [],
-			content: htmlContent,
-			seoData: {
-				faq: metadata.faq
-					? typeof metadata.faq === 'string'
-						? JSON.parse(metadata.faq)
-						: metadata.faq
-					: []
-			}
-		};
-	} catch (err) {
-		console.error('Error loading CBD dogs content:', err);
-
-		// Fallback: return basic structure
-		return {
-			title:
-				lang === 'en'
-					? 'CBD for Dogs: Complete Scientific Guide 2024'
-					: 'CBD для собак: повний науковий посібник 2024',
-			description:
-				lang === 'en'
-					? 'Complete scientific guide to CBD therapy for dogs.'
-					: 'Повний науковий посібник з CBD терапії для собак.',
-			author: 'Balance Botanica',
-			date: '2024-12-13',
-			readingTime: 12, // дефолтное значение в минутах
-			content: lang === 'en' ? 'Content loading...' : 'Контент завантажується...',
-			seoData: {
-				faq: []
-			}
-		};
-	}
+	};
 };

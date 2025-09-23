@@ -22,22 +22,22 @@
 	// Pillar articles data
 	const pillarArticles = [
 		{
-			path: '/knowledgebase/cbd',
+			path: '/cbd',
 			title: t('footer.pillar.cbd'),
 			description: t('footer.pillar.cbd_desc')
 		},
 		{
-			path: '/knowledgebase/cbd/cats',
+			path: '/cbd/cats',
 			title: t('footer.pillar.cbd_cats'),
 			description: t('footer.pillar.cbd_cats_desc')
 		},
 		{
-			path: '/knowledgebase/cbd/dogs',
+			path: '/cbd/dogs',
 			title: t('footer.pillar.cbd_dogs'),
 			description: t('footer.pillar.cbd_dogs_desc')
 		},
 		{
-			path: '/knowledgebase/cbd/types',
+			path: '/cbd/types',
 			title: t('footer.pillar.cbd_types'),
 			description: t('footer.pillar.cbd_types_desc')
 		},

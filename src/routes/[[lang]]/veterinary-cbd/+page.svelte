@@ -116,7 +116,7 @@
 			<h2>{translations.relatedArticles}</h2>
 			<div class="veterinary-cbd-related-grid">
 				<a
-					href={`${lang === 'uk-ua' ? '' : `/${lang}`}/knowledgebase/cbd/safety`}
+					href={`${lang === 'uk-ua' ? '' : `/${lang}`}/cbd/safety`}
 					class="veterinary-cbd-related-card"
 				>
 					<h3>{translations.cbdSafetyResearch}</h3>
@@ -129,7 +129,7 @@
 				</a>
 
 				<a
-					href={`${lang === 'uk-ua' ? '' : `/${lang}`}/knowledgebase/cbd/dogs`}
+					href={`${lang === 'uk-ua' ? '' : `/${lang}`}/cbd/dogs`}
 					class="veterinary-cbd-related-card"
 				>
 					<h3>{translations.cbdForDogsGuide}</h3>
@@ -142,7 +142,7 @@
 				</a>
 
 				<a
-					href={`${lang === 'uk-ua' ? '' : `/${lang}`}/knowledgebase/cbd/cats`}
+					href={`${lang === 'uk-ua' ? '' : `/${lang}`}/cbd/cats`}
 					class="veterinary-cbd-related-card"
 				>
 					<h3>{isEnglish ? 'CBD for Cats: Complete Guide' : 'CBD для котів: повний посібник'}</h3>
@@ -168,7 +168,7 @@
 				</a>
 
 				<a
-					href={`${lang === 'uk-ua' ? '' : `/${lang}`}/knowledgebase/cbd`}
+					href={`${lang === 'uk-ua' ? '' : `/${lang}`}/cbd`}
 					class="veterinary-cbd-related-card"
 				>
 					<h3>{isEnglish ? 'CBD for Pets Overview' : 'CBD для домашніх тварин'}</h3>

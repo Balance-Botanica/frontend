@@ -33,7 +33,7 @@
 		<!-- All articles grid -->
 		<section class="blog-posts">
 			<div class="posts-grid">
-				{#each articles as article}
+				{#each articles as article (article.slug + lang)}
 					<BlogPageItem {article} {lang} />
 				{/each}
 			</div>

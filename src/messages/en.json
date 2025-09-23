@@ -689,7 +689,27 @@
 			},
 			"catsHealth": {
 				"title": "Cat Health: Everything You Need to Know",
-				"description": "Comprehensive guide to cat care and health."
+				"description": "Comprehensive guide to cat care and health.",
+				"learnMore": "Learn More",
+				"relatedArticles": "Related Articles",
+				"tableOfContents": "Table of Contents",
+				"clinicalEvidence": "Clinical Evidence",
+				"veterinaryProtocols": "Veterinary Protocols",
+				"safetyData": "Safety Data",
+				"professionalGuide": "Professional Guide",
+				"faqTitle": "Frequently Asked Questions",
+				"cbdSafetyResearch": "CBD Safety & Research",
+				"evidenceBased": "Evidence-Based",
+				"gelatinForCats": "Gelatin for Cat Joints",
+				"turmericForCats": "Turmeric for Cat Health",
+				"gingerForCats": "Ginger for Cat Digestion",
+				"mctForCats": "MCT Oil for Cats",
+				"vitaminEForCats": "Vitamin E for Cat Immunity",
+				"purrfectBalance": "Purrfect Balance Synergy",
+				"fishMealForCats": "Fish Meal for Cat Nutrition",
+				"cbdSafetyDescription": "Important safety information and research",
+				"cbdDosageTitle": "CBD Dosage Calculator",
+				"cbdDosageDescription": "Calculate the right CBD dosage for your cat"
 			},
 			"veterinaryCbd": {
 				"title": "Veterinary CBD: Evidence-Based Guide",

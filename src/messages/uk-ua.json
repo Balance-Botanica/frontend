@@ -691,7 +691,27 @@
 			},
 			"catsHealth": {
 				"title": "Здоров'я котів: все що потрібно знати",
-				"description": "Комплексний посібник по догляду за котами та їхньому здоров'ю."
+				"description": "Комплексний посібник по догляду за котами та їхньому здоров'ю.",
+				"learnMore": "Дізнатися більше",
+				"relatedArticles": "Пов'язані статті",
+				"tableOfContents": "Зміст",
+				"clinicalEvidence": "Клінічні докази",
+				"veterinaryProtocols": "Ветеринарні протоколи",
+				"safetyData": "Дані безпеки",
+				"professionalGuide": "Професійний посібник",
+				"faqTitle": "Поширені запитання",
+				"cbdSafetyResearch": "Безпека CBD та дослідження",
+				"evidenceBased": "Науково обґрунтований",
+				"gelatinForCats": "Желатин для суставів котів",
+				"turmericForCats": "Куркума для здоров'я котів",
+				"gingerForCats": "Імбир для травлення котів",
+				"mctForCats": "MCT масло для котів",
+				"vitaminEForCats": "Вітамін E для імунітету котів",
+				"purrfectBalance": "Синергія Purrfect Balance",
+				"fishMealForCats": "Риб'яче борошно для харчування котів",
+				"cbdSafetyDescription": "Важлива інформація про безпеку та дослідження",
+				"cbdDosageTitle": "Калькулятор дозування CBD",
+				"cbdDosageDescription": "Розрахуйте правильну дозу CBD для вашого кота"
 			},
 			"veterinaryCbd": {
 				"title": "Ветеринарний CBD: науково обґрунтований посібник",

@@ -161,18 +161,7 @@ const handleSmartRedirects: Handle = async ({ event, resolve }) => {
 	// Проверяем старые URL паттерны и редиректим на новые
 	const redirectRules: Record<string, string> = {
 		// Старые URL с языковыми префиксами -> новые URL
-		'/uk-ua/cbd': '/cbd',
-		'/uk-ua/cbd/': '/cbd',
-		'/uk-ua/knowledgebase/cbd': '/knowledgebase/cbd',
-		'/uk-ua/knowledgebase/cbd/': '/knowledgebase/cbd',
-		'/uk-ua/cbd/cats': '/knowledgebase/cbd/cats',
-		'/uk-ua/cbd/dogs': '/knowledgebase/cbd/dogs',
-		'/uk-ua/cbd/types': '/knowledgebase/cbd/types',
-		'/en/cbd': '/en/knowledgebase/cbd',
-		'/en/cbd/': '/en/knowledgebase/cbd',
-		'/en/cbd/cats': '/en/knowledgebase/cbd/cats',
-		'/en/cbd/dogs': '/en/knowledgebase/cbd/dogs',
-		'/en/cbd/types': '/en/knowledgebase/cbd/types'
+		// knowledgebase роуты удалены
 	};
 
 	// Проверяем точные совпадения
@@ -189,13 +178,9 @@ const handleSmartRedirects: Handle = async ({ event, resolve }) => {
 
 	// Проверяем паттерны с подстраницами
 	const patternRedirects = [
-		{ from: /^\/uk-ua\/cbd\/(.+)$/, to: '/knowledgebase/cbd/$1' },
-		{ from: /^\/uk-ua\/knowledgebase\/cbd\/(.+)$/, to: '/knowledgebase/cbd/$1' },
 		{ from: /^\/uk-ua\/cats-health\/(.+)$/, to: '/cats-health/$1' },
 		{ from: /^\/uk-ua\/dog-health\/(.+)$/, to: '/dog-health/$1' },
 		{ from: /^\/uk-ua\/veterinary-cbd\/(.+)$/, to: '/veterinary-cbd/$1' },
-		{ from: /^\/en\/cbd\/(.+)$/, to: '/en/knowledgebase/cbd/$1' },
-		{ from: /^\/en\/knowledgebase\/cbd\/(.+)$/, to: '/en/knowledgebase/cbd/$1' },
 		{ from: /^\/en\/cats-health\/(.+)$/, to: '/en/cats-health/$1' },
 		{ from: /^\/en\/dog-health\/(.+)$/, to: '/en/dog-health/$1' },
 		{ from: /^\/en\/veterinary-cbd\/(.+)$/, to: '/en/veterinary-cbd/$1' }
