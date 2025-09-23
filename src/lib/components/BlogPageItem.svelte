@@ -26,7 +26,7 @@
 			'uk-ua': 'uk-UA',
 			en: 'en-US'
 		};
-		return new Date(date).toLocaleDateString(localeMap[lang], {
+		return new Date(date).toLocaleDateString(localeMap[lang as SupportedLocale], {
 			year: 'numeric',
 			month: 'long',
 			day: 'numeric'
