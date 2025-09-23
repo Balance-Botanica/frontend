@@ -103,6 +103,14 @@
 
 	// Handle smooth scrolling to anchors
 	function handleAnchorClick(event: Event) {
+		// For keyboard events, only handle Enter and Space
+		if (event.type === 'keydown') {
+			const keyboardEvent = event as KeyboardEvent;
+			if (keyboardEvent.key !== 'Enter' && keyboardEvent.key !== ' ') {
+				return;
+			}
+		}
+
 		const target = event.target as HTMLElement;
 		if (target.tagName === 'A') {
 			const href = target.getAttribute('href');
@@ -127,7 +135,7 @@
 {/if}
 
 {#if finalToc.length > 0}
-	<div class="article-content-grid" onclick={handleAnchorClick}>
+	<div class="article-content-grid" onclick={handleAnchorClick} onkeydown={handleAnchorClick}>
 		<aside class="article-sidebar">
 			<ArticleTOC toc={finalToc} {lang} />
 		</aside>
