@@ -22,11 +22,11 @@
 
 	// Format date based on detected language
 	const formattedDate = (date: string) => {
-		const localeMap = {
+		const localeMap: Record<SupportedLocale, string> = {
 			'uk-ua': 'uk-UA',
 			en: 'en-US'
 		};
-		return new Date(date).toLocaleDateString(localeMap[lang] || 'uk-UA', {
+		return new Date(date).toLocaleDateString(localeMap[lang], {
 			year: 'numeric',
 			month: 'long',
 			day: 'numeric'
