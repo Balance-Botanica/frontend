@@ -197,10 +197,14 @@ export const load: PageServerLoad = async ({ params }) => {
 	// Получаем blog статьи
 	const blogArticles = await getBlogArticles(lang);
 
-	// Объединяем все статьи и сортируем по дате
-	const allArticles = [...pillarArticles, ...blogArticles].sort(
+	// Объединяем все статьи: сначала pillar, потом blog, внутри каждой группы сортировка по дате
+	const pillarArticlesSorted = pillarArticles.sort(
 		(a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
 	);
+	const blogArticlesSorted = blogArticles.sort(
+		(a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+	);
+	const allArticles = [...pillarArticlesSorted, ...blogArticlesSorted];
 
 	return {
 		articles: allArticles
