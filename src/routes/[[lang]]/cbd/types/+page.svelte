@@ -15,12 +15,7 @@
 	// TOC will be auto-generated from content headings
 	const tocItems = $derived([]);
 
-	const keyPoints = $derived([
-		isEnglish ? 'Isolate: Pure CBD only' : 'Ізолят: Чистий CBD тільки',
-		isEnglish ? 'Full Spectrum: All cannabinoids' : 'Повний спектр: Всі каннабіноїди',
-		isEnglish ? 'Broad Spectrum: THC-free benefits' : 'Широкий спектр: Переваги без THC',
-		isEnglish ? 'Choose based on your needs' : 'Оберіть на основі ваших потреб'
-	]);
+	const keyPoints = $derived($pageTranslations?.pillarArticles.cbdTypes.keyPoints || []);
 
 	const translations = $derived(() => ({
 		learnMore: $pageTranslations?.t('cbdTypes.learnMore') || (isEnglish ? 'Learn More' : 'Дізнатися більше'),

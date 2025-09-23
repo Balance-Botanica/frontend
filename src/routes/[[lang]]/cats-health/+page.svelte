@@ -15,12 +15,7 @@
 	// TOC will be auto-generated from content headings
 	const tocItems = $derived([]);
 
-	const keyPoints = $derived([
-		isEnglish ? 'Complete cat health guide' : 'Повний посібник зі здоров\'я котів',
-		isEnglish ? 'Natural wellness solutions' : 'Натуральні рішення для благополуччя',
-		isEnglish ? 'Evidence-based care tips' : 'Доказові поради з догляду',
-		isEnglish ? 'Prevention and treatment strategies' : 'Стратегії профілактики та лікування'
-	]);
+	const keyPoints = $derived($pageTranslations?.pillarArticles.catsHealth.keyPoints || []);
 </script>
 
 <SEO title={data.title} description={data.description} />

@@ -18,12 +18,7 @@
 	// TOC will be auto-generated from content headings
 	const tocItems = $derived([]);
 
-	const keyPoints = $derived([
-		isEnglish ? 'Comprehensive dog health guide' : 'Комплексний посібник зі здоров\'я собак',
-		isEnglish ? 'Natural wellness solutions' : 'Натуральні рішення для благополуччя',
-		isEnglish ? 'Evidence-based care tips' : 'Доказові поради з догляду',
-		isEnglish ? 'Prevention and treatment strategies' : 'Стратегії профілактики та лікування'
-	]);
+	const keyPoints = $derived($pageTranslations?.pillarArticles.dogHealth.keyPoints || []);
 </script>
 
 <SEO title={data.title} description={data.description} />
@@ -62,7 +57,7 @@
 
 		<!-- Related Articles -->
 		<section class="dog-health-related">
-			<h2>{translations.relatedArticles}</h2>
+			<h2>{pageTranslations.relatedArticles}</h2>
 			<div class="dog-health-related-grid">
 				<div class="dog-health-related-card">
 					<h3>{isEnglish ? 'CBD for Dogs' : 'CBD для собак'}</h3>

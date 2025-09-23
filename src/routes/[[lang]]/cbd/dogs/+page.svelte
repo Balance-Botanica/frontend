@@ -3,22 +3,19 @@
 	import { ArticleHero, ArticleLayout } from '$lib/components/articles';
 	import type { SupportedLocale } from '$lib/i18n/types';
 	import { page } from '$app/stores';
+	import { createPageTranslations } from '$lib/i18n/store';
 
 	const { data } = $props();
 	const lang = $derived(($page.params?.lang || 'uk-ua') as SupportedLocale);
 	const isEnglish = $derived(lang === 'en');
 
+	// Create page translations
+	const pageTranslations = createPageTranslations();
+
 	// TOC will be auto-generated from content headings
 	const tocItems = $derived([]);
 
-	const keyPoints = [
-		isEnglish ? 'Clinically proven effective for dogs' : 'Клінічно доведена ефективність для собак',
-		isEnglish ? 'Well tolerated by canine patients' : 'Добре переноситься собаками',
-		isEnglish
-			? 'Natural pain relief and mobility support'
-			: 'Натуральне знеболення та підтримка рухливості',
-		isEnglish ? 'Evidence-based veterinary recommendations' : 'Доказові ветеринарні рекомендації'
-	];
+	const keyPoints = $pageTranslations?.pillarArticles.cbdDogs.keyPoints || [];
 
 	const translations = $derived({
 		learnMore: isEnglish ? 'Learn More' : 'Дізнатися більше',

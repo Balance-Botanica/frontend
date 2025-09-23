@@ -596,39 +596,93 @@
 		"pillarArticles": {
 			"cbd": {
 				"title": "What is CBD and How Does It Work?",
-				"description": "Complete guide to cannabidiol, its mechanism of action and health benefits. Understanding the science behind CBD."
+				"description": "Complete guide to cannabidiol, its mechanism of action and health benefits. Understanding the science behind CBD.",
+				"keyPoints": [
+					"Clinically proven effective for pets",
+					"Well tolerated by dogs and cats",
+					"Natural pain relief and mobility support",
+					"Evidence-based veterinary recommendations"
+				]
 			},
 			"dogHealth": {
 				"title": "Dog Health: Comprehensive Guide",
-				"description": "Complete natural health guide for dogs. From nutrition to disease prevention."
+				"description": "Complete natural health guide for dogs. From nutrition to disease prevention.",
+				"keyPoints": [
+					"Comprehensive dog health guide",
+					"Natural wellness solutions",
+					"Evidence-based care tips",
+					"Prevention and treatment strategies"
+				]
 			},
 			"catsHealth": {
 				"title": "Cat Health: Everything You Need to Know",
-				"description": "Comprehensive guide to cat care and health."
+				"description": "Comprehensive guide to cat care and health.",
+				"keyPoints": [
+					"Complete cat health guide",
+					"Natural wellness solutions",
+					"Evidence-based care tips",
+					"Prevention and treatment strategies"
+				]
 			},
 			"veterinaryCbd": {
 				"title": "Veterinary CBD: Evidence-Based Guide",
-				"description": "Complete veterinary guide to CBD therapy for animals. Clinical studies, protocols, safety data."
+				"description": "Complete veterinary guide to CBD therapy for animals. Clinical studies, protocols, safety data.",
+				"keyPoints": [
+					"Evidence-based veterinary research",
+					"Clinical protocols and guidelines",
+					"Safety data and contraindications",
+					"Professional CBD therapy standards"
+				]
 			},
 			"cbdDogs": {
 				"title": "CBD for Dogs: Complete Guide",
-				"description": "Scientific guide to CBD therapy for dogs. Dosages, indications, safety."
+				"description": "Scientific guide to CBD therapy for dogs. Dosages, indications, safety.",
+				"keyPoints": [
+					"Clinically proven effective for dogs",
+					"Well tolerated by canine patients",
+					"Natural pain relief and mobility support",
+					"Evidence-based veterinary recommendations"
+				]
 			},
 			"cbdCats": {
 				"title": "CBD for Cats: Complete Guide",
-				"description": "Scientific guide to CBD therapy for cats. Dosage features and applications."
+				"description": "Scientific guide to CBD therapy for cats. Dosage features and applications.",
+				"keyPoints": [
+					"Clinically proven effective for cats",
+					"Well tolerated by feline patients",
+					"Natural pain relief and stress reduction",
+					"Evidence-based veterinary recommendations"
+				]
 			},
 			"cbdTypes": {
 				"title": "CBD Types: Which to Choose?",
-				"description": "Complete guide to CBD product types. Isolate, full spectrum, broad spectrum."
+				"description": "Complete guide to CBD product types. Isolate, full spectrum, broad spectrum.",
+				"keyPoints": [
+					"Isolate: Pure CBD only",
+					"Full Spectrum: All cannabinoids",
+					"Broad Spectrum: THC-free benefits",
+					"Choose based on your needs"
+				]
 			},
 			"dogsArthritis": {
 				"title": "Dog Arthritis: Treatment and Prevention",
-				"description": "Comprehensive approach to treating and preventing arthritis in dogs."
+				"description": "Comprehensive approach to treating and preventing arthritis in dogs.",
+				"keyPoints": [
+					"Natural arthritis treatment",
+					"Joint health improvement",
+					"Pain relief and mobility support",
+					"Prevention strategies for aging dogs"
+				]
 			},
 			"petsThcToxicity": {
 				"title": "THC Toxicity in Pets",
-				"description": "Important information about THC danger for pets and poisoning symptoms."
+				"description": "Important information about THC danger for pets and poisoning symptoms.",
+				"keyPoints": [
+					"THC toxicity symptoms",
+					"Emergency response guide",
+					"Prevention of poisoning",
+					"Veterinary treatment protocols"
+				]
 			}
 		},
 		"blogArticles": {

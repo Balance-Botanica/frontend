@@ -15,12 +15,7 @@
 	// TOC will be auto-generated from content headings
 	const tocItems = $derived([]);
 
-	const keyPoints = $derived([
-		isEnglish ? 'Evidence-based veterinary research' : 'Доказові ветеринарні дослідження',
-		isEnglish ? 'Clinical protocols and guidelines' : 'Клінічні протоколи та рекомендації',
-		isEnglish ? 'Safety data and contraindications' : 'Дані безпеки та протипоказання',
-		isEnglish ? 'Professional CBD therapy standards' : 'Професійні стандарти CBD терапії'
-	]);
+	const keyPoints = $derived($pageTranslations?.pillarArticles.veterinaryCbd.keyPoints || []);
 
 	// Use translation system for dynamic language switching
 	const translations = $derived({

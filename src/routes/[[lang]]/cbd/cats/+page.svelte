@@ -2,21 +2,19 @@
 	import SEO from '$lib/components/SEO.svelte';
 	import { ArticleHero, ArticleLayout } from '$lib/components/articles';
 	import { page } from '$app/stores';
+	import { createPageTranslations } from '$lib/i18n/store';
 
 	const { data } = $props();
 	const lang = $derived($page.params?.lang || 'uk-ua');
 	const isEnglish = $derived(lang === 'en');
 
+	// Create page translations
+	const pageTranslations = createPageTranslations();
+
 	// TOC will be auto-generated from content headings
 	const tocItems = $derived([]);
 
-	const keyPoints = $derived([
-		isEnglish ? 'Clinically proven effective' : 'Клінічно доведена ефективність',
-		isEnglish ? 'Well tolerated by cats' : 'Добре переноситься котами',
-		isEnglish ? 'Natural pain relief' : 'Натуральне знеболення',
-		isEnglish ? 'Anti-inflammatory properties' : 'Протизапальні властивості',
-		isEnglish ? 'Vet recommended' : 'Рекомендовано ветеринарами'
-	]);
+	const keyPoints = $derived($pageTranslations?.pillarArticles.cbdCats.keyPoints || []);
 
 	const translations = $derived(() => ({
 		learnMore: isEnglish ? 'Learn More' : 'Дізнатися більше',
