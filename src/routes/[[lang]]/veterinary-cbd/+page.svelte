@@ -39,7 +39,43 @@
 			(isEnglish ? 'Safety Data' : 'Дані безпеки'),
 		professionalGuide:
 			$pageTranslations?.t('veterinaryCbd.professionalGuide') ||
-			(isEnglish ? 'Professional Guide' : 'Професійний посібник')
+			(isEnglish ? 'Professional Guide' : 'Професійний посібник'),
+		faqTitle:
+			$pageTranslations?.t('veterinaryCbd.faqTitle') ||
+			(isEnglish ? 'Frequently Asked Questions' : 'Поширені запитання'),
+		cbdSafetyResearch:
+			$pageTranslations?.t('veterinaryCbd.cbdSafetyResearch') ||
+			(isEnglish ? 'CBD Safety & Research' : 'Безпека CBD та дослідження'),
+		evidenceBased:
+			$pageTranslations?.t('veterinaryCbd.evidenceBased') ||
+			(isEnglish ? 'Evidence-Based' : 'Науково обґрунтовано'),
+		cbdForDogsGuide:
+			$pageTranslations?.t('veterinaryCbd.cbdForDogsGuide') ||
+			(isEnglish ? 'CBD for Dogs: Complete Guide' : 'CBD для собак: повний посібник'),
+		clinicalStudies:
+			$pageTranslations?.t('veterinaryCbd.clinicalStudies') ||
+			(isEnglish ? 'Clinical Studies' : 'Клінічні дослідження'),
+		cbdForCatsGuide:
+			$pageTranslations?.t('veterinaryCbd.cbdForCatsGuide') ||
+			(isEnglish ? 'CBD for Cats: Complete Guide' : 'CBD для котів: повний посібник'),
+		felineHealth:
+			$pageTranslations?.t('veterinaryCbd.felineHealth') ||
+			(isEnglish ? 'Feline Health' : "Здоров'я котів"),
+		thcToxicityInPets:
+			$pageTranslations?.t('veterinaryCbd.thcToxicityInPets') ||
+			(isEnglish ? 'THC Toxicity in Pets' : 'THC токсичність у тварин'),
+		safetyAlert:
+			$pageTranslations?.t('veterinaryCbd.safetyAlert') ||
+			(isEnglish ? 'Safety Alert' : 'Попередження безпеки'),
+		cbdForPetsOverview:
+			$pageTranslations?.t('veterinaryCbd.cbdForPetsOverview') ||
+			(isEnglish ? 'CBD for Pets Overview' : 'CBD для домашніх тварин'),
+		comprehensive:
+			$pageTranslations?.t('veterinaryCbd.comprehensive') ||
+			(isEnglish ? 'Comprehensive' : 'Комплексний'),
+		dogHealthComprehensiveGuide:
+			$pageTranslations?.t('veterinaryCbd.dogHealthComprehensiveGuide') ||
+			(isEnglish ? 'Dog Health: Comprehensive Guide' : "Здоров'я собак: повний посібник")
 	});
 </script>
 
@@ -64,10 +100,7 @@
 
 		{#if data.seoData?.faq && data.seoData.faq.length > 0}
 			<section class="veterinary-cbd-faq">
-				<h2>
-					{$pageTranslations?.t('veterinaryCbd.faq') ||
-						(isEnglish ? 'Frequently Asked Questions' : 'Поширені запитання')}
-				</h2>
+				<h2>{translations.faqTitle}</h2>
 				<div class="veterinary-cbd-faq-list">
 					{#each data.seoData.faq as faq, index (index)}
 						<div class="veterinary-cbd-faq-item">
@@ -86,26 +119,26 @@
 					href={`${lang === 'uk-ua' ? '' : `/${lang}`}/knowledgebase/cbd/safety`}
 					class="veterinary-cbd-related-card"
 				>
-					<h3>{isEnglish ? 'CBD Safety & Research' : 'Безпека CBD та дослідження'}</h3>
+					<h3>{translations.cbdSafetyResearch}</h3>
 					<p>
 						{isEnglish
 							? 'Safety studies and scientific research on CBD'
 							: 'Дослідження безпеки та наукові дані про CBD'}
 					</p>
-					<span class="card-tag">{isEnglish ? 'Evidence-Based' : 'Науково обґрунтовано'}</span>
+					<span class="card-tag">{translations.evidenceBased}</span>
 				</a>
 
 				<a
 					href={`${lang === 'uk-ua' ? '' : `/${lang}`}/knowledgebase/cbd/dogs`}
 					class="veterinary-cbd-related-card"
 				>
-					<h3>{isEnglish ? 'CBD for Dogs: Complete Guide' : 'CBD для собак: повний посібник'}</h3>
+					<h3>{translations.cbdForDogsGuide}</h3>
 					<p>
 						{isEnglish
 							? 'Scientific guide to CBD therapy for dogs'
 							: 'Науковий посібник з CBD терапії для собак'}
 					</p>
-					<span class="card-tag">{isEnglish ? 'Clinical Studies' : 'Клінічні дослідження'}</span>
+					<span class="card-tag">{translations.clinicalStudies}</span>
 				</a>
 
 				<a

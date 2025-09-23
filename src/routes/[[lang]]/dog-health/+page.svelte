@@ -18,7 +18,31 @@
 	// TOC will be auto-generated from content headings
 	const tocItems = $derived([]);
 
-	const keyPoints = $derived($pageTranslations?.pillarArticles.dogHealth.keyPoints || []);
+	const keyPoints = $derived(data.keyPoints || []);
+
+	// Переводы для элементов интерфейса
+	const translations = $derived({
+		learnMore:
+			$pageTranslations?.t('dogHealth.learnMore') || (isEnglish ? 'Learn More' : 'Узнать больше'),
+		relatedArticles:
+			$pageTranslations?.t('dogHealth.relatedArticles') ||
+			(isEnglish ? 'Related Articles' : 'Связанные статьи'),
+		faqTitle:
+			$pageTranslations?.t('dogHealth.faqTitle') ||
+			(isEnglish ? 'Frequently Asked Questions' : 'Поширені запитання'),
+		cbdForDogs:
+			$pageTranslations?.t('dogHealth.cbdForDogs') ||
+			(isEnglish ? 'CBD for Dogs' : 'CBD для собак'),
+		gelatinForDogs:
+			$pageTranslations?.t('dogHealth.gelatinForDogs') ||
+			(isEnglish ? 'Gelatin for Dogs' : 'Желатин для собак'),
+		turmericForDogs:
+			$pageTranslations?.t('dogHealth.turmericForDogs') ||
+			(isEnglish ? 'Turmeric for Dogs' : 'Куркума для собак'),
+		arthritisInDogs:
+			$pageTranslations?.t('dogHealth.arthritisInDogs') ||
+			(isEnglish ? 'Arthritis in Dogs' : 'Артрит у собак')
+	});
 </script>
 
 <SEO title={data.title} description={data.description} />
@@ -43,7 +67,7 @@
 		<!-- FAQ Section -->
 		{#if data.seoData?.faq && data.seoData.faq.length > 0}
 			<section class="dog-health-faq">
-				<h2>{isEnglish ? 'Frequently Asked Questions' : 'Поширені запитання'}</h2>
+				<h2>{translations.faqTitle}</h2>
 				<div class="dog-health-faq-list">
 					{#each data.seoData.faq as faq, index (index)}
 						<div class="dog-health-faq-item">
@@ -57,10 +81,10 @@
 
 		<!-- Related Articles -->
 		<section class="dog-health-related">
-			<h2>{pageTranslations.relatedArticles}</h2>
+			<h2>{translations.relatedArticles}</h2>
 			<div class="dog-health-related-grid">
 				<div class="dog-health-related-card">
-					<h3>{isEnglish ? 'CBD for Dogs' : 'CBD для собак'}</h3>
+					<h3>{translations.cbdForDogs}</h3>
 					<p>
 						{isEnglish
 							? 'Natural CBD supplements for dog health and wellness'
@@ -71,7 +95,7 @@
 					>
 				</div>
 				<div class="dog-health-related-card">
-					<h3>{isEnglish ? 'Gelatin for Dogs' : 'Желатин для собак'}</h3>
+					<h3>{translations.gelatinForDogs}</h3>
 					<p>
 						{isEnglish
 							? 'Natural joint support and health benefits'
@@ -80,7 +104,7 @@
 					<a href="/{lang}/dogs/gelatin/" class="dog-health-link">{translations.learnMore} →</a>
 				</div>
 				<div class="dog-health-related-card">
-					<h3>{isEnglish ? 'Turmeric for Dogs' : 'Куркума для собак'}</h3>
+					<h3>{translations.turmericForDogs}</h3>
 					<p>
 						{isEnglish
 							? 'Natural anti-inflammatory and health benefits'
@@ -89,7 +113,7 @@
 					<a href="/{lang}/dogs/turmeric/" class="dog-health-link">{translations.learnMore} →</a>
 				</div>
 				<div class="dog-health-related-card">
-					<h3>{isEnglish ? 'Arthritis in Dogs' : 'Артрит у собак'}</h3>
+					<h3>{translations.arthritisInDogs}</h3>
 					<p>
 						{isEnglish
 							? 'Natural approaches to managing joint health'

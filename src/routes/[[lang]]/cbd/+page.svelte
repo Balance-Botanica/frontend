@@ -21,8 +21,20 @@
 
 	// Переводы для элементов интерфейса
 	const translations = $derived({
-		learnMore: isEnglish ? 'Learn More' : 'Узнать больше',
-		relatedArticles: isEnglish ? 'Related Articles' : 'Связанные статьи'
+		learnMore:
+			$pageTranslations?.t('cbd.learnMore') || (isEnglish ? 'Learn More' : 'Узнать больше'),
+		relatedArticles:
+			$pageTranslations?.t('cbd.relatedArticles') ||
+			(isEnglish ? 'Related Articles' : 'Связанные статьи'),
+		faqTitle:
+			$pageTranslations?.t('cbd.faqTitle') ||
+			(isEnglish ? 'Frequently Asked Questions' : 'Поширені запитання'),
+		cbdForCats:
+			$pageTranslations?.t('cbd.cbdForCats') || (isEnglish ? 'CBD for Cats' : 'CBD для котів'),
+		cbdForDogs:
+			$pageTranslations?.t('cbd.cbdForDogs') || (isEnglish ? 'CBD for Dogs' : 'CBD для собак'),
+		cbdTypes: $pageTranslations?.t('cbd.cbdTypes') || (isEnglish ? 'CBD Types' : 'Види CBD'),
+		cbdDosage: $pageTranslations?.t('cbd.cbdDosage') || (isEnglish ? 'CBD Dosage' : 'Дозування CBD')
 	});
 </script>
 
@@ -48,7 +60,7 @@
 		<!-- FAQ Section -->
 		{#if data.seoData?.faq && data.seoData.faq.length > 0}
 			<section class="cbd-faq">
-				<h2>{isEnglish ? 'Frequently Asked Questions' : 'Поширені запитання'}</h2>
+				<h2>{translations.faqTitle}</h2>
 				<div class="cbd-faq-list">
 					{#each data.seoData.faq as faq}
 						<div class="cbd-faq-item">
@@ -65,7 +77,7 @@
 			<h2>{translations.relatedArticles}</h2>
 			<div class="cbd-related-grid">
 				<div class="cbd-related-card">
-					<h3>{isEnglish ? 'CBD for Cats' : 'CBD для котів'}</h3>
+					<h3>{translations.cbdForCats}</h3>
 					<p>
 						{isEnglish
 							? 'Detailed guide to using CBD for cats'
@@ -74,7 +86,7 @@
 					<a href="/{lang}/cbd/cats/" class="cbd-link">{translations.learnMore} →</a>
 				</div>
 				<div class="cbd-related-card">
-					<h3>{isEnglish ? 'CBD for Dogs' : 'CBD для собак'}</h3>
+					<h3>{translations.cbdForDogs}</h3>
 					<p>
 						{isEnglish
 							? 'Detailed guide to using CBD for dogs'
@@ -83,7 +95,7 @@
 					<a href="/{lang}/cbd/dogs/" class="cbd-link">{translations.learnMore} →</a>
 				</div>
 				<div class="cbd-related-card">
-					<h3>{isEnglish ? 'CBD Types' : 'Види CBD'}</h3>
+					<h3>{translations.cbdTypes}</h3>
 					<p>
 						{isEnglish
 							? 'Difference between isolate, distillate and full spectrum'
@@ -92,7 +104,7 @@
 					<a href="/{lang}/cbd/types/" class="cbd-link">{translations.learnMore} →</a>
 				</div>
 				<div class="cbd-related-card">
-					<h3>{isEnglish ? 'CBD Dosage' : 'Дозування CBD'}</h3>
+					<h3>{translations.cbdDosage}</h3>
 					<p>
 						{isEnglish
 							? 'How to calculate the right dose for your pet'

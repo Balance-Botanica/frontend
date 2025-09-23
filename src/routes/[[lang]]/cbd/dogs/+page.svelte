@@ -18,8 +18,29 @@
 	const keyPoints = data.keyPoints || [];
 
 	const translations = $derived({
-		learnMore: isEnglish ? 'Learn More' : 'Дізнатися більше',
-		relatedArticles: isEnglish ? 'Related Articles' : "Пов'язані статті"
+		learnMore:
+			$pageTranslations?.t('cbdDogs.learnMore') || (isEnglish ? 'Learn More' : 'Дізнатися більше'),
+		relatedArticles:
+			$pageTranslations?.t('cbdDogs.relatedArticles') ||
+			(isEnglish ? 'Related Articles' : "Пов'язані статті"),
+		faqTitle:
+			$pageTranslations?.t('cbdDogs.faqTitle') ||
+			(isEnglish ? 'Frequently Asked Questions' : 'Поширені запитання'),
+		cbdForPets:
+			$pageTranslations?.t('cbdDogs.cbdForPets') || (isEnglish ? 'CBD for Pets' : 'CBD для тварин'),
+		completeScientificGuide:
+			$pageTranslations?.t('cbdDogs.completeScientificGuide') ||
+			(isEnglish ? 'Complete scientific guide' : 'Повний науковий посібник'),
+		cbdTypes: $pageTranslations?.t('cbdDogs.cbdTypes') || (isEnglish ? 'CBD Types' : 'Види CBD'),
+		isolateVsFullSpectrum:
+			$pageTranslations?.t('cbdDogs.isolateVsFullSpectrum') ||
+			(isEnglish ? 'Isolate vs Full Spectrum' : 'Ізолят чи повний спектр'),
+		dogHealthGuide:
+			$pageTranslations?.t('cbdDogs.dogHealthGuide') ||
+			(isEnglish ? 'Dog Health Guide' : "Посібник з здоров'я собак"),
+		comprehensiveCareTips:
+			$pageTranslations?.t('cbdDogs.comprehensiveCareTips') ||
+			(isEnglish ? 'Comprehensive care tips' : 'Комплексні поради з догляду')
 	});
 </script>
 
@@ -42,7 +63,7 @@
 
 		{#if data.seoData?.faq && data.seoData.faq.length > 0}
 			<section class="cbd-dogs-faq">
-				<h2>{isEnglish ? 'Frequently Asked Questions' : 'Поширені запитання'}</h2>
+				<h2>{translations.faqTitle}</h2>
 				<div class="cbd-dogs-faq-list">
 					{#each data.seoData.faq as faq}
 						<div class="cbd-dogs-faq-item">
@@ -58,18 +79,18 @@
 			<h2>{translations.relatedArticles}</h2>
 			<div class="cbd-dogs-related-grid">
 				<a href={`${lang}/knowledgebase/cbd`} class="cbd-dogs-related-card">
-					<h3>{isEnglish ? 'CBD for Pets' : 'CBD для тварин'}</h3>
-					<p>{isEnglish ? 'Complete scientific guide' : 'Повний науковий посібник'}</p>
+					<h3>{translations.cbdForPets}</h3>
+					<p>{translations.completeScientificGuide}</p>
 				</a>
 
 				<a href={`${lang}/knowledgebase/cbd/types`} class="cbd-dogs-related-card">
-					<h3>{isEnglish ? 'CBD Types' : 'Види CBD'}</h3>
-					<p>{isEnglish ? 'Isolate vs Full Spectrum' : 'Ізолят чи повний спектр'}</p>
+					<h3>{translations.cbdTypes}</h3>
+					<p>{translations.isolateVsFullSpectrum}</p>
 				</a>
 
 				<a href={`${lang}/dog-health`} class="cbd-dogs-related-card">
-					<h3>{isEnglish ? 'Dog Health Guide' : "Посібник з здоров'я собак"}</h3>
-					<p>{isEnglish ? 'Comprehensive care tips' : 'Комплексні поради з догляду'}</p>
+					<h3>{translations.dogHealthGuide}</h3>
+					<p>{translations.comprehensiveCareTips}</p>
 				</a>
 			</div>
 		</section>

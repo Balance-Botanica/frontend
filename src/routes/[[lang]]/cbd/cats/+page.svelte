@@ -17,8 +17,32 @@
 	const keyPoints = $derived(data.keyPoints || []);
 
 	const translations = $derived(() => ({
-		learnMore: isEnglish ? 'Learn More' : 'Дізнатися більше',
-		relatedArticles: isEnglish ? 'Related Articles' : "Пов'язані статті"
+		learnMore:
+			$pageTranslations?.t('cbdCats.learnMore') || (isEnglish ? 'Learn More' : 'Дізнатися більше'),
+		relatedArticles:
+			$pageTranslations?.t('cbdCats.relatedArticles') ||
+			(isEnglish ? 'Related Articles' : "Пов'язані статті"),
+		faqTitle:
+			$pageTranslations?.t('cbdCats.faqTitle') ||
+			(isEnglish ? 'Frequently Asked Questions' : 'Поширені запитання'),
+		catHealthGuide:
+			$pageTranslations?.t('cbdCats.catHealthGuide') ||
+			(isEnglish ? 'Cat Health: Complete Guide' : "Здоров'я котів: повний посібник"),
+		cbdSafetyResearch:
+			$pageTranslations?.t('cbdCats.cbdSafetyResearch') ||
+			(isEnglish ? 'CBD Safety & Research' : 'Безпека CBD та дослідження'),
+		cbdDosageCalculator:
+			$pageTranslations?.t('cbdCats.cbdDosageCalculator') ||
+			(isEnglish ? 'CBD Dosage Calculator' : 'Калькулятор дозування CBD'),
+		cbdForPetsOverview:
+			$pageTranslations?.t('cbdCats.cbdForPetsOverview') ||
+			(isEnglish ? 'CBD for Pets Overview' : 'CBD для домашніх тварин'),
+		cbdForDogsGuide:
+			$pageTranslations?.t('cbdCats.cbdForDogsGuide') ||
+			(isEnglish ? 'CBD for Dogs: Complete Guide' : 'CBD для собак: повний посібник'),
+		thcToxicityInPets:
+			$pageTranslations?.t('cbdCats.thcToxicityInPets') ||
+			(isEnglish ? 'THC Toxicity in Pets' : 'THC токсичність у тварин')
 	}));
 </script>
 
@@ -41,7 +65,7 @@
 
 		{#if data.seoData?.faq && data.seoData.faq.length > 0}
 			<section class="cbd-cats-faq">
-				<h2>{isEnglish ? 'Frequently Asked Questions' : 'Поширені запитання'}</h2>
+				<h2>{translations.faqTitle}</h2>
 				<div class="cbd-cats-faq-list">
 					{#each data.seoData.faq as faq}
 						<div class="cbd-cats-faq-item">
@@ -57,7 +81,7 @@
 			<h2>{translations().relatedArticles}</h2>
 			<div class="cbd-cats-related-grid">
 				<a href={`${lang}/cats-health`} class="cbd-cats-related-card">
-					<h3>{isEnglish ? 'Cat Health: Complete Guide' : "Здоров'я котів: повний посібник"}</h3>
+					<h3>{translations.catHealthGuide}</h3>
 					<p>
 						{isEnglish
 							? 'Comprehensive natural health guide for cats'
@@ -66,7 +90,7 @@
 				</a>
 
 				<a href={`${lang}/cbd/safety`} class="cbd-cats-related-card">
-					<h3>{isEnglish ? 'CBD Safety & Research' : 'Безпека CBD та дослідження'}</h3>
+					<h3>{translations.cbdSafetyResearch}</h3>
 					<p>
 						{isEnglish
 							? 'Safety studies and scientific research on CBD'
@@ -75,7 +99,7 @@
 				</a>
 
 				<a href={`${lang}/cbd/dosage`} class="cbd-cats-related-card">
-					<h3>{isEnglish ? 'CBD Dosage Calculator' : 'Калькулятор дозування CBD'}</h3>
+					<h3>{translations.cbdDosageCalculator}</h3>
 					<p>
 						{isEnglish
 							? 'Calculate the right CBD dosage for your cat'
@@ -84,7 +108,7 @@
 				</a>
 
 				<a href={`${lang}/cbd`} class="cbd-cats-related-card">
-					<h3>{isEnglish ? 'CBD for Pets Overview' : 'CBD для домашніх тварин'}</h3>
+					<h3>{translations.cbdForPetsOverview}</h3>
 					<p>
 						{isEnglish
 							? 'Complete guide to CBD therapy for all pets'
@@ -93,7 +117,7 @@
 				</a>
 
 				<a href={`${lang}/cbd/dogs`} class="cbd-cats-related-card">
-					<h3>{isEnglish ? 'CBD for Dogs: Complete Guide' : 'CBD для собак: повний посібник'}</h3>
+					<h3>{translations.cbdForDogsGuide}</h3>
 					<p>
 						{isEnglish
 							? 'Scientific guide to CBD therapy for dogs'
@@ -102,7 +126,7 @@
 				</a>
 
 				<a href={`${lang}/pets/thc-toxicity`} class="cbd-cats-related-card">
-					<h3>{isEnglish ? 'THC Toxicity in Pets' : 'THC токсичність у тварин'}</h3>
+					<h3>{translations.thcToxicityInPets}</h3>
 					<p>
 						{isEnglish
 							? 'Important safety information about THC'

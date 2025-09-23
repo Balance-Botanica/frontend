@@ -32,7 +32,7 @@
 			$pageTranslations?.t('cbdTypes.scientificEvidence') ||
 			(isEnglish ? 'Scientific Evidence' : 'Наукові докази'),
 		chooseYourType:
-			$pageTranslations?.t('cbdTypes.chooseYourType') ||
+			$pageTranslations?.t('cbdTypes.chooseYourCBDType') ||
 			(isEnglish ? 'Choose Your CBD Type' : 'Оберіть свій тип CBD'),
 		isolate: $pageTranslations?.t('cbdTypes.isolate') || (isEnglish ? 'CBD Isolate' : 'Ізолят CBD'),
 		fullSpectrum:
@@ -40,7 +40,72 @@
 			(isEnglish ? 'Full Spectrum' : 'Повний спектр'),
 		broadSpectrum:
 			$pageTranslations?.t('cbdTypes.broadSpectrum') ||
-			(isEnglish ? 'Broad Spectrum' : 'Широкий спектр')
+			(isEnglish ? 'Broad Spectrum' : 'Широкий спектр'),
+		thcContent:
+			$pageTranslations?.t('cbdTypes.thcContent') || (isEnglish ? 'THC Content' : 'Вміст THC'),
+		otherCannabinoids:
+			$pageTranslations?.t('cbdTypes.otherCannabinoids') ||
+			(isEnglish ? 'Other Cannabinoids' : 'Інші каннабіноїди'),
+		entourageEffect:
+			$pageTranslations?.t('cbdTypes.entourageEffect') ||
+			(isEnglish ? 'Entourage Effect' : 'Ефект супроводу'),
+		bioavailability:
+			$pageTranslations?.t('cbdTypes.bioavailability') ||
+			(isEnglish ? 'Bioavailability' : 'Біодоступність'),
+		drugTestRisk:
+			$pageTranslations?.t('cbdTypes.drugTestRisk') ||
+			(isEnglish ? 'Drug Test Risk' : 'Ризик тестів'),
+		priceRange:
+			$pageTranslations?.t('cbdTypes.priceRange') ||
+			(isEnglish ? 'Price Range' : 'Ціновий діапазон'),
+		feature: $pageTranslations?.t('cbdTypes.feature') || (isEnglish ? 'Feature' : 'Характеристика'),
+		none: $pageTranslations?.t('cbdTypes.none') || (isEnglish ? 'None' : 'Немає'),
+		maximum: $pageTranslations?.t('cbdTypes.maximum') || (isEnglish ? 'Maximum' : 'Максимальний'),
+		high: $pageTranslations?.t('cbdTypes.high') || (isEnglish ? 'High' : 'Високий'),
+		veryLow: $pageTranslations?.t('cbdTypes.veryLow') || (isEnglish ? 'Very Low' : 'Дуже низький'),
+		allExceptTHC:
+			$pageTranslations?.t('cbdTypes.allExceptTHC') ||
+			(isEnglish ? 'All except THC' : 'Всі крім THC'),
+		faqTitle:
+			$pageTranslations?.t('cbdTypes.faqTitle') ||
+			(isEnglish ? 'Frequently Asked Questions' : 'Поширені запитання'),
+		cbdSafetyResearch:
+			$pageTranslations?.t('cbdTypes.cbdSafetyResearch') ||
+			(isEnglish ? 'CBD Safety & Research' : 'Безпека CBD та дослідження'),
+		evidenceBased:
+			$pageTranslations?.t('cbdTypes.evidenceBased') ||
+			(isEnglish ? 'Evidence-Based' : 'Науково обґрунтовано'),
+		cbdDosageGuide:
+			$pageTranslations?.t('cbdTypes.cbdDosageGuide') ||
+			(isEnglish ? 'CBD Dosage Guide' : 'Посібник з дозування CBD'),
+		calculator:
+			$pageTranslations?.t('cbdTypes.calculator') || (isEnglish ? 'Calculator' : 'Калькулятор'),
+		cbdForDogsGuide:
+			$pageTranslations?.t('cbdTypes.cbdForDogsGuide') ||
+			(isEnglish ? 'CBD for Dogs: Complete Guide' : 'CBD для собак: повний посібник'),
+		canineHealth:
+			$pageTranslations?.t('cbdTypes.canineHealth') ||
+			(isEnglish ? 'Canine Health' : "Здоров'я собак"),
+		cbdForCatsGuide:
+			$pageTranslations?.t('cbdTypes.cbdForCatsGuide') ||
+			(isEnglish ? 'CBD for Cats: Complete Guide' : 'CBD для котів: повний посібник'),
+		felineHealth:
+			$pageTranslations?.t('cbdTypes.felineHealth') ||
+			(isEnglish ? 'Feline Health' : "Здоров'я котів"),
+		veterinaryCBDGuide:
+			$pageTranslations?.t('cbdTypes.veterinaryCBDGuide') ||
+			(isEnglish ? 'Veterinary CBD Guide' : 'Ветеринарний посібник CBD'),
+		professional:
+			$pageTranslations?.t('cbdTypes.professional') || (isEnglish ? 'Professional' : 'Професійний'),
+		cbdCompleteGuide:
+			$pageTranslations?.t('cbdTypes.cbdCompleteGuide') ||
+			(isEnglish ? 'CBD Complete Guide' : 'Повний посібник CBD'),
+		everythingYouNeed:
+			$pageTranslations?.t('cbdTypes.everythingYouNeed') ||
+			(isEnglish ? 'Everything you need to know about CBD' : 'Все, що потрібно знати про CBD'),
+		comprehensive:
+			$pageTranslations?.t('cbdTypes.comprehensive') ||
+			(isEnglish ? 'Comprehensive' : 'Комплексний')
 	}));
 
 	// Comparison data
@@ -48,39 +113,39 @@
 		() =>
 			[
 				{
-					feature: isEnglish ? 'THC Content' : 'Вміст THC',
-					isolate: isEnglish ? '0%' : '0%',
-					fullSpectrum: isEnglish ? '≤0.3%' : '≤0.3%',
-					broadSpectrum: isEnglish ? '0%' : '0%'
+					feature: translations.thcContent,
+					isolate: '0%',
+					fullSpectrum: '≤0.3%',
+					broadSpectrum: '0%'
 				},
 				{
-					feature: isEnglish ? 'Other Cannabinoids' : 'Інші каннабіноїди',
-					isolate: isEnglish ? 'None' : 'Немає',
+					feature: translations.otherCannabinoids,
+					isolate: translations.none,
 					fullSpectrum: isEnglish
 						? 'All (CBD, THC, CBG, CBN, etc.)'
 						: 'Всі (CBD, THC, CBG, CBN тощо)',
-					broadSpectrum: isEnglish ? 'All except THC' : 'Всі крім THC'
+					broadSpectrum: translations.allExceptTHC
 				},
 				{
-					feature: isEnglish ? 'Entourage Effect' : 'Ефект супроводу',
-					isolate: isEnglish ? 'None' : 'Немає',
-					fullSpectrum: isEnglish ? 'Maximum' : 'Максимальний',
-					broadSpectrum: isEnglish ? 'High' : 'Високий'
+					feature: translations.entourageEffect,
+					isolate: translations.none,
+					fullSpectrum: translations.maximum,
+					broadSpectrum: translations.high
 				},
 				{
-					feature: isEnglish ? 'Bioavailability' : 'Біодоступність',
-					isolate: isEnglish ? '30-35%' : '30-35%',
-					fullSpectrum: isEnglish ? '35-40%' : '35-40%',
-					broadSpectrum: isEnglish ? '32-38%' : '32-38%'
+					feature: translations.bioavailability,
+					isolate: '30-35%',
+					fullSpectrum: '35-40%',
+					broadSpectrum: '32-38%'
 				},
 				{
-					feature: isEnglish ? 'Drug Test Risk' : 'Ризик тестів',
-					isolate: isEnglish ? 'None' : 'Немає',
-					fullSpectrum: isEnglish ? 'Very Low' : 'Дуже низький',
-					broadSpectrum: isEnglish ? 'None' : 'Немає'
+					feature: translations.drugTestRisk,
+					isolate: translations.none,
+					fullSpectrum: translations.veryLow,
+					broadSpectrum: translations.none
 				},
 				{
-					feature: isEnglish ? 'Price Range' : 'Ціновий діапазон',
+					feature: translations.priceRange,
 					isolate: isEnglish ? '$' : '₴',
 					fullSpectrum: isEnglish ? '$$$' : '₴₴₴',
 					broadSpectrum: isEnglish ? '$$' : '₴₴'
@@ -110,7 +175,7 @@
 				<div class="cbd-types-comparison-table">
 					<div class="cbd-types-comparison-header">
 						<div class="cbd-types-comparison-feature">
-							{isEnglish ? 'Feature' : 'Характеристика'}
+							{translations.feature}
 						</div>
 						<div class="cbd-types-comparison-type isolate">
 							<div class="cbd-types-comparison-type-icon">🧪</div>
@@ -144,7 +209,7 @@
 
 		{#if data.seoData?.faq && data.seoData.faq.length > 0}
 			<section class="cbd-types-faq">
-				<h2>{isEnglish ? 'Frequently Asked Questions' : 'Поширені запитання'}</h2>
+				<h2>{translations.faqTitle}</h2>
 				<div class="cbd-types-faq-list">
 					{#each data.seoData.faq as faq}
 						<div class="cbd-types-faq-item">
@@ -160,61 +225,61 @@
 			<h2>{translations.relatedArticles}</h2>
 			<div class="cbd-types-related-grid">
 				<a href={`${lang}/cbd/safety`} class="cbd-types-related-card">
-					<h3>{isEnglish ? 'CBD Safety & Research' : 'Безпека CBD та дослідження'}</h3>
+					<h3>{translations.cbdSafetyResearch}</h3>
 					<p>
 						{isEnglish
 							? 'Safety studies and scientific research on CBD'
 							: 'Дослідження безпеки та наукові дані про CBD'}
 					</p>
-					<span class="card-tag">{isEnglish ? 'Evidence-Based' : 'Науково обґрунтовано'}</span>
+					<span class="card-tag">{translations.evidenceBased}</span>
 				</a>
 
 				<a href={`${lang}/cbd/dosage`} class="cbd-types-related-card">
-					<h3>{isEnglish ? 'CBD Dosage Guide' : 'Посібник з дозування CBD'}</h3>
+					<h3>{translations.cbdDosageGuide}</h3>
 					<p>
 						{isEnglish
 							? 'Calculate the right CBD dosage for your needs'
 							: 'Розрахуйте правильну дозу CBD для ваших потреб'}
 					</p>
-					<span class="card-tag">{isEnglish ? 'Calculator' : 'Калькулятор'}</span>
+					<span class="card-tag">{translations.calculator}</span>
 				</a>
 
 				<a href={`${lang}/cbd/dogs`} class="cbd-types-related-card">
-					<h3>{isEnglish ? 'CBD for Dogs: Complete Guide' : 'CBD для собак: повний посібник'}</h3>
+					<h3>{translations.cbdForDogsGuide}</h3>
 					<p>
 						{isEnglish
 							? 'Scientific guide to CBD therapy for dogs'
 							: 'Науковий посібник з CBD терапії для собак'}
 					</p>
-					<span class="card-tag">{isEnglish ? 'Canine Health' : "Здоров'я собак"}</span>
+					<span class="card-tag">{translations.canineHealth}</span>
 				</a>
 
 				<a href={`${lang}/cbd/cats`} class="cbd-types-related-card">
-					<h3>{isEnglish ? 'CBD for Cats: Complete Guide' : 'CBD для котів: повний посібник'}</h3>
+					<h3>{translations.cbdForCatsGuide}</h3>
 					<p>
 						{isEnglish
 							? 'Scientific guide to CBD therapy for cats'
 							: 'Науковий посібник з CBD терапії для котів'}
 					</p>
-					<span class="card-tag">{isEnglish ? 'Feline Health' : "Здоров'я котів"}</span>
+					<span class="card-tag">{translations.felineHealth}</span>
 				</a>
 
 				<a href={`${lang}/veterinary-cbd`} class="cbd-types-related-card">
-					<h3>{isEnglish ? 'Veterinary CBD Guide' : 'Ветеринарний посібник CBD'}</h3>
+					<h3>{translations.veterinaryCBDGuide}</h3>
 					<p>
 						{isEnglish
 							? 'Professional veterinary recommendations'
 							: 'Професійні ветеринарні рекомендації'}
 					</p>
-					<span class="card-tag">{isEnglish ? 'Professional' : 'Професійний'}</span>
+					<span class="card-tag">{translations.professional}</span>
 				</a>
 
 				<a href={`${lang}/cbd`} class="cbd-types-related-card">
-					<h3>{isEnglish ? 'CBD Complete Guide' : 'Повний посібник CBD'}</h3>
+					<h3>{translations.cbdCompleteGuide}</h3>
 					<p>
-						{isEnglish ? 'Everything you need to know about CBD' : 'Все, що потрібно знати про CBD'}
+						{translations.everythingYouNeed}
 					</p>
-					<span class="card-tag">{isEnglish ? 'Comprehensive' : 'Комплексний'}</span>
+					<span class="card-tag">{translations.comprehensive}</span>
 				</a>
 			</div>
 		</section>
