@@ -13,13 +13,13 @@
 		if (newLang === $language) return;
 
 		// Get current clean path
-		let currentPath = $page.url.pathname;
+		let currentPath: string = $page.url.pathname as string;
 
 		// Remove language prefix if exists
 		if (currentPath.startsWith('/en/')) {
-			currentPath = currentPath.slice(4);
+			currentPath = currentPath.slice(4) as string;
 		} else if (currentPath.startsWith('/en')) {
-			currentPath = currentPath.slice(3) || '/';
+			currentPath = (currentPath.slice(3) || '/') as string;
 		}
 
 		// Generate new URL
