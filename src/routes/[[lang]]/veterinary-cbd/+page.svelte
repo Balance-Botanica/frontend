@@ -167,10 +167,7 @@
 					<span class="card-tag">{isEnglish ? 'Safety Alert' : 'Попередження безпеки'}</span>
 				</a>
 
-				<a
-					href={`${lang === 'uk-ua' ? '' : `/${lang}`}/cbd`}
-					class="veterinary-cbd-related-card"
-				>
+				<a href={`${lang === 'uk-ua' ? '' : `/${lang}`}/cbd`} class="veterinary-cbd-related-card">
 					<h3>{isEnglish ? 'CBD for Pets Overview' : 'CBD для домашніх тварин'}</h3>
 					<p>
 						{isEnglish

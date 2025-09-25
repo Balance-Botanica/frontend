@@ -1,20 +1,59 @@
 <script lang="ts">
 	import { page } from '$app/stores';
+	import { onMount } from 'svelte';
 	import SEO from '$lib/components/SEO.svelte';
 	import EmailSubscription from '$lib/components/EmailSubscription.svelte';
 	import BlogPageItem from '$lib/components/BlogPageItem.svelte';
 	import { createPageTranslations } from '$lib/i18n/store';
 	import type { SupportedLocale } from '$lib/i18n/types';
 
-	// Get data from server
+	// Get data from server (empty array)
 	const { data } = $props();
-	const { articles } = data;
+	let { lang } = data;
 
 	// Detect language from optional route parameter
-	const lang = $derived(($page.params?.lang as SupportedLocale) || 'uk-ua');
+	const currentLang = $derived(($page.params?.lang as SupportedLocale) || 'uk-ua');
+
+	// Reactive articles data
+	let articles: any[] = $state([]);
+	let loading = $state(true);
 
 	// Create page translations
 	const pageTranslations = createPageTranslations();
+
+	// Function to load articles for current language
+	async function loadArticles(language: string) {
+		try {
+			loading = true;
+			const response = await fetch(`/api/blog/articles?lang=${language}`);
+			if (response.ok) {
+				const data = await response.json();
+				articles = data.articles;
+			} else {
+				console.error('Failed to load articles');
+				articles = [];
+			}
+		} catch (error) {
+			console.error('Error loading articles:', error);
+			articles = [];
+		} finally {
+			loading = false;
+		}
+	}
+
+	// Load articles when component mounts or language changes
+	onMount(() => {
+		loadArticles(currentLang);
+	});
+
+	// Watch for language changes
+	$effect(() => {
+		const newLang = currentLang;
+		if (newLang !== lang) {
+			lang = newLang;
+			loadArticles(newLang);
+		}
+	});
 </script>
 
 <SEO
@@ -32,11 +71,22 @@
 
 		<!-- All articles grid -->
 		<section class="blog-posts">
-			<div class="posts-grid">
-				{#each articles as article (article.slug + lang)}
-					<BlogPageItem {article} {lang} />
-				{/each}
-			</div>
+			{#if loading}
+				<div class="loading-container">
+					<div class="loading-spinner"></div>
+					<p>{$pageTranslations?.t('blog.loading')}</p>
+				</div>
+			{:else if articles.length > 0}
+				<div class="posts-grid">
+					{#each articles as article (article.slug + currentLang)}
+						<BlogPageItem {article} lang={currentLang} />
+					{/each}
+				</div>
+			{:else}
+				<div class="no-articles">
+					<p>{$pageTranslations?.t('blog.noArticles')}</p>
+				</div>
+			{/if}
 		</section>
 
 		<!-- Newsletter section -->
@@ -95,6 +145,42 @@
 		margin-top: 64px;
 	}
 
+	/* Loading and error states */
+	.loading-container {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		padding: 60px 20px;
+		text-align: center;
+	}
+
+	.loading-spinner {
+		width: 40px;
+		height: 40px;
+		border: 4px solid #e2e8f0;
+		border-top: 4px solid rgb(75, 118, 110);
+		border-radius: 50%;
+		animation: spin 1s linear infinite;
+		margin-bottom: 20px;
+	}
+
+	@keyframes spin {
+		0% {
+			transform: rotate(0deg);
+		}
+		100% {
+			transform: rotate(360deg);
+		}
+	}
+
+	.no-articles {
+		text-align: center;
+		padding: 60px 20px;
+		color: #64748b;
+		font-size: 18px;
+	}
+
 	@media (max-width: 768px) {
 		.blog-header {
 			padding: 0 16px;
@@ -127,6 +213,21 @@
 
 		.newsletter-section {
 			margin-top: 48px;
+		}
+
+		.loading-container {
+			padding: 40px 16px;
+		}
+
+		.loading-spinner {
+			width: 32px;
+			height: 32px;
+			border-width: 3px;
+		}
+
+		.no-articles {
+			padding: 40px 16px;
+			font-size: 16px;
 		}
 	}
 </style>

@@ -673,6 +673,8 @@
 		"guide": "Guide",
 		"article": "Article",
 		"readingTimePrefix": "Reading time:",
+		"loading": "Loading articles...",
+		"noArticles": "No articles found.",
 		"errors": {
 			"articleNotFound": "Article Not Found",
 			"articleNotFoundDescription": "This article could not be found.",

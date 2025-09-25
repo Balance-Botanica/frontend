@@ -90,9 +90,7 @@
 							? 'Natural CBD supplements for dog health and wellness'
 							: "Натуральні CBD добавки для здоров'я та благополуччя собак"}
 					</p>
-					<a href="/{lang}/cbd/dogs/" class="dog-health-link"
-						>{translations.learnMore} →</a
-					>
+					<a href="/{lang}/cbd/dogs/" class="dog-health-link">{translations.learnMore} →</a>
 				</div>
 				<div class="dog-health-related-card">
 					<h3>{translations.gelatinForDogs}</h3>
