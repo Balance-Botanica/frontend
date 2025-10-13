@@ -1,4 +1,4 @@
-import { pb, type Record } from '../../pocketbase/index';
+import { pb } from '../../pocketbase/index';
 import type {
 	ProductRepository,
 	Product,
@@ -119,7 +119,7 @@ export class PocketBaseProductRepository implements ProductRepository {
 	}
 
 	// Map PocketBase record to domain model
-	private mapToDomain(record: Record): Product {
+	private mapToDomain(record: any): Product {
 		return {
 			id: record.id,
 			name: record.name,

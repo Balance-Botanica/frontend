@@ -16,7 +16,7 @@ export type {
 
 // Export repositories
 export { DrizzleProductRepository } from '../data/repositories/drizzle-product.repository';
-// export { PocketBaseProductRepository } from '../data/repositories/pocketbase-product.repository';
+export { PocketBaseProductRepository } from '../data/repositories/pocketbase-product.repository';
 
 // Re-export for consumers
 export { ProductRepositoryFactory } from '../data/factories/product-repository.factory';
@@ -28,12 +28,9 @@ export type { DataSourceType } from '../data/factories/product-repository.factor
 // Convenience function to get product service with configured data source
 export async function createProductService(dataSource?: 'drizzle' | 'pocketbase') {
 	// For now, always use Drizzle regardless of parameter
-	// TODO: Enable PocketBase when ready
-	if (dataSource === 'pocketbase') {
-		console.warn('⚠️ PocketBase is currently disabled. Using Drizzle instead.');
-	}
-
-	const repository = ProductRepositoryFactory.create('drizzle');
+	const repository = ProductRepositoryFactory.create(
+		dataSource || ProductRepositoryFactory.getDefaultDataSource()
+	);
 	return new ProductService(repository);
 }
 

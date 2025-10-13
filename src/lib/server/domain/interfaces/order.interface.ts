@@ -1,4 +1,6 @@
 // Domain interface for orders - defines the contract
+import type { DeliveryAddress } from './user.interface';
+
 export interface Order {
 	id: string; // 6-digit order code
 	userId: string;

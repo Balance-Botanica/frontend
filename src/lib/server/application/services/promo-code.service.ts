@@ -1,16 +1,18 @@
 import { DrizzlePromoCodeRepository } from '../../data/repositories/drizzle-promo-code.repository';
+import { PromoCodeRepositoryFactory } from '../../data/factories/promo-code-repository.factory';
 import type {
 	PromoCodeRepository,
-	PromoCode,
 	CreatePromoCodeData,
 	PromoCodeValidationResult
 } from '../../domain/interfaces/promo-code.interface';
+import type { PromoCode } from '../../db/schema';
 
 export class PromoCodeService {
 	private promoCodeRepository: PromoCodeRepository;
 
 	constructor() {
-		this.promoCodeRepository = new DrizzlePromoCodeRepository();
+		// Use factory pattern with environment-based configuration
+		this.promoCodeRepository = PromoCodeRepositoryFactory.createFromConfig();
 	}
 
 	/**
@@ -61,7 +63,7 @@ export class PromoCodeService {
 			}
 
 			// Check usage limit
-			if (promoCode.usageLimit && promoCode.usageCount >= promoCode.usageLimit) {
+			if (promoCode.usageLimit && (promoCode.usageCount || 0) >= promoCode.usageLimit) {
 				return {
 					valid: false,
 					error: 'usage_limit_exceeded',

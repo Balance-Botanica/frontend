@@ -4,7 +4,7 @@ import PocketBase from 'pocketbase';
 export const pb = new PocketBase(process.env.POCKETBASE_URL || 'http://127.0.0.1:8090');
 
 // Export types for better TypeScript support
-export type { Record, Admin, User } from 'pocketbase';
+// Type definitions will be inferred from usage
 
 // Helper function to get authenticated client
 export function getAuthenticatedClient(authToken?: string) {

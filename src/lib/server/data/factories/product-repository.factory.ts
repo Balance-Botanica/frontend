@@ -1,13 +1,11 @@
 import { DrizzleProductRepository } from '../repositories/drizzle-product.repository';
-// TODO: Uncomment when ready to use PocketBase
-// import { PocketBaseProductRepository } from '../repositories/pocketbase-product.repository';
+import { PocketBaseProductRepository } from '../repositories/pocketbase-product.repository';
 import type { ProductRepository } from '../../domain/interfaces/product.interface';
 
 // Data source types
 export type DataSourceType = 'drizzle' | 'pocketbase';
 
 // Factory for creating product repositories
-// NOTE: Currently defaults to Drizzle. PocketBase is commented out for initial development.
 export class ProductRepositoryFactory {
 	/**
 	 * Creates a product repository based on the specified data source
@@ -19,9 +17,7 @@ export class ProductRepositoryFactory {
 			case 'drizzle':
 				return new DrizzleProductRepository();
 			case 'pocketbase':
-				// TODO: Uncomment when ready to use PocketBase
-				// return new PocketBaseProductRepository();
-				throw new Error('PocketBase is currently disabled. Use Drizzle for now.');
+				return new PocketBaseProductRepository();
 			default:
 				throw new Error(`Unknown data source: ${dataSource}`);
 		}
@@ -29,14 +25,11 @@ export class ProductRepositoryFactory {
 
 	/**
 	 * Creates a product repository based on environment configuration
-	 * @returns A ProductRepository implementation (defaults to Drizzle)
+	 * @returns A ProductRepository implementation
 	 */
 	static createFromConfig(): ProductRepository {
-		// For now, always use Drizzle regardless of env var
-		// TODO: Enable PocketBase when ready
-		// const usePocketBase = process.env.POCKETBASE_ENABLED === 'true';
-		// return this.create(usePocketBase ? 'pocketbase' : 'drizzle');
-		return this.create('drizzle');
+		const usePocketBase = process.env.POCKETBASE_ENABLED === 'true';
+		return this.create(usePocketBase ? 'pocketbase' : 'drizzle');
 	}
 
 	/**
@@ -46,8 +39,7 @@ export class ProductRepositoryFactory {
 	static createBoth(): { drizzle: ProductRepository; pocketbase: ProductRepository | null } {
 		return {
 			drizzle: new DrizzleProductRepository(),
-			pocketbase: null // TODO: Enable when ready
-			// pocketbase: new PocketBaseProductRepository()
+			pocketbase: new PocketBaseProductRepository()
 		};
 	}
 
@@ -62,6 +54,6 @@ export class ProductRepositoryFactory {
 	 * Check if PocketBase is available
 	 */
 	static isPocketBaseAvailable(): boolean {
-		return false; // TODO: Enable when ready
+		return true;
 	}
 }

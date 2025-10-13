@@ -39,8 +39,8 @@ export const load: PageServerLoad = async ({ url }) => {
 			}
 		}
 
-		// Create product service with Drizzle (default)
-		const productService = new ProductService(ProductRepositoryFactory.create('drizzle'));
+		// Create product service with environment-based configuration
+		const productService = new ProductService(ProductRepositoryFactory.createFromConfig());
 
 		// Get all products first to extract filter options and count
 		const allProducts = await productService.getAllProducts();

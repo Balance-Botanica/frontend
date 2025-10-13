@@ -4,7 +4,7 @@ import type { PageServerLoad } from './$types';
 export const load: PageServerLoad = async () => {
 	try {
 		// console.log('🔄 Loading products from server...');
-		const productService = new ProductService(ProductRepositoryFactory.create('drizzle'));
+		const productService = new ProductService(ProductRepositoryFactory.createFromConfig());
 		const products = await productService.getAllProducts();
 		// console.log('✅ Products loaded:', products.length, 'products');
 

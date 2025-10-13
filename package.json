@@ -27,7 +27,11 @@
 		"security:check": "tsx scripts/check-security.js",
 		"test-db-sync": "tsx scripts/test-db-sync-system.js",
 		"check-env": "tsx scripts/check-env.js",
-		"start:all": "concurrently \"npm run dev\" \"npm run db:studio\" \"npm run bot\""
+		"start:all": "concurrently \"npm run dev\" \"npm run db:studio\" \"npm run bot\"",
+		"pb:start": "node scripts/start-pocketbase.cjs",
+		"pb:test": "node scripts/final-pocketbase-test.cjs",
+		"pb:setup-collections": "node scripts/init-pocketbase-collections.cjs",
+		"pb:test-repositories": "node scripts/test-pocketbase-repositories.cjs"
 	},
 	"devDependencies": {
 		"@eslint/compat": "^1.2.5",
@@ -69,10 +73,10 @@
 		"@oslojs/encoding": "^1.1.0",
 		"@supabase/gotrue-js": "^2.71.1",
 		"@supabase/supabase-js": "^2.56.0",
-		"better-sqlite3": "^11.8.0",
+		"better-sqlite3": "^11.10.0",
 		"cloudinary": "^2.7.0",
 		"dotenv": "^17.2.1",
-		"drizzle-orm": "^0.40.0",
+		"drizzle-orm": "^0.40.1",
 		"firebase": "^12.1.0",
 		"googleapis": "^159.0.0",
 		"gray-matter": "^4.0.3",
@@ -81,6 +85,7 @@
 		"marked": "^16.2.1",
 		"multer": "^2.0.2",
 		"node-telegram-bot-api": "^0.66.0",
-		"pocketbase": "^0.26.2"
+		"pocketbase": "^0.26.2",
+		"sqlite3": "^5.1.7"
 	}
 }

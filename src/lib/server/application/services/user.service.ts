@@ -1,13 +1,13 @@
 import { DrizzleUserRepository } from '$lib/server/data/repositories/drizzle-user.repository';
+import { UserRepositoryFactory } from '$lib/server/data/factories/user-repository.factory';
 import type { UserRepository } from '$lib/server/domain/interfaces/user.interface';
 
 export class UserService {
 	private userRepository: UserRepository;
 
 	constructor() {
-		// For now, we'll use the Drizzle repository directly
-		// In a more complex system, we might use a factory pattern like ProductRepositoryFactory
-		this.userRepository = new DrizzleUserRepository();
+		// Use factory pattern with environment-based configuration
+		this.userRepository = UserRepositoryFactory.createFromConfig();
 	}
 
 	/**
@@ -157,6 +157,21 @@ export class UserService {
 			return result;
 		} catch (error) {
 			console.error('[UserService] Error deleting delivery address:', error);
+			return false;
+		}
+	}
+
+	/**
+	 * Set a delivery address as default
+	 */
+	async setDefaultAddress(userId: string, addressId: string) {
+		try {
+			console.log('[UserService] Setting default address:', addressId, 'for user:', userId);
+			const result = await this.userRepository.setDefaultAddress(userId, addressId);
+			console.log('[UserService] Set default address result:', result ? 'Success' : 'Failed');
+			return result;
+		} catch (error) {
+			console.error('[UserService] Error setting default address:', error);
 			return false;
 		}
 	}

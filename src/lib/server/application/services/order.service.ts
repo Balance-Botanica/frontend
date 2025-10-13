@@ -1,5 +1,7 @@
 import { DrizzleOrderRepository } from '../../data/repositories/drizzle-order.repository';
 import { DrizzleUserRepository } from '../../data/repositories/drizzle-user.repository';
+import { OrderRepositoryFactory } from '../../data/factories/order-repository.factory';
+import { UserRepositoryFactory } from '../../data/factories/user-repository.factory';
 import type {
 	OrderRepository,
 	Order,
@@ -25,12 +27,13 @@ function getPromoCodeService() {
 
 export class OrderService {
 	private orderRepository: OrderRepository;
-	private userRepository: DrizzleUserRepository;
+	private userRepository: any; // Will be initialized with factory pattern
 
 	constructor() {
-		this.orderRepository = new DrizzleOrderRepository();
-		// Initialize userRepository for getting user email
-		this.userRepository = new DrizzleUserRepository();
+		// Use factory pattern with environment-based configuration
+		this.orderRepository = OrderRepositoryFactory.createFromConfig();
+		// Initialize userRepository using factory pattern
+		this.userRepository = UserRepositoryFactory.createFromConfig();
 	}
 
 	async getOrdersByUserId(userId: string): Promise<Order[]> {

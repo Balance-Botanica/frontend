@@ -1,5 +1,4 @@
 import { userService } from '$lib/server/application/services/user.service';
-import { DrizzleUserRepository } from '$lib/server/data/repositories/drizzle-user.repository';
 import { error, fail, redirect } from '@sveltejs/kit';
 import type { PageServerLoad, Actions } from '../../../.svelte-kit/types/src/routes/profile/$types';
 
@@ -148,8 +147,8 @@ export const actions: Actions = {
 				locals.user.id
 			);
 
-			const repository = new DrizzleUserRepository();
-			const success = await repository.setDefaultAddress(locals.user.id, addressId);
+			// Use UserService instead of directly instantiating repository
+			const success = await userService.setDefaultAddress(locals.user.id, addressId);
 
 			if (success) {
 				console.log('[Set Default Address] Successfully set default address');
