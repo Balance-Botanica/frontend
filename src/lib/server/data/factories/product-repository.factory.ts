@@ -1,22 +1,26 @@
-import { DrizzleProductRepository } from '../repositories/drizzle-product.repository';
+import { config } from 'dotenv';
+// Removed DrizzleProductRepository import since it doesn't exist
 import { PocketBaseProductRepository } from '../repositories/pocketbase-product.repository';
 import type { ProductRepository } from '../../domain/interfaces/product.interface';
 
-// Data source types
-export type DataSourceType = 'drizzle' | 'pocketbase';
+// Load environment variables
+config();
+
+// Data source types - keeping the type for compatibility but only supporting pocketbase
+export type DataSourceType = 'pocketbase';
 
 // Factory for creating product repositories
 export class ProductRepositoryFactory {
 	/**
 	 * Creates a product repository based on the specified data source
-	 * @param dataSource - The data source to use ('drizzle' or 'pocketbase')
+	 * @param dataSource - The data source to use ('pocketbase' only)
 	 * @returns A ProductRepository implementation
 	 */
 	static create(dataSource: DataSourceType): ProductRepository {
+		console.log('[ProductRepositoryFactory] Creating repository for data source:', dataSource);
 		switch (dataSource) {
-			case 'drizzle':
-				return new DrizzleProductRepository();
 			case 'pocketbase':
+				console.log('[ProductRepositoryFactory] Creating PocketBaseProductRepository');
 				return new PocketBaseProductRepository();
 			default:
 				throw new Error(`Unknown data source: ${dataSource}`);
@@ -28,30 +32,34 @@ export class ProductRepositoryFactory {
 	 * @returns A ProductRepository implementation
 	 */
 	static createFromConfig(): ProductRepository {
-		const usePocketBase = process.env.POCKETBASE_ENABLED === 'true';
-		return this.create(usePocketBase ? 'pocketbase' : 'drizzle');
+		console.log('[ProductRepositoryFactory] Environment variables:');
+		console.log('[ProductRepositoryFactory]   POCKETBASE_ENABLED:', process.env.POCKETBASE_ENABLED);
+		console.log('[ProductRepositoryFactory]   POCKETBASE_URL:', process.env.POCKETBASE_URL);
+
+		// Since Drizzle repositories have been removed, always use PocketBase
+		console.log('[ProductRepositoryFactory] Using PocketBase: true');
+		return this.create('pocketbase');
 	}
 
 	/**
-	 * Creates both repositories for comparison or migration purposes
-	 * @returns Object containing both repository implementations
+	 * Creates PocketBase repository for consistency with other factories
+	 * @returns PocketBase ProductRepository implementation
 	 */
-	static createBoth(): { drizzle: ProductRepository; pocketbase: ProductRepository | null } {
+	static createBoth(): { pocketbase: ProductRepository } {
 		return {
-			drizzle: new DrizzleProductRepository(),
 			pocketbase: new PocketBaseProductRepository()
 		};
 	}
 
 	/**
-	 * Get the default data source (always Drizzle for now)
+	 * Get the default data source (now always PocketBase)
 	 */
 	static getDefaultDataSource(): DataSourceType {
-		return 'drizzle';
+		return 'pocketbase';
 	}
 
 	/**
-	 * Check if PocketBase is available
+	 * Check if PocketBase is available (always true now)
 	 */
 	static isPocketBaseAvailable(): boolean {
 		return true;

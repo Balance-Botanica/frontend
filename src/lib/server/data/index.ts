@@ -2,13 +2,9 @@
 // This provides a clean interface to access all data functionality
 
 // Export repositories
-export { DrizzleProductRepository } from './repositories/drizzle-product.repository';
 export { PocketBaseProductRepository } from './repositories/pocketbase-product.repository';
-export { DrizzleUserRepository } from './repositories/drizzle-user.repository';
 export { PocketBaseUserRepository } from './repositories/pocketbase-user.repository';
-export { DrizzleOrderRepository } from './repositories/drizzle-order.repository';
 export { PocketBaseOrderRepository } from './repositories/pocketbase-order.repository';
-export { DrizzlePromoCodeRepository } from './repositories/drizzle-promo-code.repository';
 export { PocketBasePromoCodeRepository } from './repositories/pocketbase-promo-code.repository';
 
 // Export factories

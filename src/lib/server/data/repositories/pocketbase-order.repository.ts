@@ -1,4 +1,4 @@
-import { pb } from '../../pocketbase/index';
+import { getAuthenticatedClient } from '../../pocketbase/index';
 import type {
 	OrderRepository,
 	Order,
@@ -21,6 +21,7 @@ export class PocketBaseOrderRepository implements OrderRepository {
 	async getOrdersByUserId(userId: string): Promise<Order[]> {
 		try {
 			console.log('[PocketBaseOrderRepository] Fetching orders for user:', userId);
+			const pb = await getAuthenticatedClient();
 			const records = await pb.collection('orders').getList(1, 50, {
 				filter: `user_id = "${userId}"`,
 				sort: 'created'
@@ -36,6 +37,7 @@ export class PocketBaseOrderRepository implements OrderRepository {
 	async getOrderById(orderId: string): Promise<Order | null> {
 		try {
 			console.log('[PocketBaseOrderRepository] Fetching order by ID:', orderId);
+			const pb = await getAuthenticatedClient();
 			const record = await pb.collection('orders').getOne(orderId);
 			return record ? this.mapOrderToDomain(record) : null;
 		} catch (error) {
@@ -47,6 +49,7 @@ export class PocketBaseOrderRepository implements OrderRepository {
 	async getAllOrders(): Promise<Order[]> {
 		try {
 			console.log('[PocketBaseOrderRepository] Fetching all orders for admin');
+			const pb = await getAuthenticatedClient();
 			const records = await pb.collection('orders').getList(1, 100, {
 				sort: 'created'
 			});
@@ -79,6 +82,7 @@ export class PocketBaseOrderRepository implements OrderRepository {
 		try {
 			console.log('[PocketBaseOrderRepository] Creating new order for user:', data.userId);
 			console.log('[PocketBaseOrderRepository] Input data:', JSON.stringify(data, null, 2));
+			const pb = await getAuthenticatedClient();
 
 			// Generate unique 6-digit order ID
 			let orderId: string;
@@ -130,6 +134,7 @@ export class PocketBaseOrderRepository implements OrderRepository {
 	async updateOrderStatus(orderId: string, status: OrderStatus): Promise<boolean> {
 		try {
 			console.log('[PocketBaseOrderRepository] Updating order status:', orderId, '->', status);
+			const pb = await getAuthenticatedClient();
 
 			// First check if order exists
 			const existingOrder = await this.getOrderById(orderId);
@@ -168,6 +173,7 @@ export class PocketBaseOrderRepository implements OrderRepository {
 	async updateOrderFields(orderId: string, updateData: Partial<Order>): Promise<boolean> {
 		try {
 			console.log('[PocketBaseOrderRepository] Updating order fields:', orderId, updateData);
+			const pb = await getAuthenticatedClient();
 
 			// First check if order exists
 			const existingOrder = await this.getOrderById(orderId);
@@ -199,56 +205,54 @@ export class PocketBaseOrderRepository implements OrderRepository {
 			const record = await pb.collection('orders').update(orderId, updateObject);
 
 			console.log('[PocketBaseOrderRepository] Field update result:', record);
-
-			// Verify fields were updated
-			const updatedOrder = await this.getOrderById(orderId);
-			if (updatedOrder) {
-				const order = updatedOrder;
-				console.log('[PocketBaseOrderRepository] Order fields after update:', {
-					customer_name: order.customerName,
-					customer_phone: order.customerPhone,
-					user_email: order.userEmail
-				});
-
-				// Check that at least one field was updated
-				const hasUpdates =
-					(updateData.customerName !== undefined &&
-						order.customerName === updateData.customerName) ||
-					(updateData.customerPhone !== undefined &&
-						order.customerPhone === updateData.customerPhone) ||
-					(updateData.userEmail !== undefined && order.userEmail === updateData.userEmail);
-
-				return hasUpdates;
-			}
-
-			return false;
+			return true;
 		} catch (error) {
 			console.error('[PocketBaseOrderRepository] Error updating order fields:', error);
-			console.error(
-				'[PocketBaseOrderRepository] Error details:',
-				error instanceof Error ? error.message : String(error)
-			);
 			return false;
 		}
 	}
 
+	async deleteOrder(orderId: string): Promise<boolean> {
+		try {
+			console.log('[PocketBaseOrderRepository] Deleting order:', orderId);
+			const pb = await getAuthenticatedClient();
+			await pb.collection('orders').delete(orderId);
+			console.log('[PocketBaseOrderRepository] Order deleted successfully');
+			return true;
+		} catch (error) {
+			console.error('[PocketBaseOrderRepository] Error deleting order:', error);
+			return false;
+		}
+	}
+
+	// Map PocketBase record to domain model
 	private mapOrderToDomain(record: any): Order {
 		return {
 			id: record.id,
 			userId: record.user_id,
-			items: JSON.parse(record.items),
+			items: this.parseItems(record.items),
 			total: record.total,
 			status: record.status as OrderStatus,
-			deliveryAddress: record.delivery_address ? JSON.parse(record.delivery_address) : undefined,
-			notes: record.notes || undefined,
-
-			// Customer information
-			customerName: record.customer_name || undefined,
-			customerPhone: record.customer_phone || undefined,
-			userEmail: record.user_email || undefined,
-
+			deliveryAddress: record.delivery_address ? JSON.parse(record.delivery_address) : null,
+			notes: record.notes,
+			customerName: record.customer_name,
+			customerPhone: record.customer_phone,
+			userEmail: record.user_email,
 			createdAt: new Date(record.created),
 			updatedAt: new Date(record.updated)
 		};
+	}
+
+	// Parse items from JSON string
+	private parseItems(items: string | any[]): OrderItem[] {
+		if (Array.isArray(items)) {
+			return items;
+		}
+		try {
+			return JSON.parse(items);
+		} catch (error) {
+			console.error('[PocketBaseOrderRepository] Error parsing items:', error);
+			return [];
+		}
 	}
 }

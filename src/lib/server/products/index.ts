@@ -1,6 +1,6 @@
 // Main export file for product management
 // This provides a clean interface to access product functionality
-// NOTE: Currently defaults to Drizzle. PocketBase is commented out for initial development.
+// NOTE: Currently defaults to PocketBase since Drizzle repositories have been removed.
 
 // Import locally for use within this module (avoids runtime ReferenceError)
 import { ProductRepositoryFactory } from '../data/factories/product-repository.factory';
@@ -15,7 +15,7 @@ export type {
 } from '../domain/interfaces/product.interface';
 
 // Export repositories
-export { DrizzleProductRepository } from '../data/repositories/drizzle-product.repository';
+// Removed DrizzleProductRepository export since it doesn't exist
 export { PocketBaseProductRepository } from '../data/repositories/pocketbase-product.repository';
 
 // Re-export for consumers
@@ -26,12 +26,10 @@ export { ProductService } from '../application/services/product.service';
 export type { DataSourceType } from '../data/factories/product-repository.factory';
 
 // Convenience function to get product service with configured data source
-export async function createProductService(dataSource?: 'drizzle' | 'pocketbase') {
-	// For now, always use Drizzle regardless of parameter
+export async function createProductService(dataSource?: 'pocketbase') {
+	// For now, always use PocketBase since Drizzle repositories have been removed
 	const repository = ProductRepositoryFactory.create(
 		dataSource || ProductRepositoryFactory.getDefaultDataSource()
 	);
 	return new ProductService(repository);
 }
-
-// No default export to avoid bundling pitfalls; prefer named exports above.

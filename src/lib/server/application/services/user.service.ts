@@ -1,4 +1,3 @@
-import { DrizzleUserRepository } from '$lib/server/data/repositories/drizzle-user.repository';
 import { UserRepositoryFactory } from '$lib/server/data/factories/user-repository.factory';
 import type { UserRepository } from '$lib/server/domain/interfaces/user.interface';
 

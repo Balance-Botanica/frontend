@@ -1,11 +1,10 @@
-import { DrizzlePromoCodeRepository } from '../../data/repositories/drizzle-promo-code.repository';
 import { PromoCodeRepositoryFactory } from '../../data/factories/promo-code-repository.factory';
 import type {
 	PromoCodeRepository,
 	CreatePromoCodeData,
 	PromoCodeValidationResult
 } from '../../domain/interfaces/promo-code.interface';
-import type { PromoCode } from '../../db/schema';
+import type { PromoCode } from '../../domain/entities/promo-code.entity';
 
 export class PromoCodeService {
 	private promoCodeRepository: PromoCodeRepository;

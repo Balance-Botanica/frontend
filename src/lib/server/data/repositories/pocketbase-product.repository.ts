@@ -1,4 +1,4 @@
-import { pb } from '../../pocketbase/index';
+import { getAuthenticatedClient } from '../../pocketbase/index';
 import type {
 	ProductRepository,
 	Product,
@@ -10,6 +10,7 @@ import type {
 export class PocketBaseProductRepository implements ProductRepository {
 	async getAll(): Promise<Product[]> {
 		try {
+			const pb = await getAuthenticatedClient();
 			const records = await pb.collection('products').getList(1, 50, {
 				sort: '-created'
 			});
@@ -22,6 +23,7 @@ export class PocketBaseProductRepository implements ProductRepository {
 
 	async getById(id: string): Promise<Product | null> {
 		try {
+			const pb = await getAuthenticatedClient();
 			const record = await pb.collection('products').getOne(id);
 			return this.mapToDomain(record);
 		} catch (error) {
@@ -32,6 +34,7 @@ export class PocketBaseProductRepository implements ProductRepository {
 
 	async getByCategory(category: string): Promise<Product[]> {
 		try {
+			const pb = await getAuthenticatedClient();
 			const records = await pb.collection('products').getList(1, 50, {
 				filter: `categories ~ "${category}"`,
 				sort: '-created'
@@ -45,6 +48,7 @@ export class PocketBaseProductRepository implements ProductRepository {
 
 	async search(query: string): Promise<Product[]> {
 		try {
+			const pb = await getAuthenticatedClient();
 			const records = await pb.collection('products').getList(1, 50, {
 				filter: `name ~ "${query}" || description ~ "${query}"`,
 				sort: '-created'
@@ -58,6 +62,7 @@ export class PocketBaseProductRepository implements ProductRepository {
 
 	async create(data: CreateProductData): Promise<Product | null> {
 		try {
+			const pb = await getAuthenticatedClient();
 			const record = await pb.collection('products').create({
 				name: data.name,
 				description: data.description,
@@ -65,8 +70,8 @@ export class PocketBaseProductRepository implements ProductRepository {
 				stock: data.stock,
 				size: data.size,
 				flavor: data.flavor,
-				categories: data.categories,
-				image_urls: data.imageUrls
+				categories: JSON.parse(data.categories),
+				image_urls: JSON.parse(data.imageUrls)
 			});
 			return this.mapToDomain(record);
 		} catch (error) {
@@ -77,6 +82,7 @@ export class PocketBaseProductRepository implements ProductRepository {
 
 	async update(id: string, data: UpdateProductData): Promise<Product | null> {
 		try {
+			const pb = await getAuthenticatedClient();
 			const updateData: any = {};
 			if (data.name !== undefined) updateData.name = data.name;
 			if (data.description !== undefined) updateData.description = data.description;
@@ -84,8 +90,8 @@ export class PocketBaseProductRepository implements ProductRepository {
 			if (data.stock !== undefined) updateData.stock = data.stock;
 			if (data.size !== undefined) updateData.size = data.size;
 			if (data.flavor !== undefined) updateData.flavor = data.flavor;
-			if (data.categories !== undefined) updateData.categories = data.categories;
-			if (data.imageUrls !== undefined) updateData.image_urls = data.imageUrls;
+			if (data.categories !== undefined) updateData.categories = JSON.parse(data.categories);
+			if (data.imageUrls !== undefined) updateData.image_urls = JSON.parse(data.imageUrls);
 
 			const record = await pb.collection('products').update(id, updateData);
 			return this.mapToDomain(record);
@@ -97,6 +103,7 @@ export class PocketBaseProductRepository implements ProductRepository {
 
 	async delete(id: string): Promise<boolean> {
 		try {
+			const pb = await getAuthenticatedClient();
 			await pb.collection('products').delete(id);
 			return true;
 		} catch (error) {
@@ -107,6 +114,7 @@ export class PocketBaseProductRepository implements ProductRepository {
 
 	async getLowStock(threshold: number = 5): Promise<Product[]> {
 		try {
+			const pb = await getAuthenticatedClient();
 			const records = await pb.collection('products').getList(1, 50, {
 				filter: `stock <= ${threshold}`,
 				sort: '-created'
@@ -128,8 +136,8 @@ export class PocketBaseProductRepository implements ProductRepository {
 			stock: record.stock,
 			size: record.size,
 			flavor: record.flavor,
-			categories: record.categories,
-			imageUrls: record.image_urls,
+			categories: JSON.stringify(record.categories),
+			imageUrls: JSON.stringify(record.image_urls),
 			createdAt: new Date(record.created),
 			updatedAt: new Date(record.updated)
 		};

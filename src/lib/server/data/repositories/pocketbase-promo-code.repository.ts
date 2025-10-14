@@ -1,4 +1,4 @@
-import { pb } from '../../pocketbase/index';
+import { getAuthenticatedClient } from '../../pocketbase/index';
 import type { PromoCodeRepository } from '../../domain/interfaces/promo-code.interface';
 
 interface CreatePromoCodeData {
@@ -19,6 +19,7 @@ const rateLimitStore = new Map<string, { attempts: number; resetTime: number }>(
 export class PocketBasePromoCodeRepository implements PromoCodeRepository {
 	async findByCode(code: string): Promise<any> {
 		try {
+			const pb = await getAuthenticatedClient();
 			const records = await pb.collection('promo_codes').getList(1, 1, {
 				filter: `code = "${code}" && is_active = true`
 			});
@@ -31,6 +32,7 @@ export class PocketBasePromoCodeRepository implements PromoCodeRepository {
 
 	async findById(id: string): Promise<any> {
 		try {
+			const pb = await getAuthenticatedClient();
 			const record = await pb.collection('promo_codes').getOne(id);
 			return record || null;
 		} catch (error) {
@@ -40,6 +42,7 @@ export class PocketBasePromoCodeRepository implements PromoCodeRepository {
 
 	async findAll(): Promise<any[]> {
 		try {
+			const pb = await getAuthenticatedClient();
 			const records = await pb.collection('promo_codes').getList(1, 100, {
 				sort: 'created'
 			});
@@ -51,6 +54,7 @@ export class PocketBasePromoCodeRepository implements PromoCodeRepository {
 
 	async create(data: CreatePromoCodeData): Promise<any> {
 		try {
+			const pb = await getAuthenticatedClient();
 			const record = await pb.collection('promo_codes').create({
 				code: data.code,
 				description: data.description,
@@ -74,6 +78,7 @@ export class PocketBasePromoCodeRepository implements PromoCodeRepository {
 
 	async update(id: string, data: Partial<CreatePromoCodeData>): Promise<any> {
 		try {
+			const pb = await getAuthenticatedClient();
 			const updateData: any = {
 				updated: new Date().toISOString()
 			};
@@ -98,6 +103,7 @@ export class PocketBasePromoCodeRepository implements PromoCodeRepository {
 
 	async delete(id: string): Promise<void> {
 		try {
+			const pb = await getAuthenticatedClient();
 			await pb.collection('promo_codes').delete(id);
 		} catch (error) {
 			throw error;
@@ -109,6 +115,7 @@ export class PocketBasePromoCodeRepository implements PromoCodeRepository {
 			// Get current promo code to get current usage count
 			const promoCode = await this.findById(id);
 			if (promoCode) {
+				const pb = await getAuthenticatedClient();
 				await pb.collection('promo_codes').update(id, {
 					usage_count: promoCode.usage_count + 1,
 					updated: new Date().toISOString()
@@ -121,6 +128,7 @@ export class PocketBasePromoCodeRepository implements PromoCodeRepository {
 
 	async recordUsage(promoCodeId: string, userId: string, orderId?: string): Promise<void> {
 		try {
+			const pb = await getAuthenticatedClient();
 			await pb.collection('promo_code_usages').create({
 				promo_code_id: promoCodeId,
 				user_id: userId,
@@ -134,6 +142,7 @@ export class PocketBasePromoCodeRepository implements PromoCodeRepository {
 
 	async hasUserUsedCode(userId: string, promoCodeId: string): Promise<boolean> {
 		try {
+			const pb = await getAuthenticatedClient();
 			const records = await pb.collection('promo_code_usages').getList(1, 1, {
 				filter: `user_id = "${userId}" && promo_code_id = "${promoCodeId}"`
 			});

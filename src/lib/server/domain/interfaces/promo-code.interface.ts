@@ -1,4 +1,4 @@
-import type { PromoCode, PromoCodeUsage } from '../../db/schema';
+import type { PromoCode, PromoCodeUsage } from '../../domain/entities/promo-code.entity';
 
 export interface PromoCodeRepository {
 	findByCode(code: string): Promise<PromoCode | null>;

@@ -1,4 +1,4 @@
-import { pb } from '../../pocketbase/index';
+import { getAuthenticatedClient } from '../../pocketbase/index';
 import type {
 	UserRepository,
 	User,
@@ -14,6 +14,7 @@ export class PocketBaseUserRepository implements UserRepository {
 	async getUserById(id: string): Promise<User | null> {
 		try {
 			console.log('[PocketBaseUserRepository] Attempting to fetch user by ID:', id);
+			const pb = await getAuthenticatedClient();
 			const record = await pb.collection('users').getOne(id);
 			const user = this.mapUserToDomain(record);
 			console.log('[PocketBaseUserRepository] User fetch result:', user ? 'Found' : 'Not found');
@@ -27,6 +28,7 @@ export class PocketBaseUserRepository implements UserRepository {
 	async getUserByEmail(email: string): Promise<User | null> {
 		try {
 			console.log('[PocketBaseUserRepository] Attempting to fetch user by email:', email);
+			const pb = await getAuthenticatedClient();
 			const records = await pb.collection('users').getList(1, 1, {
 				filter: `email = "${email}"`
 			});
@@ -49,6 +51,7 @@ export class PocketBaseUserRepository implements UserRepository {
 	async createUser(data: CreateUserData): Promise<User | null> {
 		try {
 			console.log('[PocketBaseUserRepository] Creating new user with data:', data);
+			const pb = await getAuthenticatedClient();
 
 			const record = await pb.collection('users').create({
 				email: data.email,
@@ -70,6 +73,7 @@ export class PocketBaseUserRepository implements UserRepository {
 	async updateUser(id: string, data: UpdateUserData): Promise<User | null> {
 		try {
 			console.log('[PocketBaseUserRepository] Updating user', id, 'with data:', data);
+			const pb = await getAuthenticatedClient();
 
 			const updateData: any = {};
 			if (data.firstName !== undefined) updateData.first_name = data.firstName;
@@ -89,6 +93,7 @@ export class PocketBaseUserRepository implements UserRepository {
 	async getDeliveryAddressesByUserId(userId: string): Promise<DeliveryAddress[]> {
 		try {
 			console.log('[PocketBaseUserRepository] Fetching delivery addresses for user:', userId);
+			const pb = await getAuthenticatedClient();
 			const records = await pb.collection('delivery_addresses').getList(1, 50, {
 				filter: `user_id = "${userId}"`,
 				sort: '-is_default,-created'
@@ -113,6 +118,7 @@ export class PocketBaseUserRepository implements UserRepository {
 	async getDeliveryAddressById(id: string): Promise<DeliveryAddress | null> {
 		try {
 			console.log('[PocketBaseUserRepository] Fetching delivery address by ID:', id);
+			const pb = await getAuthenticatedClient();
 			const record = await pb.collection('delivery_addresses').getOne(id);
 			const address = this.mapDeliveryAddressToDomain(record);
 			console.log(
@@ -132,6 +138,7 @@ export class PocketBaseUserRepository implements UserRepository {
 	async createDeliveryAddress(data: CreateDeliveryAddressData): Promise<DeliveryAddress | null> {
 		try {
 			console.log('[PocketBaseUserRepository] Creating delivery address with data:', data);
+			const pb = await getAuthenticatedClient();
 
 			// If this is marked as default, clear other default addresses
 			if (data.isDefault) {
@@ -189,6 +196,7 @@ export class PocketBaseUserRepository implements UserRepository {
 	): Promise<DeliveryAddress | null> {
 		try {
 			console.log('[PocketBaseUserRepository] Updating delivery address', id, 'with data:', data);
+			const pb = await getAuthenticatedClient();
 
 			const updateData: any = {};
 			const now = new Date().toISOString();
@@ -247,6 +255,7 @@ export class PocketBaseUserRepository implements UserRepository {
 	async deleteDeliveryAddressById(id: string): Promise<boolean> {
 		try {
 			console.log('[PocketBaseUserRepository] Deleting delivery address:', id);
+			const pb = await getAuthenticatedClient();
 			await pb.collection('delivery_addresses').delete(id);
 			console.log('[PocketBaseUserRepository] Delivery address deleted successfully');
 			return true;
@@ -267,6 +276,7 @@ export class PocketBaseUserRepository implements UserRepository {
 				'address:',
 				addressId
 			);
+			const pb = await getAuthenticatedClient();
 
 			// First, clear all default addresses for this user
 			const userAddresses = await this.getDeliveryAddressesByUserId(userId);

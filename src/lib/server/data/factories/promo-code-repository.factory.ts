@@ -1,21 +1,23 @@
-import { DrizzlePromoCodeRepository } from '../repositories/drizzle-promo-code.repository';
+import { config } from 'dotenv';
+// Removed DrizzlePromoCodeRepository import since it doesn't exist
 import { PocketBasePromoCodeRepository } from '../repositories/pocketbase-promo-code.repository';
 import type { PromoCodeRepository } from '../../domain/interfaces/promo-code.interface';
 
-// Data source types
-export type PromoCodeDataSourceType = 'drizzle' | 'pocketbase';
+// Load environment variables
+config();
+
+// Data source types - keeping the type for compatibility but only supporting pocketbase
+export type PromoCodeDataSourceType = 'pocketbase';
 
 // Factory for creating promo code repositories
 export class PromoCodeRepositoryFactory {
 	/**
 	 * Creates a promo code repository based on the specified data source
-	 * @param dataSource - The data source to use ('drizzle' or 'pocketbase')
+	 * @param dataSource - The data source to use ('pocketbase' only)
 	 * @returns A PromoCodeRepository implementation
 	 */
 	static create(dataSource: PromoCodeDataSourceType): PromoCodeRepository {
 		switch (dataSource) {
-			case 'drizzle':
-				return new DrizzlePromoCodeRepository();
 			case 'pocketbase':
 				return new PocketBasePromoCodeRepository();
 			default:
@@ -28,33 +30,31 @@ export class PromoCodeRepositoryFactory {
 	 * @returns A PromoCodeRepository implementation
 	 */
 	static createFromConfig(): PromoCodeRepository {
-		const usePocketBase = process.env.POCKETBASE_ENABLED === 'true';
-		return this.create(usePocketBase ? 'pocketbase' : 'drizzle');
+		// Since Drizzle repositories have been removed, always use PocketBase
+		return this.create('pocketbase');
 	}
 
 	/**
-	 * Creates both repositories for comparison or migration purposes
-	 * @returns Object containing both repository implementations
+	 * Creates PocketBase repository for consistency with other factories
+	 * @returns PocketBase PromoCodeRepository implementation
 	 */
-	static createBoth(): { drizzle: PromoCodeRepository; pocketbase: PromoCodeRepository } {
+	static createBoth(): { pocketbase: PromoCodeRepository } {
 		return {
-			drizzle: new DrizzlePromoCodeRepository(),
 			pocketbase: new PocketBasePromoCodeRepository()
 		};
 	}
 
 	/**
-	 * Get the default data source based on environment configuration
+	 * Get the default data source (now always PocketBase)
 	 */
 	static getDefaultDataSource(): PromoCodeDataSourceType {
-		const usePocketBase = process.env.POCKETBASE_ENABLED === 'true';
-		return usePocketBase ? 'pocketbase' : 'drizzle';
+		return 'pocketbase';
 	}
 
 	/**
-	 * Check if PocketBase is available and enabled
+	 * Check if PocketBase is available (always true now)
 	 */
 	static isPocketBaseAvailable(): boolean {
-		return process.env.POCKETBASE_ENABLED === 'true';
+		return true;
 	}
 }

@@ -1,5 +1,3 @@
-import { DrizzleOrderRepository } from '../../data/repositories/drizzle-order.repository';
-import { DrizzleUserRepository } from '../../data/repositories/drizzle-user.repository';
 import { OrderRepositoryFactory } from '../../data/factories/order-repository.factory';
 import { UserRepositoryFactory } from '../../data/factories/user-repository.factory';
 import type {

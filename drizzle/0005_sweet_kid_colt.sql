@@ -1,1 +1,0 @@
-ALTER TABLE `orders` ADD `user_email` text;
