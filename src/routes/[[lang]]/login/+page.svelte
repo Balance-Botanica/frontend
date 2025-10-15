@@ -2,7 +2,7 @@
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
-	import { supabaseAuthStore, isAuthenticated } from '$lib/auth/supabase-store';
+	import { pocketbaseAuthStore, isAuthenticated } from '$lib/auth/pocketbase-store';
 	import LoginForm from '$lib/components/LoginForm.svelte';
 	import { createPageTranslations } from '$lib/i18n/store';
 	import SEO from '$lib/components/SEO.svelte';
@@ -15,7 +15,7 @@
 
 	// Initialize auth store
 	onMount(() => {
-		supabaseAuthStore.initialize();
+		pocketbaseAuthStore.initialize();
 	});
 
 	// Handle successful authentication

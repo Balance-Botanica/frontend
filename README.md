@@ -113,8 +113,8 @@ CREATE TABLE products (
 ### Product Fetching Architecture
 
 #### 1. **Data Layer**
-- **`src/lib/server/db/schema.ts`** - Drizzle database schema
-- **`src/lib/server/data/repositories/drizzle-product.repository.ts`** - Repository implementation
+- **`src/lib/server/pocketbase/index.ts`** - PocketBase client configuration
+- **`src/lib/server/data/repositories/pocketbase-product.repository.ts`** - Repository implementation
 - **`src/lib/server/data/mappers/product.mapper.ts`** - Mapping between DTO and domain model
 
 #### 2. **Domain Layer**
@@ -131,7 +131,7 @@ CREATE TABLE products (
 
 ### Data Flow
 ```
-Database (SQLite) → Drizzle ORM → Repository → Service → Page Server → Component → UI
+PocketBase Database → PocketBase Client → Repository → Service → Page Server → Component → UI
 ```
 
 ### Implementation Features
@@ -154,7 +154,7 @@ Database (SQLite) → Drizzle ORM → Repository → Service → Page Server →
 
 ### Current Database State
 
-The `drizzle/database.sqlite` database contains **7 products**:
+The PocketBase database contains **7 products**:
 
 - **4 products** with 1 image (no slider)
 - **3 products** with multiple images (with slider):
@@ -170,7 +170,7 @@ All products have correct Cloudinary URLs and properly structured data.
 ```typescript
 // src/routes/+page.server.ts
 export const load: PageServerLoad = async () => {
-    const productService = new ProductService(ProductRepositoryFactory.create('drizzle'));
+    const productService = new ProductService(ProductRepositoryFactory.create('pocketbase'));
     const products = await productService.getAllProducts();
     return { products };
 };

@@ -21,7 +21,7 @@
 	import Footer from '$lib/components/Footer.svelte';
 	import CookieConsent from '$lib/components/CookieConsent.svelte';
 	import NotificationContainer from '$lib/components/NotificationContainer.svelte';
-	import { supabaseAuthStore, user, isAuthenticated, isLoading } from '$lib/auth/supabase-store';
+	import { user, isAuthenticated, isLoading, session, error } from '$lib/auth/pocketbase-store';
 	import { setLanguage } from '$lib/stores/language';
 
 	// State for mobile navigation - properly declared with $state
@@ -48,10 +48,8 @@
 				isAuthenticated: $isAuthenticated,
 				isLoading: $isLoading,
 				userEmail: $user?.email || null,
-				userName: $user?.name || null,
-				avatarUrl: $user?.avatarUrl || null,
-				sessionExists: !!$supabaseAuthStore.session,
-				error: $supabaseAuthStore.error || null
+				sessionExists: !!$session,
+				error: $error || null
 			},
 			null,
 			2
@@ -63,11 +61,8 @@
 				isAuthenticated: $isAuthenticated,
 				isLoading: $isLoading,
 				userEmail: $user?.email || null,
-				userName: $user?.name || null,
-				avatarUrl: $user?.avatarUrl || null,
-				sessionExists: !!$supabaseAuthStore.session,
-				sessionAccessToken: $supabaseAuthStore.session?.access_token ? 'Present' : 'Missing',
-				error: $supabaseAuthStore.error || null,
+				sessionExists: !!$session,
+				error: $error || null,
 				timestamp: new Date().toISOString()
 			});
 			lastLoggedState = authStateLog;
@@ -107,9 +102,8 @@
 		console.log('🎯 [LAYOUT] 🔍 IMMEDIATE AUTH STATE CHECK:', {
 			isAuthenticated: $isAuthenticated,
 			userEmail: $user?.email || null,
-			userName: $user?.name || null,
-			sessionExists: !!$supabaseAuthStore.session,
-			error: $supabaseAuthStore.error || null,
+			sessionExists: !!$session,
+			error: $error || null,
 			timestamp: new Date().toISOString(),
 			pageUrl: window.location.href
 		});
@@ -122,16 +116,16 @@
 			await initializeI18n(data?.locale || 'uk-ua'); // Use server locale or fallback to Ukrainian
 
 			console.log('✅ [LAYOUT] App initialization completed successfully');
-		} catch (error) {
-			console.error('❌ [LAYOUT] Failed to initialize:', error);
+		} catch (initError) {
+			console.error('❌ [LAYOUT] Failed to initialize:', initError);
 			// Log auth state even on error
 			console.log('🔍 [LAYOUT] Auth Store State (on error):', {
 				isAuthenticated: $isAuthenticated,
 				isLoading: $isLoading,
 				userEmail: $user?.email || null,
-				sessionExists: !!$supabaseAuthStore.session,
-				error: $supabaseAuthStore.error || null,
-				initError: error instanceof Error ? error.message : String(error)
+				sessionExists: !!$session,
+				storeError: $error || null,
+				initError: initError instanceof Error ? initError.message : String(initError)
 			});
 		}
 
@@ -139,10 +133,8 @@
 		console.log('🎯 [LAYOUT] 🔥 IMMEDIATE FINAL AUTH CHECK:', {
 			isAuthenticated: $isAuthenticated,
 			userEmail: $user?.email || null,
-			userName: $user?.name || null,
-			sessionExists: !!$supabaseAuthStore.session,
-			sessionAccessToken: $supabaseAuthStore.session?.access_token ? 'Present' : 'Missing',
-			error: $supabaseAuthStore.error || null,
+			sessionExists: !!$session,
+			error: $error || null,
 			timestamp: new Date().toISOString()
 		});
 
@@ -150,8 +142,6 @@
 		if ($isAuthenticated && $user?.email) {
 			console.log('🎉 [LAYOUT] ✅ SESSION PERSISTENCE WORKING! User is logged in:', {
 				userEmail: $user.email,
-				userName: $user.name || null,
-				avatarUrl: $user.avatarUrl || null,
 				timestamp: new Date().toISOString()
 			});
 		} else {

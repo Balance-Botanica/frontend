@@ -11,11 +11,34 @@ export class UserService {
 
 	/**
 	 * Get user by ID or create if not exists
-	 * Note: The userId parameter is the Supabase user ID, but we store our own ID in the database
+	 * Note: The userId parameter is now the PocketBase user ID
+	 */
+	async getUserById(userId: string) {
+		try {
+			console.log('[UserService] Getting user by ID:', userId);
+
+			// Get user by ID from our database
+			const user = await this.userRepository.getUserById(userId);
+
+			return user;
+		} catch (error) {
+			console.error('[UserService] Error getting user by ID:', error);
+			return null;
+		}
+	}
+
+	/**
+	 * Get user by ID or create if not exists
+	 * Note: The userId parameter is the PocketBase user ID
 	 */
 	async getOrCreateUser(userId: string, email: string) {
 		try {
-			console.log('[UserService] Getting or creating user - Supabase ID:', userId, 'Email:', email);
+			console.log(
+				'[UserService] Getting or creating user - PocketBase ID:',
+				userId,
+				'Email:',
+				email
+			);
 
 			// First, try to find user by email since that's our unique identifier
 			let user = await this.userRepository.getUserByEmail(email);

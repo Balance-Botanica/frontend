@@ -1,7 +1,5 @@
 import { cloudinary } from './config.js';
-import { drizzle } from 'drizzle-orm/better-sqlite3';
-import { products } from '../db/schema.js';
-import { eq } from 'drizzle-orm';
+import { getAuthenticatedClient } from '../pocketbase/index.js';
 
 export interface ImageInfo {
 	url: string;
@@ -31,22 +29,21 @@ export function stringifyImageUrls(imageUrls: string[]): string {
 /**
  * Add new image URL to product's imageUrls array
  */
-export async function addImageToProduct(
-	db: any,
-	productId: string,
-	imageUrl: string
-): Promise<boolean> {
+export async function addImageToProduct(productId: string, imageUrl: string): Promise<boolean> {
 	try {
-		const product = await db.select().from(products).where(eq(products.id, productId)).get();
+		const pb = await getAuthenticatedClient();
+
+		// Get the current product
+		const product = await pb.collection('products').getOne(productId);
 		if (!product) return false;
 
-		const currentUrls = parseImageUrls(product.imageUrls);
+		const currentUrls = parseImageUrls(product.image_urls);
 		const updatedUrls = [...currentUrls, imageUrl];
 
-		await db
-			.update(products)
-			.set({ imageUrls: stringifyImageUrls(updatedUrls) })
-			.where(eq(products.id, productId));
+		// Update the product with the new image URLs
+		await pb.collection('products').update(productId, {
+			image_urls: stringifyImageUrls(updatedUrls)
+		});
 
 		return true;
 	} catch (error) {
@@ -58,25 +55,24 @@ export async function addImageToProduct(
 /**
  * Delete image by index from product's imageUrls array
  */
-export async function deleteImageByIndex(
-	db: any,
-	productId: string,
-	index: number
-): Promise<boolean> {
+export async function deleteImageByIndex(productId: string, index: number): Promise<boolean> {
 	try {
-		const product = await db.select().from(products).where(eq(products.id, productId)).get();
+		const pb = await getAuthenticatedClient();
+
+		// Get the current product
+		const product = await pb.collection('products').getOne(productId);
 		if (!product) return false;
 
-		const currentUrls = parseImageUrls(product.imageUrls);
+		const currentUrls = parseImageUrls(product.image_urls);
 		if (index < 0 || index >= currentUrls.length) return false;
 
 		// Remove image at specified index
 		const updatedUrls = currentUrls.filter((_, i) => i !== index);
 
-		await db
-			.update(products)
-			.set({ imageUrls: stringifyImageUrls(updatedUrls) })
-			.where(eq(products.id, productId));
+		// Update the product with the new image URLs
+		await pb.collection('products').update(productId, {
+			image_urls: stringifyImageUrls(updatedUrls)
+		});
 
 		return true;
 	} catch (error) {
@@ -88,24 +84,23 @@ export async function deleteImageByIndex(
 /**
  * Delete image by URL from product's imageUrls array
  */
-export async function deleteImageByUrl(
-	db: any,
-	productId: string,
-	imageUrl: string
-): Promise<boolean> {
+export async function deleteImageByUrl(productId: string, imageUrl: string): Promise<boolean> {
 	try {
-		const product = await db.select().from(products).where(eq(products.id, productId)).get();
+		const pb = await getAuthenticatedClient();
+
+		// Get the current product
+		const product = await pb.collection('products').getOne(productId);
 		if (!product) return false;
 
-		const currentUrls = parseImageUrls(product.imageUrls);
+		const currentUrls = parseImageUrls(product.image_urls);
 		const updatedUrls = currentUrls.filter((url) => url !== imageUrl);
 
 		if (updatedUrls.length === currentUrls.length) return false; // URL not found
 
-		await db
-			.update(products)
-			.set({ imageUrls: stringifyImageUrls(updatedUrls) })
-			.where(eq(products.id, productId));
+		// Update the product with the new image URLs
+		await pb.collection('products').update(productId, {
+			image_urls: stringifyImageUrls(updatedUrls)
+		});
 
 		return true;
 	} catch (error) {

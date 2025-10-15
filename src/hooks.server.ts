@@ -1,6 +1,7 @@
 import { sequence } from '@sveltejs/kit/hooks';
 import * as auth from '$lib/server/auth';
 import type { Handle } from '@sveltejs/kit';
+import { getAuthenticatedClient } from '$lib/server/pocketbase';
 
 // Simple in-memory rate limiter (для продакшена используйте Redis)
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
@@ -91,28 +92,49 @@ const handleAuth: Handle = async ({ event, resolve }) => {
 		'[Hooks] Session token value (first 10 chars):',
 		sessionToken.substring(0, 10) + '...'
 	);
-	const { session, user } = await auth.validateSessionToken(sessionToken);
-	console.log(
-		'[Hooks] Session validation result - Session:',
-		session ? 'Valid' : 'Invalid',
-		'User:',
-		user ? 'Authenticated' : 'Not authenticated'
-	);
-	if (user) {
-		console.log('[Hooks] User found:', user.email);
-	}
 
-	if (session) {
-		console.log('[Hooks] Setting session token cookie with renewed expiration');
-		auth.setSessionTokenCookie(event, sessionToken, session.expiresAt);
-	} else {
-		console.log('[Hooks] No valid session, deleting session token cookie');
+	// For PocketBase, we validate using PocketBase's auth system
+	try {
+		const pb = await getAuthenticatedClient();
+		const authData = await pb.collection('users').authRefresh();
+
+		if (authData && authData.record) {
+			const user = {
+				id: authData.record.id,
+				email: authData.record.email
+			};
+
+			const session = {
+				id: sessionToken, // Use the token as session ID for PocketBase
+				userId: user.id,
+				expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // 30 days
+			};
+
+			console.log('[Hooks] Session validation result - Session: Valid User:', user.email);
+			event.locals.user = user;
+			event.locals.session = session;
+
+			// Set session token cookie with renewed expiration
+			auth.setSessionTokenCookie(event, sessionToken, session.expiresAt);
+		} else {
+			console.log('[Hooks] No valid session, deleting session token cookie');
+			auth.deleteSessionTokenCookie(event);
+			event.locals.user = null;
+			event.locals.session = null;
+		}
+	} catch (error) {
+		console.log('[Hooks] Session validation failed:', error);
 		auth.deleteSessionTokenCookie(event);
+		event.locals.user = null;
+		event.locals.session = null;
 	}
 
-	event.locals.user = user;
-	event.locals.session = session;
-	console.log('[Hooks] Set locals - User:', user?.id, 'Session:', session?.id);
+	console.log(
+		'[Hooks] Set locals - User:',
+		event.locals.user?.id,
+		'Session:',
+		event.locals.session?.id
+	);
 	return resolve(event);
 };
 
@@ -129,14 +151,16 @@ const handleSecurityHeaders: Handle = async ({ event, resolve }) => {
 	// Content Security Policy для дополнительной защиты
 	const csp = [
 		"default-src 'self'",
-		"script-src 'self' 'unsafe-inline' https://*.supabase.co",
-		"style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-		"img-src 'self' data: https: blob:",
-		"connect-src 'self' https://*.supabase.co wss://*.supabase.co",
+		"script-src 'self' 'unsafe-inline' https://accounts.google.com https://*.googleusercontent.com",
+		"style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://accounts.google.com",
+		"img-src 'self' data: https: blob: https://*.googleusercontent.com https://*.gstatic.com",
+		// Allow connections to PocketBase server for OAuth and API calls
+		"connect-src 'self' http://127.0.0.1:8090 http://localhost:8090 ws://127.0.0.1:8090 ws://localhost:8090 https://*.pocketbase.cloud https://*.google.com https://*.facebook.com https://accounts.google.com https://oauth2.googleapis.com https://www.googleapis.com wss://*.supabase.co",
 		"font-src 'self' https://fonts.gstatic.com",
+		"frame-src 'self' https://accounts.google.com",
 		"object-src 'none'",
 		"base-uri 'self'",
-		"form-action 'self'",
+		"form-action 'self' https://accounts.google.com",
 		"frame-ancestors 'none'"
 	].join('; ');
 

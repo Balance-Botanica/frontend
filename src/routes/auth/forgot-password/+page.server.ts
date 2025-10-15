@@ -1,5 +1,5 @@
 import { fail, redirect } from '@sveltejs/kit';
-import { supabase } from '$lib/supabase/client';
+import { pb } from '$lib/pocketbase/client';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals }) => {
@@ -36,36 +36,13 @@ export const actions: Actions = {
 		try {
 			console.log('🔑 [AUTH] Sending password reset email to:', email);
 
-			// Check if Supabase client is available
-			if (!supabase) {
+			// Check if PocketBase client is available
+			if (!pb) {
 				throw new Error('Authentication service is not available');
 			}
 
 			// Send password reset email
-			const { error } = await supabase.auth.resetPasswordForEmail(email, {
-				redirectTo: `${process.env.ORIGIN || 'http://localhost:5173'}/auth/reset-password`
-			});
-
-			if (error) {
-				console.error('❌ [AUTH] Password reset error:', error.message);
-
-				// Handle specific error types
-				if (error.message.includes('rate limit')) {
-					return fail(429, {
-						message: 'Too many password reset requests. Please wait a moment before trying again.',
-						email,
-						error: true
-					});
-				}
-
-				if (error.message.includes('not found')) {
-					// For security reasons, don't reveal if email exists or not
-					// Return success message anyway
-					console.log('🔒 [AUTH] Email not found, but returning success for security');
-				} else {
-					throw error;
-				}
-			}
+			await pb.collection('users').requestPasswordReset(email);
 
 			console.log('✅ [AUTH] Password reset email sent successfully');
 

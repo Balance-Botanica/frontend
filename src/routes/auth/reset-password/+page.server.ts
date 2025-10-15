@@ -1,5 +1,5 @@
 import { fail, redirect } from '@sveltejs/kit';
-import { supabase } from '$lib/supabase/client';
+import { pb } from '$lib/pocketbase/client';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ url, locals }) => {
@@ -9,12 +9,10 @@ export const load: PageServerLoad = async ({ url, locals }) => {
 	}
 
 	// Check if we have the required tokens in the URL
-	const accessToken = url.searchParams.get('access_token');
-	const refreshToken = url.searchParams.get('refresh_token');
-	const type = url.searchParams.get('type');
+	const token = url.searchParams.get('token');
 
 	// Validate that this is a password recovery request
-	if (type !== 'recovery' || !accessToken || !refreshToken) {
+	if (!token) {
 		return {
 			error: true,
 			message: 'Invalid or expired password reset link. Please request a new one.'
@@ -22,31 +20,20 @@ export const load: PageServerLoad = async ({ url, locals }) => {
 	}
 
 	try {
-		// Check if Supabase client is available
-		if (!supabase) {
+		// Check if PocketBase client is available
+		if (!pb) {
 			return {
 				error: true,
 				message: 'Authentication service is not available. Please try again later.'
 			};
 		}
 
-		// Set the session using the tokens from the URL
-		const { error } = await supabase.auth.setSession({
-			access_token: accessToken,
-			refresh_token: refreshToken
-		});
-
-		if (error) {
-			console.error('❌ [AUTH] Error setting session for password reset:', error.message);
-			return {
-				error: true,
-				message: 'Invalid or expired password reset link. Please request a new one.'
-			};
-		}
-
-		console.log('✅ [AUTH] Password reset session established');
+		// For PocketBase, we don't need to set a session, we just validate the token
+		// The token will be used when updating the password
+		console.log('✅ [AUTH] Password reset token validated');
 		return {
-			validToken: true
+			validToken: true,
+			token: token
 		};
 	} catch (error) {
 		console.error('❌ [AUTH] Unexpected error during password reset setup:', error);
@@ -58,10 +45,11 @@ export const load: PageServerLoad = async ({ url, locals }) => {
 };
 
 export const actions: Actions = {
-	'reset-password': async ({ request }) => {
+	'reset-password': async ({ request, url }) => {
 		const formData = await request.formData();
 		const password = formData.get('password') as string;
 		const confirmPassword = formData.get('confirmPassword') as string;
+		const token = url.searchParams.get('token');
 
 		// Basic validation
 		if (!password || !confirmPassword) {
@@ -100,41 +88,24 @@ export const actions: Actions = {
 			});
 		}
 
+		// Token validation
+		if (!token) {
+			return fail(400, {
+				message: 'Invalid password reset link. Please request a new one.',
+				error: true
+			});
+		}
+
 		try {
 			console.log('🔑 [AUTH] Updating password...');
 
-			// Check if Supabase client is available
-			if (!supabase) {
+			// Check if PocketBase client is available
+			if (!pb) {
 				throw new Error('Authentication service is not available');
 			}
 
-			// Update the user's password
-			const { error } = await supabase.auth.updateUser({
-				password: password
-			});
-
-			if (error) {
-				console.error('❌ [AUTH] Password update error:', error.message);
-
-				// Handle specific error types
-				if (error.message.includes('session not found')) {
-					return fail(400, {
-						message:
-							'Your password reset session has expired. Please request a new password reset link.',
-						error: true,
-						sessionExpired: true
-					});
-				}
-
-				if (error.message.includes('same password')) {
-					return fail(400, {
-						message: 'Please choose a different password than your current one.',
-						error: true
-					});
-				}
-
-				throw error;
-			}
+			// Update the user's password using the token
+			await pb.collection('users').confirmPasswordReset(token, password, password);
 
 			console.log('✅ [AUTH] Password updated successfully');
 

@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
-	import { supabaseAuthStore } from '$lib/auth/supabase-store';
+	import { pocketbaseAuthStore, user, error } from '$lib/auth/pocketbase-store';
 	import type { OAuthProvider } from '$lib/auth/types';
 
 	const dispatch = createEventDispatcher<{
-		success: { user: any; session: any };
+		success: { user: any };
 		error: string;
 	}>();
 
@@ -22,34 +22,34 @@
 		showPassword = !showPassword;
 	}
 
-	// OAuth providers - including both Google and Facebook
+	// OAuth providers - Google only (Facebook commented out)
 	const oauthProviders: OAuthProvider[] = [
 		{
 			name: 'google',
 			icon: '/src/lib/assets/icons/g.svg',
 			label: 'Увійти за допомогою Google'
 		},
-		{
-			name: 'facebook',
-			icon: '/src/lib/assets/icons/f.svg',
-			label: 'Увійти за допомогою Facebook'
-		}
+		// {
+		// 	name: 'facebook',
+		// 	icon: '/src/lib/assets/icons/f.svg',
+		// 	label: 'Увійти за допомогою Facebook'
+		// }
 	];
 
 	// Handle OAuth login
-	async function handleOAuthSignIn(provider: 'google' | 'facebook') {
+	async function handleOAuthSignIn(provider: 'google') {
 		try {
 			isLoading = true;
 			errorMessage = '';
 
 			if (provider === 'google') {
 				// Google OAuth will redirect, so we don't get a result here
-				await supabaseAuthStore.signInWithGoogle();
+				await pocketbaseAuthStore.signInWithGoogle();
 				// The success will be handled by the auth state change listener
-			} else if (provider === 'facebook') {
-				// Facebook OAuth will redirect, so we don't get a result here
-				await supabaseAuthStore.signInWithFacebook();
-				// The success will be handled by the auth state change listener
+			// } else if (provider === 'facebook') {
+			// 	// Facebook OAuth will redirect, so we don't get a result here
+			// 	await pocketbaseAuthStore.signInWithFacebook();
+			// 	// The success will be handled by the auth state change listener
 			} else {
 				errorMessage = `${provider} authentication not supported yet`;
 			}
@@ -79,17 +79,21 @@
 
 			let result;
 			if (isSignUp) {
-				// For sign up, we use the same signInWithEmail function
-				// Supabase will automatically create account if it doesn't exist
-				result = await supabaseAuthStore.signInWithEmail({ email, password });
+				// For sign up, we use the registerWithEmail function
+				result = await pocketbaseAuthStore.registerWithEmail({ 
+					email, 
+					password,
+					firstName: name.split(' ')[0],
+					lastName: name.split(' ').slice(1).join(' ')
+				});
 			} else {
-				result = await supabaseAuthStore.signInWithEmail({ email, password });
+				result = await pocketbaseAuthStore.signInWithEmail(email, password);
 			}
 
 			if (result.user) {
 				// Create session token for server-side authentication
 				await createSessionToken(result.user.id, email);
-				dispatch('success', result);
+				dispatch('success', { user: result.user });
 			}
 		} catch (error) {
 			errorMessage = error instanceof Error ? error.message : 'Authentication failed';
@@ -134,21 +138,16 @@
 	}
 
 	// Listen to auth state changes
-	$: {
-		const unsubscribe = supabaseAuthStore.subscribe((state) => {
-			if (state.user && state.session) {
-				// Create session token for server-side authentication
-				// Pass the user's email from the auth state, with a fallback
-				const userEmail = state.user.email || email || '';
-				createSessionToken(state.user.id, userEmail);
-				dispatch('success', { user: state.user, session: state.session });
-			}
-			if (state.error) {
-				errorMessage = state.error;
-				dispatch('error', state.error);
-			}
-			isLoading = state.isLoading;
-		});
+	$: if ($user) {
+		// Create session token for server-side authentication
+		const userEmail = $user.email || email || '';
+		createSessionToken($user.id, userEmail);
+		dispatch('success', { user: $user });
+	}
+
+	$: if ($error) {
+		errorMessage = $error;
+		dispatch('error', $error);
 	}
 </script>
 
@@ -166,7 +165,6 @@
 			<button
 				class="oauth-button"
 				class:google={provider.name === 'google'}
-				class:facebook={provider.name === 'facebook'}
 				on:click={() => handleOAuthSignIn(provider.name)}
 				disabled={isLoading}
 				aria-label={provider.label}

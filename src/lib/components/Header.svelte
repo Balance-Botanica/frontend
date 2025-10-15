@@ -4,7 +4,7 @@
 	import { createPageTranslations } from '$lib/i18n/store';
 	import type { SupportedLocale } from '$lib/i18n/types';
 	import LanguageSwitcher from './LanguageSwitcher.svelte';
-	import { supabaseAuthStore, user, isAuthenticated, isLoading } from '$lib/auth/supabase-store';
+	import { pocketbaseAuthStore, user, isAuthenticated, isLoading } from '$lib/auth/pocketbase-store';
 	import { cartItemCount } from '$lib/stores/cart.store';
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
@@ -23,14 +23,14 @@
 	// Initialize auth store
 	onMount(() => {
 		console.log('🐄 [HEADER] Initializing header component...');
-		supabaseAuthStore.initialize();
+		pocketbaseAuthStore.initialize();
 
 		// Manual subscription to force reactivity
-		const unsubscribe = supabaseAuthStore.subscribe((state) => {
+		const unsubscribe = pocketbaseAuthStore.subscribe((state) => {
 			console.log('🔄 [HEADER] ⭐ MANUAL STORE SUBSCRIPTION UPDATE:', {
-				isAuthenticated: !!state.user && !!state.session,
+				isAuthenticated: !!state.user,
 				userEmail: state.user?.email,
-				userName: state.user?.name,
+				userName: state.user?.firstName || state.user?.email?.split('@')[0] || 'User',
 				isLoading: state.isLoading,
 				errorPresent: !!state.error,
 				timestamp: new Date().toISOString()
@@ -43,7 +43,7 @@
 			console.log('🔍 [HEADER] Current derived store values:', {
 				isAuthenticated: $isAuthenticated,
 				userEmail: $user?.email,
-				userName: $user?.name,
+				userName: $user?.firstName || $user?.email?.split('@')[0] || 'User',
 				isLoading: $isLoading
 			});
 		}, 1000);
@@ -54,7 +54,7 @@
 			console.log('🔍 [HEADER] Final derived store values:', {
 				isAuthenticated: $isAuthenticated,
 				userEmail: $user?.email,
-				userName: $user?.name,
+				userName: $user?.firstName || $user?.email?.split('@')[0] || 'User',
 				isLoading: $isLoading
 			});
 		}, 3000);
@@ -75,7 +75,7 @@
 		console.log('🐄 [HEADER] Auth state updated:', {
 			isAuthenticated: $isAuthenticated,
 			userEmail: $user?.email,
-			userName: $user?.name,
+			userName: $user?.firstName || $user?.email?.split('@')[0] || 'User',
 			isLoading: $isLoading
 		});
 	});
@@ -122,7 +122,7 @@
 
 		try {
 			showLogoutDialog = false;
-			await supabaseAuthStore.signOut();
+			await pocketbaseAuthStore.signOut();
 			console.log('✅ [HEADER] Successfully signed out');
 			// Redirect to home page after logout
 			goto('/');
@@ -137,13 +137,11 @@
 		showLogoutDialog = false;
 	}
 
-	// Function to get user display name, prioritizing Google account data
+	// Function to get user display name
 	function getUserDisplayName(user: any): string {
 		if (!user) return 'User';
 
-		// Priority order: full_name from Google > name > first+last > email
-		if (user.name) return user.name;
-		if (user.firstName && user.lastName) return `${user.firstName} ${user.lastName}`;
+		// Priority order: firstName > email
 		if (user.firstName) return user.firstName;
 		if (user.email) {
 			// Extract name from email (before @)
@@ -217,13 +215,8 @@
 									{getUserDisplayName($user)}
 								</span>
 								<div class="user-icon-container logged-in" title="Account menu">
-									{#if $user?.avatarUrl}
-										<!-- Display Google profile picture if available -->
-										<img src={$user.avatarUrl} alt="Profile" class="profile-picture" />
-									{:else}
-										<!-- Fallback to person icon -->
-										<img src={personIcon} alt="Account" class="user-icon" />
-									{/if}
+									<!-- Fallback to person icon -->
+									<img src={personIcon} alt="Account" class="user-icon" />
 								</div>
 							</div>
 						{:else}

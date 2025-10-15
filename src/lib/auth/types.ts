@@ -118,7 +118,7 @@ export interface LoginCredentials {
 }
 
 export interface OAuthProvider {
-	name: 'google' | 'facebook';
+	name: 'google';
 	icon: string;
 	label: string;
 }
