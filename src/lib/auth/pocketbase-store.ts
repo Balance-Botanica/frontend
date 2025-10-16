@@ -1,7 +1,7 @@
 import { writable, derived } from 'svelte/store';
 import { get } from 'svelte/store';
 import { browser } from '$app/environment';
-import { pb } from '$lib/pocketbase/client';
+import { getPocketBaseClient } from '$lib/pocketbase/client';
 import type { AuthState, Session } from '$lib/pocketbase/client';
 import type { User } from '$lib/server/domain/interfaces/user.interface';
 
@@ -20,6 +20,9 @@ function createPocketBaseAuthStore() {
 	// Initialization state tracking
 	let isInitialized = false;
 	let isInitializing = false;
+
+	// Get PocketBase client (only in browser)
+	const pb = browser ? getPocketBaseClient() : null;
 
 	const { subscribe, set, update } = writable<AuthState>({
 		user: null,
@@ -72,11 +75,7 @@ function createPocketBaseAuthStore() {
 		update((state) => ({ ...state, isLoading: true }));
 
 		try {
-			// Try to load auth state from cookies first
-			console.log('[AUTH] 🔍 Attempting to load auth state from cookies');
-			pb.authStore.loadFromCookie(document?.cookie || '');
-
-			// Check if we have an existing auth record
+			// Check if we have an existing auth record first
 			console.log('[AUTH] 🔍 Checking for existing session during initialization');
 			console.log('[AUTH] 🔑 Auth store state:', {
 				isValid: pb.authStore.isValid,
@@ -141,7 +140,10 @@ function createPocketBaseAuthStore() {
 					} catch (refreshError) {
 						console.log('[AUTH] ❌ Auth refresh failed:', refreshError);
 						// Clear invalid token
-						pb.authStore.clear();
+						const client = getPocketBaseClient();
+						if (client) {
+							client.authStore.clear();
+						}
 						set({ user: null, session: null, isLoading: false, error: null });
 					}
 				}
@@ -170,7 +172,12 @@ function createPocketBaseAuthStore() {
 	 * 🎯 Google OAuth authorization
 	 */
 	async function signInWithGoogle() {
-		if (!browser || !pb) {
+		if (!browser) {
+			throw new Error('Browser not available');
+		}
+
+		const client = getPocketBaseClient();
+		if (!client) {
 			throw new Error('PocketBase not available');
 		}
 
@@ -180,7 +187,7 @@ function createPocketBaseAuthStore() {
 			console.log('🔗 [AUTH] Starting Google OAuth flow...');
 
 			// PocketBase OAuth flow
-			const authData = await pb.collection('users').authWithOAuth2({
+			const authData = await client.collection('users').authWithOAuth2({
 				provider: 'google'
 			});
 
@@ -375,9 +382,10 @@ function createPocketBaseAuthStore() {
 			});
 
 			// Update the store state
+			const client = getPocketBaseClient();
 			set({
 				user,
-				session: pb ? adaptPocketBaseSession(pb.authStore) : null,
+				session: client ? adaptPocketBaseSession(client.authStore) : null,
 				isLoading: false,
 				error: null
 			});
@@ -408,10 +416,11 @@ function createPocketBaseAuthStore() {
 			update((state) => ({ ...state, isLoading: true }));
 			console.log('⏳ [AUTH] Setting loading state...');
 
-			// Sign out from PocketBase
-			if (pb) {
-				pb.authStore.clear();
-			}
+		// Sign out from PocketBase
+		const client = getPocketBaseClient();
+		if (client) {
+			client.authStore.clear();
+		}
 
 			console.log('✅ [AUTH] Successfully signed out from PocketBase');
 			set({ user: null, session: null, isLoading: false, error: null });
