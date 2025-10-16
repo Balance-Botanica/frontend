@@ -506,12 +506,23 @@ function createUserFromPBData(pbUser: any): User {
 		allKeys: Object.keys(pbUser)
 	});
 
-	// Create the user object without the name property since it doesn't exist in the interface
+	// Extract name from Google OAuth data
+	let firstName = pbUser.first_name || pbUser.given_name;
+	let lastName = pbUser.last_name || pbUser.family_name;
+
+	// If we have full name but no separate first/last names, split it
+	if (!firstName && !lastName && pbUser.name) {
+		const nameParts = pbUser.name.trim().split(' ');
+		firstName = nameParts[0] || '';
+		lastName = nameParts.slice(1).join(' ') || '';
+	}
+
+	// Create the user object
 	const user: User = {
 		id: pbUser.id,
 		email: pbUser.email || '',
-		firstName: pbUser.first_name || pbUser.given_name,
-		lastName: pbUser.last_name || pbUser.family_name,
+		firstName,
+		lastName,
 		phoneNumber: pbUser.phone_number,
 		createdAt: pbUser.created ? new Date(pbUser.created) : new Date()
 	};
