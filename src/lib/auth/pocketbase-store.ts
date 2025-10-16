@@ -104,9 +104,7 @@ function createPocketBaseAuthStore() {
 						error: null
 					});
 
-					// Ensure auth state is saved to cookies
-					console.log('[AUTH] 💾 Ensuring auth state is saved to cookies on restore');
-					pb.authStore.save();
+					// PocketBase should handle cookie persistence automatically
 
 					console.log('✅ [AUTH] Session restored successfully:', {
 						userEmail: user?.email,
@@ -129,7 +127,6 @@ function createPocketBaseAuthStore() {
 								isLoading: false,
 								error: null
 							});
-							pb.authStore.save();
 							console.log('✅ [AUTH] Session restored via refresh:', {
 								userEmail: user?.email,
 								userId: user?.id
@@ -381,18 +378,9 @@ function createPocketBaseAuthStore() {
 				error: null
 			});
 
-			// Force save auth state to cookies to ensure persistence
-			if (pb && pb.authStore.isValid) {
-				console.log('[AUTH] 🔄 Force saving auth state to cookies');
-				console.log('[AUTH] 🔍 Auth store before save:', {
-					isValid: pb.authStore.isValid,
-					token: !!pb.authStore.token,
-					tokenLength: pb.authStore.token?.length,
-					model: !!pb.authStore.model
-				});
-				pb.authStore.save(pb.authStore.exportToCookie());
-				console.log('[AUTH] ✅ Auth state saved to cookies');
-			}
+			// Don't manually save - let PocketBase handle cookies automatically
+			// The save() call was clearing the token for some reason
+			console.log('[AUTH] ✅ OAuth completed - relying on PocketBase auto-save');
 
 			console.log('🎉 [AUTH] Authentication flow completed successfully!');
 		} catch (error) {
