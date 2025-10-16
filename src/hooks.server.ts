@@ -86,6 +86,10 @@ const handleAuth: Handle = async ({ event, resolve }) => {
 			// Log if pb_auth cookie is present
 			const hasPbAuth = cookieHeader.includes('pb_auth');
 			console.log('[Hooks] 🍪 Has pb_auth cookie:', hasPbAuth);
+
+			// Log all cookie names for debugging
+			const cookies = cookieHeader.split(';').map(c => c.trim().split('=')[0]);
+			console.log('[Hooks] 🍪 All cookies:', cookies);
 		}
 
 		// Load auth store from cookies (PocketBase handles this automatically)

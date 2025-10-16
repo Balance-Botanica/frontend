@@ -73,6 +73,14 @@ function createPocketBaseAuthStore() {
 
 		try {
 			// Check if we have an existing auth record
+			console.log('[AUTH] 🔍 Checking for existing session during initialization');
+			console.log('[AUTH] 🔑 Auth store state:', {
+				isValid: pb.authStore.isValid,
+				token: !!pb.authStore.token,
+				tokenLength: pb.authStore.token?.length,
+				model: !!pb.authStore.model
+			});
+
 			if (pb.authStore.isValid) {
 				console.log('✅ [AUTH] Valid session found during initialization');
 
@@ -341,7 +349,14 @@ function createPocketBaseAuthStore() {
 			// Force save auth state to cookies to ensure persistence
 			if (pb && pb.authStore.isValid) {
 				console.log('[AUTH] 🔄 Force saving auth state to cookies');
+				console.log('[AUTH] 🔍 Auth store before save:', {
+					isValid: pb.authStore.isValid,
+					token: !!pb.authStore.token,
+					tokenLength: pb.authStore.token?.length,
+					model: !!pb.authStore.model
+				});
 				pb.authStore.save();
+				console.log('[AUTH] ✅ Auth state saved to cookies');
 			}
 
 			console.log('🎉 [AUTH] Authentication flow completed successfully!');
