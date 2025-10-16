@@ -272,6 +272,7 @@ This document tracks our project tasks, priorities, and progress.
 - **Layout Components**: Removed Supabase dependencies, updated to PocketBase
 - **Server Hooks**: Updated CSP rules for PocketBase and OAuth providers
 - **Error Fixes**: Resolved all TypeScript and linting errors from migration
+- **Import Error Fix**: Fixed 'Cannot import server code into browser' error by removing server-side imports from client-side auth store
 
 ## Latest Session Achievements (2025-01-01)
 

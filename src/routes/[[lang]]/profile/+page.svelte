@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
-	import { supabaseAuthStore, user, isAuthenticated, isLoading } from '$lib/auth/supabase-store';
+	import { pocketbaseAuthStore, user, isAuthenticated, isLoading } from '$lib/auth/pocketbase-store';
 	import { createPageTranslations } from '$lib/i18n/store';
 	import SEO from '$lib/components/SEO.svelte';
 	import Button from '$lib/components/Button.svelte';
@@ -42,7 +42,7 @@
 
 	// Initialize with data from server
 	onMount(() => {
-		supabaseAuthStore.initialize();
+		pocketbaseAuthStore.initialize();
 	});
 
 	// Redirect to login if not authenticated (but not during logout)
@@ -261,7 +261,7 @@
 			// Temporarily disable the auth redirect to prevent showing login page
 			isLoggingOut = true;
 
-			await supabaseAuthStore.signOut();
+			await pocketbaseAuthStore.signOut();
 
 			// Immediately redirect to home page without showing login
 			goto('/', { replaceState: true });

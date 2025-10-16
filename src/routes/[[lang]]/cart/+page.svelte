@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { cartStore, cartItems, cartTotals, cartIsEmpty } from '$lib/stores/cart.store';
-	import { isAuthenticated } from '$lib/auth/supabase-store';
+	import { isAuthenticated } from '$lib/auth/pocketbase-store';
 	import { goto } from '$app/navigation';
 	import { notificationStore } from '$lib/stores/notifications';
 	import { createPageTranslations } from '$lib/i18n/store';

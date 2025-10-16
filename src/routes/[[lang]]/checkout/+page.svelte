@@ -4,7 +4,7 @@
 	import { page } from '$app/stores';
 	import { createPageTranslations } from '$lib/i18n/store';
 	import SEO from '$lib/components/SEO.svelte';
-	import { isAuthenticated } from '$lib/auth/supabase-store';
+	import { isAuthenticated } from '$lib/auth/pocketbase-store';
 	import { browser } from '$app/environment';
 	import { cartStore } from '$lib/stores/cart.store';
 

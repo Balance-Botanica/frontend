@@ -80,7 +80,7 @@ function createPocketBaseAuthStore() {
 				const pbUser = pb.authStore.model;
 				if (pbUser) {
 					// Use PocketBase user data directly
-				const user = createUserFromPBData(pbUser);
+					const user = createUserFromPBData(pbUser);
 
 					set({
 						user,
