@@ -25,11 +25,7 @@ export function getPocketBaseClient(): PocketBase | null {
 		console.log('🆕 [CLIENT] Creating new PocketBase client instance');
 		pocketbaseInstance = new PocketBase(POCKETBASE_URL);
 
-		// Enable persistent sessions
-		pocketbaseInstance.authStore.save(
-			JSON.stringify(pocketbaseInstance.authStore.exportToCookie())
-		);
-
+		// PocketBase automatically handles cookie persistence
 		// Listen to auth store changes
 		pocketbaseInstance.authStore.onChange(() => {
 			console.log('🔄 [CLIENT] Auth store changed');

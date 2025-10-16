@@ -72,6 +72,10 @@ function createPocketBaseAuthStore() {
 		update((state) => ({ ...state, isLoading: true }));
 
 		try {
+			// Try to load auth state from cookies first
+			console.log('[AUTH] 🔍 Attempting to load auth state from cookies');
+			pb.authStore.loadFromCookie(document?.cookie || '');
+
 			// Check if we have an existing auth record
 			console.log('[AUTH] 🔍 Checking for existing session during initialization');
 			console.log('[AUTH] 🔑 Auth store state:', {

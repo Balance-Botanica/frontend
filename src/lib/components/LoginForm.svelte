@@ -103,26 +103,6 @@
 		}
 	}
 
-	// Create session token for server-side authentication
-	async function createSessionToken(userId: string, userEmail: string) {
-		try {
-			const response = await fetch('/auth/login', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify({ userId, email: userEmail })
-			});
-
-			const data = await response.json();
-			if (!data.success) {
-				console.error('Failed to create session token:', data.error);
-			}
-		} catch (error) {
-			console.error('Error creating session token:', error);
-		}
-	}
-
 	// Toggle between sign in and sign up
 	function toggleMode() {
 		isSignUp = !isSignUp;
@@ -139,9 +119,7 @@
 
 	// Listen to auth state changes
 	$: if ($user) {
-		// Create session token for server-side authentication
-		const userEmail = $user.email || email || '';
-		createSessionToken($user.id, userEmail);
+		// PocketBase handles authentication automatically
 		dispatch('success', { user: $user });
 	}
 
