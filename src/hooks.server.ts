@@ -71,15 +71,28 @@ const handleAuth: Handle = async ({ event, resolve }) => {
 
 	// For PocketBase, we need to check if user is authenticated
 	// PocketBase stores auth tokens in cookies automatically
+	console.log('[Hooks] 🔍 Checking PocketBase authentication for path:', event.url.pathname);
+
 	try {
 		// Create a new PocketBase client instance for this request
 		const pb = new PocketBase(process.env.VITE_PUBLIC_POCKETBASE_URL || 'http://127.0.0.1:8090');
 
 		// Get the cookie header from the request
 		const cookieHeader = event.request.headers.get('cookie') || '';
+		console.log('[Hooks] 🍪 Cookie header present:', !!cookieHeader);
+
+		if (cookieHeader) {
+			console.log('[Hooks] 🍪 Cookie header length:', cookieHeader.length);
+			// Log if pb_auth cookie is present
+			const hasPbAuth = cookieHeader.includes('pb_auth');
+			console.log('[Hooks] 🍪 Has pb_auth cookie:', hasPbAuth);
+		}
 
 		// Load auth store from cookies (PocketBase handles this automatically)
 		pb.authStore.loadFromCookie(cookieHeader);
+
+		console.log('[Hooks] 🔑 Auth store loaded - isValid:', pb.authStore.isValid);
+		console.log('[Hooks] 🔑 Auth store token present:', !!pb.authStore.token);
 
 		// If we have a valid auth token, check if user is authenticated
 		if (pb.authStore.isValid && pb.authStore.model) {
@@ -92,7 +105,7 @@ const handleAuth: Handle = async ({ event, resolve }) => {
 				lastName: pbUser.last_name
 			};
 
-			console.log('[Hooks] ✅ PocketBase user authenticated:', user.email);
+			console.log('[Hooks] ✅ PocketBase user authenticated:', user.email, 'ID:', user.id);
 			event.locals.user = user;
 			event.locals.session = {
 				id: pb.authStore.token,
@@ -101,6 +114,7 @@ const handleAuth: Handle = async ({ event, resolve }) => {
 			};
 		} else {
 			console.log('[Hooks] ⚠️ No valid PocketBase session found');
+			console.log('[Hooks] ⚠️ Auth store model:', !!pb.authStore.model);
 			event.locals.user = null;
 			event.locals.session = null;
 		}

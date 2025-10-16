@@ -61,8 +61,10 @@ export const load: PageServerLoad = async ({ url, locals }) => {
 			lastName: authData.record.last_name
 		};
 
-		console.log('✅ [OAUTH-CALLBACK] OAuth callback processed successfully');
-		throw redirect(302, '/');
+		// After successful OAuth, PocketBase should have set cookies automatically
+		// Let's redirect to profile to test if authentication persists
+		console.log('✅ [OAUTH-CALLBACK] OAuth callback processed successfully, redirecting to profile');
+		throw redirect(302, '/profile');
 	} catch (error) {
 		console.error('❌ [OAUTH-CALLBACK] Unexpected error:', error);
 		throw redirect(302, '/auth/login?error=unexpected_error');
