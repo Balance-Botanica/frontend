@@ -273,6 +273,7 @@ This document tracks our project tasks, priorities, and progress.
 - **Server Hooks**: Updated CSP rules for PocketBase and OAuth providers
 - **Error Fixes**: Resolved all TypeScript and linting errors from migration
 - **Import Error Fix**: Fixed 'Cannot import server code into browser' error by removing server-side imports from client-side auth store
+- **Supabase Store Cleanup**: Removed all remaining imports of deleted supabase-store from profile, checkout, and cart pages
 
 ## Latest Session Achievements (2025-01-01)
 
