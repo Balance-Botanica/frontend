@@ -163,8 +163,7 @@ function createPocketBaseAuthStore() {
 
 			// PocketBase OAuth flow
 			const authData = await pb.collection('users').authWithOAuth2({
-				provider: 'google',
-				redirectUrl: `${window.location.origin}/auth/callback`
+				provider: 'google'
 			});
 
 			// After successful OAuth, update our auth state
@@ -193,8 +192,7 @@ function createPocketBaseAuthStore() {
 
 			// PocketBase OAuth flow
 			const authData = await pb.collection('users').authWithOAuth2({
-				provider: 'facebook',
-				redirectUrl: `${window.location.origin}/auth/callback`
+				provider: 'facebook'
 			});
 
 			// After successful OAuth, update our auth state

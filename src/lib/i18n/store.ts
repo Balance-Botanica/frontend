@@ -70,9 +70,6 @@ export async function initializeI18n(initialLocale?: string): Promise<void> {
 		// Обновляем stores
 		language.set(locale);
 		i18nReady.set(true);
-
-		console.log(`🌍 I18n initialized with locale: ${locale}`);
-		console.log(`📝 Translation test:`, t('products.search.results_info', { count: 5, total: 10 }));
 	} catch (error) {
 		console.error('❌ Failed to initialize i18n:', error);
 		// Fallback к дефолтной локали

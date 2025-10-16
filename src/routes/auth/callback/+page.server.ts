@@ -34,7 +34,7 @@ export const load: PageServerLoad = async ({ url, locals }) => {
 		}
 
 		const pb = new PocketBase(pbUrl);
-		const redirectUrl = `${url.origin}/auth/callback`;
+		const redirectUrl = `${pbUrl}/api/oauth2-redirect`; // PocketBase default redirect URL
 
 		console.log('🔄 [OAUTH-CALLBACK] Exchanging OAuth code for session...');
 
