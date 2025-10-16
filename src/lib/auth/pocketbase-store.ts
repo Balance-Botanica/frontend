@@ -86,6 +86,13 @@ function createPocketBaseAuthStore() {
 
 				// Get user from PocketBase auth record
 				const pbUser = pb.authStore.model;
+				console.log('[AUTH] 🔍 Auth store model check:', {
+					hasModel: !!pbUser,
+					modelKeys: pbUser ? Object.keys(pbUser) : null,
+					modelId: pbUser?.id,
+					modelEmail: pbUser?.email
+				});
+
 				if (pbUser) {
 					// Use PocketBase user data directly
 					const user = createUserFromPBData(pbUser);
@@ -107,7 +114,35 @@ function createPocketBaseAuthStore() {
 						timestamp: new Date().toISOString()
 					});
 				} else {
-					set({ user: null, session: null, isLoading: false, error: null });
+					console.log('[AUTH] ⚠️ Valid token but no user model - attempting refresh');
+					// Try to refresh the auth token to get user data
+					try {
+						await pb.collection('users').authRefresh();
+						console.log('[AUTH] ✅ Auth refresh successful');
+
+						const refreshedUser = pb.authStore.model;
+						if (refreshedUser) {
+							const user = createUserFromPBData(refreshedUser);
+							set({
+								user,
+								session: adaptPocketBaseSession(pb.authStore),
+								isLoading: false,
+								error: null
+							});
+							pb.authStore.save();
+							console.log('✅ [AUTH] Session restored via refresh:', {
+								userEmail: user?.email,
+								userId: user?.id
+							});
+						} else {
+							set({ user: null, session: null, isLoading: false, error: null });
+						}
+					} catch (refreshError) {
+						console.log('[AUTH] ❌ Auth refresh failed:', refreshError);
+						// Clear invalid token
+						pb.authStore.clear();
+						set({ user: null, session: null, isLoading: false, error: null });
+					}
 				}
 			} else {
 				console.log('⚠️ [AUTH] No existing session found during initialization');
@@ -355,7 +390,7 @@ function createPocketBaseAuthStore() {
 					tokenLength: pb.authStore.token?.length,
 					model: !!pb.authStore.model
 				});
-				pb.authStore.save();
+				pb.authStore.save(pb.authStore.exportToCookie());
 				console.log('[AUTH] ✅ Auth state saved to cookies');
 			}
 
