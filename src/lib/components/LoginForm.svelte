@@ -91,8 +91,7 @@
 			}
 
 			if (result.user) {
-				// Create session token for server-side authentication
-				await createSessionToken(result.user.id, email);
+				// PocketBase handles authentication automatically
 				dispatch('success', { user: result.user });
 			}
 		} catch (error) {
