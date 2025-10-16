@@ -416,11 +416,11 @@ function createPocketBaseAuthStore() {
 			update((state) => ({ ...state, isLoading: true }));
 			console.log('⏳ [AUTH] Setting loading state...');
 
-		// Sign out from PocketBase
-		const client = getPocketBaseClient();
-		if (client) {
-			client.authStore.clear();
-		}
+			// Sign out from PocketBase
+			const client = getPocketBaseClient();
+			if (client) {
+				client.authStore.clear();
+			}
 
 			console.log('✅ [AUTH] Successfully signed out from PocketBase');
 			set({ user: null, session: null, isLoading: false, error: null });
@@ -497,18 +497,26 @@ function getPocketBaseAuthStore() {
  * 🆕 Create user data from PocketBase metadata
  */
 function createUserFromPBData(pbUser: any): User {
-	console.log('🔍 Creating user from PocketBase data:', pbUser);
+	console.log('🔍 Creating user from PocketBase data:', {
+		id: pbUser.id,
+		email: pbUser.email,
+		first_name: pbUser.first_name,
+		last_name: pbUser.last_name,
+		name: pbUser.name,
+		allKeys: Object.keys(pbUser)
+	});
 
 	// Create the user object without the name property since it doesn't exist in the interface
 	const user: User = {
 		id: pbUser.id,
 		email: pbUser.email || '',
-		firstName: pbUser.first_name,
-		lastName: pbUser.last_name,
+		firstName: pbUser.first_name || pbUser.given_name,
+		lastName: pbUser.last_name || pbUser.family_name,
 		phoneNumber: pbUser.phone_number,
 		createdAt: pbUser.created ? new Date(pbUser.created) : new Date()
 	};
 
+	console.log('✅ Created user object:', user);
 	return user;
 }
 
