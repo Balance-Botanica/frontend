@@ -79,8 +79,8 @@ function createPocketBaseAuthStore() {
 				// Get user from PocketBase auth record
 				const pbUser = pb.authStore.model;
 				if (pbUser) {
-					// Get extended user profile from our database
-					const user = await getExtendedUserProfile(pbUser.id);
+					// Use PocketBase user data directly
+				const user = createUserFromPBData(pbUser);
 
 					set({
 						user,
@@ -115,37 +115,6 @@ function createPocketBaseAuthStore() {
 		console.log('🏁 [AUTH] Initialization complete');
 		isInitializing = false;
 		isInitialized = true;
-	}
-
-	/**
-	 * 🔗 Get extended user profile
-	 * Includes additional information from our database
-	 */
-	async function getExtendedUserProfile(userId: string): Promise<User | null> {
-		console.log('👤 [AUTH] Getting extended user profile for:', userId);
-
-		if (!browser || !pb) {
-			console.log('⚠️ [AUTH] Browser or PocketBase not available for profile fetch');
-			return null;
-		}
-
-		try {
-			// Dynamically import the user service only when needed
-			const { userService } = await import('$lib/server/application/services/user.service');
-			// Get user from our database using the user service
-			const user = await userService.getUserById(userId);
-			console.log('✅ [AUTH] Profile found in database:', {
-				id: user?.id,
-				email: user?.email
-			});
-			return user;
-		} catch (error) {
-			console.log(
-				'⚠️ [AUTH] Profile query failed:',
-				error instanceof Error ? error.message : String(error)
-			);
-			return null;
-		}
 	}
 
 	/**
@@ -225,7 +194,7 @@ function createPocketBaseAuthStore() {
 			// After successful auth, update our state
 			await handleSuccessfulAuth(authData.record);
 
-			const user = await getExtendedUserProfile(authData.record.id);
+			const user = createUserFromPBData(authData.record);
 
 			return { user };
 		} catch (error) {
@@ -272,7 +241,7 @@ function createPocketBaseAuthStore() {
 
 			await handleSuccessfulAuth(authData.record);
 
-			const user = await getExtendedUserProfile(authData.record.id);
+			const user = createUserFromPBData(authData.record);
 
 			return { user };
 		} catch (error) {
@@ -364,10 +333,8 @@ function createPocketBaseAuthStore() {
 				error: null
 			});
 
-			// Dynamically import the user service only when needed
-			const { userService } = await import('$lib/server/application/services/user.service');
-			// Ensure user exists in our database
-			await userService.getOrCreateUser(user.id, user.email);
+			// Note: PocketBase automatically creates user records during OAuth flow
+			// Additional user data synchronization will be handled via API endpoints if needed
 
 			console.log('🎉 [AUTH] Authentication flow completed successfully!');
 		} catch (error) {

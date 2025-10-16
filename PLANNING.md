@@ -255,14 +255,15 @@ This document tracks our project tasks, priorities, and progress.
 - **Telegram Bot**: Bot operations working with new PocketBase data structure
 
 ### ✅ Google OAuth Implementation
-**Status:** IN PROGRESS (OAuth setup pending)
+**Status:** READY FOR TESTING (requires Google Cloud Console setup)
 - **OAuth Store**: Complete PocketBase OAuth store implementation
 - **Google Provider**: Google authentication flow implemented and tested
 - **Facebook Provider**: Temporarily disabled (commented out) for focus on Google OAuth
-- **Callback Handler**: OAuth callback processing implemented for both providers
-- **Redirect URLs**: Custom redirect URLs configured for proper OAuth flow
+- **Callback Handler**: OAuth callback processing updated for PocketBase default redirect URL
+- **Redirect URLs**: Using PocketBase default `/api/oauth2-redirect` endpoint
 - **Error Handling**: Comprehensive error handling for OAuth failures
 - **State Management**: Proper user authentication state management across app
+- **Required Setup**: Add `http://127.0.0.1:8090/api/oauth2-redirect` to Google Cloud Console Authorized redirect URIs
 
 ### ✅ Component Updates & Bug Fixes
 **Status:** COMPLETED
