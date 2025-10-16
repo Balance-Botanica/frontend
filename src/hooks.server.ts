@@ -75,7 +75,7 @@ const handleAuth: Handle = async ({ event, resolve }) => {
 
 	try {
 		// Create a new PocketBase client instance for this request
-		const pb = new PocketBase(process.env.VITE_PUBLIC_POCKETBASE_URL || 'http://127.0.0.1:8090');
+		const pb = new PocketBase(process.env.POCKETBASE_URL || 'http://localhost:8090');
 
 		// Get the cookie header from the request
 		const cookieHeader = event.request.headers.get('cookie') || '';

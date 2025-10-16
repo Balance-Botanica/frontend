@@ -3,7 +3,7 @@ import { browser } from '$app/environment';
 import type { User } from '$lib/server/domain/interfaces/user.interface';
 
 // PocketBase client configuration
-const POCKETBASE_URL = import.meta.env.POCKETBASE_URL || 'http://127.0.0.1:8090';
+const POCKETBASE_URL = import.meta.env.POCKETBASE_URL || 'http://localhost:8090';
 
 // Singleton pattern to ensure only one PocketBase client instance
 let pocketbaseInstance: PocketBase | null = null;
