@@ -88,6 +88,11 @@ function createPocketBaseAuthStore() {
 						isLoading: false,
 						error: null
 					});
+
+					// Ensure auth state is saved to cookies
+					console.log('[AUTH] 💾 Ensuring auth state is saved to cookies on restore');
+					pb.authStore.save();
+
 					console.log('✅ [AUTH] Session restored successfully:', {
 						userEmail: user?.email,
 						userId: user?.id,
@@ -333,8 +338,11 @@ function createPocketBaseAuthStore() {
 				error: null
 			});
 
-			// Note: PocketBase automatically creates user records during OAuth flow
-			// Additional user data synchronization will be handled via API endpoints if needed
+			// Force save auth state to cookies to ensure persistence
+			if (pb && pb.authStore.isValid) {
+				console.log('[AUTH] 🔄 Force saving auth state to cookies');
+				pb.authStore.save();
+			}
 
 			console.log('🎉 [AUTH] Authentication flow completed successfully!');
 		} catch (error) {
