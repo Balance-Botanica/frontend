@@ -157,8 +157,7 @@ const handleSecurityHeaders: Handle = async ({ event, resolve }) => {
 		"object-src 'none'",
 		"base-uri 'self'",
 		"form-action 'self' https://accounts.google.com",
-		"frame-ancestors 'none'",
-		"popup-src 'self'"
+		"frame-ancestors 'none'"
 	].join('; ');
 
 	response.headers.set('Content-Security-Policy', csp);
@@ -178,6 +177,8 @@ const handleSecurityHeaders: Handle = async ({ event, resolve }) => {
 const handleSmartRedirects: Handle = async ({ event, resolve }) => {
 	const pathname = event.url.pathname;
 	const search = event.url.search;
+
+	console.log('🔄 [Redirect] Processing request for:', pathname);
 
 	// Проверяем старые URL паттерны и редиректим на новые
 	const redirectRules: Record<string, string> = {
@@ -221,7 +222,11 @@ const handleSmartRedirects: Handle = async ({ event, resolve }) => {
 		}
 	}
 
-	return resolve(event);
+	console.log('🔄 [Redirect] No redirect rule, resolving normally for:', pathname);
+	const response = await resolve(event);
+	console.log('🔄 [Redirect] Resolved with status:', response.status, 'for:', pathname);
+
+	return response;
 };
 
 // Locale detection middleware

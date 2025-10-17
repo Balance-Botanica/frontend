@@ -196,10 +196,13 @@ function createPocketBaseAuthStore() {
 			}
 
 			console.log('✅ [AUTH] Google OAuth provider found:', googleProvider);
-			console.log('🔗 [AUTH] Google auth URL:', googleProvider.authUrl);
+			console.log('🔗 [AUTH] Google auth URL:', googleProvider.authURL);
 
-			// PocketBase OAuth flow with popup handling
-			console.log('🚀 [AUTH] Calling client.collection("users").authWithOAuth2...');
+			// Use direct PocketBase URL for OAuth to avoid redirect URI issues
+			console.log('🚀 [AUTH] Creating temporary PocketBase client for OAuth...');
+			const oauthClient = new (await import('pocketbase')).default('http://127.0.0.1:8090');
+
+			let authData: any = null;
 
 			// Create OAuth window manually for better control
 			const authWindow = window.open('', 'oauth', 'width=600,height=700');
@@ -208,15 +211,15 @@ function createPocketBaseAuthStore() {
 				console.warn('⚠️ [AUTH] Popup blocked by browser, opening in new tab');
 				// Fallback to new tab if popup blocked
 				try {
-					const authData = await client.collection('users').authWithOAuth2({
+					authData = await oauthClient.collection('users').authWithOAuth2({
 						provider: 'google',
 						urlCallback: (url) => {
 							console.log('🔄 [AUTH] OAuth URL generated:', url);
 							window.open(url, '_blank');
 							console.log('🔄 [AUTH] Opened OAuth URL in new tab');
-							return url;
 						}
 					});
+
 					console.log('✅ [AUTH] OAuth flow completed successfully');
 				} catch (oauthError) {
 					console.error('❌ [AUTH] OAuth flow failed:', oauthError);
@@ -224,7 +227,7 @@ function createPocketBaseAuthStore() {
 				}
 			} else {
 				try {
-					const authData = await client.collection('users').authWithOAuth2({
+					authData = await oauthClient.collection('users').authWithOAuth2({
 						provider: 'google',
 						urlCallback: (url) => {
 							console.log('🔄 [AUTH] OAuth URL generated:', url);
@@ -239,16 +242,19 @@ function createPocketBaseAuthStore() {
 							// Open OAuth URL in popup window
 							authWindow.location.href = url;
 							console.log('🔄 [AUTH] Opened OAuth URL in popup window');
-
-							return url;
 						}
 					});
 
 					// Close popup on success
 					if (authWindow && !authWindow.closed) {
 						setTimeout(() => {
-							if (authWindow && !authWindow.closed) {
-								authWindow.close();
+							try {
+								if (authWindow && !authWindow.closed) {
+									authWindow.close();
+								}
+							} catch (e) {
+								// Ignore cross-origin errors
+								console.log('⚠️ [AUTH] Could not close popup due to cross-origin policy');
 							}
 						}, 1000); // Give some time for redirect
 					}
@@ -257,17 +263,28 @@ function createPocketBaseAuthStore() {
 				} catch (oauthError) {
 					console.error('❌ [AUTH] OAuth flow failed:', oauthError);
 					// Close popup on error
-					if (authWindow && !authWindow.closed) {
-						authWindow.close();
+					try {
+						if (authWindow && !authWindow.closed) {
+							authWindow.close();
+						}
+					} catch (e) {
+						console.log('⚠️ [AUTH] Could not close popup due to cross-origin policy');
 					}
 					throw oauthError;
 				}
 			}
 
-			// After successful OAuth, update our auth state
-			await handleSuccessfulAuth(authData.record);
+			// Copy auth data to main client
+			if (authData) {
+				client.authStore.save(authData.token, authData.record);
 
-			return authData;
+				// After successful OAuth, update our auth state
+				await handleSuccessfulAuth(authData.record);
+
+				return authData;
+			} else {
+				throw new Error('No auth data received from OAuth flow');
+			}
 		} catch (error) {
 			const errorMessage = error instanceof Error ? error.message : 'Failed to sign in with Google';
 			set({ user: null, session: null, isLoading: false, error: errorMessage });

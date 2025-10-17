@@ -53,9 +53,11 @@ export function getLocalizedUrl(path: string, targetLang?: SupportedLocale): `/$
 	const cleanPath = path.startsWith('/') ? path.slice(1) : path;
 
 	if (lang === 'uk-ua') {
+		// For Ukrainian (default), use root paths without lang prefix
 		return cleanPath ? `/${cleanPath}` : '/';
 	}
 
+	// For other languages, add lang prefix
 	return cleanPath ? `/${lang}/${cleanPath}` : `/${lang}`;
 }
 
