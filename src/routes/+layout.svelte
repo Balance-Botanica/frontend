@@ -27,6 +27,9 @@
 	// State for mobile navigation - properly declared with $state
 	let isMobileMenuOpen = $state(false);
 	let activeTab = $state('home');
+	
+	// Track previous URL to prevent infinite loops
+	let previousUrl = $state('');
 
 	const { children, data } = $props();
 
@@ -70,9 +73,18 @@
 	});
 
 	// Auto-switch language based on URL changes (global for entire app)
+	// FIXED: Prevent infinite loop by tracking previous URL
 	$effect(() => {
-		const url = $page.url.pathname;
-		const isEnglishUrl = url.startsWith('/en/') || url === '/en';
+		const currentUrl = $page.url.pathname;
+		
+		// Skip if URL hasn't changed
+		if (currentUrl === previousUrl) {
+			return;
+		}
+		
+		previousUrl = currentUrl;
+		
+		const isEnglishUrl = currentUrl.startsWith('/en/') || currentUrl === '/en';
 
 		if (isEnglishUrl) {
 			console.log('🌍 [LAYOUT] Detected English URL, switching to English');

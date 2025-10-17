@@ -498,17 +498,29 @@ function getPocketBaseAuthStore() {
  */
 function createUserFromPBData(pbUser: any): User {
 	console.log('🔍 Creating user from PocketBase data:', {
-		id: pbUser.id,
-		email: pbUser.email,
-		first_name: pbUser.first_name,
-		last_name: pbUser.last_name,
-		name: pbUser.name,
-		allKeys: Object.keys(pbUser)
+		id: pbUser?.id,
+		email: pbUser?.email,
+		first_name: pbUser?.first_name,
+		last_name: pbUser?.last_name,
+		name: pbUser?.name,
+		allKeys: pbUser ? Object.keys(pbUser) : 'pbUser is undefined/null'
 	});
 
+	// Check if pbUser exists
+	if (!pbUser) {
+		console.warn('⚠️ [AUTH] pbUser is undefined or null, returning default user object');
+		return {
+			id: '',
+			email: '',
+			firstName: '',
+			lastName: '',
+			createdAt: new Date()
+		};
+	}
+
 	// Extract name from Google OAuth data
-	let firstName = pbUser.first_name || pbUser.given_name;
-	let lastName = pbUser.last_name || pbUser.family_name;
+	let firstName = pbUser.first_name || pbUser.given_name || '';
+	let lastName = pbUser.last_name || pbUser.family_name || '';
 
 	// If we have full name but no separate first/last names, split it
 	if (!firstName && !lastName && pbUser.name) {
@@ -519,7 +531,7 @@ function createUserFromPBData(pbUser: any): User {
 
 	// Create the user object
 	const user: User = {
-		id: pbUser.id,
+		id: pbUser.id || '',
 		email: pbUser.email || '',
 		firstName,
 		lastName,

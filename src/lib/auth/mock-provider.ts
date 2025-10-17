@@ -6,10 +6,11 @@ const mockUsers: User[] = [
 		id: '1',
 		email: 'demo@balancebotanica.com',
 		name: 'Demo User',
-		avatar_url:
+		avatarUrl:
 			'https://res.cloudinary.com/dtp21hkrc/image/upload/v1755626661/balance-botanica/avatars/demo-user.jpg',
-		created_at: new Date().toISOString(),
-		updated_at: new Date().toISOString()
+		createdAt: new Date().toISOString(),
+		updatedAt: new Date().toISOString(),
+		linkedAccounts: []
 	}
 ];
 
@@ -71,17 +72,18 @@ export class MockAuthProvider {
 
 	// Регистрация
 	async signUp(
-		credentials: LoginCredentials & { name: string }
+		credentials: LoginCredentials & { name?: string }
 	): Promise<{ user: User; session: Session }> {
 		await new Promise((resolve) => setTimeout(resolve, 1000));
 
 		const newUser: User = {
 			id: crypto.randomUUID(),
 			email: credentials.email,
-			name: credentials.name,
-			avatar_url: undefined,
-			created_at: new Date().toISOString(),
-			updated_at: new Date().toISOString()
+			name: credentials.name || '',
+			avatarUrl: undefined,
+			createdAt: new Date().toISOString(),
+			updatedAt: new Date().toISOString(),
+			linkedAccounts: []
 		};
 
 		const session = this.createSession(newUser);
@@ -120,7 +122,7 @@ export class MockAuthProvider {
 		if (!session) return false;
 
 		// Проверяем срок действия токена
-		return Date.now() < session.expires_at;
+		return !!session.expires_at && Date.now() < session.expires_at;
 	}
 
 	private createSession(user: User): Session {

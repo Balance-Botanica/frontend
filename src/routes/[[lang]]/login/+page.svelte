@@ -6,6 +6,7 @@
 	import LoginForm from '$lib/components/LoginForm.svelte';
 	import { createPageTranslations } from '$lib/i18n/store';
 	import SEO from '$lib/components/SEO.svelte';
+	import { getLocalizedUrl } from '$lib/stores/language';
 
 	// Detect language from optional route parameter
 	const lang = $derived($page.params?.lang || 'uk-ua');
@@ -22,8 +23,15 @@
 	function handleAuthSuccess(event: CustomEvent) {
 		console.log('✅ Authentication successful:', event.detail);
 
-		// Redirect to homepage
-		goto('/');
+		// Check for redirect parameter
+		const redirectUrl = $page.url.searchParams.get('redirect');
+		if (redirectUrl) {
+			// Redirect to the intended page
+			goto(redirectUrl);
+		} else {
+			// Redirect to profile page
+			goto(getLocalizedUrl('/profile'));
+		}
 	}
 
 	// Handle authentication error
@@ -35,37 +43,15 @@
 	// If user is already authenticated, redirect
 	$effect(() => {
 		if ($isAuthenticated) {
-			goto('/');
+			// Check for redirect parameter
+			const redirectUrl = $page.url.searchParams.get('redirect');
+			if (redirectUrl) {
+				// Redirect to the intended page
+				goto(redirectUrl);
+			} else {
+				// Redirect to profile page
+				goto(getLocalizedUrl('/profile'));
+			}
 		}
 	});
 </script>
-
-{#if $pageTranslations}
-	<SEO
-		title={$pageTranslations.t('login.meta.title')}
-		description={$pageTranslations.t('login.meta.description')}
-	/>
-
-	<!-- Main Content -->
-	<main class="login-page">
-		<div class="login-container">
-			<LoginForm on:success={handleAuthSuccess} on:error={handleAuthError} />
-		</div>
-	</main>
-{/if}
-
-<style>
-	.login-page {
-		min-height: 100vh;
-		background: #f8f7f6;
-		padding: 40px 0;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-	}
-
-	.login-container {
-		width: 100%;
-		max-width: 540px;
-	}
-</style>

@@ -261,7 +261,16 @@
 			// Temporarily disable the auth redirect to prevent showing login page
 			isLoggingOut = true;
 
+			// Sign out from PocketBase
 			await pocketbaseAuthStore.signOut();
+
+			// Also clear our custom session cookie
+			if (typeof document !== 'undefined') {
+				// Remove the auth-session cookie
+				document.cookie = "auth-session=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/";
+				// Also remove any pb_auth cookie that might exist
+				document.cookie = "pb_auth=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/";
+			}
 
 			// Immediately redirect to home page without showing login
 			goto('/', { replaceState: true });

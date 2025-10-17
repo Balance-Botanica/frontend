@@ -2,10 +2,18 @@ import type { RequestEvent } from '@sveltejs/kit';
 import { sha256 } from '@oslojs/crypto/sha2';
 import { encodeBase64url, encodeHexLowerCase } from '@oslojs/encoding';
 import { getAuthenticatedClient } from '$lib/server/pocketbase';
+import type { User } from './domain/interfaces/user.interface';
 
 const DAY_IN_MS = 1000 * 60 * 60 * 24;
 
 export const sessionCookieName = 'auth-session';
+
+// Extend the User interface for session validation result to include additional properties
+interface ExtendedUser extends User {
+	name?: string;
+	firstName?: string;
+	lastName?: string;
+}
 
 export function generateSessionToken() {
 	const bytes = crypto.getRandomValues(new Uint8Array(18));
@@ -62,9 +70,13 @@ export async function validateSessionToken(token: string) {
 		const authData = await pb.collection('users').authRefresh();
 
 		if (authData && authData.record) {
-			const user = {
-				id: authData.record.id,
-				email: authData.record.email
+			const user: ExtendedUser = {
+				id: authData.record.id || '',
+				email: authData.record.email || '',
+				name: authData.record.name || '',
+				firstName: authData.record.first_name || '',
+				lastName: authData.record.last_name || '',
+				createdAt: new Date(authData.record.created || Date.now())
 			};
 
 			const session = {
@@ -99,9 +111,9 @@ export function setSessionTokenCookie(event: RequestEvent, token: string, expire
 		expires: expiresAt,
 		path: '/',
 		httpOnly: true, // XSS protection - cookies not accessible from JavaScript
-		secure: true, // HTTPS only in production
+		secure: process.env.NODE_ENV === 'production', // HTTPS only in production
 		sameSite: 'lax', // CSRF protection
-		maxAge: 30 * 24 * 60 * 60 * 1000 // 30 days in milliseconds
+		maxAge: 30 * 24 * 60 * 60 // 30 days in seconds
 	});
 }
 
@@ -110,7 +122,7 @@ export function deleteSessionTokenCookie(event: RequestEvent) {
 	event.cookies.delete(sessionCookieName, {
 		path: '/',
 		httpOnly: true,
-		secure: true,
+		secure: process.env.NODE_ENV === 'production',
 		sameSite: 'lax'
 	});
 }

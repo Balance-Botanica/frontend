@@ -11,10 +11,9 @@
 	import Logo from './Logo.svelte';
 	import { goto } from '$app/navigation';
 	import { getLocalizedUrl } from '$lib/stores/language';
-
-	// Import icons
-	import personIcon from '../assets/icons/person.svg';
-	import cartIcon from '../assets/icons/cart.svg';
+	import personIcon from '$lib/assets/icons/person.svg';
+	import cartIcon from '$lib/assets/icons/cart.svg';
+	import { get } from 'svelte/store';
 
 	// Determine logo link based on current page language
 	const currentLang = $derived(($page.params?.lang as SupportedLocale) || 'uk-ua');
@@ -106,13 +105,15 @@
 			userEmail: $user?.email
 		});
 
+		// Check if user is authenticated
 		if ($isAuthenticated) {
 			console.log('🔓 [HEADER] User is authenticated, navigating to profile...');
-			goto('/profile');
+			// Use localized URL for profile
+			goto(getLocalizedUrl('/profile'));
 		} else {
 			console.log('🔗 [HEADER] User not authenticated, redirecting to login...');
-			// Go to login page
-			goto('/login');
+			// Use localized URL for login
+			goto(getLocalizedUrl('/login'));
 		}
 	}
 

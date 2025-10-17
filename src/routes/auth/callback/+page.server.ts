@@ -56,13 +56,15 @@ export const load: PageServerLoad = async ({ url, locals }) => {
 		locals.user = {
 			id: authData.record.id,
 			email: authData.record.email,
-			name: authData.record.name || extractNameFromEmail(authData.record.email),
+			name: authData.record.name || extractNameFromEmail(authData.record.email), // Fallback to email if name is not available
 			firstName: authData.record.first_name,
-			lastName: authData.record.last_name
+			lastName: authData.record.last_name,
+			createdAt: new Date() // Add required createdAt field
 		};
 
-		// After successful OAuth, PocketBase should have set cookies automatically
-		// Let's redirect to profile to test if authentication persists
+		// Check if there's a redirect parameter in the state or URL
+		// For now, we'll redirect to profile as default, but this could be enhanced
+		// to check for a redirect parameter in the OAuth state
 		console.log(
 			'✅ [OAUTH-CALLBACK] OAuth callback processed successfully, redirecting to profile'
 		);

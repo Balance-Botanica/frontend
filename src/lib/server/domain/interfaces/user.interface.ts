@@ -2,6 +2,7 @@
 export interface User {
 	id: string;
 	email: string;
+	name?: string; // Make name optional
 	firstName?: string;
 	lastName?: string;
 	phoneNumber?: string;

@@ -1,6 +1,7 @@
 import { sequence } from '@sveltejs/kit/hooks';
 import type { Handle } from '@sveltejs/kit';
 import PocketBase from 'pocketbase';
+import * as auth from '$lib/server/auth';
 
 // Simple in-memory rate limiter (для продакшена используйте Redis)
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
@@ -69,11 +70,34 @@ const handleAuth: Handle = async ({ event, resolve }) => {
 		console.log('🔓 [Rate Limit] Skipped for localhost in development mode');
 	}
 
-	// For PocketBase, we need to check if user is authenticated
-	// PocketBase stores auth tokens in cookies automatically
-	console.log('[Hooks] 🔍 Checking PocketBase authentication for path:', event.url.pathname);
+	// Check authentication using our custom session system first
+	console.log('[Hooks] 🔍 Checking custom session authentication for path:', event.url.pathname);
 
 	try {
+		// Get the session cookie
+		const sessionToken = event.cookies.get(auth.sessionCookieName);
+		console.log('[Hooks] 🍪 Session cookie present:', !!sessionToken);
+
+		if (sessionToken) {
+			console.log('[Hooks] 🍪 Validating session token');
+			const { session, user } = await auth.validateSessionToken(sessionToken);
+
+			if (session && user) {
+				console.log('[Hooks] ✅ Custom session authenticated:', user.email, 'ID:', user.id);
+				event.locals.user = user;
+				event.locals.session = session;
+				console.log('[Hooks] Set locals - User:', user.id, 'Session:', session.id);
+				return resolve(event);
+			} else {
+				console.log('[Hooks] ⚠️ Invalid session token');
+				// Clear invalid session cookie
+				auth.deleteSessionTokenCookie(event as any);
+			}
+		}
+
+		// Fallback to PocketBase authentication
+		console.log('[Hooks] 🔍 Checking PocketBase authentication as fallback');
+
 		// Create a new PocketBase client instance for this request
 		const pb = new PocketBase(process.env.POCKETBASE_URL || 'http://localhost:8090');
 
@@ -88,7 +112,7 @@ const handleAuth: Handle = async ({ event, resolve }) => {
 			console.log('[Hooks] 🍪 Has pb_auth cookie:', hasPbAuth);
 
 			// Log all cookie names for debugging
-			const cookies = cookieHeader.split(';').map(c => c.trim().split('=')[0]);
+			const cookies = cookieHeader.split(';').map((c) => c.trim().split('=')[0]);
 			console.log('[Hooks] 🍪 All cookies:', cookies);
 		}
 
@@ -104,9 +128,9 @@ const handleAuth: Handle = async ({ event, resolve }) => {
 			const user = {
 				id: pbUser.id,
 				email: pbUser.email,
-				name: pbUser.name || pbUser.email?.split('@')[0] || 'User',
 				firstName: pbUser.first_name,
-				lastName: pbUser.last_name
+				lastName: pbUser.last_name,
+				createdAt: new Date(pbUser.created || Date.now()) // Add required createdAt property
 			};
 
 			console.log('[Hooks] ✅ PocketBase user authenticated:', user.email, 'ID:', user.id);
@@ -123,7 +147,7 @@ const handleAuth: Handle = async ({ event, resolve }) => {
 			event.locals.session = null;
 		}
 	} catch (error) {
-		console.log('[Hooks] ❌ PocketBase auth check failed:', error);
+		console.log('[Hooks] ❌ Auth check failed:', error);
 		event.locals.user = null;
 		event.locals.session = null;
 	}

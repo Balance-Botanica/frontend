@@ -1,15 +1,15 @@
 import { userService } from '$lib/server/application/services/user.service';
 import { error, fail, redirect } from '@sveltejs/kit';
-import type { PageServerLoad, Actions } from '../../../.svelte-kit/types/src/routes/profile/$types';
+import type { RequestEvent } from '@sveltejs/kit';
 
 // Load user delivery addresses
-export const load: PageServerLoad = async ({ locals }) => {
+export const load = async ({ locals }: RequestEvent) => {
 	console.log('[Profile Load] Starting profile load');
 
 	// Check if user is authenticated
 	if (!locals.user?.id) {
 		console.log('[Profile Load] ❌ User not authenticated, redirecting to login');
-		throw redirect(302, '/login?redirect=/profile');
+		throw redirect(302, '/login');
 	}
 
 	const userId = locals.user.id;
@@ -34,8 +34,8 @@ export const load: PageServerLoad = async ({ locals }) => {
 };
 
 // Actions for delivery addresses
-export const actions: Actions = {
-	saveDeliveryAddress: async ({ request, locals }) => {
+export const actions = {
+	saveDeliveryAddress: async ({ request, locals }: RequestEvent) => {
 		console.log('[Save Delivery Address] Starting save delivery address action');
 
 		// Check if user is authenticated
@@ -120,7 +120,7 @@ export const actions: Actions = {
 		}
 	},
 
-	setDefaultAddress: async ({ request, locals }) => {
+	setDefaultAddress: async ({ request, locals }: RequestEvent) => {
 		console.log('[Set Default Address] Starting set default address action');
 
 		// Check if user is authenticated
@@ -163,7 +163,7 @@ export const actions: Actions = {
 		}
 	},
 
-	deleteAddress: async ({ request, locals }) => {
+	deleteAddress: async ({ request, locals }: RequestEvent) => {
 		console.log('[Delete Address] Starting delete address action');
 
 		// Check if user is authenticated

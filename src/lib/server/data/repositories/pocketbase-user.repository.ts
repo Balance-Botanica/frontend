@@ -53,8 +53,15 @@ export class PocketBaseUserRepository implements UserRepository {
 			console.log('[PocketBaseUserRepository] Creating new user with data:', data);
 			const pb = await getAuthenticatedClient();
 
+			// Combine firstName and lastName to create name field if needed
+			const name =
+				data.firstName && data.lastName
+					? `${data.firstName} ${data.lastName}`
+					: data.firstName || data.lastName || '';
+
 			const record = await pb.collection('users').create({
 				email: data.email,
+				name: name || null, // Add name field
 				first_name: data.firstName || null,
 				last_name: data.lastName || null,
 				phone_number: data.phoneNumber || null,
@@ -79,6 +86,18 @@ export class PocketBaseUserRepository implements UserRepository {
 			if (data.firstName !== undefined) updateData.first_name = data.firstName;
 			if (data.lastName !== undefined) updateData.last_name = data.lastName;
 			if (data.phoneNumber !== undefined) updateData.phone_number = data.phoneNumber;
+
+			// Update name field if firstName or lastName changed
+			if (data.firstName !== undefined || data.lastName !== undefined) {
+				// Get current user data to construct full name
+				const currentUser = await this.getUserById(id);
+				const firstName =
+					data.firstName !== undefined ? data.firstName : currentUser?.firstName || '';
+				const lastName = data.lastName !== undefined ? data.lastName : currentUser?.lastName || '';
+				const name =
+					firstName && lastName ? `${firstName} ${lastName}` : firstName || lastName || '';
+				updateData.name = name || null;
+			}
 
 			const record = await pb.collection('users').update(id, updateData);
 			const user = this.mapUserToDomain(record);
@@ -305,6 +324,7 @@ export class PocketBaseUserRepository implements UserRepository {
 		return {
 			id: record.id,
 			email: record.email,
+			name: record.name, // Add name field
 			firstName: record.first_name,
 			lastName: record.last_name,
 			phoneNumber: record.phone_number,
