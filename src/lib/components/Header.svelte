@@ -109,11 +109,25 @@
 		if ($isAuthenticated) {
 			console.log('🔓 [HEADER] User is authenticated, navigating to profile...');
 			// Use localized URL for profile
-			goto(getLocalizedUrl('/profile'));
+			const profileUrl = getLocalizedUrl('/profile');
+			console.log('🔗 [HEADER] Profile URL:', profileUrl);
+			try {
+				await goto(profileUrl);
+				console.log('✅ [HEADER] Navigation to profile successful');
+			} catch (error) {
+				console.error('❌ [HEADER] Navigation to profile failed:', error);
+			}
 		} else {
 			console.log('🔗 [HEADER] User not authenticated, redirecting to login...');
 			// Use localized URL for login
-			goto(getLocalizedUrl('/login'));
+			const loginUrl = getLocalizedUrl('/login');
+			console.log('🔗 [HEADER] Login URL:', loginUrl);
+			try {
+				await goto(loginUrl);
+				console.log('✅ [HEADER] Navigation to login successful');
+			} catch (error) {
+				console.error('❌ [HEADER] Navigation to login failed:', error);
+			}
 		}
 	}
 

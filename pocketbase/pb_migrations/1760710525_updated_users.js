@@ -6,6 +6,8 @@ migrate((app) => {
   unmarshal({
     "oauth2": {
       "mappedFields": {
+        "avatarURL": "avatar",
+        "id": "username",
         "name": "name"
       }
     }
@@ -19,6 +21,8 @@ migrate((app) => {
   unmarshal({
     "oauth2": {
       "mappedFields": {
+        "avatarURL": "",
+        "id": "",
         "name": ""
       }
     }

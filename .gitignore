@@ -29,12 +29,28 @@ src/lib/paraglide
 *.db
 .qoder/rules
 
-# Google credentials and secrets
+# Credentials and secrets
+balance-botanica-*.json
+client_secret_*.json
+admin-chat-id.json
+
+# All JSON files except specific ones
 *.json
 !package.json
 !tsconfig.json
-balance-botanica-*.json
-client_secret_*.json
+!src/messages/*.json
+
+# PocketBase backups (may contain sensitive data)
+pocketbase/pb_data/backups/*.zip
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Additional sensitive files
+check-oauth.js
+test-google-oauth.js
 
 # IDE and editor files
 .cursor/

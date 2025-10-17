@@ -4,9 +4,11 @@ migrate((app) => {
 
   // update collection data
   unmarshal({
-    "createRule": "email != ''",
-    "listRule": null,
-    "viewRule": null
+    "oauth2": {
+      "mappedFields": {
+        "id": ""
+      }
+    }
   }, collection)
 
   return app.save(collection)
@@ -15,9 +17,11 @@ migrate((app) => {
 
   // update collection data
   unmarshal({
-    "createRule": "",
-    "listRule": "id = @request.auth.id",
-    "viewRule": "id = @request.auth.id"
+    "oauth2": {
+      "mappedFields": {
+        "id": "username"
+      }
+    }
   }, collection)
 
   return app.save(collection)

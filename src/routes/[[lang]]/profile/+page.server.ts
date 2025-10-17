@@ -5,6 +5,9 @@ import type { RequestEvent } from '@sveltejs/kit';
 // Load user delivery addresses
 export const load = async ({ locals }: RequestEvent) => {
 	console.log('[Profile Load] Starting profile load');
+	console.log('[Profile Load] Locals user:', locals.user);
+	console.log('[Profile Load] Locals user ID:', locals.user?.id);
+	console.log('[Profile Load] Locals user email:', locals.user?.email);
 
 	// Check if user is authenticated
 	if (!locals.user?.id) {

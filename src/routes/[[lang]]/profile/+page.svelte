@@ -11,6 +11,10 @@
 	import { enhance } from '$app/forms';
 	import type { PageData } from './$types';
 
+	console.log('🎯 [PROFILE PAGE] Profile component script loaded');
+	console.log('🎯 [PROFILE PAGE] Current page URL:', $page.url.toString());
+	console.log('🎯 [PROFILE PAGE] Page params:', $page.params);
+
 	// Detect language from optional route parameter
 	const lang = $derived($page.params?.lang || 'uk-ua');
 

@@ -186,10 +186,83 @@ function createPocketBaseAuthStore() {
 
 			console.log('🔗 [AUTH] Starting Google OAuth flow...');
 
-			// PocketBase OAuth flow
-			const authData = await client.collection('users').authWithOAuth2({
-				provider: 'google'
-			});
+			// First check if Google OAuth is configured
+			const authMethods = await client.collection('users').listAuthMethods();
+			console.log('🔍 [AUTH] Available auth methods:', authMethods);
+
+			const googleProvider = authMethods.oauth2.providers.find((p: any) => p.name === 'google');
+			if (!googleProvider) {
+				throw new Error('Google OAuth provider is not configured in PocketBase admin panel');
+			}
+
+			console.log('✅ [AUTH] Google OAuth provider found:', googleProvider);
+			console.log('🔗 [AUTH] Google auth URL:', googleProvider.authUrl);
+
+			// PocketBase OAuth flow with popup handling
+			console.log('🚀 [AUTH] Calling client.collection("users").authWithOAuth2...');
+
+			// Create OAuth window manually for better control
+			const authWindow = window.open('', 'oauth', 'width=600,height=700');
+
+			if (!authWindow) {
+				console.warn('⚠️ [AUTH] Popup blocked by browser, opening in new tab');
+				// Fallback to new tab if popup blocked
+				try {
+					const authData = await client.collection('users').authWithOAuth2({
+						provider: 'google',
+						urlCallback: (url) => {
+							console.log('🔄 [AUTH] OAuth URL generated:', url);
+							window.open(url, '_blank');
+							console.log('🔄 [AUTH] Opened OAuth URL in new tab');
+							return url;
+						}
+					});
+					console.log('✅ [AUTH] OAuth flow completed successfully');
+				} catch (oauthError) {
+					console.error('❌ [AUTH] OAuth flow failed:', oauthError);
+					throw oauthError;
+				}
+			} else {
+				try {
+					const authData = await client.collection('users').authWithOAuth2({
+						provider: 'google',
+						urlCallback: (url) => {
+							console.log('🔄 [AUTH] OAuth URL generated:', url);
+							// Ensure redirect_uri is properly set
+							if (!url.includes('redirect_uri=')) {
+								console.error('❌ [AUTH] No redirect_uri in OAuth URL!');
+								authWindow.close();
+								throw new Error('OAuth redirect URI not configured properly');
+							}
+							console.log('✅ [AUTH] Redirect URI found in URL');
+
+							// Open OAuth URL in popup window
+							authWindow.location.href = url;
+							console.log('🔄 [AUTH] Opened OAuth URL in popup window');
+
+							return url;
+						}
+					});
+
+					// Close popup on success
+					if (authWindow && !authWindow.closed) {
+						setTimeout(() => {
+							if (authWindow && !authWindow.closed) {
+								authWindow.close();
+							}
+						}, 1000); // Give some time for redirect
+					}
+
+					console.log('✅ [AUTH] OAuth flow completed successfully');
+				} catch (oauthError) {
+					console.error('❌ [AUTH] OAuth flow failed:', oauthError);
+					// Close popup on error
+					if (authWindow && !authWindow.closed) {
+						authWindow.close();
+					}
+					throw oauthError;
+				}
+			}
 
 			// After successful OAuth, update our auth state
 			await handleSuccessfulAuth(authData.record);

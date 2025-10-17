@@ -70,36 +70,13 @@ const handleAuth: Handle = async ({ event, resolve }) => {
 		console.log('🔓 [Rate Limit] Skipped for localhost in development mode');
 	}
 
-	// Check authentication using our custom session system first
-	console.log('[Hooks] 🔍 Checking custom session authentication for path:', event.url.pathname);
+	// Check authentication using PocketBase cookies
+	console.log('[Hooks] 🔍 Checking PocketBase authentication for path:', event.url.pathname);
 
 	try {
-		// Get the session cookie
-		const sessionToken = event.cookies.get(auth.sessionCookieName);
-		console.log('[Hooks] 🍪 Session cookie present:', !!sessionToken);
-
-		if (sessionToken) {
-			console.log('[Hooks] 🍪 Validating session token');
-			const { session, user } = await auth.validateSessionToken(sessionToken);
-
-			if (session && user) {
-				console.log('[Hooks] ✅ Custom session authenticated:', user.email, 'ID:', user.id);
-				event.locals.user = user;
-				event.locals.session = session;
-				console.log('[Hooks] Set locals - User:', user.id, 'Session:', session.id);
-				return resolve(event);
-			} else {
-				console.log('[Hooks] ⚠️ Invalid session token');
-				// Clear invalid session cookie
-				auth.deleteSessionTokenCookie(event as any);
-			}
-		}
-
-		// Fallback to PocketBase authentication
-		console.log('[Hooks] 🔍 Checking PocketBase authentication as fallback');
-
 		// Create a new PocketBase client instance for this request
-		const pb = new PocketBase(process.env.POCKETBASE_URL || 'http://localhost:8090');
+		// Use direct URL for server-side requests, not proxy
+		const pb = new PocketBase('http://127.0.0.1:8090');
 
 		// Get the cookie header from the request
 		const cookieHeader = event.request.headers.get('cookie') || '';
@@ -110,10 +87,6 @@ const handleAuth: Handle = async ({ event, resolve }) => {
 			// Log if pb_auth cookie is present
 			const hasPbAuth = cookieHeader.includes('pb_auth');
 			console.log('[Hooks] 🍪 Has pb_auth cookie:', hasPbAuth);
-
-			// Log all cookie names for debugging
-			const cookies = cookieHeader.split(';').map((c) => c.trim().split('=')[0]);
-			console.log('[Hooks] 🍪 All cookies:', cookies);
 		}
 
 		// Load auth store from cookies (PocketBase handles this automatically)
@@ -130,7 +103,7 @@ const handleAuth: Handle = async ({ event, resolve }) => {
 				email: pbUser.email,
 				firstName: pbUser.first_name,
 				lastName: pbUser.last_name,
-				createdAt: new Date(pbUser.created || Date.now()) // Add required createdAt property
+				createdAt: new Date(pbUser.created || Date.now())
 			};
 
 			console.log('[Hooks] ✅ PocketBase user authenticated:', user.email, 'ID:', user.id);
@@ -142,7 +115,6 @@ const handleAuth: Handle = async ({ event, resolve }) => {
 			};
 		} else {
 			console.log('[Hooks] ⚠️ No valid PocketBase session found');
-			console.log('[Hooks] ⚠️ Auth store model:', !!pb.authStore.model);
 			event.locals.user = null;
 			event.locals.session = null;
 		}
@@ -174,17 +146,19 @@ const handleSecurityHeaders: Handle = async ({ event, resolve }) => {
 	// Content Security Policy для дополнительной защиты
 	const csp = [
 		"default-src 'self'",
-		"script-src 'self' 'unsafe-inline' https://accounts.google.com https://*.googleusercontent.com",
+		"script-src 'self' 'unsafe-inline' https://accounts.google.com https://*.googleusercontent.com blob:",
+		"worker-src 'self' blob:",
 		"style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://accounts.google.com",
 		"img-src 'self' data: https: blob: https://*.googleusercontent.com https://*.gstatic.com",
 		// Allow connections to PocketBase server for OAuth and API calls
-		"connect-src 'self' http://127.0.0.1:8090 http://localhost:8090 ws://127.0.0.1:8090 ws://localhost:8090 https://*.pocketbase.cloud https://*.google.com https://*.facebook.com https://accounts.google.com https://oauth2.googleapis.com https://www.googleapis.com wss://*.supabase.co",
+		"connect-src 'self' http://127.0.0.1:8090 http://localhost:8090 ws://127.0.0.1:8090 ws://localhost:8090 https://*.google.com https://accounts.google.com https://oauth2.googleapis.com https://www.googleapis.com",
 		"font-src 'self' https://fonts.gstatic.com",
 		"frame-src 'self' https://accounts.google.com",
 		"object-src 'none'",
 		"base-uri 'self'",
 		"form-action 'self' https://accounts.google.com",
-		"frame-ancestors 'none'"
+		"frame-ancestors 'none'",
+		"popup-src 'self'"
 	].join('; ');
 
 	response.headers.set('Content-Security-Policy', csp);
