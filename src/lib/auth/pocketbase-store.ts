@@ -42,6 +42,15 @@ function createPocketBaseAuthStore() {
 			return;
 		}
 
+		// Log localStorage state at initialization
+		if (browser && import.meta.env.DEV) {
+			console.log('[AUTH] 🔍 localStorage at initialization:', {
+				pb_token: localStorage.getItem('pb_token') ? 'present' : 'not present',
+				allKeys: Object.keys(localStorage),
+				totalItems: localStorage.length
+			});
+		}
+
 		if (isInitializing) {
 			console.log('⏳ [AUTH] Auth store initialization already in progress - waiting...');
 			return;
@@ -107,7 +116,15 @@ function createPocketBaseAuthStore() {
 						error: null
 					});
 
-					// PocketBase should handle cookie persistence automatically
+					// Save token to localStorage for development
+					if (import.meta.env.DEV && pb.authStore.token) {
+						localStorage.setItem('pb_token', pb.authStore.token);
+						console.log('💾 [AUTH] Saved token to localStorage during initialization:', {
+							tokenLength: pb.authStore.token.length,
+							localStorageKeys: Object.keys(localStorage),
+							totalItems: localStorage.length
+						});
+					}
 
 					console.log('✅ [AUTH] Session restored successfully:', {
 						userEmail: user?.email,
@@ -201,6 +218,18 @@ function createPocketBaseAuthStore() {
 			// Use direct PocketBase URL for OAuth to avoid redirect URI issues
 			console.log('🚀 [AUTH] Creating temporary PocketBase client for OAuth...');
 			const oauthClient = new (await import('pocketbase')).default('http://127.0.0.1:8090');
+
+			// Configure cookie export for OAuth client too
+			if (import.meta.env.DEV) {
+				oauthClient.authStore.exportToCookie({
+					domain: 'localhost',
+					path: '/',
+					secure: false,
+					sameSite: 'lax',
+					httpOnly: false
+				});
+				console.log('🍪 [AUTH] OAuth client configured cookie export to localhost');
+			}
 
 			let authData: any = null;
 
@@ -512,6 +541,17 @@ function createPocketBaseAuthStore() {
 				client.authStore.clear();
 			}
 
+			// Clear localStorage in development
+			if (browser && import.meta.env.DEV) {
+				const hadToken = localStorage.getItem('pb_token') !== null;
+				localStorage.removeItem('pb_token');
+				console.log('🗑️ [AUTH] Cleared pb_token from localStorage during sign out:', {
+					hadToken: hadToken,
+					localStorageKeys: Object.keys(localStorage),
+					totalItems: localStorage.length
+				});
+			}
+
 			console.log('✅ [AUTH] Successfully signed out from PocketBase');
 			set({ user: null, session: null, isLoading: false, error: null });
 			console.log('🏁 [AUTH] Auth state cleared successfully');
@@ -534,7 +574,28 @@ function createPocketBaseAuthStore() {
 	if (browser && pb) {
 		try {
 			pb.authStore.onChange((token, model) => {
-				console.log('🔄 [AUTH] Auth store changed:', { token, model });
+				console.log('🔄 [AUTH] Auth store changed:', { token: !!token, model: !!model });
+
+				if (import.meta.env.DEV) {
+					// In development, save token to localStorage for client hooks
+					if (token) {
+						localStorage.setItem('pb_token', token);
+						console.log('💾 [AUTH] Saved token to localStorage:', {
+							tokenLength: token.length,
+							localStorageKeys: Object.keys(localStorage),
+							totalItems: localStorage.length
+						});
+					} else {
+						const hadToken = localStorage.getItem('pb_token') !== null;
+						localStorage.removeItem('pb_token');
+						console.log('🗑️ [AUTH] Removed token from localStorage:', {
+							hadToken: hadToken,
+							localStorageKeys: Object.keys(localStorage),
+							totalItems: localStorage.length
+						});
+					}
+				}
+
 				if (model) {
 					handleSuccessfulAuth(model);
 				} else {
