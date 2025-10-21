@@ -25,12 +25,18 @@ export function getPocketBaseClient(): PocketBase | null {
 		console.log('🆕 [CLIENT] Creating new PocketBase client instance');
 		pocketbaseInstance = new PocketBase(POCKETBASE_URL);
 
-		// Disable automatic cookie export in development
-		// We'll handle authentication manually via localStorage and headers
+		// Configure cookie export for cross-origin requests in development
 		if (import.meta.env.DEV) {
-			// Override the exportToCookie function to do nothing in development
-			pocketbaseInstance.authStore.exportToCookie = () => '';
-			console.log('🍪 [CLIENT] Disabled automatic cookie export for development');
+			// Configure cookies to work with our development setup
+			pocketbaseInstance.authStore.exportToCookie({
+				domain: 'localhost',
+				path: '/',
+				secure: false,
+				sameSite: 'lax',
+				httpOnly: false,
+				maxAge: 30 * 24 * 60 * 60 // 30 days
+			});
+			console.log('🍪 [CLIENT] Configured cookie export for localhost development');
 		}
 
 		// Listen to auth store changes
