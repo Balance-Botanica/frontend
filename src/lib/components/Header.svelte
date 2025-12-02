@@ -14,6 +14,7 @@
 	import personIcon from '$lib/assets/icons/person.svg';
 	import cartIcon from '$lib/assets/icons/cart.svg';
 	import { get } from 'svelte/store';
+	import { getPocketBaseClient } from '$lib/pocketbase/client';
 
 	// Determine logo link based on current page language
 	const currentLang = $derived(($page.params?.lang as SupportedLocale) || 'uk-ua');
@@ -109,7 +110,19 @@
 		if ($isAuthenticated) {
 			console.log('🔓 [HEADER] User is authenticated, navigating to profile...');
 			// Use localized URL for profile
-			const profileUrl = getLocalizedUrl('/profile');
+			let profileUrl = getLocalizedUrl('/profile');
+
+			// In development, add auth token to URL for direct navigation (refresh support)
+			if (import.meta.env.DEV) {
+				const pbClient = getPocketBaseClient();
+				if (pbClient?.authStore?.token) {
+					const url = new URL(profileUrl, window.location.origin);
+					url.searchParams.set('auth_token', pbClient.authStore.token);
+					profileUrl = url.pathname + url.search;
+					console.log('🔗 [HEADER] Added auth token to profile URL for refresh support');
+				}
+			}
+
 			console.log('🔗 [HEADER] Profile URL:', profileUrl);
 			try {
 				await goto(profileUrl);

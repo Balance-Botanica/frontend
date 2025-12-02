@@ -22,8 +22,6 @@ export default defineConfig({
 						}
 						// Remove Origin header to avoid CORS issues
 						proxyReq.removeHeader('Origin');
-						// Ensure credentials are included
-						proxyReq.setHeader('credentials', 'include');
 					});
 					proxy.on('proxyRes', (proxyRes, req, res) => {
 						// Forward cookies from PocketBase back to client
@@ -31,13 +29,13 @@ export default defineConfig({
 						if (cookies) {
 							res.setHeader('set-cookie', cookies);
 						}
-						// Add CORS headers for OAuth and cookies
+						// Add CORS headers for OAuth
 						if (req.headers.origin) {
 							proxyRes.headers['Access-Control-Allow-Origin'] = req.headers.origin;
 							proxyRes.headers['Access-Control-Allow-Credentials'] = 'true';
 							proxyRes.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS';
 							proxyRes.headers['Access-Control-Allow-Headers'] =
-								'Content-Type, Authorization, Accept, Cookie';
+								'Content-Type, Authorization, Accept';
 						}
 					});
 				}

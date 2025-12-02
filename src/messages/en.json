@@ -2,6 +2,62 @@
 	"$schema": "https://inlang.com/schema/inlang-message-format",
 	"hello_world": "Hello, {name} from en!",
 
+	"v2": {
+		"coming_soon": "Coming Soon",
+		"hero": {
+			"title": "Balance Botanica Purrrfect Cubes",
+			"subtitle": "Revolutionary CBD treats for your beloved pets. Crafted with love, designed for wellness.",
+			"coming_soon_image": "Purrrfect Cubes - Coming Soon",
+			"notify_me": "Notify Me on Release"
+		},
+		"benefits": {
+			"title": "Why Pets and Pet Parents Love Purrrfect Cubes",
+			"subtitle": "Specially formulated for optimal wellness and happiness",
+			"natural": {
+				"title": "Pure & Natural",
+				"description": "Made with organic, human-grade ingredients and premium CBD for your pet's safety and wellbeing."
+			},
+			"pets_love": {
+				"title": "Pets Love Them",
+				"description": "Delicious flavors that make wellness time the most anticipated moment of the day for your furry friends."
+			},
+			"care": {
+				"title": "Care for Loved Ones",
+				"description": "Show your love with treats that support joint health, reduce anxiety, and promote overall wellness."
+			}
+		},
+		"story": {
+			"title": "Our Love Story with Pets",
+			"paragraph1": "At Balance Botanica, we understand that pets are family. That's why we've spent countless hours researching and developing Purrrfect Cubes - a revolutionary CBD treat that combines the healing power of nature with the joy of treat time.",
+			"paragraph2": "Every cube is crafted with the same care and attention we'd give our own beloved companions. We believe that wellness shouldn't compromise on taste, and that every treat should be an expression of love.",
+			"paragraph3": "Purrrfect Cubes are more than just treats - they're a daily reminder of the special bond between you and your pet.",
+			"illustration": "Crafted with Love"
+		},
+		"subscription": {
+			"title": "Be the First to Know",
+			"subtitle": "Join our community of pet lovers and get exclusive updates on our Purrrfect Cubes launch.",
+			"placeholder": "Your email address",
+			"button": "Get Notified",
+			"submitting": "Sending...",
+			"success": {
+				"title": "You're on the List!",
+				"message": "We'll notify you as soon as Purrrfect Cubes are ready for your beloved pets."
+			},
+			"benefits": {
+				"exclusive": "Exclusive updates",
+				"early_access": "Early access to products",
+			"special_offers": "Special launch offers"
+			}
+		},
+		"testimonials": {
+			"title": "What Pet Parents Say",
+			"subtitle": "Stories from our community of pet lovers",
+			"quote1": "I can't wait for these! My dog Max has anxiety during thunderstorms, and I'm hoping these will help him feel more secure and relaxed.",
+			"quote2": "As a cat mom, I'm always looking for ways to support my senior cat's joint health. These sound perfect!",
+			"quote3": "The concept is amazing! I love that it's focused on pet wellness rather than just treats."
+		}
+	},
+
 	"benefits": {
 		"title": "Benefits of Our Products",
 		"golden_paste": {

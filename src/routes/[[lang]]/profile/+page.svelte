@@ -15,6 +15,19 @@
 	console.log('🎯 [PROFILE PAGE] Current page URL:', $page.url.toString());
 	console.log('🎯 [PROFILE PAGE] Page params:', $page.params);
 
+	// Clean up auth token from URL after successful page load
+	onMount(() => {
+		if (import.meta.env.DEV) {
+			const url = new URL(window.location.href);
+			if (url.searchParams.has('auth_token')) {
+				console.log('🧹 [PROFILE PAGE] Removing auth token from URL');
+				url.searchParams.delete('auth_token');
+				// Update URL without triggering navigation
+				window.history.replaceState({}, '', url.pathname + url.search);
+			}
+		}
+	});
+
 	// Detect language from optional route parameter
 	const lang = $derived($page.params?.lang || 'uk-ua');
 

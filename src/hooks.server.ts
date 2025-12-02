@@ -78,47 +78,73 @@ const handleAuth: Handle = async ({ event, resolve }) => {
 		// Use direct URL for server-side requests, not proxy
 		const pb = new PocketBase('http://127.0.0.1:8090');
 
-		// Handle authentication - use cookies in both development and production
-		const cookieHeader = event.request.headers.get('cookie') || '';
-		console.log('[Hooks] 🍪 Cookie header present:', !!cookieHeader);
+		// Check for authentication in development vs production
+		let authToken = null;
 
-		if (cookieHeader) {
-			console.log('[Hooks] 🍪 Cookie header length:', cookieHeader.length);
-			// Log if pb_auth cookie is present
-			const hasPbAuth = cookieHeader.includes('pb_auth');
-			console.log('[Hooks] 🍪 Has pb_auth cookie:', hasPbAuth);
+		if (import.meta.env.DEV) {
+			// In development, check for auth token in multiple places:
+			// 1. Custom header (from client hooks)
+			const authHeader = event.request.headers.get('x-pb-auth') || '';
+			// 2. Query parameter (from direct navigation)
+			const url = new URL(event.request.url);
+			const queryToken = url.searchParams.get('auth_token') || '';
 
-			// Log all cookies for debugging
-			const cookies = cookieHeader.split(';').map((c) => c.trim().split('=')[0]);
-			console.log('[Hooks] 🍪 All cookie names:', cookies);
+			if (authHeader) {
+				authToken = authHeader;
+				console.log('[Hooks] 🔑 Development: Found auth token in x-pb-auth header');
+			} else if (queryToken) {
+				authToken = queryToken;
+				console.log('[Hooks] 🔑 Development: Found auth token in query parameter');
+			} else {
+				console.log('[Hooks] ⚠️ Development: No auth token found in header or query');
+			}
+		} else {
+			// In production, use cookies as normal
+			const cookieHeader = event.request.headers.get('cookie') || '';
+			console.log('[Hooks] 🍪 Production: Cookie header present:', !!cookieHeader);
 
-			// Log the full cookie header for debugging (but mask sensitive data)
-			const maskedCookies = cookieHeader
-				.split(';')
-				.map((cookie) => {
-					const [name, value] = cookie.trim().split('=');
-					if (name === 'pb_auth' && value) {
-						return `${name}=${value.substring(0, 20)}...`;
-					}
-					return `${name}=${value || ''}`;
-				})
-				.join('; ');
-			console.log('[Hooks] 🍪 Cookie header content (masked):', maskedCookies);
+			if (cookieHeader) {
+				console.log('[Hooks] 🍪 Cookie header length:', cookieHeader.length);
+				// Log if pb_auth cookie is present
+				const hasPbAuth = cookieHeader.includes('pb_auth');
+				console.log('[Hooks] 🍪 Has pb_auth cookie:', hasPbAuth);
+
+				// Log all cookies for debugging
+				const cookies = cookieHeader.split(';').map((c) => c.trim().split('=')[0]);
+				console.log('[Hooks] 🍪 All cookie names:', cookies);
+
+				// Log the full cookie header for debugging (but mask sensitive data)
+				const maskedCookies = cookieHeader
+					.split(';')
+					.map((cookie) => {
+						const [name, value] = cookie.trim().split('=');
+						if (name === 'pb_auth' && value) {
+							return `${name}=${value.substring(0, 20)}...`;
+						}
+						return `${name}=${value || ''}`;
+					})
+					.join('; ');
+				console.log('[Hooks] 🍪 Cookie header content (masked):', maskedCookies);
+			}
+
+			// Load auth store from cookies (PocketBase handles this automatically)
+			pb.authStore.loadFromCookie(cookieHeader);
 		}
 
-		// Load auth store from cookies (PocketBase handles this automatically)
-		// In development, we configured cookies to work cross-origin
-		pb.authStore.loadFromCookie(cookieHeader);
-
-		// Try to refresh the auth to get fresh user data
-		if (pb.authStore.isValid && pb.authStore.token) {
+		// If we have a token (either from header or cookies), try to authenticate
+		if (authToken) {
 			try {
-				console.log('[Hooks] 🔄 Attempting auth refresh to get fresh user data...');
+				// Save the token and try to refresh auth to get user data
+				pb.authStore.save(authToken, null);
+				console.log('[Hooks] 🔑 Auth store saved with token, attempting auth refresh...');
+
+				// Try to refresh the auth to get user data
 				await pb.collection('users').authRefresh();
 				console.log('[Hooks] ✅ Auth refresh successful');
 			} catch (error) {
-				console.log('[Hooks] ⚠️ Auth refresh failed, but token might still be valid:', error);
-				// Don't clear the token here - it might still work for API calls
+				console.log('[Hooks] ❌ Failed to authenticate with token:', error);
+				// Clear the invalid token
+				pb.authStore.clear();
 			}
 		}
 
