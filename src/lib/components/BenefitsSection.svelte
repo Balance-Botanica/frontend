@@ -1,18 +1,21 @@
 <script lang="ts">
 	import BenefitIcon from './BenefitIcon.svelte';
+	import Section from './Section.svelte';
 	import { t } from '../i18n';
 
 	// Locale can be passed to the component
 	export let locale = 'uk-ua';
 </script>
 
-<div id="benefits" class="relative w-full overflow-hidden bg-gradient-to-b from-[#182720] to-[#101b17] py-12 md:py-16 lg:py-20">
-	<!-- Warm breath on near-black pine: amber glow, content stays readable AAA -->
-	<div
-		class="pointer-events-none absolute -top-32 left-1/2 h-72 w-[42rem] -translate-x-1/2 rounded-full bg-turmeric/15 blur-3xl"
-		aria-hidden="true"
-	></div>
-	<div class="relative mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+<Section id="benefits" bg="bg-pine">
+	{#snippet decor()}
+		<!-- Soft amber breath on pine green: warmth without darkness -->
+		<div
+			class="pointer-events-none absolute -top-32 left-1/2 h-72 w-[42rem] -translate-x-1/2 rounded-full bg-turmeric/20 blur-3xl"
+			aria-hidden="true"
+		></div>
+	{/snippet}
+	<div>
 		<h2 id="benefits-heading" class="mb-4 text-center text-2xl font-bold text-white md:text-3xl">
 			{t('benefits.title')}
 		</h2>
@@ -28,9 +31,9 @@
 					{t('benefits.golden_paste.title')}
 				</h3>
 
-				<!-- Куркума -->
+				<!-- Куркумін: помаранч, не жовтий -->
 				<div class="mb-5 flex items-start gap-4">
-					<BenefitIcon emoji="🟡" />
+					<BenefitIcon emoji="🟠" />
 					<div>
 						<h4 class="mb-1 text-lg font-semibold text-white">
 							{t('benefits.golden_paste.turmeric.title')}
@@ -87,9 +90,9 @@
 					{t('benefits.cbd_oil.title')}
 				</h3>
 
-				<!-- MCT Oil основа -->
-				<div class="mb-5 flex items-start gap-4">
-					<BenefitIcon emoji="🥥" />
+			<!-- Банки пасти: іконка банки, а не кокоса -->
+			<div class="mb-5 flex items-start gap-4">
+				<BenefitIcon emoji="🫙" />
 					<div>
 						<h4 class="mb-1 text-lg font-semibold text-white">
 							{t('benefits.cbd_oil.mct_base.title')}
@@ -150,4 +153,4 @@
 			</p>
 		</footer>
 	</div>
-</div>
+</Section>

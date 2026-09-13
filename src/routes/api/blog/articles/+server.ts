@@ -148,13 +148,11 @@ export const GET: RequestHandler = async ({ url }) => {
 	const lang = url.searchParams.get('lang') || 'uk-ua';
 
 	try {
-		// Only pillar guides that actually render (200). The legacy CBD-family
-		// pages (cbd/*, veterinary-cbd, dog-health, cats-health) hard-crash in
-		// SSR (pre-existing `window` bug) — never link users or crawlers to 500s.
-		// TODO(paste-pivot): decide revive-as-paste-content vs delete + redirect.
-		// NOTE: dogs/arthritis + pets/thc-toxicity are legacy CBD-world content,
-		// kept listed only until the content decision — not part of the paste line.
-		const pillarSlugs = ['dogs/arthritis', 'pets/thc-toxicity'];
+		// Blog index lists ONLY the golden paste line. Legacy CBD-world guides
+		// (dogs/arthritis, pets/thc-toxicity) stay directly accessible but
+		// unlisted and noindexed — never link users or crawlers to off-brand
+		// content from the paste storefront.
+		const pillarSlugs: string[] = [];
 
 		const pillarArticles = [];
 		for (const slug of pillarSlugs) {

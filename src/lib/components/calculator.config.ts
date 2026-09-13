@@ -111,26 +111,51 @@ export function getWeightRecommendation(
 	};
 }
 
-// Golden paste: ~60mg of 95% curcumin extract per teaspoon (~5g, paste is weighed) — printed on every jar.
-// Jars: TRIAL 30g (~6 tsp) · WEEK 100g (~20 tsp) · HALF 250g (~50 tsp) · MONTH 500g (~100 tsp)
-export const MG_PER_TSP = 60;
+// Golden paste dosing in jar fractions — no spoons anywhere in the UI.
+// Paste carries ~60mg of 95% curcumin extract per ~5g (≈12mg per gram, density ≈ 1).
+// A daily portion is written as 1/N of a jar, small jar first: e.g. 1/6 of 30g … 1/100 of 500g.
+export const MG_PER_TSP = 60; // kept for mg math only (1 tsp ≈ 5g), never shown
+export const MG_PER_G = 12;
 
-export const JAR_TSP = {
-	trial: 6, // 30 g
-	week: 20, // 100 g
-	half: 50, // 250 g
-	month: 100 // 500 g
-} as const;
+export const JAR_G = [30, 100, 250, 500] as const;
+export type JarKey = 'g30' | 'g100' | 'g250' | 'g500';
 
-export type JarKey = keyof typeof JAR_TSP;
-
-export function getTspPerDay(dailyMg: number): number {
-	if (dailyMg <= 0) return 0;
-	return Math.max(0.25, Math.round((dailyMg / MG_PER_TSP) * 4) / 4);
+const JAR_LABEL: Record<JarKey, string> = { g30: '30 г', g100: '100 г', g250: '250 г', g500: '500 г' };
+export function jarLabel(key: JarKey, locale: string = 'uk-ua'): string {
+	if (locale === 'en') return JAR_LABEL[key].replace('г', 'g');
+	return JAR_LABEL[key];
 }
 
-// Baseline value anchor: TRIAL jar (129 UAH / 6 tsp). Savings badges ("-42%")
-// are computed against it. If TRIAL price changes, update this number.
+// Kitchen-friendly denominators for 1/N portions (no 1/53 in the UI)
+const FRIENDLY_DENOMS = [1, 2, 3, 4, 5, 6, 8, 10, 12, 16, 20, 24, 30, 40, 50, 60, 80, 100, 120, 150, 200, 250, 300, 400, 500];
+
+export function portionDenom(dailyMg: number, jarG: number): number {
+	if (dailyMg <= 0) return FRIENDLY_DENOMS[FRIENDLY_DENOMS.length - 1];
+	const raw = (jarG * MG_PER_G) / dailyMg;
+	let best = FRIENDLY_DENOMS[0];
+	for (const d of FRIENDLY_DENOMS) {
+		if (Math.abs(d - raw) <= Math.abs(best - raw)) best = d;
+	}
+	return best;
+}
+
+export interface JarPortion {
+	key: JarKey;
+	grams: number;
+	denom: number; // daily portion = 1/denom of this jar (1 = the whole jar)
+	days: number; // how many days this jar lasts at the daily dose
+}
+
+export function getPortionsPerDay(dailyMg: number): JarPortion[] {
+	return (JAR_G as readonly number[]).map((g, i) => {
+		const key = (['g30', 'g100', 'g250', 'g500'] as JarKey[])[i];
+		const denom = portionDenom(dailyMg, g);
+		return { key, grams: g, denom, days: Math.floor(denom * 10) / 10 };
+	});
+}
+
+// Baseline value anchor: 30g jar (129 UAH / 6 tsp ≈ 21.5 UAH per 5g).
+// Savings badges ("-42%") are computed against it. If the 30g price changes, update this.
 export const BASELINE_PER_TSP = 21.5;
 
 export function savingsVsTrial(perTsp: number): number | null {
@@ -141,31 +166,13 @@ export function savingsVsTrial(perTsp: number): number | null {
 
 export function getJarDays(tspPerDay: number): Record<JarKey, number> {
 	const perDay = Math.max(tspPerDay, 0.25);
+	// 1 tsp ≈ 5g; jar grams / (tsp per day * 5)
 	return {
-		trial: Math.floor((JAR_TSP.trial / perDay) * 10) / 10,
-		week: Math.floor((JAR_TSP.week / perDay) * 10) / 10,
-		half: Math.floor((JAR_TSP.half / perDay) * 10) / 10,
-		month: Math.floor((JAR_TSP.month / perDay) * 10) / 10
+		g30: Math.floor((30 / (perDay * 5)) * 10) / 10,
+		g100: Math.floor((100 / (perDay * 5)) * 10) / 10,
+		g250: Math.floor((250 / (perDay * 5)) * 10) / 10,
+		g500: Math.floor((500 / (perDay * 5)) * 10) / 10
 	};
-}
-
-// Legacy cubes (kept for reference — shop is paste jars now)
-export const MG_PER_TREAT = {
-	S: 25, // up to 10 kg
-	M: 60, // 10-25 kg
-	L: 120 // 25+ kg
-} as const;
-
-export function getPawSize(weightKg: number): 'S' | 'M' | 'L' {
-	if (weightKg <= 10) return 'S';
-	if (weightKg <= 25) return 'M';
-	return 'L';
-}
-
-export function getTreatsPerDay(dailyMg: number, weightKg: number): { size: 'S' | 'M' | 'L'; count: number } {
-	const size = getPawSize(weightKg);
-	const perTreat = MG_PER_TREAT[size];
-	return { size, count: Math.max(1, Math.round((dailyMg / perTreat) * 2) / 2) };
 }
 
 // Safety and quality assurance constants based on peer-reviewed research

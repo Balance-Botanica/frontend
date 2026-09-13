@@ -3,6 +3,12 @@ import { get } from 'svelte/store';
 import { browser } from '$app/environment';
 import {
 	PhoneAuthProvider,
+	GoogleAuthProvider,
+	signInWithPopup,
+	signInWithEmailAndPassword,
+	createUserWithEmailAndPassword,
+	updateProfile,
+	sendPasswordResetEmail,
 	signInWithCredential,
 	signOut,
 	onAuthStateChanged,
@@ -10,6 +16,59 @@ import {
 	type PhoneInfoOptions
 } from 'firebase/auth';
 import { auth } from './config.js';
+
+// Send the Firebase ID token to our server, which verifies it and sets the
+// app session cookie (same session as every other login method). Returns true
+// on success. Firebase is identity, PocketBase stays pure data sync.
+async function bridgeIdTokenToSession(idToken: string): Promise<void> {
+	const res = await fetch('/api/auth/firebase', {
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json' },
+		body: JSON.stringify({ idToken })
+	});
+	const data = await res.json().catch(() => ({}));
+	if (!res.ok || !data?.success) {
+		throw new Error(data?.error || 'Server session failed');
+	}
+}
+
+// Google sign-in via Firebase popup. select_account forces the native
+// account chooser with remembered accounts ("Continue as …").
+export async function signInWithGooglePopup(): Promise<User> {
+	const provider = new GoogleAuthProvider();
+	provider.setCustomParameters({ prompt: 'select_account' });
+	const cred = await signInWithPopup(auth, provider);
+	if (!cred.user) throw new Error('Google sign-in returned no user');
+	await bridgeIdTokenToSession(await cred.user.getIdToken());
+	return cred.user;
+}
+
+// Email/password via Firebase (register when isSignUp, else sign in).
+export async function signInWithEmailPassword(
+	email: string,
+	password: string,
+	isSignUp: boolean,
+	displayName?: string
+): Promise<User> {
+	let user: User;
+	if (isSignUp) {
+		const cred = await createUserWithEmailAndPassword(auth, email, password);
+		user = cred.user;
+		if (displayName) {
+			await updateProfile(user, { displayName }).catch(() => {});
+		}
+	} else {
+		const cred = await signInWithEmailAndPassword(auth, email, password);
+		user = cred.user;
+	}
+	await bridgeIdTokenToSession(await user.getIdToken());
+	return user;
+}
+
+// Real password reset email via Firebase (replaces the old mock).
+export async function sendPasswordReset(email: string): Promise<void> {
+	await sendPasswordResetEmail(auth, email);
+}
 
 // Auth state store
 export const authStore = writable<{

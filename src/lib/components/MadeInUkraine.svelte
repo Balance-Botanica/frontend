@@ -1,10 +1,11 @@
 <script lang="ts">
 	import { t } from '../i18n';
+	import Section from './Section.svelte';
 	import madeInUkraineIcon from '../assets/icons/made_in_ukraine.svg';
 </script>
 
-<div id="made-in-ukraine" class="w-full py-12 md:py-16 lg:py-20">
-	<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+<Section id="made-in-ukraine">
+	<div>
 		<div class="rounded-2xl bg-gray-50 p-12 md:p-16">
 			<div class="flex flex-col items-center justify-center gap-12 lg:flex-row">
 				<!-- Left side: Flag Icon -->
@@ -33,12 +34,12 @@
 						{t('made_in_ukraine.subtitle')}
 					</p>
 
-					<!-- Description -->
-					<p class="text-lg leading-relaxed text-gray-700">
-						{t('made_in_ukraine.description')}
-					</p>
+				<!-- Description -->
+				<p class="text-lg leading-relaxed text-gray-700">
+					{t('made_in_ukraine.description')}
+				</p>
 				</div>
 			</div>
 		</div>
 	</div>
-</div>
+</Section>

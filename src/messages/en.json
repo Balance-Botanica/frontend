@@ -63,8 +63,8 @@
 		"golden_paste": {
 			"title": "Balance Botanica Golden Paste for Dogs",
 			"turmeric": {
-				"title": "Turmeric + Curcumin 95%",
-				"description": "Kitchen turmeric powder boosted with standardized 95% curcumin extract — about 60 mg curcuminoids per teaspoon, printed on the jar."
+				"title": "Curcumin 95% (Turmeric Extract)",
+				"description": "Curcumin 95% is a concentrate from turmeric, not the spice itself: about 60 mg curcuminoids per 5 g of paste, printed on the jar."
 			},
 			"ginger": {
 				"title": "Ginger (Gingerol)",
@@ -83,11 +83,11 @@
 			"title": "Why It Works",
 			"mct_base": {
 				"title": "Paste Jars for Dogs",
-				"description": "TRIAL 30 ml · WEEK 100 ml · HALF 250 ml · MONTH 500 ml. Store in the fridge per label, serve with food."
+				"description": "Jars 30 g · 100 g · 250 g · 500 g. Store in the fridge per label, serve with food."
 			},
 			"two_flavors": {
-				"title": "Transparent mg per tsp",
-				"description": "Small dogs 1/4-1/2 tsp, medium 1/2-1 tsp, large 1-2 tsp daily. No mystery spoons — the calculator shows your dose."
+			"title": "Portion is a share of the jar",
+			"description": "A daily portion is 1/N of a jar: small dogs from 1/12 of 30 g, large up to 1/3 of 30 g. No spoons — the calculator shows your share."
 			},
 			"convenient_dropper": {
 				"title": "Safe Kitchen Recipe",
@@ -117,14 +117,14 @@
 		},
 		"ingredients_title": "Four Ingredients. Zero Mystery.",
 		"ingredients_subtitle": "The classic vet recipe, upgraded: standardized extract, measured pepper, real ginger.",
-		"ingredients_note": "Full recipe ratios and mg per teaspoon are printed on every jar."
+		"ingredients_note": "Full recipe ratios and mg per 5 g are printed on every jar."
 	},
 	"ingredients": {
 		"turmeric": {
-			"emoji": "🟡",
-			"title": "Turmeric + 95% Extract",
-			"role": "The golden base",
-			"benefit": "Kitchen turmeric boosted with standardized 95% curcumin extract — ~60 mg curcuminoids per teaspoon for joint comfort and antioxidant support.",
+			"emoji": "🟠",
+			"title": "Curcumin 95%",
+			"role": "Turmeric extract",
+			"benefit": "Curcumin 95% is a concentrated extract from turmeric (not the spice itself) — ~60 mg curcuminoids per 5 g of paste for joint comfort and antioxidant support.",
 			"fact": "Raw powder is only 2–5% curcumin. Ours is measured, not guessed."
 		},
 		"coconut": {
@@ -135,7 +135,7 @@
 			"fact": "Never boiled — stirred in warm so the oil keeps its properties."
 		},
 		"ginger": {
-			"emoji": "🫚",
+			"emoji": "🌿",
 			"title": "Ginger",
 			"role": "The gut friend",
 			"benefit": "Gingerol settles nausea and supports comfortable digestion — the modification vet creators swear by for seniors and car-sick pups.",
@@ -210,7 +210,7 @@
 		},
 		"newsletter": {
 			"title": "Refill reminders & joint tips",
-			"description": "Subscribe for refill reminders, S/M/L dosing tips and new curcumin treat batches for dogs. No spam, unsubscribe anytime.",
+			"description": "Subscribe for refill reminders, jar-share dosing tips and new paste batches for dogs. No spam, unsubscribe anytime.",
 			"placeholder": "Email Address",
 			"button": "Subscribe",
 			"subscribing_button": "Subscribing...",
@@ -231,7 +231,7 @@
 			"cbd_desc": "What curcumin can and cannot do for joints, in plain language with PubMed refs",
 			"cbd_cats": "Bioavailability",
 			"cbd_cats_desc": "Why fat + lecithin + piperine matter more than raw powder",
-			"cbd_dogs": "Dosing S / M / L",
+			"cbd_dogs": "Dosing by jar share",
 			"cbd_dogs_desc": "How many paws per day by weight, start low and assess at 4-8 weeks",
 			"cbd_types": "Safety",
 			"cbd_types_desc": "NSAIDs, surgery, gallbladder, pregnancy — when to call the vet",
@@ -265,8 +265,8 @@
 
 	"products": {
 		"meta": {
-			"title": "Golden Paste Jars TRIAL / WEEK / HALF / MONTH | Balance Botanica",
-			"description": "Golden paste jars for dogs: 30 / 100 / 250 / 500 ml. About 60 mg curcuminoids per teaspoon. Complementary feed."
+			"title": "Golden Paste Jars 30 / 100 / 250 / 500 g | Balance Botanica",
+			"description": "Golden paste jars for dogs: 30 / 100 / 250 / 500 g. About 60 mg curcuminoids per 5 g of paste. Complementary feed."
 		},
 		"search": {
 			"title": "Find Your Perfect Jar Size",
@@ -291,7 +291,7 @@
 		"reset_filters": "Reset Filters",
 		"badge_new": "New",
 		"shop_title": "Golden paste jars for dogs",
-		"shop_subtitle": "TRIAL to taste · MONTH to save. About 60 mg curcuminoids per teaspoon.",
+		"shop_subtitle": "Small jar to taste · big jar to save. About 60 mg curcuminoids per 5 g of paste.",
 		"home": "Home",
 		"per_day": "≈ {price} UAH / day",
 		"pdp": {
@@ -301,7 +301,7 @@
 			"details": "Details",
 			"size": "Weight",
 			"flavor": "Taste",
-			"servings": "{n} teaspoons per jar",
+			"servings": "≈{n} mg curcuminoids per jar",
 			"per_day": "≈ {price} UAH per day for a medium dog",
 			"trust_coa": "Heavy-metal tested batch",
 			"trust_fridge": "Keep refrigerated",
@@ -513,7 +513,7 @@
 		"subtitle": "Calculate the daily curcumin dose for your dog or cat based on weight and goal",
 		"benefits": {
 			"title": "Why Use Our Calculator?",
-			"precise": "Dose tailored to your pet's weight (teaspoons of paste per day)",
+			"precise": "Portion tailored to your pet's weight (share of the jar per day)",
 			"safe": "Evidence-based, vet-friendly dosage range",
 			"personalized": "Separate guidance for dogs and cats (incl. Scottish Fold)"
 		},
@@ -550,9 +550,12 @@
 			"ongoing": "as needed"
 		},
 		"results": {
-			"title": "Recommended Daily Dose",
+			"title": "Recommended Daily Portion",
 			"for_animal": "For a {animalType} ({condition})",
-			"administer_text": "Give about {dosage} mg of curcumin {frequency} {duration}",
+			"administer_text": "Give {{portion}} daily (≈{{dosage}} mg curcumin) {{frequency}} {{duration}}",
+			"daily_portion": "Daily portion",
+			"portion_of_jar": "1/{{denom}} of the {{jar}} jar",
+			"portion_note": "A portion is a share of the jar. Start at half for 7–10 days, give with food.",
 			"usage_recommendation": "Usage Recommendation"
 		},
 		"actions": {
@@ -625,8 +628,8 @@
 			"answer": "Curcumin supports joint comfort, mobility and antioxidant defence. Evidence shows it is a modest anti-inflammatory adjuvant - helpful for daily support, but not a replacement for prescribed NSAIDs."
 		},
 		"choosing": {
-			"question": "How do I choose the right treat size for my pet?",
-			"answer": "Pick the size by weight: S for small pets (up to 10 kg), M for medium (10-25 kg), L for large (25+ kg), and a cat line for cats (incl. Scottish Fold). Start with half the dose for 7-10 days."
+			"question": "How do I choose the right jar for my pet?",
+			"answer": "Pick by appetite and weight: 30 g to taste, 100 g for the first weeks, 250 g for half a course, 500 g for a month with subscription. The daily dose is a share of the jar by weight (the calculator will tell you). Start with half a portion for 7-10 days."
 		},
 		"testing": {
 			"question": "How do I know if curcumin is working for my pet?",

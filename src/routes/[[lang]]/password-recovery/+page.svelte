@@ -28,8 +28,9 @@
 		error = '';
 
 		try {
-			// TODO: Заменить на реальную отправку email через Supabase/Firebase/NodeMailer
-			await mockSendRecoveryEmail(email);
+			// Real reset email via Firebase Auth (identity lives in Firebase, not PB)
+			const { sendPasswordReset } = await import('$lib/firebase/auth');
+			await sendPasswordReset(email);
 			isSuccess = true;
 
 			// Автоматически перенаправляем через 3 секунды
@@ -41,22 +42,6 @@
 		} finally {
 			isLoading = false;
 		}
-	}
-
-	// Мок функция отправки email
-	async function mockSendRecoveryEmail(email: string): Promise<void> {
-		// Симуляция задержки сервера
-		await new Promise((resolve) => setTimeout(resolve, 1500));
-
-		// Симуляция успешной отправки
-		console.log(`📧 Мок: отправлен email восстановления на ${email}`);
-
-		// TODO: Заменить на реальную отправку:
-		// 1. Supabase: supabase.auth.resetPasswordForEmail(email)
-		// 2. Firebase: sendPasswordResetEmail(auth, email)
-		// 3. NodeMailer: отправка через SMTP
-		// 4. Resend: resend.emails.send()
-		// 5. SendGrid: sgMail.send()
 	}
 
 	function isValidEmail(email: string): boolean {

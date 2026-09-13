@@ -187,6 +187,8 @@ function createPocketBaseAuthStore() {
 
 	/**
 	 * 🎯 Google OAuth authorization
+	 * @deprecated Identity lives in Firebase now ($lib/firebase/auth).
+	 * Kept only so old sessions keep working. Do not wire new code here.
 	 */
 	async function signInWithGoogle() {
 		if (!browser) {
@@ -353,6 +355,8 @@ function createPocketBaseAuthStore() {
 
 	/**
 	 * 📧 Email/Password authorization
+	 * @deprecated Identity lives in Firebase now ($lib/firebase/auth).
+	 * Kept only so old sessions keep working. Do not wire new code here.
 	 */
 	async function signInWithEmail(email: string, password: string) {
 		try {

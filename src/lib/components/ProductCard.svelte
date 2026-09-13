@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { createEventDispatcher, onMount } from 'svelte';
 	import { browser } from '$app/environment';
-	import { goto } from '$app/navigation';
 	import { createPageTranslations } from '$lib/i18n/store';
 	import { BASELINE_PER_TSP } from './calculator.config.js';
 	import { cartStore } from '$lib/stores/cart.store';
@@ -157,7 +156,7 @@
 
 	const pageTranslations = createPageTranslations();
 
-	// Pack-size badge from categories: trial / week / halfmonth / month (paste jars, weighed in grams).
+	// Pack badge: grams only, no tier names (TRIAL/WEEK/HALF/MONTH are retired).
 	// Unit letter follows the page locale so badges never mix alphabets (30 г vs 30 g).
 	function unitLabel(): string {
 		const locale = ($pageTranslations as any)?.locale || 'uk-ua';
@@ -168,17 +167,18 @@
 		return `${num} ${unit}`;
 	}
 
-	$: packMeta = categories.includes('trial')
-		? { tier: 'TRIAL', cls: 'bg-stone-500' }
-		: categories.includes('week')
-			? { tier: 'WEEK', cls: 'bg-[#3f6f68]' }
-			: categories.includes('halfmonth')
-				? { tier: 'HALF', cls: 'bg-main' }
-				: categories.includes('month')
-					? { tier: 'MONTH', cls: 'bg-[#1f1f1f]' }
-					: null;
+	// Badge tone by jar size (smallest = stone, largest = near-black + jar emoji)
+	$: packMeta = (() => {
+		const match = /([\d.,]+)\s*(g|ml)/i.exec(product.size || '');
+		const grams = match ? parseFloat(match[1].replace(',', '.')) : 0;
+		if (grams >= 500) return { cls: 'bg-[#1f1f1f]', jar: true };
+		if (grams >= 250) return { cls: 'bg-main', jar: false };
+		if (grams >= 100) return { cls: 'bg-[#3f6f68]', jar: false };
+		if (grams > 0) return { cls: 'bg-stone-500', jar: false };
+		return null;
+	})();
 
-	$: packBadge = packMeta ? `${packMeta.tier} · ${unitLabel()}${packMeta.tier === 'MONTH' ? ' 🫙' : ''}` : null;
+	$: packBadge = packMeta ? `${unitLabel()}${packMeta.jar ? ' 🫙' : ''}` : null;
 
 	// Teaspoons per jar parsed from size ("30 g" -> ~6 tsp at ~5g/tsp, paste density ≈ 1)
 	$: jarTsp = (() => {
@@ -251,10 +251,6 @@
 	}
 
 	$: visibleCategories = categories.filter((c) => !HIDDEN_CATEGORIES.includes(c));
-
-	function goToProduct() {
-		goto(`products/${product.id}`);
-	}
 
 	// Log price formatting
 	$: {
@@ -333,14 +329,6 @@
 		isSwiping = false;
 	}
 
-	// Add keyboard event handler for accessibility
-	function handleKeyDown(event: KeyboardEvent, action: () => void) {
-		if (event.key === 'Enter' || event.key === ' ') {
-			event.preventDefault();
-			action();
-		}
-	}
-
 	function handleAddToCart() {
 		try {
 			// Convert raw product data to client product for cart
@@ -363,14 +351,14 @@
 	}
 
 	function handleImageClick() {
+		// Navigation is handled natively by the wrapping <a href> (real link:
+		// free keyboard support, open-in-new-tab, SEO). Only the event remains.
 		if (imageUrls[currentImageIndex]) {
 			dispatch('imageClick', {
 				productId: product.id,
 				imageUrl: imageUrls[currentImageIndex],
 				index: currentImageIndex
 			});
-			// Product click opens the detail page (reviews, dosage, subscription)
-			goToProduct();
 		}
 	}
 
@@ -471,14 +459,13 @@
 					{currentImageIndex + 1} / {imageUrls.length}
 				</div>
 			{/if}
-			<!-- Main Image -->
+			<!-- Main Image (real link to the detail page) -->
 			{#if imageUrls.length > 0}
-				<div
-					class="h-full w-full cursor-pointer object-cover transition-opacity duration-500"
-					role="button"
-					tabindex="0"
+				<a
+					href={`products/${product.id}`}
+					class="block h-full w-full cursor-pointer object-cover transition-opacity duration-500"
 					onclick={handleImageClick}
-					onkeydown={(e) => handleKeyDown(e, handleImageClick)}
+					aria-label={`${product.name} — details`}
 					data-product-image
 				>
 					<img
@@ -511,15 +498,14 @@
 						style="object-fit: cover; object-position: center;"
 						bind:this={imgRef}
 					/>
-				</div>
+				</a>
 			{:else}
 				<!-- Fallback Image -->
-				<div
-					class="h-full w-full cursor-pointer object-cover"
-					role="button"
-					tabindex="0"
+				<a
+					href={`products/${product.id}`}
+					class="block h-full w-full cursor-pointer object-cover"
 					onclick={handleImageClick}
-					onkeydown={(e) => handleKeyDown(e, handleImageClick)}
+					aria-label={`${product.name} — details`}
 				>
 					<img
 						src="/images/animal1.jpg"
@@ -535,7 +521,7 @@
 						style="object-fit: cover; object-position: center;"
 						bind:this={imgRef}
 					/>
-				</div>
+				</a>
 			{/if}
 
 			<!-- Loading State -->
@@ -553,7 +539,7 @@
 			{#if imageUrls.length > 1}
 				<!-- Previous Button -->
 				<button
-					class="touch-button absolute top-1/2 left-3 flex h-10 w-10 -translate-y-1/2 transform items-center justify-center rounded-full bg-black/40 text-white opacity-0 shadow-lg backdrop-blur-sm transition-all duration-300 group-hover:opacity-100 hover:scale-110 hover:bg-black/60"
+					class="touch-button absolute top-1/2 left-3 flex h-10 w-10 -translate-y-1/2 transform items-center justify-center rounded-full bg-black/40 text-white opacity-0 shadow-lg backdrop-blur-sm transition-all duration-300 group-hover:opacity-100 hover:scale-110 hover:bg-black/60 focus-visible:opacity-100"
 					onclick={prevImage}
 					aria-label="Previous image"
 				>
@@ -569,7 +555,7 @@
 
 				<!-- Next Button -->
 				<button
-					class="touch-button absolute top-1/2 right-3 flex h-10 w-10 -translate-y-1/2 transform items-center justify-center rounded-full bg-black/40 text-white opacity-0 shadow-lg backdrop-blur-sm transition-all duration-300 group-hover:opacity-100 hover:scale-110 hover:bg-black/60"
+					class="touch-button absolute top-1/2 right-3 flex h-10 w-10 -translate-y-1/2 transform items-center justify-center rounded-full bg-black/40 text-white opacity-0 shadow-lg backdrop-blur-sm transition-all duration-300 group-hover:opacity-100 hover:scale-110 hover:bg-black/60 focus-visible:opacity-100"
 					onclick={nextImage}
 					aria-label="Next image"
 				>

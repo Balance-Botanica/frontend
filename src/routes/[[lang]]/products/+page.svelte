@@ -102,11 +102,11 @@
 	// SEO with SSR-safe fallbacks (never gate <SEO> behind client-side translations)
 	const seoTitle = $derived(
 		$pageTranslations?.t('products.meta.title') ||
-			'Golden Paste Jars TRIAL / WEEK / HALF / MONTH | Balance Botanica'
+			'Golden Paste Jars 30 / 100 / 250 / 500 g | Balance Botanica'
 	);
 	const seoDescription = $derived(
 		$pageTranslations?.t('products.meta.description') ||
-			'Golden paste jars for dogs: 30 / 100 / 250 / 500 ml. About 60 mg curcuminoids per teaspoon.'
+			'Golden paste jars for dogs: 30 / 100 / 250 / 500 g. About 60 mg curcuminoids per 5 g of paste.'
 	);
 </script>
 
@@ -120,7 +120,7 @@
 
 <div class="min-h-screen overflow-x-hidden bg-cream">
 	<!-- Main Content -->
-	<div class="mx-auto max-w-7xl overflow-x-hidden px-3 py-8 sm:px-4 sm:px-6 lg:px-8">
+	<div class="shell overflow-x-hidden py-8">
 		<!-- Breadcrumb -->
 		<nav aria-label="Breadcrumb" class="mb-4 text-sm text-gray-500">
 			<a href={`${langPrefix() || '/'}`} class="hover:text-main hover:underline">
@@ -137,7 +137,7 @@
 		</h1>
 		<p class="mb-6 text-lg text-gray-600">
 			{$pageTranslations?.t('products.shop_subtitle') ||
-				'TRIAL to taste · MONTH to save. About 60 mg curcuminoids per teaspoon.'}
+				'Small jar to taste · big jar to save. About 60 mg curcuminoids per 5 g of paste.'}
 		</p>
 
 		{#if data.error}

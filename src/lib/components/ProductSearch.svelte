@@ -179,6 +179,7 @@
 					{#if searchTerm}
 						<button
 							type="button"
+							aria-label="Clear search"
 							on:click={() => {
 								console.log('Clear search button clicked');
 								searchTerm = '';
@@ -272,6 +273,7 @@
 						<input
 							type="number"
 							bind:value={minPrice}
+							aria-label="Minimum price in UAH"
 							placeholder="Min"
 							class="w-full rounded-lg border-2 px-4 py-3 transition-all duration-200 ease-in-out focus:ring-2 focus:ring-offset-2 focus:outline-none"
 							style="
@@ -284,6 +286,7 @@
 						<input
 							type="number"
 							bind:value={maxPrice}
+							aria-label="Maximum price in UAH"
 							placeholder="Max"
 							class="w-full rounded-lg border-2 px-4 py-3 transition-all duration-200 ease-in-out focus:ring-2 focus:ring-offset-2 focus:outline-none"
 							style="
@@ -362,6 +365,7 @@
 					{#if searchTerm}
 						<button
 							type="button"
+							aria-label="Clear search"
 							on:click={() => {
 								console.log('Clear search button clicked');
 								searchTerm = '';

@@ -3,6 +3,7 @@
 	import { colors } from '../colors';
 	import { typography } from '../typography';
 	import Button from './Button.svelte';
+	import Section from './Section.svelte';
 
 	interface FAQItem {
 		question: string;
@@ -46,8 +47,8 @@
 	}
 </script>
 
-<div id="faq" class="w-full py-12 md:py-16 lg:py-20">
-	<div class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+<Section id="faq">
+	<div>
 		<div class="rounded-2xl bg-gray-50 p-6 shadow-sm ring-1 ring-black/5 md:p-12">
 			<!-- Section Header -->
 			<div class="mb-12 text-center">
@@ -67,7 +68,7 @@
 				{#each faqItems as item, index (index)}
 					<div class="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
 						<button
-							class="w-full px-6 py-4 text-left focus:ring-2 focus:ring-blue-500 focus:outline-none focus:ring-inset"
+							class="w-full px-6 py-4 text-left transition-colors hover:bg-amber-50/70 focus:ring-2 focus:ring-blue-500 focus:outline-none focus:ring-inset"
 							onclick={() => toggleFAQ(index)}
 							onkeydown={(e) => handleKeyDown(e, index)}
 							aria-expanded={openIndex === index}
@@ -125,4 +126,4 @@
 			</div>
 		</div>
 	</div>
-</div>
+</Section>

@@ -31,6 +31,23 @@
 	// Create page translations
 	const pageTranslations = createPageTranslations();
 
+	// Arrow-key navigation between dropdown options (fewer Tab stops, full keyboard flow)
+	function moveOptionFocus(e: KeyboardEvent) {
+		if (!['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(e.key)) return;
+		const list = e.currentTarget as HTMLElement | null;
+		if (!list) return;
+		const items = [...list.querySelectorAll<HTMLElement>('.dropdown-item')];
+		if (items.length === 0) return;
+		e.preventDefault();
+		const active = document.activeElement as HTMLElement | null;
+		let idx = items.indexOf(active as HTMLElement);
+		if (e.key === 'ArrowDown') idx = idx + 1 >= items.length ? 0 : idx + 1;
+		else if (e.key === 'ArrowUp') idx = idx - 1 < 0 ? items.length - 1 : idx - 1;
+		else if (e.key === 'Home') idx = 0;
+		else idx = items.length - 1;
+		items[idx]?.focus();
+	}
+
 	// Note: Using onChange callback from props instead of event dispatcher
 
 	// Local state
@@ -215,8 +232,12 @@
 								{$pageTranslations.t('delivery.noResults') as string}
 							</div>
 						{:else}
-							<div class="dropdown-list" role="listbox">
-								{#each Object.entries($allSettlements) as [fullName, shortName]}
+						<div
+							class="dropdown-list"
+							role="listbox"
+							onkeydown={(e: KeyboardEvent) => moveOptionFocus(e)}
+						>
+							{#each Object.entries($allSettlements) as [fullName, shortName]}
 									<div
 										class="dropdown-item"
 										class:selected={fullName === selectedCityFullName}
@@ -294,8 +315,12 @@
 									{$pageTranslations.t('delivery.noWarehouses') as string}
 								</div>
 							{:else}
-								<div class="dropdown-list" role="listbox">
-									{#each filteredWarehouses as warehouse}
+						<div
+							class="dropdown-list"
+							role="listbox"
+							onkeydown={(e: KeyboardEvent) => moveOptionFocus(e)}
+						>
+							{#each filteredWarehouses as warehouse}
 										<div
 											class="dropdown-item"
 											class:selected={warehouse.Description === selectedWarehouse}

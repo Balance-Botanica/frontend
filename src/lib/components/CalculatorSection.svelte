@@ -1,21 +1,22 @@
 <script lang="ts">
 	import { t } from '../i18n';
 	import PetCalculator from './PetCalculator.svelte';
+	import Section from './Section.svelte';
 </script>
 
-<div id="calculator" class="relative w-full overflow-hidden bg-cream py-20 md:py-28">
-	<!-- Background Image with Green Overlay -->
-	<div class="absolute inset-0">
-		<img
-			src="/images/calculator-bg-1.jpg"
-			alt="Calculator background"
-			class="h-full w-full object-cover"
-		/>
-		<!-- Green overlay for semi-transparent effect -->
-		<div class="absolute inset-0 bg-main/70"></div>
-	</div>
-
-	<div class="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+<Section id="calculator" bg="bg-pine" pad="py-20 md:py-28">
+	{#snippet decor()}
+		<!-- Pine night with turmeric breath (the old CBD-era dog photo is gone) -->
+		<div
+			class="pointer-events-none absolute -top-24 right-[10%] h-80 w-80 rounded-full bg-turmeric/20 blur-3xl"
+			aria-hidden="true"
+		></div>
+		<div
+			class="pointer-events-none absolute -bottom-32 left-[5%] h-96 w-96 rounded-full bg-turmeric/10 blur-3xl"
+			aria-hidden="true"
+		></div>
+	{/snippet}
+	<div class="relative z-10">
 		<!-- Section Header -->
 		<div class="mb-16 text-center">
 			<h2 class="mb-4 text-3xl font-bold text-white md:text-4xl">
@@ -115,41 +116,6 @@
 			</div>
 		</div>
 	</div>
-</div>
+</Section>
 
-<style>
-	@media (max-width: 1100px) {
-		div .relative.z-10.mx-auto.max-w-7xl {
-			padding-left: 3rem !important;
-			padding-right: 3rem !important;
-		}
-	}
 
-	@media (max-width: 768px) {
-		div .relative.z-10.mx-auto.max-w-7xl {
-			padding-left: 3rem !important;
-			padding-right: 3rem !important;
-		}
-	}
-
-	@media (max-width: 640px) {
-		div .relative.z-10.mx-auto.max-w-7xl {
-			padding-left: 3rem !important;
-			padding-right: 3rem !important;
-		}
-	}
-
-	@media (max-width: 480px) {
-		div .relative.z-10.mx-auto.max-w-7xl {
-			padding-left: 3rem !important;
-			padding-right: 3rem !important;
-		}
-	}
-
-	@media (max-width: 400px) {
-		div .relative.z-10.mx-auto.max-w-7xl {
-			padding-left: 3rem !important;
-			padding-right: 3rem !important;
-		}
-	}
-</style>

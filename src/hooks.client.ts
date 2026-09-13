@@ -14,8 +14,15 @@ if (browser && import.meta.env.DEV) {
 	window.fetch = async function (input: RequestInfo | URL, init?: RequestInit) {
 		const url = typeof input === 'string' ? input : input instanceof URL ? input.href : input.url;
 
-		// Only intercept requests to our own server (localhost:5173)
-		if (url.includes('localhost:5173') || url.includes('127.0.0.1:5173')) {
+		// Only intercept requests to our own server. NOTE: relative '/api/...'
+		// calls (which is what all app code uses) must match too — otherwise
+		// the auth header is never attached in dev and every authenticated
+		// API call 401s (address save, orders, profile).
+		if (
+			url.includes('localhost:5173') ||
+			url.includes('127.0.0.1:5173') ||
+			url.startsWith('/api/')
+		) {
 			const pbToken = localStorage.getItem('pb_token');
 
 			// Log localStorage state for every request

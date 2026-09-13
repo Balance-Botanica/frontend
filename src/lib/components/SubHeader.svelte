@@ -12,10 +12,10 @@
 
 {#if isVisible}
 	<div
-		class="relative sticky top-0 z-50 w-full py-3 text-center"
+		class="relative sticky top-0 z-50 w-full border-b border-[#efe0c3] py-2.5 text-center"
 		style="
-      background-color: {colors.main};
-      color: {colors.optional};
+      background-color: {colors.cream};
+      color: {colors.pine};
       font-size: {typography.sizes.base};
       font-weight: {typography.weights.medium};
       line-height: {typography.styles.linkButtonMedium.lineHeight};
@@ -26,7 +26,7 @@
 		<!-- Close button -->
 		<button
 			onclick={handleClose}
-			class="absolute top-1/2 right-4 -translate-y-1/2 cursor-pointer text-white/80 transition-colors duration-200 hover:text-white"
+			class="absolute top-1/2 right-4 -translate-y-1/2 cursor-pointer text-[#2e4f49]/60 transition-colors duration-200 hover:text-[#2e4f49]"
 			aria-label="Close delivery message"
 		>
 			<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

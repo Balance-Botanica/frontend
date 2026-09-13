@@ -19,33 +19,34 @@
 	// Get data from server
 	const { data }: { data: PageData } = $props();
 
-	// User information fields
-	let firstName = '';
-	let lastName = '';
-	let phoneNumber = '';
-	let selectedAddress: string | null = null;
-	let deliveryAddresses = data?.deliveryAddresses || [];
+	// User information fields (runes mode: reactive state needs $state,
+	// plain `let` never re-renders — that silently broke the address modal)
+	let firstName = $state('');
+	let lastName = $state('');
+	let phoneNumber = $state('');
+	let selectedAddress: string | null = $state(null);
+	let deliveryAddresses = $state(data?.deliveryAddresses || []);
 
 	console.log('[Cart Page Client] Server data received:', {
 		deliveryAddressesCount: deliveryAddresses.length,
 		deliveryAddresses: deliveryAddresses.map((addr) => ({ id: addr.id, name: addr.name }))
 	});
 
-	let showAddressModal = false;
+	let showAddressModal = $state(false);
 
 	// Validation state
-	let validationErrors = {
+	let validationErrors = $state({
 		firstName: false,
 		lastName: false,
 		phoneNumber: false,
 		selectedAddress: false
-	};
+	});
 
 	// Promo code state
-	let promoCodeInput = '';
-	let appliedPromoCode: { code: string; discount: number; description?: string } | null = null;
-	let promoCodeLoading = false;
-	let promoCodeError = '';
+	let promoCodeInput = $state('');
+	let appliedPromoCode: { code: string; discount: number; description?: string } | null = $state(null);
+	let promoCodeLoading = $state(false);
+	let promoCodeError = $state('');
 
 	// Create a derived store for discounted total
 	const discountedTotal = writable(0);
@@ -177,7 +178,9 @@
 	// Debounce timer for localStorage saves
 	let saveTimer: ReturnType<typeof setTimeout> | null = null;
 
-	// Prevent multiple load calls
+	// Prevent multiple load calls. Deliberately NOT $state: this guard flag is
+	// read inside loadFormData(), which runs from a $effect — making it
+	// reactive ping-pongs the effect into an infinite loop.
 	let isLoadingData = false;
 
 	// Handle field changes to clear validation errors
@@ -583,12 +586,19 @@
 	});
 
 	$effect(() => {
-		// Update delivery addresses when data changes
-		deliveryAddresses = data?.deliveryAddresses || [];
+		// Update delivery addresses only when the server list actually changed
+		// (comparing id sets — blindly reassigning here re-triggers this same
+		// effect through selectedAddress and loops forever).
+		const fresh = data?.deliveryAddresses || [];
+		const freshIds = fresh.map((a) => a.id).join(',');
+		const curIds = deliveryAddresses.map((a) => a.id).join(',');
+		if (freshIds === curIds) return;
+
+		deliveryAddresses = fresh;
 
 		// Auto-select address if there's only one and none selected
-		if (deliveryAddresses.length === 1 && !selectedAddress) {
-			selectedAddress = deliveryAddresses[0].id;
+		if (fresh.length === 1 && !selectedAddress) {
+			selectedAddress = fresh[0].id;
 			saveFormDataImmediate(); // Save the auto-selected address immediately
 		}
 	});

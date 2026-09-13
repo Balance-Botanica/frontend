@@ -1,4 +1,5 @@
 import type { PageServerLoad } from './$types';
+import { error } from '@sveltejs/kit';
 import { readFileSync, existsSync } from 'fs';
 import { join } from 'path';
 import { marked } from 'marked';
@@ -28,7 +29,7 @@ export const load: PageServerLoad = async ({ params }) => {
 	}
 
 	if (!existsSync(contentPath)) {
-		throw new Error(`Article not found: ${slug}`);
+		throw error(404, `Article not found: ${slug}`);
 	}
 
 	try {

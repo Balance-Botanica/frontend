@@ -139,3 +139,4 @@ temp/
 
 # Telegram bot data
 admin-chat-id.json
+jira.env

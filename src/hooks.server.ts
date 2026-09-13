@@ -202,12 +202,13 @@ const handleSecurityHeaders: Handle = async ({ event, resolve }) => {
 	// Content Security Policy для дополнительной защиты
 	const csp = [
 		"default-src 'self'",
-		"script-src 'self' 'unsafe-inline' https://accounts.google.com https://*.googleusercontent.com blob:",
+		"script-src 'self' 'unsafe-inline' https://accounts.google.com https://*.googleusercontent.com https://www.googletagmanager.com blob:",
 		"worker-src 'self' blob:",
 		"style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://accounts.google.com",
 		"img-src 'self' data: https: blob: https://*.googleusercontent.com https://*.gstatic.com",
-		// Allow connections to PocketBase server for OAuth and API calls
-		"connect-src 'self' http://127.0.0.1:8090 http://localhost:8090 ws://127.0.0.1:8090 ws://localhost:8090 https://*.google.com https://accounts.google.com https://oauth2.googleapis.com https://www.googleapis.com",
+		// Allow connections to PocketBase server for OAuth and API calls,
+		// plus Firebase Auth/Installations and Analytics (identity lives in Firebase)
+		"connect-src 'self' http://127.0.0.1:8090 http://localhost:8090 ws://127.0.0.1:8090 ws://localhost:8090 https://*.google.com https://accounts.google.com https://oauth2.googleapis.com https://www.googleapis.com https://*.googleapis.com https://firebaseinstallations.googleapis.com https://www.google-analytics.com",
 		"font-src 'self' https://fonts.gstatic.com",
 		"frame-src 'self' https://accounts.google.com",
 		"object-src 'none'",
@@ -243,9 +244,15 @@ const handleSmartRedirects: Handle = async ({ event, resolve }) => {
 		{ from: /^cbd\/dogs\/?$/, to: '/blog/paste-dosing-guide' },
 		{ from: /^cbd\/cats\/?$/, to: '/blog' },
 		{ from: /^cbd\/types\/?$/, to: '/blog' },
+		{ from: /^cbd\/.+$/, to: '/blog' },
 		{ from: /^veterinary-cbd\/?$/, to: '/blog/paste-safety-vet-talk' },
 		{ from: /^dog-health\/?$/, to: '/blog' },
-		{ from: /^cats-health\/?$/, to: '/blog' }
+		{ from: /^cats-health\/?$/, to: '/blog' },
+		{ from: /^community-values\/?$/, to: '/blog' },
+		{ from: /^blog\/cbd-explained\/?$/, to: '/blog/golden-paste-recipe-adapted' },
+		{ from: /^blog\/cbd-isolate-vs-full-spectrum\/?$/, to: '/blog' },
+		{ from: /^blog\/cbd-golden-paste-benefits-for-pets\/?$/, to: '/blog/golden-paste-recipe-adapted' },
+		{ from: /^blog\/curcumin-benefits-complete-guide\/?$/, to: '/blog/golden-paste-recipe-adapted' }
 	];
 
 	// Normalize: strip optional /en or legacy /uk-ua prefix, remember locale

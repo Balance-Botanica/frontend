@@ -1,13 +1,17 @@
 <script lang="ts">
 	import IngredientCard from './IngredientCard.svelte';
+	import Section from '../Section.svelte';
 	import { t } from '../../i18n';
 
 	const keys = ['turmeric', 'coconut', 'ginger', 'pepper'] as const;
 </script>
 
-<section id="ingredients" class="w-full bg-gradient-to-b from-amber-50/60 via-white to-white py-14 md:py-20">
-	<div class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
-		<div class="mb-10 text-center">
+<Section
+	id="ingredients"
+	bg="bg-gradient-to-b from-amber-50/60 via-white to-white"
+	pad="py-14 md:py-20"
+>
+	<div class="mb-10 text-center">
 			<span
 				class="mb-4 inline-block rounded-full bg-main/10 px-4 py-1.5 text-xs font-extrabold tracking-widest text-[#b25f0e] uppercase"
 			>
@@ -37,5 +41,4 @@
 		<p class="mt-8 text-center text-sm text-gray-400">
 			{t('benefits.ingredients_note')}
 		</p>
-	</div>
-</section>
+</Section>

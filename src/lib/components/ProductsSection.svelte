@@ -1,5 +1,6 @@
 <script lang="ts">
 	import ProductGrid from '$lib/components/ProductGrid.svelte';
+	import Section from '$lib/components/Section.svelte';
 	import type { RawProduct } from '$lib/types/product.types';
 	import { createPageTranslations } from '$lib/i18n/store';
 
@@ -33,8 +34,8 @@
 			: createPageTranslations();
 </script>
 
-<div id="products" class="w-full bg-white px-4 py-16 sm:px-6 lg:px-8">
-	<div class="w-full">
+<Section id="products" bg="bg-white" pad="py-16">
+	<div>
 		{#if title}
 			<div class="mb-12 flex items-center justify-between">
 				<h2 class="text-4xl font-bold text-gray-900">{title}</h2>
@@ -74,7 +75,7 @@
 			<p class="mt-8 text-center text-gray-500">Товари скоро з'являться.</p>
 		{/if}
 	</div>
-</div>
+</Section>
 
 <style>
 	/* Removed the media query for small screens padding */

@@ -67,7 +67,7 @@
 							? 'Learn about CBD product safety and quality standards'
 							: 'Дізнайтеся про безпеку CBD продуктів та стандарти якості'}
 					</p>
-					<a href="/{lang}/cbd/safety/" class="thc-toxicity-link">{translations.learnMore} →</a>
+					<a href="/{lang}/cbd/safety/" class="thc-toxicity-link hover:underline">{translations.learnMore} →</a>
 				</div>
 				<div class="thc-toxicity-related-card">
 					<h3>{isEnglish ? 'CBD for Dogs' : 'CBD для собак'}</h3>
@@ -76,7 +76,7 @@
 							? 'Safe CBD use guidelines for dogs'
 							: 'Рекомендації по безпечному використанню CBD для собак'}
 					</p>
-					<a href="/{lang}/cbd/dogs/" class="thc-toxicity-link">{translations.learnMore} →</a>
+					<a href="/{lang}/cbd/dogs/" class="thc-toxicity-link hover:underline">{translations.learnMore} →</a>
 				</div>
 				<div class="thc-toxicity-related-card">
 					<h3>{isEnglish ? 'CBD for Cats' : 'CBD для котів'}</h3>
@@ -85,7 +85,7 @@
 							? 'Safe CBD use guidelines for cats'
 							: 'Рекомендації по безпечному використанню CBD для котів'}
 					</p>
-					<a href="/{lang}/cbd/cats/" class="thc-toxicity-link">{translations.learnMore} →</a>
+					<a href="/{lang}/cbd/cats/" class="thc-toxicity-link hover:underline">{translations.learnMore} →</a>
 				</div>
 				<div class="thc-toxicity-related-card">
 					<h3>{isEnglish ? 'CBD Types' : 'Види CBD'}</h3>
@@ -94,7 +94,7 @@
 							? 'Understanding different CBD forms and their safety'
 							: 'Розуміння різних форм CBD та їх безпека'}
 					</p>
-					<a href="/{lang}/cbd/types/" class="thc-toxicity-link">{translations.learnMore} →</a>
+					<a href="/{lang}/cbd/types/" class="thc-toxicity-link hover:underline">{translations.learnMore} →</a>
 				</div>
 			</div>
 		</section>

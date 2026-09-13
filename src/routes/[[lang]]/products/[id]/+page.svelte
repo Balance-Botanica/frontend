@@ -122,7 +122,7 @@
 </svelte:head>
 
 <div class="min-h-screen bg-cream">
-	<div class="mx-auto max-w-6xl px-3 py-8 sm:px-4 lg:px-8">
+	<div class="shell py-8">
 		<!-- Breadcrumb -->
 		<nav aria-label="Breadcrumb" class="mb-6 text-sm text-gray-500">
 			<a href={`${langPrefix() || '/'}`} class="hover:text-main hover:underline">
@@ -177,8 +177,8 @@
 					</span>
 					{#if jarTsp > 0}
 						<span class="rounded-full bg-main/10 px-3 py-1 text-sm font-bold text-main">
-							{t('products.pdp.servings').replace('{n}', String(jarTsp)) ||
-								`${jarTsp} teaspoons per jar`}
+							{t('products.pdp.servings').replace('{n}', String(Math.round(jarTsp * 60))) ||
+								`≈${Math.round(jarTsp * 60)} mg curcuminoids per jar`}
 						</span>
 					{/if}
 					{#if product.stock > 0}
@@ -286,7 +286,7 @@
 							<dd class="font-bold text-gray-900">{flavorLabel(product.flavor)}</dd>
 						</div>
 						<div class="flex justify-between gap-4">
-							<dt class="text-gray-500">Куркуміноїди / ч.л.</dt>
+							<dt class="text-gray-500">Куркуміноїди / 5 г</dt>
 							<dd class="font-bold text-gray-900">~{MG_PER_TSP} мг</dd>
 						</div>
 					</dl>

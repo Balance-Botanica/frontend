@@ -36,20 +36,17 @@
 		// }
 	];
 
-	// Handle OAuth login
+	// Handle OAuth login — Firebase is identity now (PB stays pure data sync).
+	// The popup shows the native Google account chooser with remembered accounts.
 	async function handleOAuthSignIn(provider: 'google') {
 		try {
 			isLoading = true;
 			errorMessage = '';
 
 			if (provider === 'google') {
-				// Google OAuth will redirect, so we don't get a result here
-				await pocketbaseAuthStore.signInWithGoogle();
-				// The success will be handled by the auth state change listener
-			// } else if (provider === 'facebook') {
-			// 	// Facebook OAuth will redirect, so we don't get a result here
-			// 	await pocketbaseAuthStore.signInWithFacebook();
-			// 	// The success will be handled by the auth state change listener
+				const { signInWithGooglePopup } = await import('$lib/firebase/auth');
+				const user = await signInWithGooglePopup();
+				dispatch('success', { user });
 			} else {
 				errorMessage = `${provider} authentication not supported yet`;
 			}
@@ -61,7 +58,7 @@
 		}
 	}
 
-	// Handle email/password authentication
+	// Handle email/password authentication via Firebase (server bridge sets the session).
 	async function handleEmailSignIn() {
 		if (!email || !password) {
 			errorMessage = 'Please fill in all required fields';
@@ -77,23 +74,9 @@
 			isLoading = true;
 			errorMessage = '';
 
-			let result;
-			if (isSignUp) {
-				// For sign up, we use the registerWithEmail function
-				result = await pocketbaseAuthStore.registerWithEmail({ 
-					email, 
-					password,
-					firstName: name.split(' ')[0],
-					lastName: name.split(' ').slice(1).join(' ')
-				});
-			} else {
-				result = await pocketbaseAuthStore.signInWithEmail(email, password);
-			}
-
-			if (result.user) {
-				// PocketBase handles authentication automatically
-				dispatch('success', { user: result.user });
-			}
+			const { signInWithEmailPassword } = await import('$lib/firebase/auth');
+			const user = await signInWithEmailPassword(email, password, isSignUp, name || undefined);
+			dispatch('success', { user });
 		} catch (error) {
 			errorMessage = error instanceof Error ? error.message : 'Authentication failed';
 			dispatch('error', errorMessage);

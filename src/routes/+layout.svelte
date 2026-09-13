@@ -216,6 +216,12 @@
 </svelte:head>
 
 <div class="app-container">
+	<a
+		href="#main-content"
+		class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[10000001] focus:rounded-lg focus:bg-white focus:px-4 focus:py-2 focus:font-bold focus:text-black"
+	>
+		Skip to content
+	</a>
 	{#if $i18nReady}
 		<!-- Desktop Header - Visible on medium screens and up -->
 		<div class="hidden md:block">
@@ -326,7 +332,7 @@
 			{/if}
 		</div>
 
-		<main class="flex-1">
+		<main id="main-content" class="flex-1">
 			{@render children?.()}
 		</main>
 
@@ -347,6 +353,7 @@
 					: 'text-gray-500'}"
 				onclick={() => handleTabNavigation('home')}
 				aria-label="Home"
+				aria-current={activeTab === 'home' ? 'page' : undefined}
 			>
 				<svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 					<path
@@ -365,6 +372,7 @@
 					: 'text-gray-500'}"
 				onclick={() => handleTabNavigation('products')}
 				aria-label="Products"
+				aria-current={activeTab === 'products' ? 'page' : undefined}
 			>
 				<svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 					<path
@@ -383,6 +391,7 @@
 					: 'text-gray-500'}"
 				onclick={() => handleTabNavigation('cart')}
 				aria-label="Cart"
+				aria-current={activeTab === 'cart' ? 'page' : undefined}
 			>
 				<svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 					<path
@@ -401,6 +410,7 @@
 					: 'text-gray-500'}"
 				onclick={() => handleTabNavigation('account')}
 				aria-label="Account"
+				aria-current={activeTab === 'account' ? 'page' : undefined}
 			>
 				<svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 					<path

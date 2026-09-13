@@ -5,6 +5,20 @@
 	import type { SupportedLocale } from '$lib/i18n/types';
 	import LanguageSwitcher from './LanguageSwitcher.svelte';
 	import { pocketbaseAuthStore, user, isAuthenticated, isLoading } from '$lib/auth/pocketbase-store';
+	import { user as fbUser } from '$lib/firebase/auth';
+
+	// Logged in via PocketBase (legacy) OR Firebase (current identity).
+	// Firebase is identity now; PocketBase stays pure data sync.
+	const isLoggedIn = $derived($isAuthenticated || !!$fbUser);
+	const headerUser = $derived(
+		$user ??
+			($fbUser
+				? {
+						email: $fbUser.email,
+						firstName: ($fbUser.displayName || '').split(' ')[0] || undefined
+					}
+				: null)
+	);
 	import { cartItemCount } from '$lib/stores/cart.store';
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
@@ -106,8 +120,8 @@
 			userEmail: $user?.email
 		});
 
-		// Check if user is authenticated
-		if ($isAuthenticated) {
+		// Check if user is authenticated (either identity provider)
+		if (isLoggedIn) {
 			console.log('🔓 [HEADER] User is authenticated, navigating to profile...');
 			// Use localized URL for profile
 			let profileUrl = getLocalizedUrl('/profile');
@@ -150,7 +164,13 @@
 
 		try {
 			showLogoutDialog = false;
-			await pocketbaseAuthStore.signOut();
+			// Sign out everywhere: Firebase (current), PocketBase (legacy), server session.
+			const { signOutUser } = await import('$lib/firebase/auth');
+			await Promise.allSettled([
+				signOutUser(),
+				pocketbaseAuthStore.signOut(),
+				fetch('/api/auth/logout', { method: 'POST' })
+			]);
 			console.log('✅ [HEADER] Successfully signed out');
 			// Redirect to home page after logout
 			goto('/');
@@ -183,21 +203,14 @@
 		goto('/cart');
 	}
 
-	// Add keyboard event handler for accessibility
-	function handleKeyDown(event: KeyboardEvent, action: () => void) {
-		if (event.key === 'Enter' || event.key === ' ') {
-			event.preventDefault();
-			action();
-		}
-	}
 </script>
 
 {#if $pageTranslations}
 	<header class="w-full border-b border-stroke bg-white" style="height: 80px;">
-		<div class="mx-auto flex h-full max-w-7xl items-center justify-between px-6">
+		<div class="shell flex h-full items-center justify-between">
 			<!-- Logo -->
 			<div class="flex items-center">
-				<a href={logoHref} class="flex items-center">
+				<a href={logoHref} class="flex items-center transition-opacity hover:opacity-80" aria-label="Balance Botanica — home">
 					<Logo size="default" />
 				</a>
 			</div>
@@ -227,21 +240,19 @@
 
 				<!-- Action Icons -->
 				<div class="flex items-center space-x-2">
-					<!-- Person/Account Icon -->
-					<div
-						class="flex cursor-pointer items-center justify-center transition-all duration-200 hover:scale-110"
-						role="button"
-						tabindex="0"
-						onclick={handlePersonClick}
-						onkeydown={(e) => handleKeyDown(e, handlePersonClick)}
-						aria-label={$isAuthenticated ? 'Account menu' : 'Sign in'}
-					>
-						{#if $isAuthenticated}
+				<!-- Person/Account Icon (native button: free Space/Enter support) -->
+				<button
+					type="button"
+					class="flex cursor-pointer items-center justify-center border-0 bg-transparent p-1 transition-all duration-200 hover:scale-110"
+					onclick={handlePersonClick}
+					aria-label={isLoggedIn ? 'Account menu' : 'Sign in'}
+				>
+					{#if isLoggedIn}
 							<!-- Logged in user -->
 							<div class="user-info">
-								<span class="username" title="Click for account menu">
-									{getUserDisplayName($user)}
-								</span>
+							<span class="username" title="Click for account menu">
+								{getUserDisplayName(headerUser)}
+							</span>
 								<div class="user-icon-container logged-in" title="Account menu">
 									<!-- Fallback to person icon -->
 									<img src={personIcon} alt="Account" class="user-icon" />
@@ -253,15 +264,13 @@
 								<img src={personIcon} alt="Sign in" class="user-icon" />
 							</div>
 						{/if}
-					</div>
+					</button>
 
-					<!-- Cart Icon -->
-					<div
-						class="cart-icon-button"
-						role="button"
-						tabindex="0"
+					<!-- Cart Icon (native button: free Space/Enter support) -->
+					<button
+						type="button"
+						class="cart-icon-button border-0 bg-transparent p-1"
 						onclick={handleCartClick}
-						onkeydown={(e) => handleKeyDown(e, handleCartClick)}
 						aria-label="Shopping cart"
 					>
 						<div class="cart-icon-container">
@@ -270,7 +279,7 @@
 								<span class="cart-badge">{$cartItemCount}</span>
 							{/if}
 						</div>
-					</div>
+					</button>
 				</div>
 			</div>
 		</div>

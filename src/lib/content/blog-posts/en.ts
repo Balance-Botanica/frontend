@@ -2,7 +2,7 @@ export const blogPostsEN = [
 	{
 		title: 'Golden Paste for Dogs: Classic Recipe + Our 95% Upgrade',
 		description:
-			'Recipes from Veterinary Secrets and Lolahemp and how we adapted them: 95% extract, mg per spoon, ginger, metals testing.',
+			'Recipes from Veterinary Secrets and Lolahemp and how we adapted them: 95% extract, mg per 5 g, ginger, metals testing.',
 		date: '2026-02-01',
 		author: 'Balance Botanica Team',
 		tags: ['Golden Paste', 'Recipe', 'Dogs'],
@@ -12,7 +12,7 @@ export const blogPostsEN = [
 	{
 		title: 'Why Ginger Belongs in the Paste: Gingerol, Gut and Caution',
 		description:
-			'The creators’ key modification: a spoon of ginger per batch. Who gingerol helps and when to be careful.',
+			'The creators’ key modification: ginger in the mix. Who gingerol helps and when to be careful.',
 		date: '2026-02-02',
 		author: 'Balance Botanica Team',
 		tags: ['Ginger', 'Digestion', 'Recipe'],
@@ -20,9 +20,9 @@ export const blogPostsEN = [
 		readingTime: 6
 	},
 	{
-		title: 'Paste Dosing in Spoons: How Much and When to Expect Change',
+		title: 'Paste Dosing in Jar Shares: How Much and When to Expect Change',
 		description:
-			'Teaspoons by weight, starting at half, TRIAL/WEEK/HALF/MONTH jars in days. Merging both videos.',
+			'A daily portion is 1/N of a jar: weight table, starting at half, 30/100/250/500 g jars.',
 		date: '2026-02-03',
 		author: 'Balance Botanica Team',
 		tags: ['Dosing', 'Dogs', 'Paste'],

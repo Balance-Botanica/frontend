@@ -79,7 +79,7 @@
 </script>
 
 	<footer class="bg-pine text-white">
-	<div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+	<div class="shell py-12">
 		<!-- Main Footer Content - 2 Column Layout -->
 		<div class="mb-8 grid grid-cols-1 gap-8 lg:grid-cols-2">
 			<!-- Left Column: Logo, Navigation, Company Info -->

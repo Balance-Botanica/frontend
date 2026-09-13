@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { t } from '../i18n';
+	import Section from './Section.svelte';
 
 	// Props
 	export let title = '';
@@ -10,21 +11,23 @@
 	export let imageAlt = 'Balance Botanica - Golden Paste for Dogs';
 </script>
 
-<div
+<Section
 	id="hero"
-	class="relative w-full overflow-hidden bg-gradient-to-b from-cream via-[#fffdf6] to-white py-12 md:py-16 lg:py-20"
+	bg="bg-gradient-to-b from-cream via-[#fffdf6] to-white"
+	pad="py-12 md:py-16 lg:py-20"
 >
-	<!-- Warm turmeric glow decor (pure CSS, no images) -->
-	<div
-		class="pointer-events-none absolute -top-24 -left-24 h-96 w-96 rounded-full bg-turmeric/20 blur-3xl"
-		aria-hidden="true"
-	></div>
-	<div
-		class="pointer-events-none absolute top-1/3 -right-24 h-80 w-80 rounded-full bg-ember/10 blur-3xl"
-		aria-hidden="true"
-	></div>
-
-	<div class="relative mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+	{#snippet decor()}
+		<!-- Warm turmeric glow decor (pure CSS, no images) -->
+		<div
+			class="pointer-events-none absolute -top-24 -left-24 h-96 w-96 rounded-full bg-turmeric/20 blur-3xl"
+			aria-hidden="true"
+		></div>
+		<div
+			class="pointer-events-none absolute top-1/3 -right-24 h-80 w-80 rounded-full bg-ember/10 blur-3xl"
+			aria-hidden="true"
+		></div>
+	{/snippet}
+	<div>
 		<div class="flex flex-col items-center gap-8 lg:flex-row lg:gap-12">
 			<!-- Left Column - Text Content -->
 			<div class="flex-1 text-center lg:text-left">
@@ -69,4 +72,4 @@
 			</div>
 		</div>
 	</div>
-</div>
+</Section>

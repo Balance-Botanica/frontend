@@ -1,6 +1,6 @@
+// DEPRECATED: cubes era. The shop is golden paste jars now (see seed-golden-paste-skus.cjs).
+// Do NOT run — it would recreate retired cube SKUs.
 // Seed Balance Botanica curcumin cubes: 1 formula (60mg 95% extract/cube) x 4 pack sizes.
-// Replaces the old duplicated CBD catalog (0 orders reference it).
-// Usage: node -r dotenv/config scripts/seed-curcumin-skus.cjs   (run from balance_botanica/)
 require('dotenv').config();
 const PocketBase = require('pocketbase').default;
 

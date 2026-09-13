@@ -19,6 +19,7 @@
 		role="switch"
 		aria-checked={checked}
 		aria-disabled={disabled}
+		aria-label={label || 'Toggle setting'}
 		{disabled}
 		on:click={handleToggle}
 		class="relative inline-flex h-8 w-13 items-center rounded-full transition-colors duration-200 ease-in-out focus:ring-2 focus:ring-offset-2 focus:outline-none"

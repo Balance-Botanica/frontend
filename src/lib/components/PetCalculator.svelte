@@ -4,10 +4,10 @@
 		getDosageCoefficient,
 		getWeightRecommendation,
 		validateDosage,
-		getTspPerDay,
-		getJarDays,
-		MG_PER_TSP,
-		type JarKey
+		getPortionsPerDay,
+		portionDenom,
+		jarLabel,
+		type JarPortion
 	} from './calculator.config.js';
 
 	let {
@@ -29,11 +29,42 @@
 	let localDosage = $state(0);
 	let localRecommendation = $state('');
 	let validation = $state<any>(null);
-	let tspPerDay = $state(0);
-	let jarDays = $state<Record<JarKey, number> | null>(null);
+	let portions = $state<JarPortion[] | null>(null);
+
+	function isUkrainian(): boolean {
+		try {
+			return /[а-яіїєґ]/i.test(t('calculator.title'));
+		} catch {
+			return true;
+		}
+	}
+
+	function getDosageUnit(): string {
+		return isUkrainian() ? 'мг' : 'mg';
+	}
+
+	function jarLocale(): string {
+		return isUkrainian() ? 'uk-ua' : 'en';
+	}
+
+	// "1/6 банки 30 г" / "1/6 of the 30 g jar" (or whole jar when denom is 1)
+	function portionText(denom: number, grams: number): string {
+		const jar = `${grams} ${isUkrainian() ? 'г' : 'g'}`;
+		if (denom <= 1) {
+			return isUkrainian() ? `ціла банка ${jar}` : `whole ${jar} jar`;
+		}
+		try {
+			return t('calculator.results.portion_of_jar', { denom, jar });
+		} catch {
+			return `1/${denom} ${jar}`;
+		}
+	}
 
 	let weightNum = $derived(parseFloat(weight) || 0);
-	let previewTsp = $derived(weightNum > 0 ? getTspPerDay(weightNum * (condition === 'active' ? 18 : 12)) : 0);
+	let previewMg = $derived(
+		weightNum > 0 ? Math.round(weightNum * getDosageCoefficient(animalType, condition) * 10) / 10 : 0
+	);
+	let previewDenom = $derived(previewMg > 0 ? portionDenom(previewMg, 30) : 0);
 	let canCalculate = $derived(weightNum > 0 && weightNum <= 100);
 
 	function calculateDosage() {
@@ -41,8 +72,7 @@
 		const weightKg = weightNum;
 		const baseDosage = getDosageCoefficient(animalType, condition);
 		localDosage = Math.round(weightKg * baseDosage * 10) / 10;
-		tspPerDay = getTspPerDay(localDosage);
-		jarDays = getJarDays(tspPerDay);
+		portions = getPortionsPerDay(localDosage);
 		validation = validateDosage(animalType, weightKg, localDosage);
 		generateRecommendation();
 		showResults = true;
@@ -50,15 +80,18 @@
 
 	function generateRecommendation() {
 		const { frequency, duration } = getWeightRecommendation(animalType, weightNum);
-		if (localDosage > 0) {
+		if (localDosage > 0 && portions && portions.length > 0) {
+			const first = portions[0];
+			const portion = portionText(first.denom, first.grams);
 			try {
 				localRecommendation = t('calculator.results.administer_text', {
+					portion,
 					dosage: localDosage,
 					frequency: t(`calculator.frequency.${frequency}`),
 					duration: t(`calculator.duration.${duration}`)
 				});
 			} catch {
-				localRecommendation = `${localDosage} mg, ${frequency}, ${duration}`;
+				localRecommendation = `${portion} (${localDosage} mg)`;
 			}
 		}
 	}
@@ -70,12 +103,7 @@
 		localDosage = 0;
 		localRecommendation = '';
 		validation = null;
-		tspPerDay = 0;
-		jarDays = null;
-	}
-
-	function getDosageUnit(): string {
-		return /[а-яіїєґ]/i.test(t('calculator.title')) ? 'мг' : 'mg';
+		portions = null;
 	}
 
 	const QUICK_WEIGHTS = [5, 10, 20, 30];
@@ -136,11 +164,11 @@
 					<label for="weight" class="text-sm font-bold text-gray-700">
 						{t('calculator.form.weight')} (кг)
 					</label>
-					{#if previewTsp > 0}
+					{#if previewMg > 0 && previewDenom > 0}
 						<span
-							class="rounded-full bg-main/10 px-3 py-1 text-xs font-extrabold text-[#b25f0e]"
+							class="rounded-full bg-[#3f6f68]/10 px-3 py-1 text-xs font-extrabold text-[#3f6f68]"
 						>
-							🥄 ≈ {previewTsp} tsp/day · {MG_PER_TSP}mg/tsp
+							🫙 ≈ {previewMg} {getDosageUnit()} · {portionText(previewDenom, 30)}
 						</span>
 					{/if}
 				</div>
@@ -235,45 +263,62 @@
 				<div class="pointer-events-none absolute -top-6 -right-6 text-[120px] opacity-10">🐾</div>
 				<div class="pointer-events-none absolute -bottom-8 -left-4 text-[90px] opacity-10">🐾</div>
 
-				{#if tspPerDay > 0}
+				{#if portions && portions.length > 0}
 					<div
 						class="mx-auto mb-3 inline-flex items-center gap-2 rounded-full bg-white/20 px-4 py-1.5 text-sm font-extrabold backdrop-blur"
 					>
-						🥄 Golden paste · {MG_PER_TSP} mg / tsp
+						🫙 {t('calculator.results.daily_portion')}
 					</div>
 					<div class="text-6xl font-black tracking-tight">
-						≈ {tspPerDay}
+						1/{portions[0].denom}
 					</div>
-					<div class="mt-1 text-lg font-bold text-white/90">tsp / day</div>
+					<div class="mt-1 text-lg font-bold text-white/90">
+						{isUkrainian()
+							? `банки ${jarLabel(portions[0].key, jarLocale())}`
+							: `${jarLabel(portions[0].key, jarLocale())} jar`}
+					</div>
 				{/if}
 				<div class="mt-3 inline-block rounded-full bg-black/20 px-4 py-1 text-sm font-semibold">
-					{localDosage} {getDosageUnit()} total · {t(`calculator.conditions.${condition}`)}
+					{localDosage} {getDosageUnit()} {isUkrainian() ? 'всього' : 'total'} · {t(`calculator.conditions.${condition}`)}
 				</div>
 			</div>
 
 			<div class="rounded-3xl bg-gray-50 p-5 ring-1 ring-black/5">
 				<p class="text-sm leading-relaxed font-medium text-gray-700">{localRecommendation}</p>
 				<p class="mt-2 text-xs text-gray-500">
-					1 tsp ≈ {MG_PER_TSP}mg extract. Start at ½ for 7–10 days, with food.
+					{t('calculator.results.portion_note')}
 				</p>
-				{#if jarDays}
+				{#if portions}
 					<div class="mt-3 grid grid-cols-4 gap-2 text-center">
-						<div class="rounded-2xl bg-white px-2 py-2.5 ring-1 ring-black/5">
-							<div class="text-[11px] font-extrabold text-gray-400">TRIAL</div>
-							<div class="text-sm font-black text-gray-900">~{jarDays.trial}d</div>
-						</div>
-						<div class="rounded-2xl bg-white px-2 py-2.5 ring-1 ring-black/5">
-							<div class="text-[11px] font-extrabold text-gray-400">WEEK</div>
-							<div class="text-sm font-black text-gray-900">~{jarDays.week}d</div>
-						</div>
-						<div class="rounded-2xl bg-white px-2 py-2.5 ring-1 ring-black/5">
-							<div class="text-[11px] font-extrabold text-gray-400">HALF</div>
-							<div class="text-sm font-black text-gray-900">~{jarDays.half}d</div>
-						</div>
-						<div class="rounded-2xl bg-main px-2 py-2.5">
-							<div class="text-[11px] font-extrabold text-white/70">MONTH</div>
-							<div class="text-sm font-black text-white">~{jarDays.month}d</div>
-						</div>
+						{#each portions as portion, i}
+							<div
+								class="rounded-2xl px-2 py-2.5 {i === portions.length - 1
+									? 'bg-main'
+									: 'bg-white ring-1 ring-black/5'}"
+							>
+								<div
+									class="text-[11px] font-extrabold {i === portions.length - 1
+										? 'text-white/70'
+										: 'text-gray-400'}"
+								>
+									{jarLabel(portion.key, jarLocale())}
+								</div>
+								<div
+									class="text-sm font-black {i === portions.length - 1
+										? 'text-white'
+										: 'text-gray-900'}"
+								>
+									1/{portion.denom}
+								</div>
+								<div
+									class="text-[11px] font-bold {i === portions.length - 1
+										? 'text-white/70'
+										: 'text-gray-400'}"
+								>
+									~{portion.days}{isUkrainian() ? ' дн' : 'd'}
+								</div>
+							</div>
+						{/each}
 					</div>
 				{/if}
 			</div>

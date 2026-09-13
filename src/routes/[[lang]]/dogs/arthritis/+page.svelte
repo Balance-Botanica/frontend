@@ -17,7 +17,7 @@
 	};
 </script>
 
-<SEO title={data.title} description={data.description} />
+<SEO title={data.title} description={data.description} robots="noindex, follow" />
 
 <main class="dog-arthritis-main">
 	<div class="dog-arthritis-container">
@@ -69,7 +69,7 @@
 							? 'Learn about CBD therapy for arthritis and joint pain'
 							: 'Дізнайтеся про CBD терапію при артриті та болю в суглобах'}
 					</p>
-					<a href="/{lang}/cbd/dogs/" class="dog-arthritis-link">{translations.learnMore} →</a>
+					<a href="/{lang}/cbd/dogs/" class="dog-arthritis-link hover:underline">{translations.learnMore} →</a>
 				</div>
 				<div class="dog-arthritis-related-card">
 					<h3>{isEnglish ? 'Joint Supplements' : 'Добавки для суглобів'}</h3>
@@ -78,7 +78,7 @@
 							? 'Natural supplements for joint health'
 							: "Натуральні добавки для здоров'я суглобів"}
 					</p>
-					<a href="/{lang}/dogs/gelatin/" class="dog-arthritis-link">{translations.learnMore} →</a>
+					<a href="/{lang}/dogs/gelatin/" class="dog-arthritis-link hover:underline">{translations.learnMore} →</a>
 				</div>
 				<div class="dog-arthritis-related-card">
 					<h3>{isEnglish ? 'Senior Dog Care' : 'Догляд за літніми собаками'}</h3>
@@ -87,7 +87,7 @@
 							? 'Special care tips for older dogs'
 							: 'Особливі поради по догляду за літніми собаками'}
 					</p>
-					<a href="/{lang}/dog-health/" class="dog-arthritis-link">{translations.learnMore} →</a>
+					<a href="/{lang}/dog-health/" class="dog-arthritis-link hover:underline">{translations.learnMore} →</a>
 				</div>
 				<div class="dog-arthritis-related-card">
 					<h3>{isEnglish ? 'Weight Management' : 'Контроль ваги'}</h3>
@@ -96,7 +96,7 @@
 							? 'Importance of weight control for joint health'
 							: "Важливість контролю ваги для здоров'я суглобів"}
 					</p>
-					<a href="/{lang}/dog-health/" class="dog-arthritis-link">{translations.learnMore} →</a>
+					<a href="/{lang}/dog-health/" class="dog-arthritis-link hover:underline">{translations.learnMore} →</a>
 				</div>
 			</div>
 		</section>

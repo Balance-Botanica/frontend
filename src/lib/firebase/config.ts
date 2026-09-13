@@ -26,8 +26,10 @@ export const auth = getAuth(app);
 // Initialize Analytics only in the browser
 export const analytics = browser ? getAnalytics(app) : undefined;
 
-// Connect to auth emulator in development
-if (import.meta.env.DEV) {
+// Auth emulator is strictly opt-in: without a running emulator every auth
+// request fails with network-request-failed. Enable locally with
+// VITE_FIREBASE_USE_EMULATOR=true (and a running `firebase emulators:start`).
+if (import.meta.env.DEV && import.meta.env.VITE_FIREBASE_USE_EMULATOR === 'true') {
 	try {
 		connectAuthEmulator(auth, 'http://localhost:9099');
 		console.log('Connected to Firebase Auth Emulator');

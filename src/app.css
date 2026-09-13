@@ -109,6 +109,68 @@ html {
 	--font-size-5xl: 36px; /* H1-special Text */
 }
 
+/* Interactive safety net: every button gets a hover response, every
+   keyboard-focused element gets a visible ring — even if a component
+   forgot its own. Specific component styles always win over this. */
+button {
+	transition:
+		filter 0.18s ease,
+		transform 0.18s ease,
+		background-color 0.18s ease;
+}
+button:not(:disabled):hover {
+	filter: brightness(1.07);
+}
+/* Text-link affordance for legacy account flows whose own stylesheets
+   never defined hover states (checkout, profile, password-recovery). */
+a.secondary-btn:hover,
+a.orders-button-link:hover,
+a.back-link:hover {
+	text-decoration: underline;
+}
+a {
+	transition:
+		color 0.18s ease,
+		background-color 0.18s ease;
+}
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible,
+summary:focus-visible {
+	outline: 3px solid var(--color-main);
+	outline-offset: 2px;
+	border-radius: 6px;
+}
+@media (prefers-reduced-motion: reduce) {
+	button,
+	a {
+		transition: none;
+	}
+}
+
+/* Layout shells — color backgrounds always stretch full-bleed (w-full on the
+   section), content sits in .shell (capped at 1920px). One system, no more
+   1200px cages next to full-width sections. */
+.shell {
+	margin-inline: auto;
+	width: 100%;
+	max-width: 1920px;
+	padding-inline: 1rem;
+}
+@media (min-width: 640px) {
+	.shell {
+		padding-inline: 1.5rem;
+	}
+}
+@media (min-width: 1024px) {
+	.shell {
+		padding-inline: 2.5rem;
+	}
+}
+
 /* Base styles */
 body {
 	font-family:

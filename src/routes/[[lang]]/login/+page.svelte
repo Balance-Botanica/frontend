@@ -1,8 +1,10 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
+	import { browser } from '$app/environment';
 	import { page } from '$app/stores';
 	import LoginForm from '$lib/components/LoginForm.svelte';
+	import GoogleOneTap from '$lib/components/GoogleOneTap.svelte';
 	import { createPageTranslations } from '$lib/i18n/store';
 	import SEO from '$lib/components/SEO.svelte';
 	import { pocketbaseAuthStore, isAuthenticated } from '$lib/auth/pocketbase-store';
@@ -72,6 +74,10 @@
 	<main class="login-page">
 		<div class="login-container">
 			<h1 class="sr-only">{$pageTranslations.t('login.page_title') || 'Вхід'}</h1>
+			{#if browser}
+				<!-- One Tap "Continue as …" for returning Google users; silent otherwise -->
+				<GoogleOneTap />
+			{/if}
 			<LoginForm on:success={handleAuthSuccess} on:error={handleAuthError} />
 		</div>
 	</main>
