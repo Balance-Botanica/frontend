@@ -1,42 +1,42 @@
 export const blogPostsEN = [
 	{
-		title: 'What is CBD and How Does It Work?',
+		title: 'Golden Paste for Dogs: Classic Recipe + Our 95% Upgrade',
 		description:
-			'Complete guide to cannabidiol, its mechanism of action and health benefits. Understanding the science behind CBD.',
-		date: '2025-01-01',
+			'Recipes from Veterinary Secrets and Lolahemp and how we adapted them: 95% extract, mg per spoon, ginger, metals testing.',
+		date: '2026-02-01',
 		author: 'Balance Botanica Team',
-		tags: ['CBD', 'Health', 'Science'],
-		slug: 'cbd-explained',
+		tags: ['Golden Paste', 'Recipe', 'Dogs'],
+		slug: 'golden-paste-recipe-adapted',
 		readingTime: 8
 	},
 	{
-		title: 'CBD Isolate vs Full Spectrum: Which to Choose for Your Pet?',
+		title: 'Why Ginger Belongs in the Paste: Gingerol, Gut and Caution',
 		description:
-			'Learn about the difference between CBD isolate and full spectrum. How to choose the best option for your dog or cat health.',
-		date: '2025-01-02',
+			'The creators’ key modification: a spoon of ginger per batch. Who gingerol helps and when to be careful.',
+		date: '2026-02-02',
 		author: 'Balance Botanica Team',
-		tags: ['CBD', 'Pets', 'Health'],
-		slug: 'cbd-isolate-vs-full-spectrum',
+		tags: ['Ginger', 'Digestion', 'Recipe'],
+		slug: 'why-ginger-in-paste',
 		readingTime: 6
 	},
 	{
-		title: 'Benefits of CBD Golden Paste for Pets',
+		title: 'Paste Dosing in Spoons: How Much and When to Expect Change',
 		description:
-			'How CBD Golden Paste helps dogs and cats: from pain and inflammation to improved sleep and overall wellness.',
-		date: '2025-01-03',
+			'Teaspoons by weight, starting at half, TRIAL/WEEK/HALF/MONTH jars in days. Merging both videos.',
+		date: '2026-02-03',
 		author: 'Balance Botanica Team',
-		tags: ['CBD', 'Pets', 'Health'],
-		slug: 'cbd-golden-paste-benefits-for-pets',
+		tags: ['Dosing', 'Dogs', 'Paste'],
+		slug: 'paste-dosing-guide',
 		readingTime: 7
 	},
 	{
-		title: 'Curcumin: Complete Guide to Health Benefits',
+		title: 'Paste Safety: NSAIDs Stay, Surgery and the Vet Talk',
 		description:
-			'Learn about the powerful properties of curcumin - a natural anti-inflammatory found in turmeric.',
-		date: '2025-01-04',
+			'Honest and myth-free: why paste doesn’t replace Rimadyl, metals in turmeric, and what to ask your vet.',
+		date: '2026-02-04',
 		author: 'Balance Botanica Team',
-		tags: ['Curcumin', 'Health', 'Anti-inflammatory'],
-		slug: 'curcumin-benefits-complete-guide',
-		readingTime: 9
+		tags: ['Safety', 'Vet', 'Dogs'],
+		slug: 'paste-safety-vet-talk',
+		readingTime: 8
 	}
 ];

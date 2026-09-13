@@ -20,47 +20,20 @@ async function getPillarArticleMetadata(lang: string, slug: string) {
 	let contentPath = '';
 
 	// Определяем путь к MD файлу в зависимости от структуры
-	if (slug === 'cbd') {
-		contentPath = join(process.cwd(), 'src', 'lib', 'content', 'cbd', langDir, 'cbd-guide.md');
-	} else if (slug === 'cbd/dogs') {
-		// Для cbd/dogs используем import вместо чтения файла
-		try {
-			let contentModule;
-			if (lang === 'en') {
-				contentModule = await import('$lib/content/cbd/dogs/en/cbd-dogs-guide.md');
-			} else {
-				contentModule = await import('$lib/content/cbd/dogs/uk/cbd-dogs-guide.md');
-			}
-			const content = contentModule.default;
-			const metadata = contentModule.metadata || {};
-
-			let textForReadingTime = '';
-			if (typeof content === 'string') {
-				textForReadingTime = content;
-			} else if (content.body) {
-				textForReadingTime = content.body.replace(/<[^>]*>/g, ' ');
-			}
-
-			const calculatedReadingTime = textForReadingTime
-				? calculateReadingTime(textForReadingTime)
-				: 12;
-
-			return {
-				title: metadata.title || content.title,
-				description: metadata.description || content.description,
-				author: metadata.author || content.author || 'Balance Botanica',
-				date: metadata.date || content.date,
-				readingTime: metadata.readingTime ? parseInt(metadata.readingTime) : calculatedReadingTime,
-				tags: metadata.tags ? metadata.tags.split(',').map((tag: string) => tag.trim()) : [],
-				slug: slug,
-				type: 'pillar' as const
-			};
-		} catch (err) {
-			console.error(`Error loading ${slug} content:`, err);
-			return null;
-		}
+	if (slug === 'dogs/arthritis') {
+		// Файл называется dog-arthritis-guide.md, а не arthritis-guide.md
+		contentPath = join(
+			process.cwd(),
+			'src',
+			'lib',
+			'content',
+			'dogs',
+			'arthritis',
+			langDir,
+			'dog-arthritis-guide.md'
+		);
 	} else if (slug.includes('/')) {
-		// Для других сложных путей (cbd/cats, cbd/types, dogs/arthritis, pets/thc-toxicity)
+		// Для других сложных путей (cbd/cats, cbd/types, pets/thc-toxicity)
 		const [category, subCategory] = slug.split('/');
 		contentPath = join(
 			process.cwd(),
@@ -175,18 +148,13 @@ export const GET: RequestHandler = async ({ url }) => {
 	const lang = url.searchParams.get('lang') || 'uk-ua';
 
 	try {
-		// Получаем метаданные всех pillar статей
-		const pillarSlugs = [
-			'cbd',
-			'dog-health',
-			'cats-health',
-			'veterinary-cbd',
-			'cbd/dogs',
-			'cbd/cats',
-			'cbd/types',
-			'dogs/arthritis',
-			'pets/thc-toxicity'
-		];
+		// Only pillar guides that actually render (200). The legacy CBD-family
+		// pages (cbd/*, veterinary-cbd, dog-health, cats-health) hard-crash in
+		// SSR (pre-existing `window` bug) — never link users or crawlers to 500s.
+		// TODO(paste-pivot): decide revive-as-paste-content vs delete + redirect.
+		// NOTE: dogs/arthritis + pets/thc-toxicity are legacy CBD-world content,
+		// kept listed only until the content decision — not part of the paste line.
+		const pillarSlugs = ['dogs/arthritis', 'pets/thc-toxicity'];
 
 		const pillarArticles = [];
 		for (const slug of pillarSlugs) {

@@ -6,57 +6,140 @@
 	import ProductSearch from '$lib/components/ProductSearch.svelte';
 	import { createPageTranslations } from '$lib/i18n/store';
 	import SEO from '$lib/components/SEO.svelte';
-	import type { SupportedLocale } from '$lib/i18n/types';
 
 	const { data }: { data: PageData } = $props();
 
-	// Use global translations (reactive to language changes)
+	// Use global translations (reactive to global locale changes)
 	const pageTranslations = createPageTranslations();
+
+	// Language prefix preserved across all navigations ('' for default uk, '/en', '/uk-ua', ...)
+	function langPrefix(): string {
+		const lang = $page.params.lang;
+		return lang ? `/${lang}` : '';
+	}
+
+	function buildUrl(params: Record<string, string | null>) {
+		const queryParams: string[] = [];
+		for (const [key, value] of Object.entries(params)) {
+			if (value !== null && value !== undefined && value !== '') {
+				queryParams.push(`${key}=${encodeURIComponent(value)}`);
+			}
+		}
+		const queryString = queryParams.join('&');
+		return `${langPrefix()}/products${queryString ? '?' + queryString : ''}`;
+	}
 
 	// Handle search event
 	function handleSearch(event: CustomEvent) {
-		console.log('ProductsPage: handleSearch event received', event.detail);
 		const { searchTerm, category, size, flavor, minPrice, maxPrice } = event.detail;
-
-		// Build query parameters
-		const queryParams: string[] = [];
-		if (searchTerm) queryParams.push(`search=${encodeURIComponent(searchTerm)}`);
-		if (category) queryParams.push(`category=${encodeURIComponent(category)}`);
-		if (size) queryParams.push(`size=${encodeURIComponent(size)}`);
-		if (flavor) queryParams.push(`flavor=${encodeURIComponent(flavor)}`);
-		if (minPrice !== null) queryParams.push(`minPrice=${minPrice}`);
-		if (maxPrice !== null) queryParams.push(`maxPrice=${maxPrice}`);
-
-		// Include language parameter in navigation
-		const currentLang = $page.params.lang || 'uk';
-		const langPrefix = currentLang === 'uk' ? '' : `/${currentLang}`;
-		const queryString = queryParams.join('&');
-		const url = `${langPrefix}/products${queryString ? '?' + queryString : ''}`;
-		console.log('ProductsPage: Navigating to URL:', url);
-
-		// Navigate to the same page with new query parameters
-		goto(url);
+		goto(
+			buildUrl({
+				search: searchTerm || null,
+				category: category || null,
+				size: size || null,
+				flavor: flavor || null,
+				minPrice: minPrice !== null && minPrice !== undefined ? String(minPrice) : null,
+				maxPrice: maxPrice !== null && maxPrice !== undefined ? String(maxPrice) : null
+			})
+		);
 	}
 
-	// Handle reset event
+	// Handle reset event (keeps the language!)
 	function handleReset() {
-		console.log('ProductsPage: handleReset called');
-		// Navigate to the base products page without query parameters
-		goto('/products');
+		goto(`${langPrefix()}/products`);
 	}
+
+	// Remove a single active filter and navigate
+	function removeFilter(key: string) {
+		goto(
+			buildUrl({
+				search: key === 'search' ? null : data.searchTerm || null,
+				category: key === 'category' ? null : data.category || null,
+				size: key === 'size' ? null : data.size || null,
+				flavor: key === 'flavor' ? null : data.flavor || null,
+				minPrice:
+					key === 'minPrice' || data.minPrice === null ? null : String(data.minPrice),
+				maxPrice:
+					key === 'maxPrice' || data.maxPrice === null ? null : String(data.maxPrice)
+			})
+		);
+	}
+
+	// Active filter chips (human-readable)
+	const activeFilters = $derived(
+		[
+			data.searchTerm ? { key: 'search', label: `“${data.searchTerm}”` } : null,
+			data.category ? { key: 'category', label: humanize(data.category) } : null,
+			data.size ? { key: 'size', label: humanize(data.size) } : null,
+			data.flavor ? { key: 'flavor', label: humanize(data.flavor) } : null,
+			data.minPrice !== null ? { key: 'minPrice', label: `≥ ${data.minPrice} грн` } : null,
+			data.maxPrice !== null ? { key: 'maxPrice', label: `≤ ${data.maxPrice} грн` } : null
+		].filter(Boolean) as { key: string; label: string }[]
+	);
+
+	const hasFilters = $derived(activeFilters.length > 0);
+
+	function humanize(value: string): string {
+		const map: Record<string, string> = {
+			trial: 'Trial',
+			week: 'Week',
+			halfmonth: 'Half month',
+			month: 'Month',
+			curcumin: 'Curcumin',
+			paste: 'Paste',
+			treats: 'Treats',
+			dogs: 'Dogs',
+			subscription: 'Subscription',
+			'turmeric-ginger': 'Turmeric & ginger',
+			'pumpkin-coconut': 'Pumpkin & coconut'
+		};
+		if (map[value]) return map[value];
+		return value
+			.replace(/[-_]+/g, ' ')
+			.replace(/\b\w/g, (c) => c.toUpperCase());
+	}
+
+	// SEO with SSR-safe fallbacks (never gate <SEO> behind client-side translations)
+	const seoTitle = $derived(
+		$pageTranslations?.t('products.meta.title') ||
+			'Golden Paste Jars TRIAL / WEEK / HALF / MONTH | Balance Botanica'
+	);
+	const seoDescription = $derived(
+		$pageTranslations?.t('products.meta.description') ||
+			'Golden paste jars for dogs: 30 / 100 / 250 / 500 ml. About 60 mg curcuminoids per teaspoon.'
+	);
 </script>
 
-{#if $pageTranslations}
-	<SEO
-		title={String($pageTranslations.t('products.meta.title'))}
-		description={String($pageTranslations.t('products.meta.description'))}
-		currentPath={$page.url.pathname}
-	/>
-{/if}
+<!-- Always rendered so crawlers get title/description/canonical in SSR HTML -->
+<SEO
+	title={String(seoTitle)}
+	description={String(seoDescription)}
+	currentPath={$page.url.pathname}
+	robots={hasFilters ? 'noindex, follow' : undefined}
+/>
 
-<div class="min-h-screen overflow-x-hidden bg-gray-50">
+<div class="min-h-screen overflow-x-hidden bg-cream">
 	<!-- Main Content -->
 	<div class="mx-auto max-w-7xl overflow-x-hidden px-3 py-8 sm:px-4 sm:px-6 lg:px-8">
+		<!-- Breadcrumb -->
+		<nav aria-label="Breadcrumb" class="mb-4 text-sm text-gray-500">
+			<a href={`${langPrefix() || '/'}`} class="hover:text-main hover:underline">
+				{$pageTranslations?.t('products.home') || 'Home'}
+			</a>
+			<span class="mx-2">/</span>
+			<span aria-current="page" class="font-medium text-gray-700">
+				{$pageTranslations?.t('header.navigation.shop') || 'Shop'}
+			</span>
+		</nav>
+
+		<h1 class="mb-2 text-3xl font-extrabold tracking-tight text-gray-900 md:text-4xl">
+			{$pageTranslations?.t('products.shop_title') || 'Golden paste jars for dogs'}
+		</h1>
+		<p class="mb-6 text-lg text-gray-600">
+			{$pageTranslations?.t('products.shop_subtitle') ||
+				'TRIAL to taste · MONTH to save. About 60 mg curcuminoids per teaspoon.'}
+		</p>
+
 		{#if data.error}
 			<div class="py-12 text-center">
 				<div class="mb-4 text-red-600">
@@ -88,6 +171,30 @@
 				on:reset={handleReset}
 			/>
 
+			<!-- Active filter chips -->
+			{#if hasFilters}
+				<div class="mb-4 flex flex-wrap items-center gap-2" aria-live="polite">
+					{#each activeFilters as filter (filter.key)}
+						<button
+							type="button"
+							onclick={() => removeFilter(filter.key)}
+							class="inline-flex items-center gap-1.5 rounded-full bg-main px-3 py-1.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-[#b25f0e]"
+							aria-label={`Remove filter ${filter.label}`}
+						>
+							{filter.label}
+							<span aria-hidden="true" class="text-base leading-none">×</span>
+						</button>
+					{/each}
+					<button
+						type="button"
+						onclick={handleReset}
+						class="text-sm font-medium text-gray-500 underline hover:text-gray-700"
+					>
+						{$pageTranslations?.t('products.reset_filters') || 'Reset'}
+					</button>
+				</div>
+			{/if}
+
 			<!-- Results Info -->
 			<div class="mb-6">
 				<p class="text-gray-600">
@@ -114,12 +221,12 @@
 			</div>
 
 			{#if data.products && data.products.length > 0}
-				<!-- Products Grid using ProductGrid component -->
+				<!-- Products Grid: same 4-across grid + cards as homepage -->
 				<ProductGrid
 					products={data.products}
-					columns={3}
+					columns={4}
 					gap="gap-6"
-					cardClassName="bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow h-full"
+					cardClassName="bg-white border border-[#efe0c3] rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all h-full"
 				/>
 			{:else}
 				<!-- Empty State -->
@@ -145,8 +252,8 @@
 					</p>
 					<div class="mt-6">
 						<button
-							on:click={handleReset}
-							class="inline-flex items-center rounded-md border border-transparent bg-[#4b766e] px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-[#3d5f58] focus:ring-2 focus:ring-[#4b766e] focus:ring-offset-2 focus:outline-none"
+							onclick={handleReset}
+							class="inline-flex items-center rounded-md border border-transparent bg-main px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-[#b25f0e] focus:ring-2 focus:ring-main focus:ring-offset-2 focus:outline-none"
 						>
 							{$pageTranslations?.t('products.reset_filters')}
 						</button>
@@ -163,6 +270,4 @@
 		overflow-x: hidden;
 		max-width: 100vw;
 	}
-
-	/* Add any additional styling here if needed */
 </style>

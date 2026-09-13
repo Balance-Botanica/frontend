@@ -15,7 +15,7 @@
 			<a
 				href="/"
 				class="text-3xl font-bold transition-opacity hover:opacity-80"
-				style="color: #4B766E;"
+				style="color: var(--color-main);"
 			>
 				Balance Botanica
 			</a>

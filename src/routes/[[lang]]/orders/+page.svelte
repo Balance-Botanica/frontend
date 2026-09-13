@@ -180,6 +180,7 @@
 		description={$pageTranslations.t('cart.orders.meta.description', {
 			defaultValue: 'View your order history and track current orders'
 		})}
+		robots="noindex, follow"
 	/>
 
 	<main class="orders-page">
@@ -394,7 +395,7 @@
 		width: 40px;
 		height: 40px;
 		border: 4px solid #f3f3f3;
-		border-top: 4px solid #4b766e;
+		border-top: 4px solid var(--color-main);
 		border-radius: 50%;
 		animation: spin 1s linear infinite;
 		margin: 0 auto 16px;
@@ -458,21 +459,21 @@
 	}
 
 	.retry-button {
-		background: #4b766e;
+		background: var(--color-main);
 		color: white;
 	}
 
 	.retry-button:hover {
-		background: #3d5f58;
+		background: #b25f0e;
 	}
 
 	.shop-button {
-		background: #4b766e;
+		background: var(--color-main);
 		color: white;
 	}
 
 	.shop-button:hover {
-		background: #3d5f58;
+		background: #b25f0e;
 	}
 
 	/* Orders list */
@@ -505,7 +506,7 @@
 		font-family: 'Nunito', sans-serif;
 		font-size: 20px;
 		font-weight: 600;
-		color: #4b766e;
+		color: var(--color-main);
 		margin: 0 0 4px 0;
 	}
 
@@ -575,7 +576,7 @@
 		font-family: 'Nunito', sans-serif;
 		font-size: 14px;
 		font-weight: 600;
-		color: #4b766e;
+		color: var(--color-main);
 	}
 
 	.order-summary {
@@ -601,7 +602,7 @@
 		font-family: 'Nunito', sans-serif;
 		font-size: 20px;
 		font-weight: 700;
-		color: #4b766e;
+		color: var(--color-main);
 	}
 
 	.order-delivery {

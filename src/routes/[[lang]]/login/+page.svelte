@@ -65,11 +65,13 @@
 	<SEO
 		title={$pageTranslations.t('login.meta.title')}
 		description={$pageTranslations.t('login.meta.description')}
+		robots="noindex, follow"
 	/>
 
 	<!-- Main Content -->
 	<main class="login-page">
 		<div class="login-container">
+			<h1 class="sr-only">{$pageTranslations.t('login.page_title') || 'Вхід'}</h1>
 			<LoginForm on:success={handleAuthSuccess} on:error={handleAuthError} />
 		</div>
 	</main>

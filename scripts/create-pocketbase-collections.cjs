@@ -8,16 +8,10 @@ async function createCollections() {
     try {
         console.log('Creating PocketBase collections...');
         
-        // You'll need to authenticate as admin first
-        // This would typically be done with:
-        // await pb.admins.authWithPassword('admin@balancebotanica.com', 'admin123456');
-        
-        console.log('⚠️  This script requires manual admin authentication first.');
-        console.log('📋 Please authenticate as admin in the PocketBase admin panel:');
-        console.log('   URL: http://127.0.0.1:8090/_/');
-        console.log('   Email: admin@balancebotanica.com');
-        console.log('   Password: admin123456');
-        console.log('');
+        // You'll need to authenticate as superuser first (creds from .env, never hardcoded):
+        // await pb.collection('_superusers').authWithPassword(process.env.POCKETBASE_ADMIN_EMAIL, process.env.POCKETBASE_ADMIN_PASSWORD);
+
+        console.log('⚠️  This script requires superuser authentication first (see POCKETBASE_ADMIN_EMAIL in .env).');
         
         // Define collections structure
         const collections = [

@@ -203,7 +203,7 @@
 			</div>
 
 			<!-- Navigation Menu -->
-			<nav class="hidden items-center space-x-8 md:flex">
+			<nav class="hidden items-center space-x-8 md:flex mx-8">
 				{#each navigationLinks as link (link.href)}
 					<a
 						href={link.href}
@@ -323,7 +323,7 @@
 		font-family: 'Nunito', sans-serif;
 		font-size: 14px;
 		font-weight: 500;
-		color: #4b766e;
+		color: var(--color-main);
 		white-space: nowrap;
 		cursor: pointer;
 		transition: color 0.2s ease;
@@ -339,7 +339,7 @@
 		border-radius: 50%;
 		object-fit: cover;
 		transition: transform 0.2s ease;
-		border: 2px solid #4b766e;
+		border: 2px solid var(--color-main);
 	}
 
 	.user-icon-container {
@@ -354,7 +354,7 @@
 
 	.user-icon-container.logged-in {
 		background: transparent;
-		border: 2px solid #4b766e;
+		border: 2px solid var(--color-main);
 	}
 
 	.user-icon-container.logged-in:hover {
@@ -368,7 +368,7 @@
 	}
 
 	.user-icon-container.logged-out:hover {
-		border-color: #4b766e;
+		border-color: var(--color-main);
 		transform: scale(1.1);
 	}
 
@@ -407,7 +407,7 @@
 		border-radius: 50%;
 		transition: all 0.2s ease;
 		background: transparent;
-		border: 2px solid #4b766e;
+		border: 2px solid var(--color-main);
 		position: relative;
 	}
 

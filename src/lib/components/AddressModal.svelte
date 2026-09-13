@@ -357,7 +357,7 @@
 
 	.form-input:focus {
 		outline: none;
-		border-color: #4b766e;
+		border-color: var(--color-main);
 	}
 
 	.checkbox {
@@ -403,7 +403,7 @@
 	}
 
 	.btn-primary {
-		background: #4b766e;
+		background: var(--color-main);
 		color: white;
 	}
 

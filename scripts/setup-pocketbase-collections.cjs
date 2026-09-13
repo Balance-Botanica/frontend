@@ -11,10 +11,8 @@ async function setupCollections() {
         // Authenticate as admin (you'll need to do this manually first)
         // For now, we'll just log what needs to be done
         
-        console.log('📋 Please authenticate as admin in the PocketBase admin panel first:');
+        console.log('📋 Please authenticate as superuser in the PocketBase admin panel first (email from POCKETBASE_ADMIN_EMAIL in .env):');
         console.log('   URL: http://127.0.0.1:8090/_/');
-        console.log('   Email: admin@balancebotanica.com');
-        console.log('   Password: admin123456');
         console.log('');
         
         // Define collections structure

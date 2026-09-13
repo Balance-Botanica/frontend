@@ -1,11 +1,15 @@
 import PocketBase from 'pocketbase';
+import { env } from '$env/dynamic/private';
 
-// PocketBase client configuration
-export const pb = new PocketBase(process.env.POCKETBASE_URL || 'http://127.0.0.1:8090');
+// PocketBase client configuration (server-side only — never ships secrets to the browser)
+function getPbUrl(): string {
+	return env.POCKETBASE_URL || 'http://127.0.0.1:8090';
+}
 
-// Admin credentials (should be set in environment variables for security)
-const ADMIN_EMAIL = process.env.POCKETBASE_ADMIN_EMAIL || 'balancebotanicaukraine@gmail.com';
-const ADMIN_PASSWORD = process.env.POCKETBASE_ADMIN_PASSWORD || 'diaochan1994qQq';
+export const pb = new PocketBase(getPbUrl());
+
+// Admin credentials come from .env via SvelteKit private env (never hardcoded)
+const ADMIN_EMAIL = env.POCKETBASE_ADMIN_EMAIL || 'balancebotanicaukraine@gmail.com';
 
 // Flag to track if we're already authenticated
 let isAuthenticated = false;
@@ -17,9 +21,14 @@ export async function authenticateAsAdmin() {
 		return true;
 	}
 
+	const adminPassword = env.POCKETBASE_ADMIN_PASSWORD;
+	if (!adminPassword) {
+		throw new Error('POCKETBASE_ADMIN_PASSWORD is not set (see .env)');
+	}
+
 	try {
 		console.log('[PocketBase] Authenticating as admin...');
-		await pb.admins.authWithPassword(ADMIN_EMAIL, ADMIN_PASSWORD);
+		await pb.collection('_superusers').authWithPassword(ADMIN_EMAIL, adminPassword);
 		isAuthenticated = true;
 		console.log('[PocketBase] Admin authentication successful');
 		return true;

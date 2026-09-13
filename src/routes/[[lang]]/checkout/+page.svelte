@@ -108,6 +108,7 @@
 	<SEO
 		title={$pageTranslations.t('cart.checkout.title')}
 		description="Complete your order with Google Pay or Apple Pay"
+		robots="noindex, follow"
 	/>
 
 	<main class="checkout-page">
@@ -244,7 +245,7 @@
 	}
 
 	.success-icon svg {
-		color: #4b766e;
+		color: var(--color-main);
 	}
 
 	.success-title {
@@ -282,7 +283,7 @@
 		font-family: 'Nunito', sans-serif;
 		font-size: 18px;
 		font-weight: 600;
-		color: #4b766e;
+		color: var(--color-main);
 		margin: 0 0 8px 0;
 	}
 
@@ -315,7 +316,7 @@
 	}
 
 	.primary-btn {
-		background: #4b766e;
+		background: var(--color-main);
 		color: white;
 		box-shadow: 0 4px 12px rgba(75, 118, 110, 0.3);
 	}
@@ -327,12 +328,12 @@
 
 	.secondary-btn {
 		background: #f5f5f5;
-		color: #4b766e;
-		border: 2px solid #4b766e;
+		color: var(--color-main);
+		border: 2px solid var(--color-main);
 	}
 
 	.secondary-btn:hover {
-		background: #4b766e;
+		background: var(--color-main);
 		color: white;
 		text-decoration: none;
 	}
@@ -512,7 +513,7 @@
 
 	.form-input:focus,
 	.form-select:focus {
-		border-color: #4b766e;
+		border-color: var(--color-main);
 		outline: none;
 	}
 
@@ -554,9 +555,9 @@
 		width: 100%;
 		padding: 12px 20px;
 		border-radius: 8px;
-		border: 2px solid #4b766e;
+		border: 2px solid var(--color-main);
 		background: transparent;
-		color: #4b766e;
+		color: var(--color-main);
 		font-family: 'Nunito', sans-serif;
 		font-size: 14px;
 		font-weight: 600;
@@ -565,7 +566,7 @@
 	}
 
 	.back-btn:hover {
-		background: #4b766e;
+		background: var(--color-main);
 		color: white;
 	}
 

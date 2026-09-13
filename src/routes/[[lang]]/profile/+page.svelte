@@ -307,6 +307,7 @@
 	<SEO
 		title={$pageTranslations.t('profile.meta.title') as string}
 		description={$pageTranslations.t('profile.meta.description') as string}
+		robots="noindex, follow"
 	/>
 
 	<div class="profile-page">
@@ -686,13 +687,13 @@
 		border-radius: 12px;
 		padding: 16px 20px;
 		margin-bottom: 24px;
-		border-left: 4px solid #4b766e;
+		border-left: 4px solid var(--color-main);
 	}
 
 	.delivery-description {
 		font-family: 'Nunito', sans-serif;
 		font-size: 16px;
-		color: #4b766e;
+		color: var(--color-main);
 		font-weight: 500;
 		margin: 0;
 	}
@@ -715,7 +716,7 @@
 
 	.address-card.default {
 		background: #f0f7f5;
-		border-color: #4b766e;
+		border-color: var(--color-main);
 	}
 
 	.address-header {
@@ -734,7 +735,7 @@
 	}
 
 	.default-badge {
-		background: #4b766e;
+		background: var(--color-main);
 		color: white;
 		font-size: 12px;
 		padding: 4px 8px;
@@ -786,7 +787,7 @@
 
 	.action-btn.default {
 		background: #e0f0ed;
-		color: #4b766e;
+		color: var(--color-main);
 	}
 
 	.action-btn.delete {
@@ -806,7 +807,7 @@
 		width: 100%;
 		font-family: 'Nunito', sans-serif;
 		font-size: 16px;
-		color: #4b766e;
+		color: var(--color-main);
 		cursor: pointer;
 		transition: all 0.2s ease;
 		text-align: center;
@@ -814,7 +815,7 @@
 
 	.add-address-btn:hover {
 		background: #f0f7f5;
-		border-color: #4b766e;
+		border-color: var(--color-main);
 	}
 
 	.no-addresses {
@@ -843,7 +844,7 @@
 	.success-message {
 		margin-top: 16px;
 		padding: 12px 16px;
-		background-color: #4b766e;
+		background-color: var(--color-main);
 		color: #ffffff;
 		border-radius: 8px;
 		font-family: 'Nunito', sans-serif;
@@ -876,7 +877,7 @@
 		width: 40px;
 		height: 40px;
 		border: 4px solid #e0e0e0;
-		border-top: 4px solid #4b766e;
+		border-top: 4px solid var(--color-main);
 		border-radius: 50%;
 		animation: spin 1s linear infinite;
 		margin-bottom: 16px;

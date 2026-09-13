@@ -144,7 +144,7 @@
 		margin: 0 auto 2.5rem;
 		width: 100px;
 		height: 100px;
-		color: #4b766e; /* Balance Botanica green */
+		color: var(--color-main); /* Balance Botanica green */
 	}
 
 	.feather {
@@ -156,7 +156,7 @@
 		font-size: 6rem;
 		margin: 0;
 		font-weight: 800;
-		color: #4b766e;
+		color: var(--color-main);
 		line-height: 1;
 		text-shadow: 3px 3px 0 rgba(75, 118, 110, 0.1);
 	}
@@ -177,7 +177,7 @@
 
 	.home-button {
 		display: inline-block;
-		background-color: #4b766e;
+		background-color: var(--color-main);
 		color: white;
 		padding: 1rem 2.5rem;
 		border-radius: 50px;
@@ -189,7 +189,7 @@
 	}
 
 	.home-button:hover {
-		background-color: #3d5f58;
+		background-color: #b25f0e;
 		transform: translateY(-3px);
 		box-shadow: 0 8px 20px rgba(75, 118, 110, 0.4);
 	}

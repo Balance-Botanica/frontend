@@ -42,6 +42,9 @@ export const load: PageServerLoad = async ({ params }) => {
 
 		const frontmatter = parts[1];
 		const markdownContent = parts.slice(2).join('---').trim();
+		// BlogLayout already renders the title as the page H1 — drop the
+		// duplicate leading "# Title" from the markdown body (single-H1 rule).
+		const bodyWithoutH1 = markdownContent.replace(/^#\s+.+(\r?\n)+/, '');
 
 		// Parse frontmatter (simple implementation)
 		const metadata: any = {};
@@ -69,7 +72,7 @@ export const load: PageServerLoad = async ({ params }) => {
 			date: metadata.date || '',
 			author: metadata.author || '',
 			tags,
-			content: marked(markdownContent),
+			content: marked(bodyWithoutH1),
 			slug
 		};
 	} catch (error) {

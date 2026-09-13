@@ -3,325 +3,321 @@
 	import {
 		getDosageCoefficient,
 		getWeightRecommendation,
-		validateDosage
+		validateDosage,
+		getTspPerDay,
+		getJarDays,
+		MG_PER_TSP,
+		type JarKey
 	} from './calculator.config.js';
 
 	let {
 		animalType = 'dog',
 		weight = '',
-		condition = 'wellbeing',
+		condition = 'maintenance',
 		showResults = false,
 		dosage = 0,
 		recommendation = ''
 	} = $props<{
-		animalType?: 'horse' | 'dog' | 'cat' | 'small_animal';
+		animalType?: 'dog' | 'cat';
 		weight?: string;
-		condition?: 'wellbeing' | 'anxiety' | 'hard_anxiety';
+		condition?: 'maintenance' | 'active';
 		showResults?: boolean;
 		dosage?: number;
 		recommendation?: string;
 	}>();
 
-	// Initialize local variables to ensure they're reactive
 	let localDosage = $state(0);
 	let localRecommendation = $state('');
 	let validation = $state<any>(null);
+	let tspPerDay = $state(0);
+	let jarDays = $state<Record<JarKey, number> | null>(null);
 
-	// Dosage calculation logic using config file with safety validation
+	let weightNum = $derived(parseFloat(weight) || 0);
+	let previewTsp = $derived(weightNum > 0 ? getTspPerDay(weightNum * (condition === 'active' ? 18 : 12)) : 0);
+	let canCalculate = $derived(weightNum > 0 && weightNum <= 100);
+
 	function calculateDosage() {
-		if (!weight || parseFloat(weight) <= 0) return;
-
-		const weightKg = parseFloat(weight);
+		if (!canCalculate) return;
+		const weightKg = weightNum;
 		const baseDosage = getDosageCoefficient(animalType, condition);
-
-		// Calculate and set dosage
 		localDosage = Math.round(weightKg * baseDosage * 10) / 10;
-
-		// Validate dosage for safety
+		tspPerDay = getTspPerDay(localDosage);
+		jarDays = getJarDays(tspPerDay);
 		validation = validateDosage(animalType, weightKg, localDosage);
-		if (!validation.isValid) {
-			// Show warning but still display results
-			const warningMessage = validation.warningKey ? t(validation.warningKey) : '';
-			console.warn(warningMessage);
-		}
-
-		// Generate recommendation after dosage is set
 		generateRecommendation();
-
-		// Show results after everything is calculated
 		showResults = true;
 	}
 
 	function generateRecommendation() {
-		const weightNum = parseFloat(weight);
 		const { frequency, duration } = getWeightRecommendation(animalType, weightNum);
-
-		// Ensure dosage is available before generating recommendation
 		if (localDosage > 0) {
 			try {
-				// Use the working i18n system for frequency and duration
-				const localizedFrequency = t(`calculator.frequency.${frequency}`);
-				const localizedDuration = t(`calculator.duration.${duration}`);
-
 				localRecommendation = t('calculator.results.administer_text', {
 					dosage: localDosage,
-					frequency: localizedFrequency,
-					duration: localizedDuration
+					frequency: t(`calculator.frequency.${frequency}`),
+					duration: t(`calculator.duration.${duration}`)
 				});
-			} catch (error) {
-				console.error('Error generating recommendation:', error);
-				// Fallback recommendation
-				localRecommendation = t('calculator.results.administer_text', {
-					dosage: localDosage,
-					frequency: frequency,
-					duration: duration
-				});
+			} catch {
+				localRecommendation = `${localDosage} mg, ${frequency}, ${duration}`;
 			}
-		} else {
-			localRecommendation = '';
 		}
 	}
 
 	function resetCalculator() {
 		weight = '';
-		condition = 'wellbeing';
+		condition = 'maintenance';
 		showResults = false;
 		localDosage = 0;
 		localRecommendation = '';
 		validation = null;
+		tspPerDay = 0;
+		jarDays = null;
 	}
 
-	// Get animal type display name from messages
-	function getAnimalTypeName(type: string): string {
-		return t(`calculator.animal_types.${type}`);
-	}
-
-	// Get condition display name from messages
-	function getConditionName(cond: string): string {
-		return t(`calculator.conditions.${cond}`);
-	}
-
-	// Get proper unit based on locale
 	function getDosageUnit(): string {
-		// Check if we're in Ukrainian locale by looking at the messages
-		const title = t('calculator.title');
-		const isUkrainian = title && title.includes('КБД');
-		return isUkrainian ? 'мг' : 'mg';
+		return /[а-яіїєґ]/i.test(t('calculator.title')) ? 'мг' : 'mg';
 	}
 
-	// Get animal icon
-	function getAnimalIcon(type: string): string {
-		switch (type) {
-			case 'horse':
-				return `<svg class="w-6 h-6 text-main" fill="currentColor" viewBox="0 0 24 24">
-					<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-				</svg>`;
-			case 'dog':
-				return `<svg class="w-6 h-6 text-main" fill="currentColor" viewBox="0 0 24 24">
-					<path d="M18 4c0-1.1-.9-2-2-2s-2 .9-2 2 .9 2 2 2 2-.9 2-2zm-2 3c-1.1 0-2 .9-2 2v7c0 1.1.9 2 2 2s2-.9 2-2V9c0-1.1-.9-2-2-2zm-8 0c-1.1 0-2 .9-2 2v7c0 1.1.9 2 2 2s2-.9 2-2V9c0-1.1-.9-2-2-2zm-2-3c0-1.1-.9-2-2-2s-2 .9-2 2 .9 2 2 2 2-.9 2-2z"/>
-				</svg>`;
-			case 'cat':
-				return `<svg class="w-6 h-6 text-main" fill="currentColor" viewBox="0 0 24 24">
-					<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-				</svg>`;
-			case 'small_animal':
-				return `<svg class="w-6 h-6 text-main" fill="currentColor" viewBox="0 0 24 24">
-					<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-				</svg>`;
-			default:
-				return `<svg class="w-6 h-6 text-main" fill="currentColor" viewBox="0 0 24 24">
-					<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-				</svg>`;
-		}
-	}
+	const QUICK_WEIGHTS = [5, 10, 20, 30];
 </script>
 
-<div class="mx-auto rounded-3xl border border-gray-100 bg-white p-8 shadow-xl">
+<div
+	class="mx-auto w-full max-w-xl rounded-[2rem] bg-white p-6 shadow-[0_24px_70px_-24px_rgba(63,111,104,0.4)] ring-1 ring-black/5 sm:p-8"
+>
 	<!-- Header -->
-	<div class="mb-8 text-center">
-		<div class="mb-4 text-center">
-			<h3 class="text-2xl font-bold text-gray-900">
+	<div class="mb-6 flex items-center gap-4">
+		<div
+			class="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-main to-[#b25f0e] text-3xl shadow-lg"
+		>
+			🐾
+		</div>
+		<div>
+			<h3 class="text-xl font-extrabold tracking-tight text-gray-900 sm:text-2xl">
 				{t('calculator.title')}
 			</h3>
+			<p class="mt-0.5 text-sm leading-snug text-gray-500">{t('calculator.subtitle')}</p>
 		</div>
-		<p class="text-sm leading-relaxed text-gray-600">
-			{t('calculator.subtitle')}
-		</p>
 	</div>
 
 	{#if !showResults}
-		<!-- Calculator Form -->
 		<div class="space-y-6">
-			<!-- Animal Type Selection -->
+			<!-- Animal segmented -->
 			<div>
-				<label for="animalType" class="mb-3 block text-sm font-semibold text-gray-700">
-					{t('calculator.form.animal_type')}
-				</label>
-				<select
-					id="animalType"
-					bind:value={animalType}
-					class="w-full cursor-pointer appearance-none rounded-xl border-2 border-gray-200 bg-white px-4 py-4 text-lg transition-all duration-200 focus:border-main focus:ring-2 focus:ring-main"
-				>
-					<option value="horse">{t('calculator.animal_types.horse')}</option>
-					<option value="dog">{t('calculator.animal_types.dog')}</option>
-					<option value="cat">{t('calculator.animal_types.cat')}</option>
-					<option value="small_animal">{t('calculator.animal_types.small_animal')}</option>
-				</select>
-				<!-- Custom dropdown arrow -->
-				<div class="pointer-events-none absolute top-1/2 right-4 -translate-y-1/2 transform">
-					<svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							stroke-width="2"
-							d="M19 9l-7 7-7-7"
-						/>
-					</svg>
+				<p class="mb-2.5 text-sm font-bold text-gray-700">{t('calculator.form.animal_type')}</p>
+				<div class="grid grid-cols-2 gap-2 rounded-full bg-gray-100 p-1.5">
+					<button
+						type="button"
+						onclick={() => (animalType = 'dog')}
+						class="flex items-center justify-center gap-2 rounded-full px-4 py-3 text-base font-bold transition-all duration-200 {animalType ===
+						'dog'
+							? 'bg-white text-gray-900 shadow-md ring-1 ring-black/5'
+							: 'text-gray-500 hover:text-gray-700'}"
+					>
+						<span class="text-xl">🐶</span>
+						{t('calculator.animal_types.dog')}
+					</button>
+					<button
+						type="button"
+						onclick={() => (animalType = 'cat')}
+						class="flex items-center justify-center gap-2 rounded-full px-4 py-3 text-base font-bold transition-all duration-200 {animalType ===
+						'cat'
+							? 'bg-white text-gray-900 shadow-md ring-1 ring-black/5'
+							: 'text-gray-500 hover:text-gray-700'}"
+					>
+						<span class="text-xl">🐱</span>
+						{t('calculator.animal_types.cat')}
+					</button>
 				</div>
 			</div>
 
-			<!-- Weight Input -->
+			<!-- Weight -->
 			<div>
-				<label for="weight" class="mb-3 block text-sm font-semibold text-gray-700">
-					{t('calculator.form.weight')}
-				</label>
+				<div class="mb-2.5 flex items-end justify-between">
+					<label for="weight" class="text-sm font-bold text-gray-700">
+						{t('calculator.form.weight')} (кг)
+					</label>
+					{#if previewTsp > 0}
+						<span
+							class="rounded-full bg-main/10 px-3 py-1 text-xs font-extrabold text-[#b25f0e]"
+						>
+							🥄 ≈ {previewTsp} tsp/day · {MG_PER_TSP}mg/tsp
+						</span>
+					{/if}
+				</div>
+				<div class="flex items-center gap-3">
+					<input
+						id="weight"
+						type="number"
+						bind:value={weight}
+						placeholder={t('calculator.form.weight_placeholder')}
+						step="0.5"
+						min="1"
+						max="100"
+						class="w-full rounded-2xl border-2 border-gray-100 bg-gray-50 px-5 py-4 text-center text-2xl font-extrabold text-gray-900 transition-all outline-none placeholder:text-base placeholder:font-normal placeholder:text-gray-400 focus:border-main focus:bg-white focus:ring-4 focus:ring-main/15"
+					/>
+				</div>
 				<input
-					id="weight"
-					type="number"
-					bind:value={weight}
-					placeholder={t('calculator.form.weight_placeholder')}
-					class="w-full rounded-xl border-2 border-gray-200 px-4 py-4 text-lg transition-all duration-200 focus:border-main focus:ring-2 focus:ring-main"
-					step="0.1"
-					min="0.1"
+					type="range"
+					min="2"
+					max="50"
+					step="0.5"
+					value={weightNum || 10}
+					oninput={(e) => (weight = (e.target as HTMLInputElement).value)}
+					class="mt-3 w-full accent-main"
+					aria-label="weight slider"
 				/>
-			</div>
-
-			<!-- Condition Selection -->
-			<div>
-				<label for="condition" class="mb-3 block text-sm font-semibold text-gray-700">
-					{t('calculator.form.condition')}
-				</label>
-				<select
-					id="condition"
-					bind:value={condition}
-					class="w-full cursor-pointer appearance-none rounded-xl border-2 border-gray-200 bg-white px-4 py-4 text-lg transition-all duration-200 focus:border-main focus:ring-2 focus:ring-main"
-				>
-					<option value="wellbeing">{t('calculator.conditions.wellbeing')}</option>
-					<option value="anxiety">{t('calculator.conditions.anxiety')}</option>
-					<option value="hard_anxiety">{t('calculator.conditions.hard_anxiety')}</option>
-				</select>
-				<!-- Custom dropdown arrow -->
-				<div class="pointer-events-none absolute top-1/2 right-4 -translate-y-1/2 transform">
-					<svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							stroke-width="2"
-							d="M19 9l-7 7-7-7"
-						/>
-					</svg>
+				<div class="mt-2 flex gap-2">
+					{#each QUICK_WEIGHTS as w}
+						<button
+							type="button"
+							onclick={() => (weight = String(w))}
+							class="flex-1 rounded-full border px-3 py-1.5 text-sm font-bold transition-all {weightNum ===
+							w
+							? 'border-main bg-main text-white shadow'
+							: 'border-gray-200 bg-white text-gray-600 hover:border-main/50'}"
+						>
+							{w} кг
+						</button>
+					{/each}
 				</div>
 			</div>
 
-			<!-- Calculate Button -->
+			<!-- Condition cards -->
+			<div>
+				<p class="mb-2.5 text-sm font-bold text-gray-700">{t('calculator.form.condition')}</p>
+				<div class="grid grid-cols-2 gap-3">
+					<button
+						type="button"
+						onclick={() => (condition = 'maintenance')}
+						class="rounded-3xl border-2 p-4 text-left transition-all duration-200 {condition ===
+						'maintenance'
+						? 'border-main bg-main/5 shadow-md'
+						: 'border-gray-100 bg-gray-50 hover:border-gray-200'}"
+					>
+						<div class="text-2xl">🌿</div>
+						<div class="mt-1 text-sm font-extrabold text-gray-900">
+							{t('calculator.conditions.maintenance')}
+						</div>
+						<div class="text-xs text-gray-500">12 mg/kg · daily</div>
+					</button>
+					<button
+						type="button"
+						onclick={() => (condition = 'active')}
+						class="rounded-3xl border-2 p-4 text-left transition-all duration-200 {condition ===
+						'active'
+						? 'border-main bg-main/5 shadow-md'
+						: 'border-gray-100 bg-gray-50 hover:border-gray-200'}"
+					>
+						<div class="text-2xl">💪</div>
+						<div class="mt-1 text-sm font-extrabold text-gray-900">
+							{t('calculator.conditions.active')}
+						</div>
+						<div class="text-xs text-gray-500">18 mg/kg · upper band</div>
+					</button>
+				</div>
+			</div>
+
 			<button
 				onclick={calculateDosage}
-				disabled={!weight || parseFloat(weight) <= 0}
-				class="hover:bg-main-dark w-full cursor-pointer rounded-xl bg-main px-6 py-4 text-lg font-semibold text-white shadow-lg transition-all duration-300 ease-in-out hover:-translate-y-1 hover:scale-[1.02] hover:shadow-2xl active:translate-y-0 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
+				disabled={!canCalculate}
+				class="w-full rounded-full bg-gradient-to-r from-main to-[#b25f0e] px-6 py-4 text-lg font-extrabold text-white shadow-xl transition-all duration-200 hover:-translate-y-0.5 hover:shadow-2xl active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-y-0"
 			>
-				{t('calculator.form.calculate_button')}
+				🐾 {t('calculator.form.calculate_button')}
 			</button>
+			<p class="text-center text-xs text-gray-400">{t('calculator.additional_info')}</p>
 		</div>
 	{:else}
-		<!-- Results Display -->
-		<div class="space-y-6 text-center">
-			<!-- Dosage Result -->
+		<!-- RESULT -->
+		<div class="space-y-4">
 			<div
-				class="rounded-2xl border-2 border-main/30 bg-gradient-to-br from-main/10 to-main/20 p-8"
+				class="relative overflow-hidden rounded-[1.75rem] bg-gradient-to-br from-main via-[#c96a12] to-[#b25f0e] p-7 text-center text-white shadow-xl"
 			>
-				<div class="mb-3 text-4xl font-bold text-main">
-					{localDosage}
-					{getDosageUnit()}
-				</div>
-				<div class="text-lg font-semibold text-main">
-					{t('calculator.results.title')}
-				</div>
-				<div class="mt-2 text-sm text-main/80">
-					{t('calculator.results.for_animal', {
-						animalType: getAnimalTypeName(animalType),
-						condition: getConditionName(condition)
-					})}
+				<div class="pointer-events-none absolute -top-6 -right-6 text-[120px] opacity-10">🐾</div>
+				<div class="pointer-events-none absolute -bottom-8 -left-4 text-[90px] opacity-10">🐾</div>
+
+				{#if tspPerDay > 0}
+					<div
+						class="mx-auto mb-3 inline-flex items-center gap-2 rounded-full bg-white/20 px-4 py-1.5 text-sm font-extrabold backdrop-blur"
+					>
+						🥄 Golden paste · {MG_PER_TSP} mg / tsp
+					</div>
+					<div class="text-6xl font-black tracking-tight">
+						≈ {tspPerDay}
+					</div>
+					<div class="mt-1 text-lg font-bold text-white/90">tsp / day</div>
+				{/if}
+				<div class="mt-3 inline-block rounded-full bg-black/20 px-4 py-1 text-sm font-semibold">
+					{localDosage} {getDosageUnit()} total · {t(`calculator.conditions.${condition}`)}
 				</div>
 			</div>
 
-			<!-- Recommendation -->
-			<div class="rounded-xl border border-gray-200 bg-gray-50 p-6 text-left">
-				<h4 class="mb-3 text-lg font-semibold text-gray-900">
-					{t('calculator.results.usage_recommendation')}
-				</h4>
-				<p class="leading-relaxed text-gray-700">
-					{localRecommendation}
+			<div class="rounded-3xl bg-gray-50 p-5 ring-1 ring-black/5">
+				<p class="text-sm leading-relaxed font-medium text-gray-700">{localRecommendation}</p>
+				<p class="mt-2 text-xs text-gray-500">
+					1 tsp ≈ {MG_PER_TSP}mg extract. Start at ½ for 7–10 days, with food.
 				</p>
+				{#if jarDays}
+					<div class="mt-3 grid grid-cols-4 gap-2 text-center">
+						<div class="rounded-2xl bg-white px-2 py-2.5 ring-1 ring-black/5">
+							<div class="text-[11px] font-extrabold text-gray-400">TRIAL</div>
+							<div class="text-sm font-black text-gray-900">~{jarDays.trial}d</div>
+						</div>
+						<div class="rounded-2xl bg-white px-2 py-2.5 ring-1 ring-black/5">
+							<div class="text-[11px] font-extrabold text-gray-400">WEEK</div>
+							<div class="text-sm font-black text-gray-900">~{jarDays.week}d</div>
+						</div>
+						<div class="rounded-2xl bg-white px-2 py-2.5 ring-1 ring-black/5">
+							<div class="text-[11px] font-extrabold text-gray-400">HALF</div>
+							<div class="text-sm font-black text-gray-900">~{jarDays.half}d</div>
+						</div>
+						<div class="rounded-2xl bg-main px-2 py-2.5">
+							<div class="text-[11px] font-extrabold text-white/70">MONTH</div>
+							<div class="text-sm font-black text-white">~{jarDays.month}d</div>
+						</div>
+					</div>
+				{/if}
 			</div>
 
-			<!-- Validation Warning (if any) -->
 			{#if validation && !validation.isValid}
-				<div class="rounded-xl border border-yellow-200 bg-yellow-50 p-6 text-left">
-					<h4 class="mb-3 text-lg font-semibold text-yellow-900">⚠️ {t(validation.warningKey)}</h4>
-					<p class="leading-relaxed text-yellow-800">
-						{validation.recommendationKey ? t(validation.recommendationKey) : ''}
-					</p>
+				<div class="rounded-3xl border-2 border-amber-200 bg-amber-50 p-5">
+					<p class="font-extrabold text-amber-900">⚠️ {t(validation.warningKey)}</p>
+					{#if validation.recommendationKey}
+						<p class="mt-1 text-sm text-amber-800">{t(validation.recommendationKey)}</p>
+					{/if}
 				</div>
 			{/if}
 
-			<!-- Quality Assurance Tips - Only show if tips are available -->
-			{#if t('calculator.quality_assurance.tips.general') && t('calculator.quality_assurance.tips.general').length > 0}
-				<div class="rounded-xl border border-blue-200 bg-blue-50 p-6 text-left">
-					<h4 class="mb-3 text-lg font-semibold text-blue-900">
-						{t('calculator.quality_assurance.title')}
-					</h4>
-					<ul class="space-y-2 text-sm text-blue-800">
-						{#each t('calculator.quality_assurance.tips.general') as tip, _index}
-							<li class="flex items-start">
-								<span class="mr-2 text-blue-600">•</span>
-								<span>{tip}</span>
-							</li>
-						{/each}
-						{#if animalType === 'cat' && t('calculator.quality_assurance.tips.cat')}
-							<li class="flex items-start">
-								<span class="mr-2 text-blue-600">•</span>
-								<span>{t('calculator.quality_assurance.tips.cat')}</span>
-							</li>
-						{:else if animalType === 'horse' && t('calculator.quality_assurance.tips.horse')}
-							<li class="flex items-start">
-								<span class="mr-2 text-blue-600">•</span>
-								<span>{t('calculator.quality_assurance.tips.horse')}</span>
-							</li>
-						{:else if animalType === 'small_animal' && t('calculator.quality_assurance.tips.small_animal')}
-							<li class="flex items-start">
-								<span class="mr-2 text-blue-600">•</span>
-								<span>{t('calculator.quality_assurance.tips.small_animal')}</span>
-							</li>
-						{/if}
-					</ul>
-				</div>
-			{/if}
+			<details class="group rounded-3xl bg-blue-50/60 p-5 ring-1 ring-blue-100">
+				<summary class="cursor-pointer text-sm font-extrabold text-blue-900">
+					💡 {t('calculator.quality_assurance.title')}
+				</summary>
+				<ul class="mt-3 space-y-1.5 text-[13px] leading-snug text-blue-900/80">
+					{#each (t('calculator.quality_assurance.tips.general') as unknown as string[]).slice(0, 4) as tip}
+						<li class="flex gap-2"><span>•</span><span>{tip}</span></li>
+					{/each}
+				</ul>
+			</details>
 
-			<!-- Action Buttons -->
-			<div class="flex space-x-4">
+			<div class="flex gap-3">
 				<button
 					onclick={resetCalculator}
-					class="flex-1 rounded-xl bg-gray-200 px-6 py-3 font-medium text-gray-700 transition-all duration-200 hover:bg-gray-300"
+					class="flex-1 rounded-full bg-gray-100 px-6 py-3.5 font-bold text-gray-700 transition-all hover:bg-gray-200"
 				>
 					{t('calculator.actions.calculate_again')}
 				</button>
-				<button
-					onclick={() => (showResults = false)}
-					class="hover:bg-main-dark flex-1 rounded-xl bg-main px-6 py-3 font-medium text-white transition-all duration-200"
+				<a
+					href="/products"
+					class="flex-1 rounded-full bg-main px-6 py-3.5 text-center font-bold text-white shadow-lg transition-all hover:-translate-y-0.5 hover:bg-[#b25f0e]"
 				>
-					{t('calculator.actions.modify_inputs')}
-				</button>
+					🫙 Shop paste
+				</a>
 			</div>
+			<button
+				onclick={() => (showResults = false)}
+				class="w-full text-center text-sm font-semibold text-gray-400 hover:text-gray-600"
+			>
+				{t('calculator.actions.modify_inputs')}
+			</button>
 		</div>
 	{/if}
 </div>

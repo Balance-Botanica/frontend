@@ -81,6 +81,51 @@
 		searchTerm = target.value;
 	}
 
+	// Human-readable filter labels (DB stores slugs like 'halfmonth', 'turmeric-ginger')
+	function humanLabel(value: string): string {
+		const locale = ($pageTranslations as any)?.locale || 'uk-ua';
+		const ukMap: Record<string, string> = {
+			trial: 'Пробник',
+			week: 'Тиждень',
+			halfmonth: 'Півмісяця',
+			month: 'Місяць',
+			curcumin: 'Куркумін',
+			paste: 'Паста',
+			treats: 'Ласощі',
+			dogs: 'Собаки',
+			subscription: 'Підписка',
+			'turmeric-ginger': 'Куркума та імбир',
+			'pumpkin-coconut': 'Гарбуз і кокос'
+		};
+		const enMap: Record<string, string> = {
+			trial: 'Trial',
+			week: 'Week',
+			halfmonth: 'Half month',
+			month: 'Month',
+			curcumin: 'Curcumin',
+			paste: 'Paste',
+			treats: 'Treats',
+			dogs: 'Dogs',
+			subscription: 'Subscription',
+			'turmeric-ginger': 'Turmeric & ginger',
+			'pumpkin-coconut': 'Pumpkin & coconut'
+		};
+		const map = locale === 'en' ? enMap : ukMap;
+		if (map[value]) return map[value];
+		// Measurements like "30 g" / "100 ml" stay as-is (units need no translation)
+		if (/^[\d.,\s]+(g|ml)$/i.test(value.trim())) {
+			return locale === 'en' ? value : value.replace(/\bg\b/gi, 'г').replace(/\bml\b/gi, 'мл');
+		}
+		let label = value.replace(/[-_]+/g, ' ');
+		// Localize units inside longer strings (paste is weighed in grams)
+		if (locale !== 'en') {
+			label = label.replace(/\bg\b/gi, 'г').replace(/\bml\b/gi, 'мл');
+		} else {
+			label = label.replace(/\b\w/g, (c) => c.toUpperCase());
+		}
+		return label;
+	}
+
 	function handleMinPriceInput(value: string) {
 		minPrice = value ? parseFloat(value) : null;
 	}
@@ -90,9 +135,9 @@
 	}
 </script>
 
-<div class="mb-8 rounded-xl bg-white p-6 shadow-md">
+<div class="mb-6 rounded-xl bg-white p-4 shadow-md md:mb-8 md:p-6">
 	{#if $pageTranslations}
-		<h2 class="mb-6 text-2xl font-bold text-gray-800">
+		<h2 class="mb-4 text-xl font-bold text-gray-800 md:mb-6 md:text-2xl">
 			{$pageTranslations.t('products.search.title')}
 		</h2>
 
@@ -166,12 +211,12 @@
 					<select
 						id="category-select"
 						bind:value={selectedCategory}
-						class="w-full cursor-pointer rounded-lg border border-gray-300 px-4 py-3 transition-colors focus:border-[#4b766e] focus:ring-2 focus:ring-[#4b766e]"
+						class="w-full cursor-pointer rounded-lg border border-gray-300 px-4 py-3 transition-colors focus:border-main focus:ring-2 focus:ring-main"
 						style="border-color: {colors.stroke}; background-color: {colors.optional}; color: {colors.text};"
 					>
 						<option value="">{$pageTranslations.t('products.search.all_categories')}</option>
 						{#each categories as category}
-							<option value={category}>{category}</option>
+							<option value={category}>{humanLabel(category)}</option>
 						{/each}
 					</select>
 				</div>
@@ -187,12 +232,12 @@
 					<select
 						id="size-select"
 						bind:value={selectedSize}
-						class="w-full cursor-pointer rounded-lg border border-gray-300 px-4 py-3 transition-colors focus:border-[#4b766e] focus:ring-2 focus:ring-[#4b766e]"
+						class="w-full cursor-pointer rounded-lg border border-gray-300 px-4 py-3 transition-colors focus:border-main focus:ring-2 focus:ring-main"
 						style="border-color: {colors.stroke}; background-color: {colors.optional}; color: {colors.text};"
 					>
 						<option value="">{$pageTranslations.t('products.search.all_sizes')}</option>
 						{#each sizes as size}
-							<option value={size}>{size}</option>
+							<option value={size}>{humanLabel(size)}</option>
 						{/each}
 					</select>
 				</div>
@@ -208,12 +253,12 @@
 					<select
 						id="flavor-select"
 						bind:value={selectedFlavor}
-						class="w-full cursor-pointer rounded-lg border border-gray-300 px-4 py-3 transition-colors focus:border-[#4b766e] focus:ring-2 focus:ring-[#4b766e]"
+						class="w-full cursor-pointer rounded-lg border border-gray-300 px-4 py-3 transition-colors focus:border-main focus:ring-2 focus:ring-main"
 						style="border-color: {colors.stroke}; background-color: {colors.optional}; color: {colors.text};"
 					>
 						<option value="">{$pageTranslations.t('products.search.all_flavors')}</option>
 						{#each flavors as flavor}
-							<option value={flavor}>{flavor}</option>
+							<option value={flavor}>{humanLabel(flavor)}</option>
 						{/each}
 					</select>
 				</div>
@@ -349,7 +394,7 @@
 					<select
 						id="category-select"
 						bind:value={selectedCategory}
-						class="w-full cursor-pointer rounded-lg border border-gray-300 px-4 py-3 transition-colors focus:border-[#4b766e] focus:ring-2 focus:ring-[#4b766e]"
+						class="w-full cursor-pointer rounded-lg border border-gray-300 px-4 py-3 transition-colors focus:border-main focus:ring-2 focus:ring-main"
 						style="border-color: {colors.stroke}; background-color: {colors.optional}; color: {colors.text};"
 					>
 						<option value="">All Categories</option>
@@ -370,7 +415,7 @@
 					<select
 						id="size-select"
 						bind:value={selectedSize}
-						class="w-full cursor-pointer rounded-lg border border-gray-300 px-4 py-3 transition-colors focus:border-[#4b766e] focus:ring-2 focus:ring-[#4b766e]"
+						class="w-full cursor-pointer rounded-lg border border-gray-300 px-4 py-3 transition-colors focus:border-main focus:ring-2 focus:ring-main"
 						style="border-color: {colors.stroke}; background-color: {colors.optional}; color: {colors.text};"
 					>
 						<option value="">All Sizes</option>
@@ -391,7 +436,7 @@
 					<select
 						id="flavor-select"
 						bind:value={selectedFlavor}
-						class="w-full cursor-pointer rounded-lg border border-gray-300 px-4 py-3 transition-colors focus:border-[#4b766e] focus:ring-2 focus:ring-[#4b766e]"
+						class="w-full cursor-pointer rounded-lg border border-gray-300 px-4 py-3 transition-colors focus:border-main focus:ring-2 focus:ring-main"
 						style="border-color: {colors.stroke}; background-color: {colors.optional}; color: {colors.text};"
 					>
 						<option value="">All Flavors</option>

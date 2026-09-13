@@ -1,16 +1,15 @@
-// Calculator Configuration - Evidence-based dosing from peer-reviewed research
+// Calculator Configuration - Evidence-based dosing for curcumin (turmeric) pet treats
 //
-// RESEARCH BASIS:
-// - Anxiety/Stress: Hunt et al. 2023 (4 mg/kg), Flint et al. 2024 (4 mg/kg), Masataka 2024 (4 mg/kg/day)
-// - Pain/Osteoarthritis: Gamble et al. 2018 (2 mg/kg), Brioschi et al. 2020 (2 mg/kg), Verrico et al. 2020 (20-50 mg/day)
-// - Epilepsy: McGrath et al. 2019 (2.5 mg/kg), Garcia et al. 2022 (2 mg/kg)
-// - Pruritis: Mogi et al. 2022 (0.07-0.125 mg/kg), Loewinger et al. 2022 (2 mg/kg)
-// - Safety: Morris et al. 2021 (0-5 mg/kg/day range), Corsetti 2021 (5% CBD oil)
+// RESEARCH BASIS (dogs):
+// - Colitti et al. 2012 (Vet Immunol Immunopathol, PMID 22591841): curcumin phytosome (CurcuVET) 4 mg/kg BID, 20 days -> leukocyte gene-expression changes comparable to NSAID.
+// - Innes et al. 2003 (Vet Rec, PMID 12723628): P54FP turmeric extract, RCT - subjective improvement, no force-plate change.
+// - Comblain et al. 2017 (BMC Vet Res, PMID 29262825): curcuminoids + collagen + green tea in diet - modest pain reduction.
+// - Caterino et al. 2021 (PLoS One, PMID 34048452): CurcuVET + boswellia as a multimodal osteoarthritis adjunct.
+// Practical 95% curcumin + piperine range: ~15-20 mg/kg/day (upper band). Start at half the dose for 7-10 days.
 //
 export interface DosageCoefficient {
-	wellbeing: number;
-	anxiety: number;
-	hard_anxiety: number;
+	maintenance: number; // mg/kg/day - daily joint + antioxidant support
+	active: number; // mg/kg/day - active joint support (upper evidence band)
 }
 
 export interface WeightThreshold {
@@ -26,96 +25,50 @@ export interface AnimalConfig {
 }
 
 export const CALCULATOR_CONFIG: Record<string, AnimalConfig> = {
-	horse: {
-		coefficients: {
-			wellbeing: 0.08, // mg/kg - conservative for large animals based on research
-			anxiety: 0.12, // mg/kg - moderate increase for anxiety
-			hard_anxiety: 0.16 // mg/kg - higher for severe cases, within safe limits
-		},
-		weightThresholds: [
-			{
-				min: 0,
-				max: 300,
-				frequency: 'one_to_twice_daily',
-				duration: 'start_2_3_weeks'
-			},
-			{
-				min: 300,
-				max: Infinity,
-				frequency: 'once_daily',
-				duration: 'start_3_4_weeks'
-			}
-		]
-	},
-
 	dog: {
 		coefficients: {
-			wellbeing: 0.08, // mg/kg - based on Morris et al. 2021 (0-5 mg/kg/day range)
-			anxiety: 0.12, // mg/kg - based on Hunt et al. 2023 (4 mg/kg for stress)
-			hard_anxiety: 0.16 // mg/kg - based on Flint et al. 2024 (4 mg/kg for stress)
+			maintenance: 12, // mg/kg/day - conservative daily support
+			active: 18 // mg/kg/day - upper evidence band for active joint support
 		},
 		weightThresholds: [
 			{
 				min: 0,
-				max: 5,
-				frequency: 'twice_daily',
-				duration: 'start_1_2_weeks'
-			},
-			{
-				min: 5,
-				max: 20,
-				frequency: 'one_to_twice_daily',
-				duration: 'adjust_as_needed'
-			},
-			{
-				min: 20,
-				max: Infinity,
+				max: 10,
 				frequency: 'once_daily',
-				duration: 'start_3_4_weeks'
+				duration: 'four_to_eight_weeks'
+			},
+			{
+				min: 10,
+				max: 25,
+				frequency: 'twice_daily',
+				duration: 'four_to_eight_weeks'
+			},
+			{
+				min: 25,
+				max: Infinity,
+				frequency: 'twice_daily',
+				duration: 'four_to_eight_weeks'
 			}
 		]
 	},
 
 	cat: {
 		coefficients: {
-			wellbeing: 0.06, // mg/kg - conservative for cats based on research
-			anxiety: 0.1, // mg/kg - based on Masataka 2024 (4 mg/kg/day for anxiety)
-			hard_anxiety: 0.14 // mg/kg - higher for severe cases
+			maintenance: 10, // mg/kg/day - cats are more sensitive
+			active: 15 // mg/kg/day
 		},
 		weightThresholds: [
 			{
 				min: 0,
-				max: 3,
-				frequency: 'twice_daily',
-				duration: 'start_1_2_weeks'
+				max: 5,
+				frequency: 'once_daily',
+				duration: 'four_to_eight_weeks'
 			},
 			{
-				min: 3,
+				min: 5,
 				max: Infinity,
-				frequency: 'one_to_twice_daily',
-				duration: 'start_2_3_weeks'
-			}
-		]
-	},
-
-	small_animal: {
-		coefficients: {
-			wellbeing: 0.05, // mg/kg - very conservative for small animals
-			anxiety: 0.08, // mg/kg - moderate increase for anxiety
-			hard_anxiety: 0.12 // mg/kg - higher for severe cases
-		},
-		weightThresholds: [
-			{
-				min: 0,
-				max: 1,
-				frequency: 'one_to_twice_daily',
-				duration: 'start_1_week'
-			},
-			{
-				min: 1,
-				max: Infinity,
-				frequency: 'one_to_twice_daily',
-				duration: 'start_1_2_weeks'
+				frequency: 'once_daily',
+				duration: 'four_to_eight_weeks'
 			}
 		]
 	}
@@ -127,14 +80,12 @@ export function getDosageCoefficient(animalType: string, condition: string): num
 	if (!config) return 0;
 
 	switch (condition) {
-		case 'wellbeing':
-			return config.coefficients.wellbeing;
-		case 'anxiety':
-			return config.coefficients.anxiety;
-		case 'hard_anxiety':
-			return config.coefficients.hard_anxiety;
+		case 'maintenance':
+			return config.coefficients.maintenance;
+		case 'active':
+			return config.coefficients.active;
 		default:
-			return config.coefficients.wellbeing;
+			return config.coefficients.maintenance;
 	}
 }
 
@@ -144,7 +95,7 @@ export function getWeightRecommendation(
 ): { frequency: string; duration: string } {
 	const config = CALCULATOR_CONFIG[animalType];
 	if (!config) {
-		return { frequency: 'once_daily', duration: 'start_2_3_weeks' };
+		return { frequency: 'once_daily', duration: 'four_to_eight_weeks' };
 	}
 
 	for (const threshold of config.weightThresholds) {
@@ -160,12 +111,69 @@ export function getWeightRecommendation(
 	};
 }
 
+// Golden paste: ~60mg of 95% curcumin extract per teaspoon (~5g, paste is weighed) — printed on every jar.
+// Jars: TRIAL 30g (~6 tsp) · WEEK 100g (~20 tsp) · HALF 250g (~50 tsp) · MONTH 500g (~100 tsp)
+export const MG_PER_TSP = 60;
+
+export const JAR_TSP = {
+	trial: 6, // 30 g
+	week: 20, // 100 g
+	half: 50, // 250 g
+	month: 100 // 500 g
+} as const;
+
+export type JarKey = keyof typeof JAR_TSP;
+
+export function getTspPerDay(dailyMg: number): number {
+	if (dailyMg <= 0) return 0;
+	return Math.max(0.25, Math.round((dailyMg / MG_PER_TSP) * 4) / 4);
+}
+
+// Baseline value anchor: TRIAL jar (129 UAH / 6 tsp). Savings badges ("-42%")
+// are computed against it. If TRIAL price changes, update this number.
+export const BASELINE_PER_TSP = 21.5;
+
+export function savingsVsTrial(perTsp: number): number | null {
+	if (!perTsp || perTsp <= 0) return null;
+	const pct = Math.round((1 - perTsp / BASELINE_PER_TSP) * 100);
+	return pct > 0 ? pct : null;
+}
+
+export function getJarDays(tspPerDay: number): Record<JarKey, number> {
+	const perDay = Math.max(tspPerDay, 0.25);
+	return {
+		trial: Math.floor((JAR_TSP.trial / perDay) * 10) / 10,
+		week: Math.floor((JAR_TSP.week / perDay) * 10) / 10,
+		half: Math.floor((JAR_TSP.half / perDay) * 10) / 10,
+		month: Math.floor((JAR_TSP.month / perDay) * 10) / 10
+	};
+}
+
+// Legacy cubes (kept for reference — shop is paste jars now)
+export const MG_PER_TREAT = {
+	S: 25, // up to 10 kg
+	M: 60, // 10-25 kg
+	L: 120 // 25+ kg
+} as const;
+
+export function getPawSize(weightKg: number): 'S' | 'M' | 'L' {
+	if (weightKg <= 10) return 'S';
+	if (weightKg <= 25) return 'M';
+	return 'L';
+}
+
+export function getTreatsPerDay(dailyMg: number, weightKg: number): { size: 'S' | 'M' | 'L'; count: number } {
+	const size = getPawSize(weightKg);
+	const perTreat = MG_PER_TREAT[size];
+	return { size, count: Math.max(1, Math.round((dailyMg / perTreat) * 2) / 2) };
+}
+
 // Safety and quality assurance constants based on peer-reviewed research
 export const SAFETY_LIMITS = {
-	MAX_DOSAGE_MG: 50, // Maximum single dose in mg based on research (Hunt et al. 2023, 4 mg/kg)
-	MAX_DOSAGE_PER_KG: 4.0, // Maximum mg/kg based on safety studies (Masataka 2024, Morris et al. 2021)
-	MIN_WEIGHT_KG: 0.1, // Minimum weight for small animals
-	MAX_WEIGHT_KG: 1000 // Maximum weight for large animals
+	MAX_DOSAGE_MG: 750, // Practical upper daily dose of 95% curcumin (large dogs)
+	MAX_DOSAGE_PER_KG: 20, // Upper evidence band mg/kg/day for 95% curcumin + piperine
+	MIN_WEIGHT_KG: 0.5, // Minimum weight (kitten / small dog)
+	MAX_WEIGHT_KG: 100 // Maximum weight (giant breeds)
 };
 
 // Validation functions
@@ -174,7 +182,7 @@ export function isValidAnimalType(animalType: string): boolean {
 }
 
 export function isValidCondition(condition: string): boolean {
-	return ['wellbeing', 'anxiety', 'hard_anxiety'].includes(condition);
+	return ['maintenance', 'active'].includes(condition);
 }
 
 export function isValidWeight(weight: number): boolean {
@@ -220,34 +228,24 @@ export function validateDosage(
 // Get quality assurance tips based on peer-reviewed research
 export function getQualityAssuranceTips(animalType: string): string[] {
 	const tips = [
-		'Choose CBD products specifically formulated for animals',
-		'Ensure products are third-party tested for purity and potency',
-		'Verify THC content is below 0.3% (hemp-derived)',
-		'Look for products with Certificate of Analysis (COA)',
-		'Start with lower doses and gradually increase based on research protocols',
-		"Monitor your animal's response and adjust accordingly",
-		'Consult with your veterinarian before starting CBD treatment',
-		'Dosage recommendations are based on peer-reviewed clinical studies',
-		'CBD has shown efficacy for anxiety, pain, and epilepsy in companion animals'
+		'Choose a standardized 95% curcumin extract, not raw kitchen turmeric powder',
+		'Always give curcumin with fat (coconut oil) plus a pinch of piperine for absorption',
+		'Ask for a Certificate of Analysis (COA) with heavy-metal results (Pb, Cd, As, Hg)',
+		'Start with half the dose for 7-10 days and watch the stool',
+		"Yellow-ish stool is normal - it's the turmeric, not a problem",
+		'Curcumin supports mobility and comfort - it is not a replacement for prescribed NSAIDs',
+		'Consult your veterinarian before use, especially on medication or before surgery',
+		'Do not give to pregnant animals or puppies/kittens under 12 weeks without a vet'
 	];
 
 	// Add animal-specific research-based tips
 	if (animalType === 'cat') {
-		tips.push('Cats may be more sensitive to CBD - start with conservative doses (Masataka 2024)');
-		tips.push('CBD shows promise for anxiety in cats at 4 mg/kg/day');
-	}
-	if (animalType === 'horse') {
-		tips.push('Large animals require careful titration and monitoring');
-		tips.push('Start with conservative doses and monitor response');
+		tips.push('Cats (incl. Scottish Fold) need lower doses - start with the minimum and monitor');
+		tips.push('Cats are more sensitive to piperine - keep the pepper amount minimal');
 	}
 	if (animalType === 'dog') {
-		tips.push('Dogs show positive response to CBD for anxiety at 4 mg/kg (Hunt et al. 2023)');
-		tips.push('CBD may help with osteoarthritis pain at 2 mg/kg twice daily (Gamble et al. 2018)');
-		tips.push('Epilepsy treatment shows promise at 2-2.5 mg/kg twice daily (McGrath et al. 2019)');
-	}
-	if (animalType === 'small_animal') {
-		tips.push('Small animals need very precise dosing - use calibrated droppers');
-		tips.push('Start with lowest effective dose and monitor closely');
+		tips.push('For dogs over 25 kg, split the daily dose between two meals');
+		tips.push('Evidence shows curcumin is a modest anti-inflammatory adjuvant, strongest for comfort/mobility');
 	}
 
 	return tips;

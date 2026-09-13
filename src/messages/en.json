@@ -59,61 +59,94 @@
 	},
 
 	"benefits": {
-		"title": "Benefits of Our Products",
+		"title": "What's Inside Our Golden Paste",
 		"golden_paste": {
-			"title": "Balance Botanica Golden Paste CBD",
+			"title": "Balance Botanica Golden Paste for Dogs",
 			"turmeric": {
-				"title": "Turmeric",
-				"description": "Powerful natural antioxidant, reduces inflammation and supports joint health. Curcumin activates the immune system."
+				"title": "Turmeric + Curcumin 95%",
+				"description": "Kitchen turmeric powder boosted with standardized 95% curcumin extract — about 60 mg curcuminoids per teaspoon, printed on the jar."
 			},
 			"ginger": {
-				"title": "Ginger",
-				"description": "Improves digestion, reduces nausea and pain. Natural soothing agent for stomach and intestines."
+				"title": "Ginger (Gingerol)",
+				"description": "The video-vets' modification: supports gut comfort and settles nausea. Start slow — ginger is warming and strong."
 			},
 			"coconut_oil": {
 				"title": "Coconut Oil",
-				"description": "Rich in medium-chain triglycerides (MCT), provides quick absorption and energy for active dogs."
+				"description": "Curcumin is fat-soluble — coconut oil (MCT + lauric acid) carries it through the gut wall. No boiling the oil."
 			},
 			"cbd_for_dogs": {
-				"title": "CBD for Dogs",
-				"description": "Reduces anxiety, pain and inflammation. Perfect for dogs with arthritis, stressful situations and digestive problems."
+				"title": "Black Pepper (Piperine)",
+				"description": "A measured pinch of pepper markedly increases curcumin absorption — the whole reason the paste works."
 			}
 		},
 		"cbd_oil": {
-			"title": "Balance Botanica CBD Oil",
+			"title": "Why It Works",
 			"mct_base": {
-				"title": "MCT Oil Base",
-				"description": "Coconut MCT oil beneficial for stomach, ensures quick CBD absorption and supports healthy digestion."
+				"title": "Paste Jars for Dogs",
+				"description": "TRIAL 30 ml · WEEK 100 ml · HALF 250 ml · MONTH 500 ml. Store in the fridge per label, serve with food."
 			},
 			"two_flavors": {
-				"title": "Two Flavors",
-				"description": "Bacon and fish - natural flavor additives that four-legged friends love. Easy to add to food."
+				"title": "Transparent mg per tsp",
+				"description": "Small dogs 1/4-1/2 tsp, medium 1/2-1 tsp, large 1-2 tsp daily. No mystery spoons — the calculator shows your dose."
 			},
 			"convenient_dropper": {
-				"title": "Convenient Dropper-Pipette",
-				"description": "Precise dosing with graduated pipette. Easy to control quantity and add to food or water."
+				"title": "Safe Kitchen Recipe",
+				"description": "No xylitol, onion, garlic, grapes or chocolate. Sunflower lecithin as emulsifier — no fake 'phytosome' claims."
 			},
 			"fast_action": {
-				"title": "Fast Action",
-				"description": "MCT oil ensures fast CBD absorption. Results are noticeable within 15-30 minutes after intake."
+				"title": "Heavy-Metal Tested",
+				"description": "Each batch is tested for lead, cadmium, arsenic and mercury (turmeric is a common adulteration target)."
 			}
 		},
 		"recommendation": {
-			"text": "Both products can be given to both dogs and cats. To properly choose a product and dosage, {calculator_link} and consult with your veterinarian.",
+			"text": "Curcumin treats support mobility - they are not a veterinary medicine and do not replace NSAIDs. To choose the right size and dose, {calculator_link} and consult your veterinarian.",
 			"calculator_link": "use our calculator"
 		},
 		"products": {
 			"homepage_title": "Our Products"
 		},
 		"hero": {
-			"title": "Balance Botanica",
-			"subtitle": "Premium CBD products for natural wellness and relaxation. Discover the power of nature's healing properties.",
-			"shop_button": "Shop Products",
-			"learn_button": "Learn More"
+			"title": "Balance Botanica Golden Paste",
+			"subtitle": "Golden paste for dogs with turmeric 95%, ginger and pepper — everyday support for joint comfort, mobility and gut health.",
+			"shop_button": "Shop Paste",
+			"learn_button": "Dosing Guide"
 		},
 		"meta": {
-			"title": "Balance Botanica - Premium CBD Products",
-			"description": "Discover premium CBD products for wellness and relaxation"
+			"title": "Balance Botanica - Golden Paste for Dogs",
+			"description": "Golden paste for dogs (turmeric 95%, ginger, pepper, coconut oil) — complementary feed for mobility support. Not a medicine."
+		},
+		"ingredients_title": "Four Ingredients. Zero Mystery.",
+		"ingredients_subtitle": "The classic vet recipe, upgraded: standardized extract, measured pepper, real ginger.",
+		"ingredients_note": "Full recipe ratios and mg per teaspoon are printed on every jar."
+	},
+	"ingredients": {
+		"turmeric": {
+			"emoji": "🟡",
+			"title": "Turmeric + 95% Extract",
+			"role": "The golden base",
+			"benefit": "Kitchen turmeric boosted with standardized 95% curcumin extract — ~60 mg curcuminoids per teaspoon for joint comfort and antioxidant support.",
+			"fact": "Raw powder is only 2–5% curcumin. Ours is measured, not guessed."
+		},
+		"coconut": {
+			"emoji": "🥥",
+			"title": "Coconut Oil",
+			"role": "The carrier",
+			"benefit": "MCT + lauric acid carry fat-soluble curcumin through the gut wall and support digestion and brain energy.",
+			"fact": "Never boiled — stirred in warm so the oil keeps its properties."
+		},
+		"ginger": {
+			"emoji": "🫚",
+			"title": "Ginger",
+			"role": "The gut friend",
+			"benefit": "Gingerol settles nausea and supports comfortable digestion — the modification vet creators swear by for seniors and car-sick pups.",
+			"fact": "Warming spice: start with half servings, watch the stool."
+		},
+		"pepper": {
+			"emoji": "🌶️",
+			"title": "Black Pepper",
+			"role": "The key",
+			"benefit": "A measured pinch of piperine markedly increases curcumin absorption — without it most turmeric passes straight through.",
+			"fact": "Tiny amount, big job. Kept minimal for sensitive stomachs."
 		}
 	},
 
@@ -176,8 +209,8 @@
 			"blog": "Blog"
 		},
 		"newsletter": {
-			"title": "Newsletter Subscription",
-			"description": "Subscribe to our newsletter for exclusive offers, wellness tips, and the latest CBD product updates. Join our community of health-conscious individuals.",
+			"title": "Refill reminders & joint tips",
+			"description": "Subscribe for refill reminders, S/M/L dosing tips and new curcumin treat batches for dogs. No spam, unsubscribe anytime.",
 			"placeholder": "Email Address",
 			"button": "Subscribe",
 			"subscribing_button": "Subscribing...",
@@ -190,24 +223,32 @@
 			"privacy_policy": "Privacy Policy"
 		},
 		"company": {
-			"description": "Balance Botanica is one of the first companies in Ukraine that produces products with cannabidiol (CBD). Founded in 2023. We offer high-quality products at affordable prices that compete with Western analogues."
+			"description": "Balance Botanica makes golden paste for dogs in Ukraine. Complementary feed for mobility support — not a veterinary medicine. Founded in 2023."
 		},
 		"pillar": {
 			"title": "Knowledge Base",
-			"cbd": "CBD for Pets",
-			"cbd_desc": "Complete scientific guide to CBD therapy for dogs and cats",
-			"cbd_cats": "CBD for Cats",
-			"cbd_cats_desc": "Clinically proven CBD effectiveness for cat health",
-			"cbd_dogs": "CBD for Dogs",
-			"cbd_dogs_desc": "Evidence-based CBD recommendations for dogs",
-			"cbd_types": "CBD Types",
-			"cbd_types_desc": "Difference between isolate, full and broad spectrum",
+			"cbd": "Curcumin for Dogs",
+			"cbd_desc": "What curcumin can and cannot do for joints, in plain language with PubMed refs",
+			"cbd_cats": "Bioavailability",
+			"cbd_cats_desc": "Why fat + lecithin + piperine matter more than raw powder",
+			"cbd_dogs": "Dosing S / M / L",
+			"cbd_dogs_desc": "How many paws per day by weight, start low and assess at 4-8 weeks",
+			"cbd_types": "Safety",
+			"cbd_types_desc": "NSAIDs, surgery, gallbladder, pregnancy — when to call the vet",
 			"cats_health": "Cat Health",
-			"cats_health_desc": "Comprehensive natural cat health guide",
+			"cats_health_desc": "Parked for later — dogs first",
 			"dog_health": "Dog Health",
-			"dog_health_desc": "Complete guide to dog health care",
-			"veterinary_cbd": "Veterinary CBD",
-			"veterinary_cbd_desc": "Professional veterinary recommendations for CBD therapy"
+			"dog_health_desc": "Mobility, weight, omega-3 and movement without jumps",
+			"veterinary_cbd": "References",
+			"veterinary_cbd_desc": "Colitti 2012, Innes 2003, Comblain 2017, Caterino 2021",
+			"paste_recipe": "Golden Paste Recipe",
+			"paste_recipe_desc": "Classic vet recipe + our 95% upgrade",
+			"paste_dosing": "Paste Dosing Guide",
+			"paste_dosing_desc": "Spoons per day by weight, jars in days",
+			"paste_safety": "Paste Safety",
+			"paste_safety_desc": "NSAIDs, surgery, metals — the vet talk",
+			"paste_ginger": "Why Ginger",
+			"paste_ginger_desc": "Gingerol, gut comfort and caution"
 		},
 		"legal": {
 			"copyright": "© 2024. All Rights Reserved.",
@@ -224,11 +265,11 @@
 
 	"products": {
 		"meta": {
-			"title": "Premium CBD Products | Balance Botanica",
-			"description": "Browse our selection of high-quality CBD products designed for wellness and relaxation. Find the perfect CBD solution for your needs."
+			"title": "Golden Paste Jars TRIAL / WEEK / HALF / MONTH | Balance Botanica",
+			"description": "Golden paste jars for dogs: 30 / 100 / 250 / 500 ml. About 60 mg curcuminoids per teaspoon. Complementary feed."
 		},
 		"search": {
-			"title": "Find Your Perfect CBD Product",
+			"title": "Find Your Perfect Jar Size",
 			"search_label": "Search Products",
 			"search_placeholder": "Search by name or description...",
 			"category_label": "Category",
@@ -247,20 +288,41 @@
 		},
 		"no_products_found": "No products found matching your criteria",
 		"try_different_filters": "Try adjusting your search or filter criteria",
-		"reset_filters": "Reset Filters"
+		"reset_filters": "Reset Filters",
+		"badge_new": "New",
+		"shop_title": "Golden paste jars for dogs",
+		"shop_subtitle": "TRIAL to taste · MONTH to save. About 60 mg curcuminoids per teaspoon.",
+		"home": "Home",
+		"per_day": "≈ {price} UAH / day",
+		"pdp": {
+			"back": "Back to shop",
+			"qty": "Quantity",
+			"added": "added to cart",
+			"details": "Details",
+			"size": "Weight",
+			"flavor": "Taste",
+			"servings": "{n} teaspoons per jar",
+			"per_day": "≈ {price} UAH per day for a medium dog",
+			"trust_coa": "Heavy-metal tested batch",
+			"trust_fridge": "Keep refrigerated",
+			"trust_vet": "Ask your vet about dosing",
+			"subscribe_cta": "🔁 Refill subscription — never run out",
+			"calculator_cta": "Not sure about the dose? Use the calculator"
+		}
 	},
 
 	"login": {
+		"page_title": "Sign in",
 		"meta": {
 			"title": "Sign In | Balance Botanica",
-			"description": "Sign in to your Balance Botanica account for access to exclusive CBD products, order history, and personalized recommendations."
+			"description": "Sign in to your Balance Botanica account for order history, refill subscriptions and personalized dosing recommendations."
 		}
 	},
 
 	"cart": {
 		"meta": {
 			"title": "Shopping Cart | Balance Botanica",
-			"description": "Review your selected CBD products and proceed to checkout. Free shipping on orders over 800 UAH."
+			"description": "Review your selected golden paste jars and proceed to checkout. Free shipping on orders over 800 UAH."
 		},
 		"title": "Shopping Cart",
 		"empty": {
@@ -430,40 +492,50 @@
 	"made_in_ukraine": {
 		"title": "Made in Ukraine",
 		"subtitle": "Proudly Ukrainian",
-		"description": "Our products are proudly made in Ukraine with the highest quality standards and care. We support local production and sustainable practices."
+		"description": "Our curcumin treats are proudly made in Ukraine with the highest quality standards and care. We support local production and sustainable practices."
+	},
+	"cbd_waitlist": {
+		"badge": "Coming soon",
+		"title": "We're also working on a CBD line for pets",
+		"subtitle": "Right now our focus is curcumin treats. A CBD line for pets is next in line - leave your email and we'll be the first to tell you when it's ready.",
+		"email_placeholder": "Your email",
+		"button": "Notify me",
+		"success_title": "You're on the list!",
+		"success_text": "We'll email you the moment the CBD line is ready.",
+		"error": "Something went wrong. Please try again.",
+		"auth_hint": "Already have an account? We'll notify you there for sure.",
+		"login_link": "Sign in",
+		"privacy_note": "No spam - just a single launch notification."
 	},
 	
 	"calculator": {
-		"title": "CBD Dosage Calculator",
-		"subtitle": "Calculate the optimal CBD dosage for your pet based on their weight and condition",
+		"title": "Curcumin Dosage Calculator",
+		"subtitle": "Calculate the daily curcumin dose for your dog or cat based on weight and goal",
 		"benefits": {
 			"title": "Why Use Our Calculator?",
-			"precise": "Precise dosing tailored to your pet's specific needs",
-			"safe": "Safe and vet-recommended dosage guidelines",
-			"personalized": "Personalized recommendations based on animal type and condition"
+			"precise": "Dose tailored to your pet's weight (teaspoons of paste per day)",
+			"safe": "Evidence-based, vet-friendly dosage range",
+			"personalized": "Separate guidance for dogs and cats (incl. Scottish Fold)"
 		},
 		"disclaimer": {
 			"title": "Important Disclaimer",
-			"text": "This calculator provides general guidance only. Always consult with your veterinarian before giving CBD to your pet, especially if they are on medication or have health conditions."
+			"text": "This calculator provides general guidance for a food supplement only. Curcumin is not a veterinary medicine and does not replace prescribed NSAIDs. Always consult your veterinarian, especially if your pet is on medication, pregnant, or has liver or gallbladder issues. Stop 1-2 weeks before surgery."
 		},
-		"additional_info": "Consult your veterinarian for personalized advice",
+		"additional_info": "Start with half the dose for 7-10 days; the effect usually builds over 4-8 weeks.",
 		"form": {
-			"animal_type": "Animal Type",
+			"animal_type": "Pet",
 			"weight": "Weight",
 			"weight_placeholder": "Enter weight in kg",
-			"condition": "Condition",
+			"condition": "Goal",
 			"calculate_button": "Calculate Dosage"
 		},
 		"animal_types": {
-			"horse": "Horse",
 			"dog": "Dog",
-			"cat": "Cat",
-			"small_animal": "Small Animal"
+			"cat": "Cat"
 		},
 		"conditions": {
-			"wellbeing": "General Wellbeing",
-			"anxiety": "Mild Anxiety",
-			"hard_anxiety": "Severe Anxiety"
+			"maintenance": "Daily support",
+			"active": "Active joint support"
 		},
 		"frequency": {
 			"once_daily": "once daily",
@@ -474,36 +546,45 @@
 			"one_week": "for 1 week",
 			"two_weeks": "for 2 weeks",
 			"one_month": "for 1 month",
+			"four_to_eight_weeks": "for 4-8 weeks",
 			"ongoing": "as needed"
 		},
 		"results": {
-			"title": "Recommended Dosage",
-			"for_animal": "For {animalType} with {condition}",
-			"administer_text": "Administer {dosage} mg {frequency} {duration}",
+			"title": "Recommended Daily Dose",
+			"for_animal": "For a {animalType} ({condition})",
+			"administer_text": "Give about {dosage} mg of curcumin {frequency} {duration}",
 			"usage_recommendation": "Usage Recommendation"
 		},
 		"actions": {
 			"calculate_again": "Calculate Again",
 			"modify_inputs": "Modify Inputs"
 		},
+		"validation": {
+			"dosage_too_high": "Dose above the recommended range",
+			"start_with_safe": "Start with the lower end of the range and monitor your pet.",
+			"dosage_too_low": "Dose too low to calculate",
+			"consult_vet": "Please enter a valid weight or consult your veterinarian."
+		},
 		"quality_assurance": {
-			"title": "Quality Assurance Tips",
+			"title": "Good to know",
 			"tips": {
 				"general": [
-					"Start with a lower dose and gradually increase if needed",
-					"Monitor your pet's response and adjust accordingly",
-					"Give CBD with food for better absorption"
+					"Choose a standardized 95% curcumin extract, not raw kitchen turmeric",
+					"Always give with fat (coconut oil) plus a pinch of piperine for absorption",
+					"Ask for a Certificate of Analysis (COA) with heavy-metal results",
+					"Start with half the dose for 7-10 days and watch the stool",
+					"Yellow-ish stool is normal",
+					"Curcumin supports mobility - it is not a replacement for NSAIDs"
 				],
-				"cat": "Cats are more sensitive to CBD - use extra caution with dosing",
-				"horse": "For horses, divide the daily dose into multiple administrations",
-				"small_animal": "Small animals require precise dosing - use a digital scale"
+				"dog": "For dogs over 25 kg, split the daily dose between two meals.",
+				"cat": "Cats (incl. Scottish Fold) need lower doses - start low and monitor."
 			}
 		}
 	},
 	
 	"faq": {
-		"title": "Frequently Asked Questions about CBD",
-		"subtitle": "Find answers to the most common questions about CBD",
+		"title": "Frequently Asked Questions about Curcumin",
+		"subtitle": "Find answers to the most common questions about curcumin for pets",
 		"search_placeholder": "Search questions...",
 		"no_results": "No questions found",
 		"categories": {
@@ -540,24 +621,24 @@
 			}
 		},
 		"benefits": {
-			"question": "What are the benefits of CBD for pets?",
-			"answer": "CBD can help with anxiety, pain relief, inflammation reduction, improved sleep, and overall wellness for pets. It's particularly beneficial for dogs and cats with arthritis, anxiety, or digestive issues."
+			"question": "What are the benefits of curcumin for pets?",
+			"answer": "Curcumin supports joint comfort, mobility and antioxidant defence. Evidence shows it is a modest anti-inflammatory adjuvant - helpful for daily support, but not a replacement for prescribed NSAIDs."
 		},
 		"choosing": {
-			"question": "How do I choose the right CBD product for my pet?",
-			"answer": "Consider your pet's size, condition, and preferences. Start with a lower concentration and gradually increase. Consult our dosage calculator or your veterinarian for personalized recommendations."
+			"question": "How do I choose the right treat size for my pet?",
+			"answer": "Pick the size by weight: S for small pets (up to 10 kg), M for medium (10-25 kg), L for large (25+ kg), and a cat line for cats (incl. Scottish Fold). Start with half the dose for 7-10 days."
 		},
 		"testing": {
-			"question": "How do I know if the CBD is working for my pet?",
-			"answer": "Monitor your pet's behavior, energy levels, and any symptoms they're experiencing. Keep a journal of their progress. Effects are usually noticeable within 30-60 minutes, but full benefits may take 1-2 weeks of consistent use."
+			"question": "How do I know if curcumin is working for my pet?",
+			"answer": "Watch how easily your pet gets up, climbs stairs and walks. Effects build slowly - give it 4-8 weeks. If you see no change by week 8, there is little point raising the dose indefinitely."
 		},
 		"spectrum": {
-			"question": "What's the difference between full-spectrum, broad-spectrum, and CBD isolate?",
-			"answer": "Full-spectrum contains all cannabinoids including trace THC, broad-spectrum has most cannabinoids but no THC, and isolate is pure CBD. Full-spectrum may provide enhanced benefits through the entourage effect."
+			"question": "What is the difference between raw turmeric and a 95% curcumin extract?",
+			"answer": "Raw turmeric is only ~2-5% curcumin and is barely absorbed. A standardized 95% extract gives a known mg of curcumin, and adding fat + piperine dramatically improves absorption."
 		},
 		"effects": {
-			"question": "What are the potential side effects of CBD for pets?",
-			"answer": "CBD is generally well-tolerated, but possible side effects include drowsiness, dry mouth, or mild digestive upset. These are usually temporary and resolve with dose adjustment. Always start with low doses."
+			"question": "What are the possible side effects of curcumin for pets?",
+			"answer": "Usually well-tolerated. Possible issues are soft stool or vomiting if the dose is too high, and yellow staining. Avoid with NSAIDs/anticoagulants without a vet, and stop 1-2 weeks before surgery."
 		},
 		"cta": {
 			"text": "Still have questions? Contact our experts for personalized advice.",
@@ -721,9 +802,9 @@
 	},
 	"blog": {
 		"pageTitle": "Blog - Balance Botanica",
-		"pageDescription": "Complete collection of articles about CBD, health and natural products. Essential guides and blog posts in one place.",
+		"pageDescription": "Golden paste guides: recipe, spoon dosing, ginger and safety. Essential reads for dog owners in one place.",
 		"blogTitle": "Balance Botanica Articles",
-		"blogSubtitle": "Essential guides and blog articles about CBD, health and natural products",
+		"blogSubtitle": "Golden paste guides for dog owners: recipe, dosing, safety",
 		"readMore": "Read more",
 		"readingTimeLabel": "min",
 		"guide": "Guide",

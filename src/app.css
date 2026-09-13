@@ -67,8 +67,19 @@ html {
 		'Apple Color Emoji', 'Segoe UI Emoji';
 
 	/* Balance Botanica Color Palette from Figma */
-	--color-main: #4b766e;
+	--color-main: #e07b12;
 	--color-main-additional: #1f1f1f;
+
+	/* SWAPPED: turmeric orange leads (CTAs, accents, prices), green supports
+	   (logo stays green, dark sections stay green). Ember = red sparks for refill. */
+	--color-turmeric: #4b766e;
+	--color-turmeric-deep: #2f5a52;
+	--color-turmeric-soft: #dce9e5;
+	--color-pine: #2e4f49;
+	--color-cream: #fdf4e4;
+	--color-ember: #c0451f;
+	--color-ember-deep: #97330f;
+	--color-ember-soft: #f8dcd0;
 	--color-heading: #000000;
 	--color-text: #474747;
 	--color-primary: #9a9a9a;
@@ -112,7 +123,7 @@ body {
 		sans-serif;
 	line-height: 1.6;
 	color: var(--color-text);
-	background-color: var(--color-background);
+	background-color: var(--color-cream);
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 }

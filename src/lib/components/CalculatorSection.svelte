@@ -3,7 +3,7 @@
 	import PetCalculator from './PetCalculator.svelte';
 </script>
 
-<div id="calculator" class="relative w-full overflow-hidden bg-gray-50 py-20 md:py-28">
+<div id="calculator" class="relative w-full overflow-hidden bg-cream py-20 md:py-28">
 	<!-- Background Image with Green Overlay -->
 	<div class="absolute inset-0">
 		<img

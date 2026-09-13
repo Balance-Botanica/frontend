@@ -4,13 +4,15 @@
 // This script migrates all data except users to preserve existing authentication
 
 const PocketBase = require('pocketbase').default;
+require('dotenv').config(); // load .env so plain `node scripts/x.cjs` works
 const { drizzle } = require('drizzle-orm/better-sqlite3');
 const Database = require('better-sqlite3');
 
 // Configuration
 const POCKETBASE_URL = process.env.POCKETBASE_URL || 'http://127.0.0.1:8090';
 const POCKETBASE_ADMIN_EMAIL = process.env.POCKETBASE_ADMIN_EMAIL || 'balancebotanicaukraine@gmail.com';
-const POCKETBASE_ADMIN_PASSWORD = process.env.POCKETBASE_ADMIN_PASSWORD || 'diaochan1994qQq';
+const POCKETBASE_ADMIN_PASSWORD = process.env.POCKETBASE_ADMIN_PASSWORD;
+if (!POCKETBASE_ADMIN_PASSWORD) throw new Error('POCKETBASE_ADMIN_PASSWORD is not set (see .env)');
 const DATABASE_URL = process.env.DATABASE_URL || './drizzle.db';
 
 // PocketBase client
@@ -104,7 +106,7 @@ const COLLECTIONS = [
 async function authenticateAdmin() {
     try {
         console.log('🔐 Authenticating as PocketBase admin...');
-        const authData = await pb.admins.authWithPassword(POCKETBASE_ADMIN_EMAIL, POCKETBASE_ADMIN_PASSWORD);
+        const authData = await pb.collection('_superusers').authWithPassword(POCKETBASE_ADMIN_EMAIL, POCKETBASE_ADMIN_PASSWORD);
         console.log('✅ Admin authenticated successfully');
         return authData;
     } catch (error) {

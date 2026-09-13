@@ -7,6 +7,7 @@
 	import ProductsSection from '$lib/components/ProductsSection.svelte';
 	import HeroBanner from '$lib/components/HeroBanner.svelte';
 	import BenefitsSection from '$lib/components/BenefitsSection.svelte';
+	import IngredientsSection from '$lib/components/ingredients/IngredientsSection.svelte';
 	import EmailSubscription from '$lib/components/EmailSubscription.svelte';
 	import { createPageTranslations } from '$lib/i18n/store';
 	import SEO from '$lib/components/SEO.svelte';
@@ -47,11 +48,16 @@
 	}
 </script>
 
-{#if $pageTranslations}
+<!-- Always rendered so crawlers get head tags in SSR HTML (fallbacks before hydration) -->
 	<SEO
-		title={$pageTranslations.t('benefits.meta.title')}
-		description={$pageTranslations.t('benefits.meta.description')}
+		title={String($pageTranslations?.t('benefits.meta.title') || 'Balance Botanica - Golden Paste for Dogs')}
+		description={String(
+			$pageTranslations?.t('benefits.meta.description') ||
+				'Golden paste for dogs (turmeric 95%, ginger, pepper, coconut oil) — complementary feed for mobility support. Not a medicine.'
+		)}
 	/>
+
+{#if $pageTranslations}
 
 	<!-- Main Content -->
 	<main class="flex-1">
@@ -68,10 +74,16 @@
 		<!-- Benefits Section -->
 		<BenefitsSection />
 
-		<!-- Featured Products on Home -->
+		<!-- Ingredients widgets: turmeric / coconut / ginger / pepper -->
+		<IngredientsSection />
+
+		<!-- Featured Products on Home (same grid + cards as /products: 4 across) -->
 		<ProductsSection
 			products={data.products}
-			limit={3}
+			limit={4}
+			columns={4}
+			gap="gap-6"
+			cardClassName="bg-white border border-[#efe0c3] rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all h-full"
 			title={$pageTranslations.t('benefits.products.homepage_title')}
 			translations={$pageTranslations}
 		/>
@@ -85,8 +97,8 @@
 		<!-- FAQ Section -->
 		<FAQ />
 
-		<!-- Email Subscription Section -->
-		<EmailSubscription compact={false} />
+		<!-- Refill subscription (web + Flutter app share this) -->
+		<EmailSubscription />
 	</main>
 {/if}
 

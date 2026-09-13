@@ -43,6 +43,15 @@
 		name="description"
 		content={data?.description || $pageTranslations?.t('blog.errors.articleNotFoundDescription')}
 	/>
+	<!-- Article structured data: SSR-rendered for Google -->
+	{@html `<script type="application/ld+json">${JSON.stringify({
+		'@context': 'https://schema.org',
+		'@type': 'Article',
+		headline: data?.title || '',
+		description: data?.description || '',
+		author: { '@type': 'Organization', name: data?.author || 'Balance Botanica' },
+		datePublished: data?.date || new Date().toISOString()
+	})}</script>`}
 </svelte:head>
 
 <BlogLayout

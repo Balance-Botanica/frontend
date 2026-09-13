@@ -17,7 +17,7 @@
 	};
 </script>
 
-<SEO title={data.title} description={data.description} />
+<SEO title={data.title} description={data.description} robots="noindex, follow" />
 
 <main class="thc-toxicity-main">
 	<div class="thc-toxicity-container">
@@ -121,7 +121,7 @@
 	}
 
 	.breadcrumb-link {
-		color: #4b766e;
+		color: var(--color-main);
 		text-decoration: none;
 		font-weight: 500;
 	}
@@ -192,7 +192,7 @@
 	.thc-toxicity-article h1 {
 		font-size: 36px;
 		font-weight: 700;
-		border-bottom: 3px solid #4b766e;
+		border-bottom: 3px solid var(--color-main);
 		padding-bottom: 12px;
 		margin-top: 0;
 	}
@@ -200,7 +200,7 @@
 	.thc-toxicity-article h2 {
 		font-size: 28px;
 		font-weight: 600;
-		border-bottom: 2px solid #4b766e;
+		border-bottom: 2px solid var(--color-main);
 		padding-bottom: 8px;
 	}
 
@@ -233,7 +233,7 @@
 	}
 
 	.thc-toxicity-article blockquote {
-		border-left: 4px solid #4b766e;
+		border-left: 4px solid var(--color-main);
 		padding-left: 16px;
 		margin: 24px 0;
 		font-style: italic;
@@ -244,7 +244,7 @@
 	}
 
 	.thc-toxicity-article-content a {
-		color: #4b766e;
+		color: var(--color-main);
 		text-decoration: none;
 		font-weight: 600;
 		transition: all 0.3s ease;
@@ -252,9 +252,9 @@
 	}
 
 	.thc-toxicity-article-content a:hover {
-		color: #3d5f58;
+		color: #b25f0e;
 		text-decoration: underline;
-		border-bottom-color: #3d5f58;
+		border-bottom-color: #b25f0e;
 	}
 
 	/* Warning boxes for important information */
@@ -375,7 +375,7 @@
 	}
 
 	.thc-toxicity-link {
-		color: #4b766e;
+		color: var(--color-main);
 		text-decoration: none;
 		font-weight: 600;
 		font-size: 14px;

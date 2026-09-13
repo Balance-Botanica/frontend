@@ -265,7 +265,7 @@
 
 	.form-input:focus {
 		outline: none;
-		border-color: #4b766e;
+		border-color: var(--color-main);
 	}
 
 	.form-input:disabled {
@@ -283,7 +283,7 @@
 		gap: 8px;
 		width: 100%;
 		height: 46px;
-		background: #4b766e;
+		background: var(--color-main);
 		border: none;
 		border-radius: 12px;
 		font-family: 'Nunito', sans-serif;
@@ -357,7 +357,7 @@
 		font-family: 'Nunito', sans-serif;
 		font-size: 18px;
 		font-weight: 600;
-		color: #4b766e;
+		color: var(--color-main);
 		margin: 0;
 	}
 
@@ -398,7 +398,7 @@
 	.back-link {
 		background: none;
 		border: none;
-		color: #4b766e;
+		color: var(--color-main);
 		font-family: 'Nunito', sans-serif;
 		font-size: 16px;
 		line-height: 140%;
@@ -418,18 +418,18 @@
 		align-items: center;
 		padding: 12px 24px;
 		background: transparent;
-		border: 1px solid #4b766e;
+		border: 1px solid var(--color-main);
 		border-radius: 12px;
 		font-family: 'Nunito', sans-serif;
 		font-weight: 500;
 		font-size: 16px;
-		color: #4b766e;
+		color: var(--color-main);
 		cursor: pointer;
 		transition: all 0.2s ease;
 	}
 
 	.back-button:hover {
-		background: #4b766e;
+		background: var(--color-main);
 		color: white;
 	}
 

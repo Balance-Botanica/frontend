@@ -13,7 +13,6 @@
 
 	// Product card display options (passed through to ProductCard)
 	export let showRating: boolean = true;
-	export let showBestsellerBadge: boolean = true;
 	export let showCategoryTags: boolean = true;
 	export let showDescription: boolean = true;
 	export let showAddToCart: boolean = true;
@@ -159,7 +158,7 @@
 </script>
 
 <div
-	class={`grid ${gridGap} ${gridClassName}`}
+	class={`grid ${gridColumns} ${gridGap} ${gridClassName}`}
 	bind:this={containerRef}
 	on:touchstart={handleTouchStart}
 	on:touchend={handleTouchEnd}
@@ -168,12 +167,10 @@
 		<ProductCard
 			{product}
 			{showRating}
-			{showBestsellerBadge}
 			{showCategoryTags}
 			{showDescription}
 			{showAddToCart}
 			className={cardClassName}
-			productIndex={index}
 		/>
 	{/each}
 </div>

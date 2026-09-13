@@ -236,6 +236,40 @@ const handleSmartRedirects: Handle = async ({ event, resolve }) => {
 
 	console.log('🔄 [Redirect] Processing request for:', pathname);
 
+	// Deleted legacy CBD-era routes (paste pivot) -> golden paste blog, 301 permanent.
+	// Keeps old backlinks/bookmarks alive instead of 500/404. Locale prefix preserved.
+	const legacyPasteRedirects: Array<{ from: RegExp; to: string }> = [
+		{ from: /^cbd\/?$/, to: '/blog/golden-paste-recipe-adapted' },
+		{ from: /^cbd\/dogs\/?$/, to: '/blog/paste-dosing-guide' },
+		{ from: /^cbd\/cats\/?$/, to: '/blog' },
+		{ from: /^cbd\/types\/?$/, to: '/blog' },
+		{ from: /^veterinary-cbd\/?$/, to: '/blog/paste-safety-vet-talk' },
+		{ from: /^dog-health\/?$/, to: '/blog' },
+		{ from: /^cats-health\/?$/, to: '/blog' }
+	];
+
+	// Normalize: strip optional /en or legacy /uk-ua prefix, remember locale
+	let localePrefix = '';
+	let normalizedPath = pathname;
+	const localeMatch = pathname.match(/^\/(en|uk-ua)(\/.*)?$/);
+	if (localeMatch) {
+		if (localeMatch[1] === 'en') localePrefix = '/en';
+		normalizedPath = localeMatch[2] || '/';
+	}
+
+	for (const { from, to } of legacyPasteRedirects) {
+		if (from.test(normalizedPath.replace(/^\//, ''))) {
+			const redirectUrl = localePrefix + to + search;
+			console.log('🔄 [Redirect] Legacy 301:', pathname, '->', redirectUrl);
+			return new Response(null, {
+				status: 301,
+				headers: {
+					Location: redirectUrl
+				}
+			});
+		}
+	}
+
 	// Проверяем старые URL паттерны и редиректим на новые
 	const redirectRules: Record<string, string> = {
 		// Старые URL с языковыми префиксами -> новые URL

@@ -4,11 +4,13 @@
 // This script requires admin authentication
 
 const PocketBase = require('pocketbase').default;
+require('dotenv').config(); // load .env so plain `node scripts/x.cjs` works
 
 // Configuration
 const POCKETBASE_URL = process.env.POCKETBASE_URL || 'http://127.0.0.1:8090';
 const ADMIN_EMAIL = process.env.POCKETBASE_ADMIN_EMAIL || 'balancebotanicaukraine@gmail.com';
-const ADMIN_PASSWORD = process.env.POCKETBASE_ADMIN_PASSWORD || 'diaochan1994qQq';
+const ADMIN_PASSWORD = process.env.POCKETBASE_ADMIN_PASSWORD;
+if (!ADMIN_PASSWORD) throw new Error('POCKETBASE_ADMIN_PASSWORD is not set (see .env)');
 
 // PocketBase client
 const pb = new PocketBase(POCKETBASE_URL);
@@ -65,7 +67,7 @@ const COLLECTIONS = [
 async function authenticateAdmin() {
     try {
         console.log('Authenticating as admin...');
-        const authData = await pb.admins.authWithPassword(ADMIN_EMAIL, ADMIN_PASSWORD);
+        const authData = await pb.collection('_superusers').authWithPassword(ADMIN_EMAIL, ADMIN_PASSWORD);
         console.log('✅ Admin authenticated successfully');
         return authData;
     } catch (error) {

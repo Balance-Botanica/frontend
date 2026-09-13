@@ -1,6 +1,9 @@
 <script lang="ts">
 	import { createEventDispatcher, onMount } from 'svelte';
 	import { browser } from '$app/environment';
+	import { goto } from '$app/navigation';
+	import { createPageTranslations } from '$lib/i18n/store';
+	import { BASELINE_PER_TSP } from './calculator.config.js';
 	import { cartStore } from '$lib/stores/cart.store';
 	import { notificationStore } from '$lib/stores/notifications';
 	import { createClientProduct, type RawProduct } from '$lib/types/product.types';
@@ -62,13 +65,10 @@
 	export let product: RawProduct;
 
 	export let showRating: boolean = true;
-	export let showBestsellerBadge: boolean = true;
-	export let forceBestsellerBadge: boolean = false; // New prop to force showing bestseller badge
 	export let showCategoryTags: boolean = true;
 	export let showDescription: boolean = true;
 	export let showAddToCart: boolean = true;
 	export let className: string = '';
-	export let productIndex: number = -1; // New prop to track the index of the product
 
 	// Internal state
 	let currentImageIndex = 0;
@@ -154,6 +154,107 @@
 
 	// Format price from kopiyky to UAH
 	$: formattedPrice = (product.price / 100).toFixed(2);
+
+	const pageTranslations = createPageTranslations();
+
+	// Pack-size badge from categories: trial / week / halfmonth / month (paste jars, weighed in grams).
+	// Unit letter follows the page locale so badges never mix alphabets (30 г vs 30 g).
+	function unitLabel(): string {
+		const locale = ($pageTranslations as any)?.locale || 'uk-ua';
+		const match = /([\d.,]+)\s*(g|ml)/i.exec(product.size || '');
+		if (!match) return product.size || '';
+		const num = match[1].replace(',', '.');
+		const unit = match[2].toLowerCase() === 'ml' ? (locale === 'en' ? 'ml' : 'мл') : locale === 'en' ? 'g' : 'г';
+		return `${num} ${unit}`;
+	}
+
+	$: packMeta = categories.includes('trial')
+		? { tier: 'TRIAL', cls: 'bg-stone-500' }
+		: categories.includes('week')
+			? { tier: 'WEEK', cls: 'bg-[#3f6f68]' }
+			: categories.includes('halfmonth')
+				? { tier: 'HALF', cls: 'bg-main' }
+				: categories.includes('month')
+					? { tier: 'MONTH', cls: 'bg-[#1f1f1f]' }
+					: null;
+
+	$: packBadge = packMeta ? `${packMeta.tier} · ${unitLabel()}${packMeta.tier === 'MONTH' ? ' 🫙' : ''}` : null;
+
+	// Teaspoons per jar parsed from size ("30 g" -> ~6 tsp at ~5g/tsp, paste density ≈ 1)
+	$: jarTsp = (() => {
+		const match = /([\d.,]+)\s*(g|ml)/i.exec(product.size || '');
+		if (!match) return 0;
+		return parseFloat(match[1].replace(',', '.')) / 5;
+	})();
+
+	// Per-day price for a medium dog (~1 tsp/day) — the number that sells MONTH
+	$: perDayPrice = jarTsp > 0 ? (product.price / 100 / jarTsp).toFixed(1) : null;
+
+	// Savings vs the TRIAL jar (honest per-tsp math, see BASELINE_PER_TSP)
+	$: savingsPct = (() => {
+		if (jarTsp <= 0) return null;
+		const perTsp = product.price / 100 / jarTsp;
+		const pct = Math.round((1 - perTsp / BASELINE_PER_TSP) * 100);
+		return pct > 0 ? pct : null;
+	})();
+
+	$: isSubscription = categories.includes('subscription');
+
+	// Technical category slugs customers should never see as pills: the tier
+	// lives in the overlay badge, 'subscription' in the refill CTA below.
+	const HIDDEN_CATEGORIES = [
+		'dogs',
+		'curcumin',
+		'paste',
+		'treats',
+		'subscription',
+		'trial',
+		'week',
+		'halfmonth',
+		'month'
+	];
+
+	// Human-readable tag labels (locale-aware: Ukrainian by default, English on /en)
+	function tagLabel(value: string): string {
+		const locale = ($pageTranslations as any)?.locale || 'uk-ua';
+		const ukMap: Record<string, string> = {
+			trial: 'Пробник',
+			week: 'Тиждень',
+			halfmonth: 'Півмісяця',
+			month: 'Місяць',
+			subscription: 'Підписка',
+			'turmeric-ginger': 'Куркума та імбир',
+			'pumpkin-coconut': 'Гарбуз і кокос'
+		};
+		const enMap: Record<string, string> = {
+			trial: 'Trial',
+			week: 'Week',
+			halfmonth: 'Half month',
+			month: 'Month',
+			subscription: 'Subscription',
+			'turmeric-ginger': 'Turmeric & ginger',
+			'pumpkin-coconut': 'Pumpkin & coconut'
+		};
+		const map = locale === 'en' ? enMap : ukMap;
+		if (map[value]) return map[value];
+		// Measurements like "30 g" / "100 ml" stay as-is (units need no translation)
+		if (/^[\d.,\s]+(g|ml)$/i.test(value.trim())) {
+			return locale === 'en' ? value : value.replace(/\bg\b/gi, 'г').replace(/\bml\b/gi, 'мл');
+		}
+		let label = value.replace(/[-_]+/g, ' ');
+		if (locale !== 'en') {
+			label = label.replace(/\bg\b/gi, 'г').replace(/\bml\b/gi, 'мл');
+		} else {
+			label = label.replace(/\b\w/g, (c) => c.toUpperCase());
+		}
+		return label;
+	}
+
+	$: visibleCategories = categories.filter((c) => !HIDDEN_CATEGORIES.includes(c));
+
+	function goToProduct() {
+		goto(`products/${product.id}`);
+	}
 
 	// Log price formatting
 	$: {
@@ -263,14 +364,13 @@
 
 	function handleImageClick() {
 		if (imageUrls[currentImageIndex]) {
-			// console.log(`🖼️ Image clicked for "${product.name}" at index ${currentImageIndex}`);
 			dispatch('imageClick', {
 				productId: product.id,
 				imageUrl: imageUrls[currentImageIndex],
 				index: currentImageIndex
 			});
-		} else {
-			// console.log(`❌ No image at index ${currentImageIndex} for "${product.name}"`);
+			// Product click opens the detail page (reviews, dosage, subscription)
+			goToProduct();
 		}
 	}
 
@@ -331,57 +431,42 @@
 	style="min-height: 650px; height: 100%; display: flex; flex-direction: column; max-width: 100%;"
 >
 	<div class="flex h-full flex-col items-start justify-end gap-4 p-4 md:gap-6 md:p-6">
-		<!-- Top Section: Rating + Bestseller Badge -->
-		{#if showRating || (showBestsellerBadge && (forceBestsellerBadge || productIndex === 1 || productIndex === 2))}
-			<div class="flex w-full items-start justify-between py-1">
-				<!-- Rating and Reviews -->
-				{#if showRating}
-					<div class="flex flex-col items-start space-y-1 md:space-y-2">
-						<div class="flex space-x-1">
-							{#each Array(5) as _, _i}
-								<svg
-									class="h-4 w-4 text-yellow-400 md:h-5 md:w-5"
-									fill="currentColor"
-									viewBox="0 0 20 20"
-								>
-									<path
-										d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
-									/>
-								</svg>
-							{/each}
-						</div>
-						<span
-							class="text-[14px] leading-[18px] font-normal text-[#474747] md:text-[16px] md:leading-[22px]"
-							>100 Відгуків</span
-						>
-					</div>
-				{/if}
-
-				<!-- Bestseller Badge -->
-				{#if showBestsellerBadge && (forceBestsellerBadge || productIndex === 1 || productIndex === 2)}
-					<div class="ml-auto rounded-[38px] bg-[#1f1f1f] px-3 py-1 md:px-4 md:py-2">
-						<span class="text-[14px] leading-[22px] font-normal text-white md:text-[16px]"
-							>Бестселер</span
-						>
-					</div>
-				{/if}
-			</div>
-		{:else}
-			<!-- Spacer div when no ratings or bestseller badge -->
-			<div class="h-4 md:h-8"></div>
-		{/if}
-
-		<!-- Product Image Section -->
+		<!-- Product Image Section with overlaid badges (Rozetka-style: no badge rows, no layout shifts) -->
 		<div
 			class="group relative w-full overflow-hidden rounded-xl bg-white"
 			style="height: 240px;"
 			ontouchstart={handleTouchStart}
 			ontouchend={handleTouchEnd}
 		>
-			<!-- Image Counter (only for multiple images) -->
+			<!-- Pack tier badge with per-day price, top-left (single source of value) -->
+			{#if packBadge}
+				<div
+					class="absolute top-3 left-3 z-10 rounded-2xl {packMeta?.cls} px-3 py-1.5 shadow-lg"
+				>
+					<div class="text-[13px] leading-[18px] font-bold whitespace-nowrap text-white md:text-[14px]"
+						>{packBadge}</div
+					>
+					{#if perDayPrice}
+						<div class="text-[11px] leading-[14px] font-bold whitespace-nowrap text-white/85">
+							≈ {perDayPrice} {($pageTranslations as any)?.locale === 'en' ? 'UAH/day' : 'грн/день'}
+						</div>
+					{/if}
+				</div>
+			{/if}
+			<!-- New-product pill, top-right (honest: no reviews yet, so no fake stars) -->
+			{#if showRating}
+				<div
+					class="absolute top-3 right-3 z-10 rounded-full bg-amber-100 px-3 py-1.5 shadow-lg ring-1 ring-amber-200"
+				>
+					<span class="text-[13px] leading-[18px] font-bold text-amber-800 md:text-[14px]"
+						>{$pageTranslations?.t('products.badge_new') || 'New'}</span
+					>
+				</div>
+			{/if}
+			<!-- Image Counter (only for multiple images, bottom-right to avoid the New pill) -->
 			{#if imageUrls.length > 1}
 				<div
-					class="absolute top-3 right-3 z-10 rounded-full bg-black/60 px-2 py-1 text-xs font-medium text-white backdrop-blur-sm"
+					class="absolute right-3 bottom-3 z-10 rounded-full bg-black/60 px-2 py-1 text-xs font-medium text-white backdrop-blur-sm"
 				>
 					{currentImageIndex + 1} / {imageUrls.length}
 				</div>
@@ -460,7 +545,7 @@
 					aria-live="polite"
 					aria-label="Loading image"
 				>
-					<div class="h-8 w-8 animate-spin rounded-full border-b-2 border-[#4b766e]"></div>
+					<div class="h-8 w-8 animate-spin rounded-full border-b-2 border-main"></div>
 				</div>
 			{/if}
 
@@ -514,40 +599,40 @@
 			{/if}
 		</div>
 
-		<!-- Product Tags -->
+		<!-- Product Tags: flavor only (size lives in the overlay badge + title, no triplicates) -->
 		{#if showCategoryTags}
 			<div class="flex flex-wrap gap-3">
-				<!-- Size Tag -->
-				<div class="rounded-[38px] bg-[#f0f0f0] px-4 py-2">
-					<span class="text-[14px] leading-[19.6px] font-normal text-[#474747]"
-						>{product.size || 'N/A'}</span
+				<!-- Flavor Tag: warm tint, on-palette (the old blue matched nothing) -->
+				<div class="rounded-[38px] bg-turmeric-soft px-4 py-2 ring-1 ring-turmeric/20">
+					<span class="text-[14px] leading-[19.6px] font-bold text-turmeric-deep"
+						>{product.flavor ? tagLabel(product.flavor) : 'N/A'}</span
 					>
 				</div>
-				<!-- Flavor Tag with Label Color -->
-				<div class="rounded-[38px] bg-blue-500 px-4 py-2">
-					<span class="text-[14px] leading-[19.6px] font-normal text-white"
-						>{product.flavor || 'N/A'}</span
-					>
-				</div>
-				<!-- Category Tags -->
-				{#if categories.length > 0}
-					{#each categories as category, _index}
-						<div class="rounded-[38px] bg-[#e5dcd3] px-4 py-2">
-							<span class="text-[14px] leading-[19.6px] font-normal text-[#474747]">{category}</span
-							>
-						</div>
-					{/each}
-				{/if}
+			<!-- Category Tags (technical slugs hidden, human labels only) -->
+			{#if visibleCategories.length > 0}
+				{#each visibleCategories as category, _index}
+					<div class="rounded-[38px] bg-[#e5dcd3] px-4 py-2">
+						<span class="text-[14px] leading-[19.6px] font-normal text-[#474747]"
+							>{tagLabel(category)}</span
+						>
+					</div>
+				{/each}
+			{/if}
 			</div>
 		{/if}
 
 		<!-- Product Information -->
 		<div class="w-full space-y-2 md:space-y-3">
-			<!-- Product Name -->
+			<!-- Product Name (links to detail page) -->
 			<h3
 				class="font-poppins text-[18px] leading-[26px] font-semibold text-black md:text-[20px] md:leading-[28px]"
 			>
-				{product.name}
+				<a
+					href={`products/${product.id}`}
+					class="transition-colors hover:text-main hover:underline"
+				>
+					{product.name}
+				</a>
 			</h3>
 
 			<!-- Product Description -->
@@ -560,29 +645,41 @@
 			{/if}
 		</div>
 
-		<!-- Price -->
-		<div
-			class="font-poppins text-[20px] leading-[28px] font-semibold text-black md:text-[24px] md:leading-[33px]"
-		>
-			{formattedPrice} грн
+		<!-- Price + honest savings vs TRIAL (computed per-tsp, never hand-typed) -->
+		<div class="flex flex-wrap items-center gap-2.5">
+			<div
+				class="font-poppins text-[26px] leading-[30px] font-black tracking-tight text-gray-900 md:text-[28px] md:leading-[32px]"
+			>
+				{formattedPrice} <span class="text-[16px] font-bold text-gray-500">грн</span>
+			</div>
+			{#if savingsPct}
+				<div class="rounded-full bg-green-100 px-2.5 py-1 text-[13px] font-black text-green-800">
+					−{savingsPct}%
+				</div>
+			{/if}
 		</div>
 
 		<!-- Action Buttons Section - Sticky to bottom -->
-		<div class="mt-auto w-full space-y-4">
+		<div class="mt-auto w-full space-y-3">
 			<!-- Add to Cart Button -->
 			{#if showAddToCart}
 				<button
-					class="touch-button font-poppins w-full rounded-xl bg-[#4b766e] px-6 py-4 text-[16px] leading-[22px] font-medium text-white transition-colors duration-200 hover:bg-[#3d5f58]"
+					class="touch-button font-poppins w-full rounded-xl bg-main px-6 py-4 text-[16px] leading-[22px] font-bold text-white shadow-lg shadow-main/25 transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#b25f0e]"
 					onclick={handleAddToCart}
 				>
 					До кошика
 				</button>
 			{/if}
 
-			<!-- Future Subscribe Button Placeholder -->
-			<!-- <button class="touch-button w-full bg-[#1f1f1f] hover:bg-[#333] text-white font-medium text-[14px] leading-[19.6px] py-3 px-4 rounded-xl transition-colors duration-200 font-poppins">
-				Підписатися
-			</button> -->
+			<!-- Refill subscription CTA (only on subscription packs like MONTH) -->
+			{#if isSubscription}
+				<a
+					href="/#subscribe"
+					class="touch-button font-poppins block w-full rounded-xl bg-[#1f1f1f] px-4 py-3 text-center text-[14px] leading-[19.6px] font-medium text-white transition-colors duration-200 hover:bg-[#333]"
+				>
+					🔁 Refill — не закінчиться раптово
+				</a>
+			{/if}
 		</div>
 	</div>
 </div>

@@ -51,6 +51,7 @@
 	<SEO
 		title="Balance Botanica - Purrrfect Cubes Coming Soon"
 		description="Be the first to know when our revolutionary Balance Botanica Purrrfect Cubes for pets are released. Sign up for exclusive updates!"
+		robots="noindex, follow"
 	/>
 
 	<!-- Main Content -->
@@ -86,7 +87,7 @@
 					<!-- CTA Button -->
 					<a 
 						href="#subscribe" 
-						class="rounded-full bg-[#3f6f68] px-8 py-4 text-lg font-bold text-white shadow-lg transition-all hover:bg-[#2d5a54] hover:shadow-xl"
+						class="rounded-full bg-[#3f6f68] px-8 py-4 text-lg font-bold text-white shadow-lg transition-all hover:bg-[#b25f0e] hover:shadow-xl"
 					>
 						{ $pageTranslations.t('v2.hero.notify_me') }
 					</a>
@@ -176,7 +177,7 @@
 		<!-- Email Subscription Section -->
 		<section id="subscribe" class="py-16 md:py-24">
 			<div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
-				<div class="rounded-3xl bg-gradient-to-br from-[#3f6f68] to-[#2d5a54] p-8 text-white shadow-xl md:p-12">
+				<div class="rounded-3xl bg-gradient-to-br from-[#3f6f68] to-[#b25f0e] p-8 text-white shadow-xl md:p-12">
 					<div class="text-center">
 						<h2 class="mb-4 text-3xl font-bold md:text-4xl">
 							{ $pageTranslations.t('v2.subscription.title') }

@@ -35,9 +35,7 @@ async function testConnection() {
         console.log('   Response Code:', health.code);
         
         console.log('\n=== NEXT STEPS ===');
-        console.log('1. Create admin user at http://127.0.0.1:8090/_/');
-        console.log('   Email: admin@balancebotanica.com');
-        console.log('   Password: admin123456');
+        console.log('1. Sign in at http://127.0.0.1:8090/_/ as superuser (email from POCKETBASE_ADMIN_EMAIL in .env)');
         console.log('2. Create collections using the admin UI or scripts');
         console.log('3. Test existing PocketBaseProductRepository');
         console.log('4. Implement remaining repositories');

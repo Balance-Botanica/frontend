@@ -4,9 +4,20 @@
  */
 
 export const colors = {
-	// Primary brand colors
-	main: '#4B766E',
+	// SWAPPED: turmeric orange leads (buy CTAs, accents). Logo stays green,
+	// dark hardcoded sections (#3f6f68 etc.) keep green as the trust anchor.
+	main: '#E07B12',
 	mainAdditional: '#1F1F1F',
+
+	// Supporting green (was primary) + ember red sparks
+	turmeric: '#4B766E',
+	turmericDeep: '#2F5A52',
+	turmericSoft: '#DCE9E5',
+	pine: '#2E4F49',
+	cream: '#FDF4E4',
+	ember: '#C0451F',
+	emberDeep: '#97330F',
+	emberSoft: '#F8DCD0',
 
 	// Text colors
 	heading: '#000000',
@@ -36,6 +47,14 @@ export const getColor = (name: ColorName): string => colors[name];
 export const cssVariables = {
 	'--color-main': colors.main,
 	'--color-main-additional': colors.mainAdditional,
+	'--color-turmeric': colors.turmeric,
+	'--color-turmeric-deep': colors.turmericDeep,
+	'--color-turmeric-soft': colors.turmericSoft,
+	'--color-pine': colors.pine,
+	'--color-cream': colors.cream,
+	'--color-ember': colors.ember,
+	'--color-ember-deep': colors.emberDeep,
+	'--color-ember-soft': colors.emberSoft,
 	'--color-heading': colors.heading,
 	'--color-text': colors.text,
 	'--color-primary': colors.primary,

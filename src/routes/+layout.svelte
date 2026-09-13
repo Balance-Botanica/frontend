@@ -237,7 +237,7 @@
 							></path>
 						</svg>
 					</button>
-					<h1 class="text-xl font-bold">Balance Botanica</h1>
+					<p class="text-xl font-bold">Balance Botanica</p>
 					<button class="p-2" onclick={() => goto('/cart')} aria-label="Cart">
 						<svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 							<path
@@ -343,7 +343,7 @@
 		>
 			<button
 				class="flex flex-col items-center justify-center p-2 {activeTab === 'home'
-					? 'text-[#4b766e]'
+					? 'text-main'
 					: 'text-gray-500'}"
 				onclick={() => handleTabNavigation('home')}
 				aria-label="Home"
@@ -361,7 +361,7 @@
 
 			<button
 				class="flex flex-col items-center justify-center p-2 {activeTab === 'products'
-					? 'text-[#4b766e]'
+					? 'text-main'
 					: 'text-gray-500'}"
 				onclick={() => handleTabNavigation('products')}
 				aria-label="Products"
@@ -379,7 +379,7 @@
 
 			<button
 				class="flex flex-col items-center justify-center p-2 {activeTab === 'cart'
-					? 'text-[#4b766e]'
+					? 'text-main'
 					: 'text-gray-500'}"
 				onclick={() => handleTabNavigation('cart')}
 				aria-label="Cart"
@@ -397,7 +397,7 @@
 
 			<button
 				class="flex flex-col items-center justify-center p-2 {activeTab === 'account'
-					? 'text-[#4b766e]'
+					? 'text-main'
 					: 'text-gray-500'}"
 				onclick={() => handleTabNavigation('account')}
 				aria-label="Account"

@@ -44,12 +44,12 @@
 		switch (type) {
 			case 'success':
 				return {
-					bg: 'bg-white border-[#4b766e]', // main color
-					icon: 'text-[#4b766e]', // main color
+					bg: 'bg-white border-main', // main color
+					icon: 'text-main', // main color
 					title: 'text-[#1f1f1f]', // main-additional
 					message: 'text-[#474747]', // text color
-					button: 'text-[#4b766e] hover:text-[#3d5f58]', // main color with darker hover
-					progress: 'bg-[#4b766e]' // main color
+					button: 'text-main hover:text-[#b25f0e]', // main color with darker hover
+					progress: 'bg-main' // main color
 				};
 			case 'error':
 				return {
@@ -72,12 +72,12 @@
 			case 'info':
 			default:
 				return {
-					bg: 'bg-white border-[#4b766e]', // main color
-					icon: 'text-[#4b766e]', // main color
+					bg: 'bg-white border-main', // main color
+					icon: 'text-main', // main color
 					title: 'text-[#1f1f1f]', // main-additional
 					message: 'text-[#474747]', // text color
-					button: 'text-[#4b766e] hover:text-[#3d5f58]', // main color with darker hover
-					progress: 'bg-[#4b766e]' // main color
+					button: 'text-main hover:text-[#b25f0e]', // main color with darker hover
+					progress: 'bg-main' // main color
 				};
 		}
 	}
@@ -138,7 +138,7 @@
 								<button
 									type="button"
 									on:click={() => dismissNotification(notification.id)}
-									class="inline-flex rounded-md p-1 text-[#b6b6b6] transition-colors hover:text-[#9a9a9a] focus:ring-2 focus:ring-[#4b766e] focus:ring-offset-2 focus:outline-none"
+									class="inline-flex rounded-md p-1 text-[#b6b6b6] transition-colors hover:text-[#9a9a9a] focus:ring-2 focus:ring-main focus:ring-offset-2 focus:outline-none"
 									aria-label="Dismiss notification"
 								>
 									<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

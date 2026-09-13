@@ -19,32 +19,27 @@
 		'whatsapp'
 	];
 
-	// Pillar articles data
+	// Pillar articles data — golden paste knowledge base (legacy /cbd/* routes deleted, 301 to blog in hooks.server.ts)
 	const pillarArticles = [
 		{
-			path: '/cbd',
-			title: t('footer.pillar.cbd'),
-			description: t('footer.pillar.cbd_desc')
+			path: '/blog/golden-paste-recipe-adapted',
+			title: t('footer.pillar.paste_recipe'),
+			description: t('footer.pillar.paste_recipe_desc')
 		},
 		{
-			path: '/cbd/cats',
-			title: t('footer.pillar.cbd_cats'),
-			description: t('footer.pillar.cbd_cats_desc')
+			path: '/blog/paste-dosing-guide',
+			title: t('footer.pillar.paste_dosing'),
+			description: t('footer.pillar.paste_dosing_desc')
 		},
 		{
-			path: '/cbd/dogs',
-			title: t('footer.pillar.cbd_dogs'),
-			description: t('footer.pillar.cbd_dogs_desc')
+			path: '/blog/paste-safety-vet-talk',
+			title: t('footer.pillar.paste_safety'),
+			description: t('footer.pillar.paste_safety_desc')
 		},
 		{
-			path: '/cbd/types',
-			title: t('footer.pillar.cbd_types'),
-			description: t('footer.pillar.cbd_types_desc')
-		},
-		{
-			path: '/cats-health',
-			title: t('footer.pillar.cats_health'),
-			description: t('footer.pillar.cats_health_desc')
+			path: '/blog/why-ginger-in-paste',
+			title: t('footer.pillar.paste_ginger'),
+			description: t('footer.pillar.paste_ginger_desc')
 		},
 		{
 			path: '/dog-health',
@@ -52,9 +47,9 @@
 			description: t('footer.pillar.dog_health_desc')
 		},
 		{
-			path: '/veterinary-cbd',
-			title: t('footer.pillar.veterinary_cbd'),
-			description: t('footer.pillar.veterinary_cbd_desc')
+			path: '/cats-health',
+			title: t('footer.pillar.cats_health'),
+			description: t('footer.pillar.cats_health_desc')
 		}
 	];
 
@@ -83,7 +78,7 @@
 	}
 </script>
 
-<footer class="bg-main text-white">
+	<footer class="bg-pine text-white">
 	<div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
 		<!-- Main Footer Content - 2 Column Layout -->
 		<div class="mb-8 grid grid-cols-1 gap-8 lg:grid-cols-2">
@@ -135,7 +130,7 @@
 					<h3 class="mb-3 text-sm font-semibold text-white">{t('footer.newsletter.title')}</h3>
 					<form class="flex gap-2">
 						<Input type="email" placeholder={t('footer.newsletter.placeholder')} required />
-						<Button variant="secondary" size="sm">
+						<Button variant="ember" size="sm">
 							{t('footer.newsletter.button')}
 						</Button>
 					</form>

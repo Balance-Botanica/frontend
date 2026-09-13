@@ -363,10 +363,10 @@
 		gap: 10px;
 		width: 460px;
 		min-height: 46px;
-		border: 1px solid #4b766e;
+		border: 1px solid var(--color-main);
 		border-radius: 100px;
 		background: white;
-		color: #4b766e;
+		color: var(--color-main);
 		font-family: 'Nunito', sans-serif;
 		font-style: normal;
 		font-weight: 500;
@@ -402,7 +402,7 @@
 		display: flex;
 		align-items: center;
 		text-align: center;
-		color: #4b766e;
+		color: var(--color-main);
 	}
 
 	.divider {
@@ -530,7 +530,7 @@
 
 	.form-input:focus {
 		outline: none;
-		border-color: #4b766e;
+		border-color: var(--color-main);
 	}
 
 	.form-input:disabled {
@@ -631,7 +631,7 @@
 	.toggle-button {
 		background: none;
 		border: none;
-		color: #4b766e;
+		color: var(--color-main);
 		font-family: 'Nunito', sans-serif;
 		font-style: normal;
 		font-weight: 400;
@@ -668,7 +668,7 @@
 		font-family: 'Nunito', sans-serif;
 		font-size: 14px;
 		font-weight: 500;
-		color: #4b766e;
+		color: var(--color-main);
 		text-decoration: underline;
 		transition: color 0.2s ease;
 	}

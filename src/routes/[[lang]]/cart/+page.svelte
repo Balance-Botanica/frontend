@@ -598,6 +598,7 @@
 	<SEO
 		title={String($pageTranslations.t('cart.meta.title'))}
 		description={String($pageTranslations.t('cart.meta.description'))}
+		robots="noindex, follow"
 	/>
 
 	<main class="cart-page">
@@ -1232,7 +1233,7 @@
 
 	.quantity-btn:hover:not(:disabled) {
 		background: #e9ecef;
-		color: #4b766e;
+		color: var(--color-main);
 	}
 
 	.quantity-btn:disabled {
@@ -1252,7 +1253,7 @@
 	}
 
 	.quantity-input:focus {
-		outline: 2px solid #4b766e;
+		outline: 2px solid var(--color-main);
 	}
 
 	/* Item Total and Remove Button */
@@ -1275,7 +1276,7 @@
 		font-family: 'Nunito', sans-serif;
 		font-size: 18px;
 		font-weight: 700;
-		color: #4b766e;
+		color: var(--color-main);
 		margin: 0;
 	}
 
@@ -1348,7 +1349,7 @@
 
 	.form-input:focus {
 		outline: none;
-		border-color: #4b766e;
+		border-color: var(--color-main);
 	}
 
 	.form-input.error {
@@ -1364,7 +1365,7 @@
 		margin-top: 8px;
 		background: none;
 		border: none;
-		color: #4b766e;
+		color: var(--color-main);
 		font-family: 'Nunito', sans-serif;
 		font-size: 14px;
 		font-weight: 600;
@@ -1377,14 +1378,14 @@
 	}
 
 	.add-address-btn.primary {
-		background: #4b766e;
+		background: var(--color-main);
 		color: white;
 		padding: 10px 16px;
 		border-radius: 6px;
 		text-decoration: none;
 		margin-top: 12px;
 		font-size: 14px;
-		border: 1px solid #4b766e;
+		border: 1px solid var(--color-main);
 		transition: all 0.2s ease;
 	}
 
@@ -1502,7 +1503,7 @@
 		font-family: 'Nunito', sans-serif;
 		font-size: 24px;
 		font-weight: 700;
-		color: #4b766e;
+		color: var(--color-main);
 	}
 
 	.summary-actions {
@@ -1520,7 +1521,7 @@
 		border: none;
 		cursor: pointer;
 		transition: all 0.2s ease;
-		background: #4b766e;
+		background: var(--color-main);
 		color: white;
 		box-shadow: 0 4px 12px rgba(75, 118, 110, 0.3);
 	}
@@ -1536,20 +1537,20 @@
 		font-weight: 500;
 		padding: 12px 20px;
 		border-radius: 8px;
-		border: 2px solid #4b766e;
+		border: 2px solid var(--color-main);
 		cursor: pointer;
 		transition: all 0.2s ease;
 		background: transparent;
-		color: #4b766e;
+		color: var(--color-main);
 	}
 
 	.continue-shopping-btn:hover {
-		background: #4b766e;
+		background: var(--color-main);
 		color: white;
 	}
 
 	.empty-cart .continue-shopping-btn {
-		background: #4b766e;
+		background: var(--color-main);
 		color: white;
 		border: none;
 		padding: 16px 32px;
@@ -1620,7 +1621,7 @@
 
 	.promo-input:focus {
 		outline: none;
-		border-color: #4b766e;
+		border-color: var(--color-main);
 	}
 
 	.promo-input.error {
@@ -1635,7 +1636,7 @@
 
 	.apply-promo-btn {
 		padding: 12px 20px;
-		background: #4b766e;
+		background: var(--color-main);
 		color: white;
 		border: none;
 		border-radius: 8px;
@@ -1669,7 +1670,7 @@
 		align-items: center;
 		padding: 12px 16px;
 		background: #f8f9fa;
-		border: 2px solid #4b766e;
+		border: 2px solid var(--color-main);
 		border-radius: 8px;
 		margin-bottom: 8px;
 	}
@@ -1685,7 +1686,7 @@
 		font-family: 'Nunito', sans-serif;
 		font-size: 14px;
 		font-weight: 600;
-		color: #4b766e;
+		color: var(--color-main);
 	}
 
 	.promo-description {

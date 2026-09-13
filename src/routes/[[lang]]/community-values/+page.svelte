@@ -113,7 +113,7 @@
 	}
 
 	.page-title {
-		color: #4b766e;
+		color: var(--color-main);
 		font-size: 2.5rem;
 		font-weight: 700;
 		text-align: center;
@@ -130,7 +130,7 @@
 		transform: translateX(-50%);
 		width: 80px;
 		height: 3px;
-		background-color: #4b766e;
+		background-color: var(--color-main);
 	}
 
 	.value-section {
@@ -142,7 +142,7 @@
 	}
 
 	h2 {
-		color: #4b766e;
+		color: var(--color-main);
 		font-size: 1.8rem;
 		margin-top: 0;
 		margin-bottom: 20px;
@@ -171,7 +171,7 @@
 
 	.avoid-list li:before {
 		content: '•';
-		color: #4b766e;
+		color: var(--color-main);
 		font-weight: bold;
 		display: inline-block;
 		width: 1em;
@@ -197,7 +197,7 @@
 
 	em {
 		font-style: italic;
-		color: #4b766e;
+		color: var(--color-main);
 		font-weight: 600;
 	}
 

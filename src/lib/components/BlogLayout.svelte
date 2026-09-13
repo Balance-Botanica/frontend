@@ -111,7 +111,7 @@
 		display: inline-flex;
 		align-items: center;
 		gap: 8px;
-		color: #4b766e;
+		color: var(--color-main);
 		text-decoration: none;
 		font-weight: 500;
 		font-size: 14px;
@@ -164,7 +164,7 @@
 
 	.tag {
 		background: #f0f0f0;
-		color: #4b766e;
+		color: var(--color-main);
 		padding: 4px 12px;
 		border-radius: 16px;
 		font-size: 12px;
@@ -203,7 +203,7 @@
 	.post-content :global(h2) {
 		font-size: 24px;
 		font-weight: 600;
-		color: #4b766e;
+		color: var(--color-main);
 	}
 
 	.post-content :global(h3) {
@@ -228,7 +228,7 @@
 	}
 
 	.post-content :global(blockquote) {
-		border-left: 4px solid #4b766e;
+		border-left: 4px solid var(--color-main);
 		padding-left: 16px;
 		margin: 24px 0;
 		font-style: italic;

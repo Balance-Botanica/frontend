@@ -57,7 +57,7 @@
 					<button
 						type="submit"
 						disabled={isSubmitting || !email}
-						class="hover:bg-main-dark rounded-lg bg-main px-6 py-3 font-medium text-white transition-colors duration-200 focus:ring-2 focus:ring-main focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+						class="rounded-lg bg-ember px-6 py-3 font-medium text-white shadow-lg shadow-ember/25 transition-all duration-200 hover:-translate-y-0.5 hover:bg-ember-deep focus:ring-2 focus:ring-ember focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
 					>
 						{isSubmitting
 							? t('footer.newsletter.subscribing_button')

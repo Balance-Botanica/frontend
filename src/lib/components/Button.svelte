@@ -8,7 +8,7 @@
 		type = 'button',
 		onClick = () => {}
 	} = $props<{
-		variant?: 'primary' | 'secondary' | 'outline' | 'ghost';
+		variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'ember';
 		size?: 'sm' | 'md' | 'lg';
 		disabled?: boolean;
 		type?: 'button' | 'submit' | 'reset';
@@ -41,6 +41,11 @@
 			backgroundColor: 'transparent',
 			color: colors.text,
 			borderColor: 'transparent'
+		},
+		ember: {
+			backgroundColor: colors.ember,
+			color: colors.optional,
+			borderColor: colors.ember
 		}
 	};
 

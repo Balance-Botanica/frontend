@@ -1,4 +1,5 @@
 import PocketBase from 'pocketbase/cjs';
+import 'dotenv/config'; // load .env
 
 const pb = new PocketBase('http://127.0.0.1:8090');
 
@@ -7,7 +8,10 @@ async function setupGoogleOAuth() {
 		console.log('🔧 Setting up Google OAuth in PocketBase...');
 
 		// Authenticate as admin
-		await pb.admins.authWithPassword('balancebotanicaukraine@gmail.com', 'diaochan1994qQq');
+		const adminEmail = process.env.POCKETBASE_ADMIN_EMAIL || 'balancebotanicaukraine@gmail.com';
+		const adminPassword = process.env.POCKETBASE_ADMIN_PASSWORD;
+		if (!adminPassword) throw new Error('POCKETBASE_ADMIN_PASSWORD is not set (see .env)');
+		await pb.collection('_superusers').authWithPassword(adminEmail, adminPassword);
 		console.log('✅ Admin authenticated successfully');
 
 		// Get current settings

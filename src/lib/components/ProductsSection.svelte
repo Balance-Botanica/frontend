@@ -11,7 +11,6 @@
 
 	// Pass-through flags to `ProductCard`
 	export let showRating: boolean = true;
-	export let showBestsellerBadge: boolean = true;
 	export let showCategoryTags: boolean = true;
 	export let showDescription: boolean = true;
 	export let showAddToCart: boolean = true;
@@ -67,7 +66,6 @@
 				{gap}
 				{cardClassName}
 				{showRating}
-				{showBestsellerBadge}
 				{showCategoryTags}
 				{showDescription}
 				{showAddToCart}

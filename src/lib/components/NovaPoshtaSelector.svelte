@@ -362,7 +362,7 @@
 	}
 
 	.dropdown-input.active {
-		border-color: #4b766e;
+		border-color: var(--color-main);
 	}
 
 	.dropdown-container {
@@ -393,7 +393,7 @@
 
 	.search-input:focus {
 		outline: none;
-		border-color: #4b766e;
+		border-color: var(--color-main);
 	}
 
 	.dropdown-list {
@@ -414,7 +414,7 @@
 
 	.dropdown-item.selected {
 		background-color: #e5eeed;
-		color: #4b766e;
+		color: var(--color-main);
 		font-weight: 500;
 	}
 
