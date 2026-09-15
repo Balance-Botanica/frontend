@@ -2,6 +2,34 @@
 	"$schema": "https://inlang.com/schema/inlang-message-format",
 	"hello_world": "Hello, {name} from en!",
 
+	"auth": {
+		"phone_dialog": {
+			"title": "Sign in with your phone number",
+			"subtitle": "One SMS code — and your orders and dosing stay saved.",
+			"phone_label": "Phone number",
+			"phone_placeholder": "+380 __ ___ __ __",
+			"send_code": "Get code",
+			"code_hint": "Code sent to",
+			"code_label": "SMS code",
+			"code_placeholder": "123456",
+			"verify": "Confirm",
+			"resend": "Send again",
+			"close": "Close",
+			"success_title": "Done! You are signed in.",
+			"success_text": "Link Google in your profile — next time sign-in is 1 click, no SMS.",
+			"error_invalid": "Enter the number as +380 ...",
+			"error_code": "Enter the SMS code",
+			"error_generic": "Something went wrong. Try again."
+		},
+		"link_google": {
+			"title": "Sign in in 1 click, no SMS",
+			"text": "Link Google to this number — next sign-in is instant and free.",
+			"button": "Link Google",
+			"later": "Later",
+			"error": "Could not link Google. Try again."
+		}
+	},
+
 	"v2": {
 		"coming_soon": "Coming Soon",
 		"hero": {

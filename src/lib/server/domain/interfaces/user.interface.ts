@@ -26,11 +26,15 @@ export interface DeliveryAddress {
 }
 
 // User creation data (without auto-generated fields)
+// Email is optional: phone-only users (Firebase phone auth) get a synthetic
+// placeholder email so the PocketBase auth collection stays satisfied,
+// while the real `phoneNumber` is stored separately.
 export interface CreateUserData {
-	email: string;
+	email?: string;
 	firstName?: string;
 	lastName?: string;
 	phoneNumber?: string;
+	firebaseUid?: string;
 }
 
 // Delivery address creation data
@@ -70,6 +74,7 @@ export interface UserRepository {
 	// User operations
 	getUserById(id: string): Promise<User | null>;
 	getUserByEmail(email: string): Promise<User | null>;
+	getUserByPhone(phoneNumber: string): Promise<User | null>;
 	createUser(data: CreateUserData): Promise<User | null>;
 	updateUser(id: string, data: UpdateUserData): Promise<User | null>;
 

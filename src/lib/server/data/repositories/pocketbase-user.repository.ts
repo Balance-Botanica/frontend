@@ -48,9 +48,35 @@ export class PocketBaseUserRepository implements UserRepository {
 		}
 	}
 
+	async getUserByPhone(phoneNumber: string): Promise<User | null> {
+		try {
+			console.log('[PocketBaseUserRepository] Attempting to fetch user by phone');
+			const pb = await getAuthenticatedClient();
+			const records = await pb.collection('users').getList(1, 1, {
+				filter: `phone_number = "${phoneNumber}"`
+			});
+
+			const user = records.items[0] ? this.mapUserToDomain(records.items[0]) : null;
+			console.log(
+				'[PocketBaseUserRepository] User fetch by phone result:',
+				user ? 'Found' : 'Not found'
+			);
+			return user;
+		} catch (error) {
+			console.error(
+				'[PocketBaseUserRepository] Error fetching user by phone from PocketBase:',
+				error
+			);
+			return null;
+		}
+	}
+
 	async createUser(data: CreateUserData): Promise<User | null> {
 		try {
-			console.log('[PocketBaseUserRepository] Creating new user with data:', data);
+			console.log('[PocketBaseUserRepository] Creating new user with data:', {
+				...data,
+				email: data.email ? '(provided)' : '(synthetic phone placeholder)'
+			});
 			const pb = await getAuthenticatedClient();
 
 			// Combine firstName and lastName to create name field if needed
@@ -59,8 +85,15 @@ export class PocketBaseUserRepository implements UserRepository {
 					? `${data.firstName} ${data.lastName}`
 					: data.firstName || data.lastName || '';
 
+			// Phone-only users have no email: synthesize a stable placeholder so the
+			// PocketBase auth collection (email-required) stays satisfied.
+			// Real contact stays in `phone_number`.
+			const digits = (data.phoneNumber || '').replace(/\D/g, '');
+			const email =
+				data.email || (digits ? `phone_${digits}@phone.local` : `user_${Date.now()}@phone.local`);
+
 			const record = await pb.collection('users').create({
-				email: data.email,
+				email,
 				name: name || null, // Add name field
 				first_name: data.firstName || null,
 				last_name: data.lastName || null,

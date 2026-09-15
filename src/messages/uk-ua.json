@@ -2,6 +2,34 @@
 	"$schema": "https://inlang.com/schema/inlang-message-format",
 	"hello_world": "Hello, {name} from uk-ua!",
 
+	"auth": {
+		"phone_dialog": {
+			"title": "Вхід за номером телефону",
+			"subtitle": "Один код із СМС — і ваші замовлення та дозування збережуться.",
+			"phone_label": "Номер телефону",
+			"phone_placeholder": "+380 __ ___ __ __",
+			"send_code": "Отримати код",
+			"code_hint": "Код надіслано на",
+			"code_label": "Код із СМС",
+			"code_placeholder": "123456",
+			"verify": "Підтвердити",
+			"resend": "Надіслати ще раз",
+			"close": "Закрити",
+			"success_title": "Готово! Ви увійшли.",
+			"success_text": "Привʼяжіть Google в кабінеті — наступного разу вхід буде в 1 клік без СМС.",
+			"error_invalid": "Введіть номер у форматі +380 ...",
+			"error_code": "Введіть код із СМС",
+			"error_generic": "Щось пішло не так. Спробуйте ще раз."
+		},
+		"link_google": {
+			"title": "Входьте в 1 клік без СМС",
+			"text": "Привʼяжіть Google до цього номера — наступного разу вхід буде миттєвим і безкоштовним.",
+			"button": "Привʼязати Google",
+			"later": "Пізніше",
+			"error": "Не вдалося привʼязати Google. Спробуйте ще раз."
+		}
+	},
+
 	"v2": {
 		"coming_soon": "Незабаром",
 		"hero": {

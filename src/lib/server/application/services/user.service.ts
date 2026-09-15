@@ -59,6 +59,41 @@ export class UserService {
 		}
 	}
 
+	/**
+	 * Get user by phone or create if not exists (Firebase phone auth flow).
+	 * One phone number = one account. If an email is also provided (user later
+	 * linked Google/email), it is stored on creation for future lookups.
+	 */
+	async getOrCreateUserByPhone(phoneNumber: string, email?: string) {
+		try {
+			console.log('[UserService] Getting or creating user by phone');
+
+			let user = await this.userRepository.getUserByPhone(phoneNumber);
+
+			if (!user && email) {
+				// Phone just linked to an existing email identity — reuse it.
+				user = await this.userRepository.getUserByEmail(email);
+				if (user && !user.phoneNumber) {
+					await this.userRepository.updateUser(user.id, { phoneNumber });
+					user = { ...user, phoneNumber };
+				}
+			}
+
+			if (!user) {
+				console.log('[UserService] User not found by phone, creating new user');
+				user = await this.userRepository.createUser({ phoneNumber, email });
+				console.log('[UserService] Phone user creation result:', user ? 'Success' : 'Failed');
+			} else {
+				console.log('[UserService] User found by phone:', user.id);
+			}
+
+			return user;
+		} catch (error) {
+			console.error('[UserService] Error getting or creating user by phone:', error);
+			return null;
+		}
+	}
+
 	async updateUserProfile(
 		userId: string,
 		profileData: { firstName?: string; lastName?: string; phoneNumber?: string }

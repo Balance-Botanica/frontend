@@ -21,6 +21,8 @@
 	import Footer from '$lib/components/Footer.svelte';
 	import CookieConsent from '$lib/components/CookieConsent.svelte';
 	import NotificationContainer from '$lib/components/NotificationContainer.svelte';
+	import PhoneOnboardingDialog from '$lib/components/PhoneOnboardingDialog.svelte';
+	import LinkGoogleBanner from '$lib/components/LinkGoogleBanner.svelte';
 	import { user, isAuthenticated, isLoading, session, error } from '$lib/auth/pocketbase-store';
 	import { setLanguage } from '$lib/stores/language';
 
@@ -333,6 +335,7 @@
 		</div>
 
 		<main id="main-content" class="flex-1">
+			<LinkGoogleBanner />
 			{@render children?.()}
 		</main>
 
@@ -429,6 +432,9 @@
 
 		<!-- Global Notification Container -->
 		<NotificationContainer />
+
+		<!-- First-visit phone onboarding (self-limits: once per cooldown, never in checkout) -->
+		<PhoneOnboardingDialog />
 	{/if}
 </div>
 

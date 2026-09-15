@@ -27,23 +27,44 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 			console.error('[Firebase] ID token verification failed');
 			return json({ success: false, error: 'Invalid Firebase token' }, { status: 401 });
 		}
-		if (!payload || !payload.email || !payload.sub) {
+		if (!payload || !payload.sub) {
 			return json({ success: false, error: 'Incomplete Firebase profile' }, { status: 401 });
 		}
-		if (payload.email_verified === false) {
+		// Email logins still require a verified email. Phone logins carry
+		// `phone_number` instead and have no email at all.
+		const email: string | undefined =
+			typeof payload.email === 'string' ? payload.email : undefined;
+		const phoneNumber: string | undefined =
+			typeof (payload as any).phone_number === 'string'
+				? (payload as any).phone_number
+				: undefined;
+		if (!email && !phoneNumber) {
+			return json({ success: false, error: 'Incomplete Firebase profile' }, { status: 401 });
+		}
+		if (email && payload.email_verified === false) {
 			return json({ success: false, error: 'Email is not verified' }, { status: 401 });
 		}
 
-		const user = await userService.getOrCreateUser(payload.sub, payload.email);
+		const user = email
+			? await userService.getOrCreateUser(payload.sub, email)
+			: await userService.getOrCreateUserByPhone(phoneNumber!, undefined);
 		if (!user) {
 			return json({ success: false, error: 'Failed to create user' }, { status: 500 });
+		}
+		// Backfill the phone number when a previously email-only user signs in
+		// with a linked phone (or vice versa).
+		if (phoneNumber && !user.phoneNumber) {
+			await userService.updateUserProfile(user.id, { phoneNumber });
 		}
 
 		const sessionToken = auth.generateSessionToken();
 		const session = await auth.createSession(sessionToken, user.id);
 		auth.setSessionTokenCookie({ cookies } as any, sessionToken, session.expiresAt);
 
-		console.log('[Firebase] Login successful for user:', payload.email);
+		console.log(
+			'[Firebase] Login successful for user:',
+			email || phoneNumber || user.id
+		);
 		return json({ success: true });
 	} catch (error) {
 		console.error('[Firebase] Error creating session:', error);

@@ -4,6 +4,7 @@ import { browser } from '$app/environment';
 import {
 	PhoneAuthProvider,
 	GoogleAuthProvider,
+	linkWithPopup,
 	signInWithPopup,
 	signInWithEmailAndPassword,
 	createUserWithEmailAndPassword,
@@ -164,7 +165,12 @@ export async function verifyPhoneCode(verificationCode: string) {
 		const { verificationId } = get(phoneAuthStore);
 		const credential = PhoneAuthProvider.credential(verificationId!, verificationCode);
 
-		await signInWithCredential(auth, credential);
+		const cred = await signInWithCredential(auth, credential);
+		if (!cred.user) throw new Error('Phone sign-in returned no user');
+
+		// Bridge to the app session cookie — without this the user is signed in
+		// to Firebase but anonymous to our server (this was the missing piece).
+		await bridgeIdTokenToSession(await cred.user.getIdToken());
 
 		phoneAuthStore.update((state) => ({
 			...state,
@@ -183,6 +189,8 @@ export async function verifyPhoneCode(verificationCode: string) {
 				error: null
 			});
 		}, 2000);
+
+		return cred.user;
 	} catch (error: any) {
 		phoneAuthStore.update((state) => ({
 			...state,
@@ -191,6 +199,32 @@ export async function verifyPhoneCode(verificationCode: string) {
 		}));
 		throw error;
 	}
+}
+
+// Provider ids of the current Firebase user, e.g. ['phone'] or ['google.com'].
+// Used to decide whether to nudge a phone-only user to link Google.
+export function getProviderIds(user: User | null): string[] {
+	if (!user) return [];
+	return (user.providerData || []).map((p) => p.providerId);
+}
+
+export function isPhoneOnlyUser(user: User | null): boolean {
+	const ids = getProviderIds(user);
+	return ids.length > 0 && ids.every((id) => id === 'phone');
+}
+
+// Link Google to the currently signed-in (phone) user so the next login is
+// a free 1-click Google sign-in instead of another paid SMS. Same Firebase
+// account is kept — no duplicate user, token is re-bridged to our session.
+export async function linkGoogleToCurrentUser(): Promise<User> {
+	const current = auth.currentUser;
+	if (!current) throw new Error('No signed-in user to link Google to');
+	const provider = new GoogleAuthProvider();
+	provider.setCustomParameters({ prompt: 'select_account' });
+	const cred = await linkWithPopup(current, provider);
+	if (!cred.user) throw new Error('Google linking returned no user');
+	await bridgeIdTokenToSession(await cred.user.getIdToken());
+	return cred.user;
 }
 
 export async function signOutUser() {
