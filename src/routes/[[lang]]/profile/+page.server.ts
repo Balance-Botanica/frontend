@@ -25,13 +25,23 @@ export const load = async ({ locals }: RequestEvent) => {
 			deliveryAddresses.length,
 			'delivery addresses'
 		);
+		const fullUser = await userService.getUserById(userId);
 		return {
-			deliveryAddresses
+			deliveryAddresses,
+			userProfile: fullUser
+				? {
+						email: fullUser.email,
+						firstName: fullUser.firstName || '',
+						lastName: fullUser.lastName || '',
+						phoneNumber: fullUser.phoneNumber || ''
+					}
+				: null
 		};
 	} catch (err) {
 		console.error('[Profile Load] Error loading delivery addresses:', err);
 		return {
-			deliveryAddresses: []
+			deliveryAddresses: [],
+			userProfile: null
 		};
 	}
 };

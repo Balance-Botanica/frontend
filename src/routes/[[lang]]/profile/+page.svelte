@@ -332,6 +332,12 @@
 								<span class="info-label">{$pageTranslations.t('profile.email') as string}</span>
 								<div class="info-value">{$user.email}</div>
 							</div>
+							{#if data?.userProfile?.phoneNumber}
+								<div class="info-item">
+									<span class="info-label">Телефон</span>
+									<div class="info-value">{data.userProfile.phoneNumber}</div>
+								</div>
+							{/if}
 							{#if $user.name}
 								<div class="info-item">
 									<span class="info-label">{$pageTranslations.t('profile.name') as string}</span>

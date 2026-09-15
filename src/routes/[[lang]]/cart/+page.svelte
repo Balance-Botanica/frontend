@@ -312,6 +312,41 @@
 		}
 	}
 
+	// Smart prefill: user registered via SMS, so the number already lives in
+	// the profile — pull it (and the name) into empty fields only.
+	// Priority: typed/localStorage value > Firebase phone > server profile.
+	// Never overwrites what the user already entered.
+	async function prefillFromProfile() {
+		if (!browser) return;
+		try {
+			if (!phoneNumber.trim()) {
+				const { auth } = await import('$lib/firebase/config');
+				const fbPhone = auth.currentUser?.phoneNumber;
+				if (fbPhone) {
+					phoneNumber = fbPhone;
+					console.log('[Cart] Phone prefilled from Firebase session');
+				}
+			}
+			if (!firstName.trim() || !lastName.trim() || !phoneNumber.trim()) {
+				const res = await fetch('/api/user/profile');
+				const data = await res.json().catch(() => ({}));
+				const u = data?.user;
+				if (res.ok && u) {
+					if (!firstName.trim() && u.firstName) firstName = u.firstName;
+					if (!lastName.trim() && u.lastName) lastName = u.lastName;
+					if (!phoneNumber.trim() && u.phoneNumber) phoneNumber = u.phoneNumber;
+					console.log('[Cart] Form prefilled from server profile:', {
+						firstName: !!firstName,
+						lastName: !!lastName,
+						phoneNumber: !!phoneNumber
+					});
+				}
+			}
+		} catch (e) {
+			console.warn('[Cart] Profile prefill skipped:', e);
+		}
+	}
+
 	// Handle address modal open
 	function openAddressModal() {
 		showAddressModal = true;
@@ -567,6 +602,9 @@
 	// Load form data on component mount and page navigation
 	onMount(() => {
 		loadFormData();
+		// localStorage restores async (50ms) — prefill after it so typed
+		// values win and server data only fills the gaps.
+		setTimeout(() => prefillFromProfile(), 150);
 	});
 
 	// Reactive block to reload data when navigating to this page
@@ -575,6 +613,7 @@
 		// eslint-disable-next-line @typescript-eslint/no-unused-expressions
 		$page.url.pathname;
 		loadFormData();
+		setTimeout(() => prefillFromProfile(), 150);
 	});
 
 	// Reactive block to ensure form fields update in UI
