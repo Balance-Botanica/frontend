@@ -8,10 +8,15 @@ const KEY_IMPRESSIONS = 'bb_phone_dialog_impressions';
 const KEY_LAST_SEEN = 'bb_phone_dialog_last_seen';
 const KEY_DONE = 'bb_phone_dialog_done'; // set after successful phone registration
 const KEY_LINK_DISMISSED_AT = 'bb_link_google_dismissed_at';
+const KEY_LINK_DIALOG_IMPRESSIONS = 'bb_link_dialog_impressions';
+const KEY_LINK_DIALOG_LAST_SEEN = 'bb_link_dialog_last_seen';
+const KEY_AUTH_VISITS = 'bb_auth_visits';
 
 const MAX_IMPRESSIONS = 3;
 const DIALOG_COOLDOWN_MS = 7 * 24 * 60 * 60 * 1000; // 7 days between shows
 const LINK_SNOOZE_MS = 14 * 24 * 60 * 60 * 1000; // re-nudge Google link after 14 days
+const LINK_DIALOG_MAX = 2;
+const LINK_DIALOG_COOLDOWN_MS = 14 * 24 * 60 * 60 * 1000;
 
 // Routes where the dialog must never interrupt (auth + checkout flows).
 const EXCLUDED_PREFIXES = ['/login', '/password-recovery', '/cart', '/checkout', '/en/login'];
@@ -108,4 +113,81 @@ export function getPrefilledPhone(search: string): string | null {
 	} catch {
 		return null;
 	}
+}
+
+// --- Link-accounts nudge: WHEN to fire ---------------------------------------
+// Moments (first matching wins), all require a signed-in user who still has
+// something to link (phone-only, or no Google and no email):
+//  A. just ordered (checkout success) — highest goodwill, user is happy
+//  B. 2nd+ authenticated visit — proven returner, SMS cost is now recurring
+//  C. first profile view while unlinked — user is already in settings context
+// Caps: max 2 impressions ever, 14-day cooldown, never inside checkout/cart,
+// CTA navigates to /profile#login-methods where linking actually lives.
+
+const LINK_DIALOG_EXCLUDED = ['/cart', '/checkout', '/en/cart', '/en/checkout'];
+
+/** Count one authenticated visit (call once per page view while signed in). */
+export function trackAuthVisit(): number {
+	if (!browser) return 0;
+	const next = readInt(KEY_AUTH_VISITS) + 1;
+	writeStr(KEY_AUTH_VISITS, String(next));
+	return next;
+}
+
+/** Checkout success calls this — the next page view becomes moment A. */
+export function markOrderCompleted(): void {
+	if (!browser) return;
+	try {
+		sessionStorage.setItem('bb_just_ordered', '1');
+	} catch {}
+}
+
+/** One-shot read of the just-ordered flag. */
+export function consumeOrderCompletedFlag(): boolean {
+	if (!browser) return false;
+	try {
+		const v = sessionStorage.getItem('bb_just_ordered') === '1';
+		if (v) sessionStorage.removeItem('bb_just_ordered');
+		return v;
+	} catch {
+		return false;
+	}
+}
+
+export interface LinkDialogContext {
+	isAuthenticated: boolean;
+	needsLink: boolean;
+	pathname: string;
+	justOrdered: boolean;
+	authVisits: number;
+	onProfilePage: boolean;
+}
+
+/** True when the link-accounts dialog is allowed to appear right now. */
+export function shouldShowLinkDialog(ctx: LinkDialogContext): boolean {
+	if (!browser || !ctx.isAuthenticated || !ctx.needsLink) return false;
+	if (LINK_DIALOG_EXCLUDED.some((p) => ctx.pathname === p || ctx.pathname.startsWith(p + '/'))) {
+		return false;
+	}
+	if (readInt(KEY_LINK_DIALOG_IMPRESSIONS) >= LINK_DIALOG_MAX) return false;
+	const lastSeen = readInt(KEY_LINK_DIALOG_LAST_SEEN);
+	if (lastSeen && Date.now() - lastSeen < LINK_DIALOG_COOLDOWN_MS) return false;
+	// At least one smart moment must hold — never fire "just because".
+	const momentA = ctx.justOrdered;
+	const momentB = ctx.authVisits >= 2;
+	const momentC = ctx.onProfilePage;
+	return momentA || momentB || momentC;
+}
+
+/** Record one link-dialog impression. */
+export function markLinkDialogShown(): void {
+	if (!browser) return;
+	writeStr(KEY_LINK_DIALOG_IMPRESSIONS, String(readInt(KEY_LINK_DIALOG_IMPRESSIONS) + 1));
+	writeStr(KEY_LINK_DIALOG_LAST_SEEN, String(Date.now()));
+}
+
+/** User dismissed or navigated via CTA — snooze via cooldown. */
+export function dismissLinkDialog(): void {
+	if (!browser) return;
+	writeStr(KEY_LINK_DIALOG_LAST_SEEN, String(Date.now()));
 }

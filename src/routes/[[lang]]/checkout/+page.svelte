@@ -43,6 +43,8 @@
 		if (orderSuccess) {
 			console.log('[CHECKOUT] Order successful, clearing cart...');
 			cartStore.clear();
+			// Moment A for the link-accounts nudge: user is happy right now.
+			import('$lib/stores/onboarding').then((m) => m.markOrderCompleted()).catch(() => {});
 		}
 
 		// Load last order data if success

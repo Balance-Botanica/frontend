@@ -24,6 +24,8 @@ export { default as LoginForm } from './LoginForm.svelte';
 export { default as AuthGuard } from './AuthGuard.svelte';
 export { default as PhoneOnboardingDialog } from './PhoneOnboardingDialog.svelte';
 export { default as LinkGoogleBanner } from './LinkGoogleBanner.svelte';
+export { default as LinkedAccounts } from './LinkedAccounts.svelte';
+export { default as LinkAccountsDialog } from './LinkAccountsDialog.svelte';
 
 // Utility Components
 export { default as ImageUpload } from './ImageUpload.svelte';

@@ -8,6 +8,7 @@
 	import Button from '$lib/components/Button.svelte';
 	import Input from '$lib/components/Input.svelte';
 	import NovaPoshtaSelector from '$lib/components/NovaPoshtaSelector.svelte';
+	import LinkedAccounts from '$lib/components/LinkedAccounts.svelte';
 	import { enhance } from '$app/forms';
 	import type { PageData } from './$types';
 
@@ -349,12 +350,14 @@
 						</div>
 					</section>
 
+					<!-- Login Methods Section (phone / Google / email-link) -->
+					<LinkedAccounts />
+
 					<!-- Orders Section -->
 					<section class="profile-section">
 						<h2 class="section-title">
 							{($pageTranslations.t('profile.orders') as string) || 'Orders'}
-						</h2>
-						<div class="orders-section">
+						</h2>						<div class="orders-section">
 							<p class="orders-description">
 								{($pageTranslations.t('profile.ordersDescription') as string) ||
 									'View your order history and track current orders'}

@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { createEventDispatcher } from 'svelte';
+	import { createEventDispatcher, onMount } from 'svelte';
+	import { browser } from '$app/environment';
 	import { pocketbaseAuthStore, user, error } from '$lib/auth/pocketbase-store';
 	import type { OAuthProvider } from '$lib/auth/types';
 
@@ -16,6 +17,62 @@
 	let isLoading = false;
 	let errorMessage = '';
 	let showPassword = false;
+
+	// Passwordless email-link state (free alternative to SMS)
+	let showPasswordless = false;
+	let linkEmail = '';
+	let linkSent = false;
+	let linkBusy = false;
+	let linkError = '';
+	let pendingLinkReturn = false; // opened the email link but storage lost the email
+
+	// Auto-complete a Firebase email-link return (user clicked the link in email).
+	onMount(async () => {
+		if (!browser) return;
+		try {
+			const { isEmailLinkReturn, completeEmailLink } = await import('$lib/firebase/auth');
+			if (!isEmailLinkReturn(window.location.href)) return;
+			const res = await completeEmailLink(window.location.href);
+			// Clean the link params from the address bar
+			window.history.replaceState({}, '', window.location.pathname);
+			dispatch('success', { user: res.user });
+		} catch (e: any) {
+			if (e?.message === 'need-email') {
+				// Email app opened the link in a fresh context — ask for the email once.
+				pendingLinkReturn = true;
+				showPasswordless = true;
+			} else {
+				linkError = e instanceof Error ? e.message : 'Email link failed';
+				showPasswordless = true;
+			}
+			window.history.replaceState({}, '', window.location.pathname);
+		}
+	});
+
+	// Send passwordless link, or finish a pending link return with the typed email.
+	async function handlePasswordless() {
+		const value = linkEmail.trim();
+		if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+			linkError = 'Введіть коректний email';
+			return;
+		}
+		linkBusy = true;
+		linkError = '';
+		try {
+			const mod = await import('$lib/firebase/auth');
+			if (pendingLinkReturn) {
+				const res = await mod.completeEmailLink(window.location.href, value);
+				dispatch('success', { user: res.user });
+			} else {
+				await mod.sendEmailSignInLink(value);
+				linkSent = true;
+			}
+		} catch (e) {
+			linkError = e instanceof Error ? e.message : 'Failed to send link';
+		} finally {
+			linkBusy = false;
+		}
+	}
 
 	// Toggle password visibility
 	function togglePasswordVisibility() {
@@ -287,6 +344,51 @@
 				{isSignUp ? 'Увійти' : 'Зареєструватись'}
 			</button>
 		</p>
+	</div>
+
+	<!-- Вход без пароля (бесплатная альтернатива СМС) -->
+	<div class="passwordless-section">
+		<button
+			type="button"
+			class="passwordless-toggle"
+			on:click={() => (showPasswordless = !showPasswordless)}
+		>
+			{showPasswordless ? 'Сховати вхід без пароля' : 'Увійти без пароля ✉️'}
+		</button>
+		{#if showPasswordless}
+			{#if linkSent && !pendingLinkReturn}
+				<p class="passwordless-sent" role="status">
+					Посилання надіслано! Відкрийте лист на цьому ж пристрої.
+				</p>
+			{:else}
+				{#if pendingLinkReturn}
+					<p class="passwordless-sent" role="status">
+						Введіть email, на який прийшло посилання, щоб завершити вхід:
+					</p>
+				{/if}
+				<div class="passwordless-row">
+					<input
+						type="email"
+						bind:value={linkEmail}
+						class="form-input"
+						placeholder="email@example.com"
+						disabled={linkBusy}
+						aria-label="Email для посилання"
+					/>
+					<button
+						type="button"
+						class="passwordless-btn"
+						on:click={handlePasswordless}
+						disabled={linkBusy || !linkEmail.trim()}
+					>
+						{linkBusy ? '...' : pendingLinkReturn ? 'Завершити вхід' : 'Надіслати посилання'}
+					</button>
+				</div>
+				{#if linkError}
+					<p class="passwordless-error" role="alert">{linkError}</p>
+				{/if}
+			{/if}
+		{/if}
 	</div>
 </div>
 
@@ -658,5 +760,58 @@
 
 	.forgot-link:hover {
 		color: #3a5d56;
+	}
+
+	/* Passwordless email-link */
+	.passwordless-section {
+		width: 460px;
+		align-self: stretch;
+		margin-top: 12px;
+		text-align: center;
+	}
+	.passwordless-toggle {
+		background: none;
+		border: none;
+		color: var(--color-main);
+		font-family: 'Nunito', sans-serif;
+		font-size: 15px;
+		font-weight: 600;
+		cursor: pointer;
+		text-decoration-line: underline;
+	}
+	.passwordless-row {
+		display: flex;
+		gap: 8px;
+		margin-top: 12px;
+	}
+	.passwordless-row .form-input {
+		flex: 1;
+		width: auto;
+	}
+	.passwordless-btn {
+		background: #52796f;
+		border: none;
+		border-radius: 10px;
+		color: #fff;
+		font-family: 'Nunito', sans-serif;
+		font-size: 14px;
+		font-weight: 600;
+		padding: 0 16px;
+		cursor: pointer;
+		white-space: nowrap;
+	}
+	.passwordless-btn:disabled {
+		opacity: 0.6;
+		cursor: not-allowed;
+	}
+	.passwordless-sent {
+		margin-top: 12px;
+		font-size: 14px;
+		color: var(--color-main);
+	}
+	.passwordless-error {
+		margin-top: 8px;
+		font-size: 14px;
+		color: #dc2626;
 	}
 </style>

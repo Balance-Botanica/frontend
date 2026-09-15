@@ -27,6 +27,29 @@
 			"button": "Link Google",
 			"later": "Later",
 			"error": "Could not link Google. Try again."
+		},
+		"email_link": {
+			"send": "Send link",
+			"sent": "Link sent! Open the email on this same device.",
+			"error_invalid": "Enter a valid email",
+			"error_generic": "Could not send the link. Try again."
+		},
+		"linked_accounts": {
+			"title": "Sign-in methods",
+			"hint": "More methods = fewer SMS codes. Link Google or email.",
+			"phone": "Phone",
+			"email": "Email link",
+			"connected": "Connected",
+			"google_hint": "1-click sign-in, no SMS"
+		},
+		"link_dialog": {
+			"title": "Sign in without SMS",
+			"title_order": "Thank you for your order!",
+			"text_returner": "Welcome back! Link Google or email to sign in in 1 click, no SMS.",
+			"text_order": "While we prepare your order — link Google or email in settings. Next sign-in is 1 click and free.",
+			"text_profile": "You are already in your profile — one step left: link Google or email so you never wait for SMS again.",
+			"cta": "Go to settings",
+			"later": "Later"
 		}
 	},
 

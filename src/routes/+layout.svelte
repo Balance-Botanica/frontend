@@ -23,6 +23,7 @@
 	import NotificationContainer from '$lib/components/NotificationContainer.svelte';
 	import PhoneOnboardingDialog from '$lib/components/PhoneOnboardingDialog.svelte';
 	import LinkGoogleBanner from '$lib/components/LinkGoogleBanner.svelte';
+	import LinkAccountsDialog from '$lib/components/LinkAccountsDialog.svelte';
 	import { user, isAuthenticated, isLoading, session, error } from '$lib/auth/pocketbase-store';
 	import { setLanguage } from '$lib/stores/language';
 
@@ -435,6 +436,9 @@
 
 		<!-- First-visit phone onboarding (self-limits: once per cooldown, never in checkout) -->
 		<PhoneOnboardingDialog />
+
+		<!-- Link-accounts nudge at smart moments (order / returner / profile) -->
+		<LinkAccountsDialog />
 	{/if}
 </div>
 

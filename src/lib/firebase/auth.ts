@@ -4,7 +4,12 @@ import { browser } from '$app/environment';
 import {
 	PhoneAuthProvider,
 	GoogleAuthProvider,
+	EmailAuthProvider,
 	linkWithPopup,
+	linkWithCredential,
+	sendSignInLinkToEmail,
+	isSignInWithEmailLink,
+	signInWithEmailLink,
 	signInWithPopup,
 	signInWithEmailAndPassword,
 	createUserWithEmailAndPassword,
@@ -225,6 +230,97 @@ export async function linkGoogleToCurrentUser(): Promise<User> {
 	if (!cred.user) throw new Error('Google linking returned no user');
 	await bridgeIdTokenToSession(await cred.user.getIdToken());
 	return cred.user;
+}
+
+// --- Passwordless email-link (free alternative to SMS) ----------------------
+// Two flows share the same completion:
+//  - sign-in: new user enters email on /login, clicks the link, gets signed in
+//  - linking: signed-in phone user enters email in settings, clicks the link
+//    ON THE SAME DEVICE, the email provider is attached to their account
+const EMAIL_FOR_SIGNIN_KEY = 'bb_email_for_signin';
+const EMAIL_FOR_LINK_KEY = 'bb_email_for_link';
+
+function emailLinkSettings() {
+	return {
+		// Return to /login which auto-completes the link (see LoginForm).
+		url: `${window.location.origin}/login?finishEmail=1`,
+		handleCodeInApp: true
+	};
+}
+
+function rememberEmail(key: string, email: string): void {
+	try {
+		window.localStorage.setItem(key, email);
+	} catch {
+		// private mode — completion will ask for the email again
+	}
+}
+
+function recallEmail(key: string): string | null {
+	try {
+		return window.localStorage.getItem(key);
+	} catch {
+		return null;
+	}
+}
+
+/** Send a passwordless sign-in link (new session flow). */
+export async function sendEmailSignInLink(email: string): Promise<void> {
+	rememberEmail(EMAIL_FOR_SIGNIN_KEY, email);
+	await sendSignInLinkToEmail(auth, email, emailLinkSettings());
+}
+
+/** Send a linking link for the currently signed-in user (settings flow). */
+export async function sendLinkEmailToCurrentUser(email: string): Promise<void> {
+	if (!auth.currentUser) throw new Error('No signed-in user to link email to');
+	rememberEmail(EMAIL_FOR_LINK_KEY, email);
+	await sendSignInLinkToEmail(auth, email, emailLinkSettings());
+}
+
+/** True when the current URL is a Firebase email-link return. */
+export function isEmailLinkReturn(url: string): boolean {
+	try {
+		return isSignInWithEmailLink(auth, url);
+	} catch {
+		return false;
+	}
+}
+
+export type EmailLinkResult =
+	| { mode: 'linked'; user: User }
+	| { mode: 'signed-in'; user: User };
+
+/**
+ * Complete an email-link return. Linking wins when a user is already signed in
+ * and the stored link-email matches (same device) — otherwise plain sign-in.
+ * Pass an explicit email when localStorage was cleared (user types it again).
+ */
+export async function completeEmailLink(url: string, emailHint?: string): Promise<EmailLinkResult> {
+	const linkEmail = emailHint || recallEmail(EMAIL_FOR_LINK_KEY);
+	const signinEmail = emailHint || recallEmail(EMAIL_FOR_SIGNIN_KEY);
+	const current = auth.currentUser;
+
+	if (current && linkEmail) {
+		const credential = EmailAuthProvider.credentialWithLink(linkEmail, url);
+		const cred = await linkWithCredential(current, credential);
+		if (!cred.user) throw new Error('Email linking returned no user');
+		try {
+			window.localStorage.removeItem(EMAIL_FOR_LINK_KEY);
+		} catch {}
+		await bridgeIdTokenToSession(await cred.user.getIdToken());
+		return { mode: 'linked', user: cred.user };
+	}
+
+	const email = signinEmail || linkEmail;
+	if (!email) throw new Error('need-email');
+	const cred = await signInWithEmailLink(auth, email, url);
+	if (!cred.user) throw new Error('Email sign-in returned no user');
+	try {
+		window.localStorage.removeItem(EMAIL_FOR_SIGNIN_KEY);
+		window.localStorage.removeItem(EMAIL_FOR_LINK_KEY);
+	} catch {}
+	await bridgeIdTokenToSession(await cred.user.getIdToken());
+	return { mode: 'signed-in', user: cred.user };
 }
 
 export async function signOutUser() {
