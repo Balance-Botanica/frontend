@@ -26,6 +26,7 @@ export { default as PhoneOnboardingDialog } from './PhoneOnboardingDialog.svelte
 export { default as LinkGoogleBanner } from './LinkGoogleBanner.svelte';
 export { default as LinkedAccounts } from './LinkedAccounts.svelte';
 export { default as LinkAccountsDialog } from './LinkAccountsDialog.svelte';
+export { default as IbanPayDialog } from './IbanPayDialog.svelte';
 
 // Utility Components
 export { default as ImageUpload } from './ImageUpload.svelte';

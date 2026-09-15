@@ -10,6 +10,7 @@
 	import { writable } from 'svelte/store';
 	import SEO from '$lib/components/SEO.svelte';
 	import AddressModal from '$lib/components/AddressModal.svelte';
+	import IbanPayDialog from '$lib/components/IbanPayDialog.svelte';
 	import type { PageData } from './$types';
 	import type { SupportedLocale } from '$lib/i18n/types';
 
@@ -33,6 +34,10 @@
 	});
 
 	let showAddressModal = $state(false);
+
+	// Temporary manual-payment step: after valid form, show IBAN dialog
+	// (replaced by MonoPay invoice once Monobank approves).
+	let showIbanDialog = $state(false);
 
 	// Validation state
 	let validationErrors = $state({
@@ -150,6 +155,15 @@
 			}
 			return;
 		}
+
+		// Form is valid — show manual IBAN payment dialog.
+		// Order is created only after the buyer confirms "I paid".
+		showIbanDialog = true;
+	}
+
+	// Runs after the buyer confirms payment in the IBAN dialog.
+	async function placeOrderAfterPay() {
+		showIbanDialog = false;
 
 		// Update user profile with form data
 		const profileUpdated = await updateUserProfile();
@@ -1029,6 +1043,14 @@
 	show={showAddressModal}
 	on:save={handleAddressSave}
 	on:close={handleAddressModalClose}
+/>
+
+<!-- Manual IBAN payment (temporary, until MonoPay) -->
+<IbanPayDialog
+	show={showIbanDialog}
+	totalLabel={appliedPromoCode ? formatPrice($discountedTotal) : formatPrice($cartTotals.total)}
+	on:paid={placeOrderAfterPay}
+	on:close={() => (showIbanDialog = false)}
 />
 
 <style>
