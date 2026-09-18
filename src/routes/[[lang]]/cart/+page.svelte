@@ -5,9 +5,16 @@
 	import { notificationStore } from '$lib/stores/notifications';
 	import { createPageTranslations } from '$lib/i18n/store';
 	import { browser } from '$app/environment';
-	import { onMount, onDestroy } from 'svelte';
+	import { onMount, onDestroy, tick } from 'svelte';
 	import { page } from '$app/stores';
 	import { writable } from 'svelte/store';
+	import {
+		normalizeUaPhone,
+		formatUaPhone,
+		isCompleteUaPhone,
+		toE164Ua,
+		remapCaret
+	} from '$lib/utils/phone';
 	import SEO from '$lib/components/SEO.svelte';
 	import AddressModal from '$lib/components/AddressModal.svelte';
 	import IbanPayDialog from '$lib/components/IbanPayDialog.svelte';
@@ -137,7 +144,7 @@
 			hasErrors = true;
 		}
 
-		if (!phoneNumber.trim()) {
+		if (!phoneNumber.trim() || !isCompleteUaPhone(phoneNumber)) {
 			validationErrors.phoneNumber = true;
 			hasErrors = true;
 		}
@@ -206,6 +213,26 @@
 		saveFormData();
 	}
 
+	// UA phone mask: store plain digits, display '+38 (0XX) XXX-XX-XX'.
+	// Caret is remapped by digit count so typing/deleting feels natural.
+	function handlePhoneInput(event: Event) {
+		const input = event.currentTarget as HTMLInputElement;
+		const oldDisplay = input.value;
+		const oldCaret = input.selectionStart ?? oldDisplay.length;
+		phoneNumber = normalizeUaPhone(oldDisplay);
+		handleFieldChange('phoneNumber');
+		saveFormData();
+		const newDisplay = formatUaPhone(phoneNumber);
+		const newCaret = remapCaret(oldDisplay, oldCaret, newDisplay);
+		tick().then(() => {
+			try {
+				input.setSelectionRange(newCaret, newCaret);
+			} catch {
+				// non-text input edge — ignore
+			}
+		});
+	}
+
 	// Save form data to localStorage with debouncing
 	function saveFormData() {
 		if (browser) {
@@ -265,7 +292,8 @@
 					setTimeout(() => {
 						firstName = formData.firstName || '';
 						lastName = formData.lastName || '';
-						phoneNumber = formData.phoneNumber || '';
+						// Old saves may hold any raw format — normalize to digits.
+						phoneNumber = normalizeUaPhone(formData.phoneNumber || '');
 						selectedAddress = formData.selectedAddress || null;
 
 						console.log('[Cart] Form data loaded from localStorage:', {
@@ -323,7 +351,7 @@
 				const { auth } = await import('$lib/firebase/config');
 				const fbPhone = auth.currentUser?.phoneNumber;
 				if (fbPhone) {
-					phoneNumber = fbPhone;
+					phoneNumber = normalizeUaPhone(fbPhone);
 					console.log('[Cart] Phone prefilled from Firebase session');
 				}
 			}
@@ -334,7 +362,8 @@
 				if (res.ok && u) {
 					if (!firstName.trim() && u.firstName) firstName = u.firstName;
 					if (!lastName.trim() && u.lastName) lastName = u.lastName;
-					if (!phoneNumber.trim() && u.phoneNumber) phoneNumber = u.phoneNumber;
+					if (!phoneNumber.trim() && u.phoneNumber)
+						phoneNumber = normalizeUaPhone(u.phoneNumber);
 					console.log('[Cart] Form prefilled from server profile:', {
 						firstName: !!firstName,
 						lastName: !!lastName,
@@ -382,7 +411,7 @@
 				notes: '', // Can be extended later for customer notes
 				// Customer information
 				customerName: `${firstName.trim()} ${lastName.trim()}`.trim(),
-				customerPhone: phoneNumber.trim(),
+				customerPhone: toE164Ua(phoneNumber),
 				// Promo code information
 				promoCode: appliedPromoCode
 					? {
@@ -497,11 +526,11 @@
 				headers: {
 					'Content-Type': 'application/json'
 				},
-				body: JSON.stringify({
-					firstName,
-					lastName,
-					phoneNumber
-				})
+			body: JSON.stringify({
+				firstName,
+				lastName,
+				phoneNumber: toE164Ua(phoneNumber)
+			})
 			});
 
 			const result = await response.json();
@@ -855,20 +884,19 @@
 										<label for="phoneNumber"
 											>{$pageTranslations.t('cart.checkout.phoneNumber')}</label
 										>
-										<input
-											type="tel"
-											id="phoneNumber"
-											class="form-input"
-											class:error={validationErrors.phoneNumber}
-											bind:value={phoneNumber}
-											placeholder={String($pageTranslations.t('cart.checkout.phoneNumber')) || ''}
-											on:input={() => {
-												handleFieldChange('phoneNumber');
-												saveFormData();
-											}}
-											on:change={saveFormDataImmediate}
-											on:blur={saveFormDataImmediate}
-										/>
+									<input
+										type="tel"
+										inputmode="tel"
+										autocomplete="tel"
+										id="phoneNumber"
+										class="form-input"
+										class:error={validationErrors.phoneNumber}
+										value={formatUaPhone(phoneNumber)}
+										placeholder="+38 (0__) ___-__-__"
+										on:input={handlePhoneInput}
+										on:change={saveFormDataImmediate}
+										on:blur={saveFormDataImmediate}
+									/>
 									</div>
 
 									<div class="form-group">
